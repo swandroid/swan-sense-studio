@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="antlr-3.4-complete-no-antlrv2">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/swanLakeActivity/libs/antlr-3.4-complete-no-antlrv2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

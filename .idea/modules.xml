@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/senseandroidlibrary/senseandroidlibrary.iml" filepath="$PROJECT_DIR$/senseandroidlibrary/senseandroidlibrary.iml" />
+      <module fileurl="file://$PROJECT_DIR$/swanLakeActivity/swanLakeActivity.iml" filepath="$PROJECT_DIR$/swanLakeActivity/swanLakeActivity.iml" />
+      <module fileurl="file://$PROJECT_DIR$/swan_test.iml" filepath="$PROJECT_DIR$/swan_test.iml" />
+    </modules>
+  </component>
+</project>
+
