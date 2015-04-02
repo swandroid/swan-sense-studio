@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 import nl.sense_os.platform.TrivialSensorRegistrator;
-import nl.sense_os.service.R;
 import nl.sense_os.service.commonsense.SensorRegistrator;
 import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
@@ -279,10 +278,11 @@ public abstract class AbstractSwanSensor extends AbstractSensorBase{
      */
     protected void getLocalValues(final long start, final long end) {
         try {
+            String localStorage = "nl.sense_os.platform.LocalStorage";
         	String[] projection = new String[] {DataPoint.VALUE_PATH, DataPoint.TIMESTAMP, DataPoint.VALUE };
             String where = "(" + DataPoint.TIMESTAMP + " >= " + String.valueOf(start) +
                 			" AND " + DataPoint.TIMESTAMP + " <= " + String.valueOf(end) + ")";
-            Uri uri = Uri.parse("content://" + getResources().getString(R.string.local_storage_authority) + DataPoint.CONTENT_URI_PATH);
+            Uri uri = Uri.parse("content://" + localStorage + DataPoint.CONTENT_URI_PATH);
             
             //sort order matter because latest values should go last
             String sortOrder = DataPoint.TIMESTAMP + " ASC";

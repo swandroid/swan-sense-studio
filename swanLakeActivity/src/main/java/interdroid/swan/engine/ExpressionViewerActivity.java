@@ -142,88 +142,77 @@ public class ExpressionViewerActivity extends ListActivity {
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.action_refresh:
-			startService(new Intent(EvaluationEngineService.UPDATE_EXPRESSIONS)
-					.setClass(this, EvaluationEngineService.class));
-			mExpandAllSelected = false;
-			break;
-		case R.id.menu_sort:
-			return super.onOptionsItemSelected(item);
-		case R.id.sort_name:
-			mSortType = "name";
-			mExpandAllSelected = false;
-			break;
-		case R.id.sort_eval_per:
-			mSortType = "evaluation-percentage";
-			mSortVisibleOld = mSortVisible;
-			mSortVisible = R.id.evalPercentage;
-			mExpandAllSelected = false;
-			break;
-		case R.id.sort_eval_rate:
-			mSortType = "evaluation-rate";
-			mSortVisibleOld = mSortVisible;
-			mSortVisible = R.id.evalRate;
-			mExpandAllSelected = false;
-			break;
-		case R.id.sort_eval_delay:
-			mSortType = "avg-evaluation-delay";
-			mSortVisibleOld = mSortVisible;
-			mSortVisible = R.id.evalDelay;
-			mExpandAllSelected = false;
-			break;
-		case R.id.sort_eval_avg_time:
-			mSortType = "avg-evaluation-time";
-			mSortVisibleOld = mSortVisible;
-			mSortVisible = R.id.evalTimeAvg;
-			mExpandAllSelected = false;
-			break;
-		case R.id.sort_eval_min_time:
-			mSortType = "min-evaluation-time";
-			mSortVisibleOld = mSortVisible;
-			mSortVisible = R.id.evalTimeMin;
-			mExpandAllSelected = false;
-			break;
-		case R.id.sort_eval_max_time:
-			mSortType = "max-evaluation-time";
-			mSortVisibleOld = mSortVisible;
-			mSortVisible = R.id.evalTimeMax;
-			mExpandAllSelected = false;
-			break;
-		case R.id.sort_order:
-			if(mAscending == true){
-				mAscending = false;
-				item.setIcon(R.drawable.ic_action_descend);
-			}else{
-				mAscending = true;
-				item.setIcon(R.drawable.ic_action_ascend);
-			}
-			mExpandAllSelected = false;
-			break;
-		case R.id.expand_all:	
-			if(mExpandAll == true){
-				mExpandAll = false;
-				item.setIcon(R.drawable.expandoff);
-			}else{
-				mExpandAll = true;
-				item.setIcon(R.drawable.expandon);
-			}
-			mExpandAllSelected = true;
-			break;
-		case R.id.sensor_activity:
-			Intent intent = new Intent(ExpressionViewerActivity.this, SensorViewerActivity.class);
-		    ExpressionViewerActivity.this.startActivity(intent);
-		    mExpandAllSelected = false;
-			break;
-		default:
-			break;
-		}
-		mComparator = getComparator(mSortType, mAscending);
-		Collections.sort(mExpressions, mComparator);
-		mAdapter.notifyDataSetChanged();
-		return super.onOptionsItemSelected(item);
-	}
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+        if (itemId == R.id.action_refresh) {
+            startService(new Intent(EvaluationEngineService.UPDATE_EXPRESSIONS)
+                    .setClass(this, EvaluationEngineService.class));
+            mExpandAllSelected = false;
+        } else if (itemId == R.id.menu_sort) {
+            return super.onOptionsItemSelected(item);
+        } else if (itemId == R.id.sort_name) {
+            mSortType = "name";
+            mExpandAllSelected = false;
+        } else if (itemId == R.id.sort_eval_per) {
+            mSortType = "evaluation-percentage";
+            mSortVisibleOld = mSortVisible;
+            mSortVisible = R.id.evalPercentage;
+            mExpandAllSelected = false;
+        } else if (itemId == R.id.sort_eval_rate) {
+            mSortType = "evaluation-rate";
+            mSortVisibleOld = mSortVisible;
+            mSortVisible = R.id.evalRate;
+            mExpandAllSelected = false;
+        } else if (itemId == R.id.sort_eval_delay) {
+            mSortType = "avg-evaluation-delay";
+            mSortVisibleOld = mSortVisible;
+            mSortVisible = R.id.evalDelay;
+            mExpandAllSelected = false;
+        } else if (itemId == R.id.sort_eval_avg_time) {
+            mSortType = "avg-evaluation-time";
+            mSortVisibleOld = mSortVisible;
+            mSortVisible = R.id.evalTimeAvg;
+            mExpandAllSelected = false;
+        } else if (itemId == R.id.sort_eval_min_time) {
+            mSortType = "min-evaluation-time";
+            mSortVisibleOld = mSortVisible;
+            mSortVisible = R.id.evalTimeMin;
+            mExpandAllSelected = false;
+        } else if (itemId == R.id.sort_eval_max_time) {
+            mSortType = "max-evaluation-time";
+            mSortVisibleOld = mSortVisible;
+            mSortVisible = R.id.evalTimeMax;
+            mExpandAllSelected = false;
+        } else if (itemId == R.id.sort_order) {
+            if(mAscending == true){
+                mAscending = false;
+                item.setIcon(R.drawable.ic_action_descend);
+            }else{
+                mAscending = true;
+                item.setIcon(R.drawable.ic_action_ascend);
+            }
+            mExpandAllSelected = false;
+        } else if (itemId == R.id.expand_all) {
+            if(mExpandAll == true){
+                mExpandAll = false;
+                item.setIcon(R.drawable.expandoff);
+            }else{
+                mExpandAll = true;
+                item.setIcon(R.drawable.expandon);
+            }
+            mExpandAllSelected = true;
+        } else if (itemId == R.id.sensor_activity) {
+            Intent intent = new Intent(ExpressionViewerActivity.this, SensorViewerActivity.class);
+            ExpressionViewerActivity.this.startActivity(intent);
+            mExpandAllSelected = false;
+        } else {
+        }
+        mComparator = getComparator(mSortType, mAscending);
+        Collections.sort(mExpressions, mComparator);
+        mAdapter.notifyDataSetChanged();
+        return super.onOptionsItemSelected(item);
+    }
+
 
 	class ExpressionAdapter extends BaseAdapter {
 

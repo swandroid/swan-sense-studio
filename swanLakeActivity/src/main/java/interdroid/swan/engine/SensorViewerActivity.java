@@ -81,20 +81,17 @@ public class SensorViewerActivity extends ListActivity {
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.action_refresh:
-			startService(new Intent(EvaluationEngineService.UPDATE_SENSORS)
-					.setClass(this, EvaluationEngineService.class));
-			break;
-		case R.id.expression_viewer:
-			this.finish();
-			break;
-		default:
-			break;
-		}
-		return super.onOptionsItemSelected(item);
-	}
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+        if (itemId == R.id.action_refresh) {
+            startService(new Intent(EvaluationEngineService.UPDATE_SENSORS)
+                    .setClass(this, EvaluationEngineService.class));
+        } else if (itemId == R.id.expression_viewer) {
+            this.finish();
+        } else {
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
 	class SensorAdapter extends BaseAdapter {
 

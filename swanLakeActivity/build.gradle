@@ -1,11 +1,11 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 19
     buildToolsVersion "21.1.2"
 
     defaultConfig {
-        applicationId "interdroid.swan"
+        //applicationId "interdroid.swan"
         minSdkVersion 9
         targetSdkVersion 21
     }

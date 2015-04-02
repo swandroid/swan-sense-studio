@@ -86,23 +86,23 @@ public class SwanLakeActivity extends ListActivity {
 			}
 
 			@Override
-			public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-				switch (item.getItemId()) {
-				case R.id.action_delete:
-					SparseBooleanArray array = getListView()
-							.getCheckedItemPositions();
-					List<String> names = Registry
-							.getNames(SwanLakeActivity.this);
-					for (int i = 0; i < names.size(); i++) {
-						if (array.get(i)) {
-							Registry.remove(SwanLakeActivity.this, names.get(i));
-						}
-					}
-					mAdapter.notifyDataSetChanged();
-				}
-				mode.finish();
-				return true;
-			}
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                int itemId = item.getItemId();
+                if (itemId == R.id.action_delete) {
+                    SparseBooleanArray array = getListView()
+                            .getCheckedItemPositions();
+                    List<String> names = Registry
+                            .getNames(SwanLakeActivity.this);
+                    for (int i = 0; i < names.size(); i++) {
+                        if (array.get(i)) {
+                            Registry.remove(SwanLakeActivity.this, names.get(i));
+                        }
+                    }
+                    mAdapter.notifyDataSetChanged();
+                }
+                mode.finish();
+                return true;
+            }
 
 			@Override
 			public void onItemCheckedStateChanged(ActionMode mode,
@@ -215,44 +215,36 @@ public class SwanLakeActivity extends ListActivity {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.action_share:
-			updateNFC();
-			break;
-		case R.id.action_set_name:
-			showDialog(DIALOG_SET_NAME);
-			break;
-		case R.id.login:
-			startActivity(new Intent(this, LoginActivity.class));
-			break;
-		case R.id.logout:
-			// clear cached settings of the previous user (e.g. device id)
-	        Editor authEditor = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE).edit();
-	        authEditor.clear();
-	        authEditor.commit();
-	        // update UI
-	        runOnUiThread(new Runnable() {
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+        if (itemId == R.id.action_share) {
+            updateNFC();
+        } else if (itemId == R.id.action_set_name) {
+            showDialog(DIALOG_SET_NAME);
+        } else if (itemId == R.id.login) {
+            startActivity(new Intent(this, LoginActivity.class));
+        } else if (itemId == R.id.logout) {
+            // clear cached settings of the previous user (e.g. device id)
+            Editor authEditor = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE).edit();
+            authEditor.clear();
+            authEditor.commit();
+            // update UI
+            runOnUiThread(new Runnable() {
 
-	            @Override
-	            public void run() {
-	                Toast.makeText(SwanLakeActivity.this, R.string.logout_success, Toast.LENGTH_LONG)
-	                        .show();
-	            }
-	        });
-	        
-			break;
-		case R.id.signup:
-			startActivity(new Intent(this, RegistrationActivity.class));
-			break;
-		case R.id.settings:
-			startActivity(new Intent(this, SettingsActivity.class));
-			break;
-		default:
-			break;
-		}
-		return super.onOptionsItemSelected(item);
-	}
+                @Override
+                public void run() {
+                    Toast.makeText(SwanLakeActivity.this, R.string.logout_success, Toast.LENGTH_LONG)
+                            .show();
+                }
+            });
+        } else if (itemId == R.id.signup) {
+            startActivity(new Intent(this, RegistrationActivity.class));
+        } else if (itemId == R.id.settings) {
+            startActivity(new Intent(this, SettingsActivity.class));
+        } else {
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
 	
 	@SuppressWarnings("deprecation")
