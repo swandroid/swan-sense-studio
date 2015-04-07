@@ -6,11 +6,9 @@
     android:versionName="1.0" 
     tools:ignore="ExportedService,ExportedReceiver">
 
-	<uses-sdk
-        android:minSdkVersion="9"
-        android:targetSdkVersion="21" />
+	<uses-sdk android:minSdkVersion="9" />
 
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+<!--    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
@@ -32,14 +30,13 @@
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="interdroid.vdb.permission.READ_DATABASE" />
     <uses-permission android:name="interdroid.vdb.permission.WRITE_DATABASE" />
-   <!--  <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS_FULL "/> -->
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
 
     <uses-feature
         android:name="android.hardware.nfc"
         android:required="true" />
-    
-    <application        
+    -->
+   <!-- <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/swan_app_name" >
@@ -47,19 +44,8 @@
         <meta-data 
             android:name="com.google.android.gms.version"
         	android:value="@integer/google_play_services_version" />
-        
-        <!-- test stuff -->
-       <!--  <activity
-            android:name="interdroid.swan.test.TestActivity"
-            android:screenOrientation="portrait" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity> 
- -->
-        <!-- cross device stuff -->
+        &lt;!&ndash; cross device stuff &ndash;&gt;
         <receiver
             android:name="interdroid.swan.crossdevice.CrossDeviceReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >
@@ -114,7 +100,7 @@
             android:screenOrientation="portrait">            
         </activity>
         
-        <!-- engine stuff -->
+        &lt;!&ndash; engine stuff &ndash;&gt;
         <receiver
             android:name="interdroid.swan.engine.EvaluationEngineReceiver"
             android:exported="true" >
@@ -145,7 +131,7 @@
             android:label="@string/sensor_viewer_name"
             android:launchMode="singleTask" />
 
-        <!-- ui stuff -->
+        &lt;!&ndash; ui stuff &ndash;&gt;
 
         <activity
             android:name="interdroid.swan.ui.ExpressionBuilderActivity"
@@ -223,7 +209,7 @@
             android:theme="@android:style/Theme.Dialog" >
         </activity>
 
-        <!-- sensor stuff -->
+        &lt;!&ndash; sensor stuff &ndash;&gt;
         <activity
             android:name="interdroid.swan.sensors.AbstractConfigurationActivity"
             android:exported="true" >
@@ -430,7 +416,6 @@
             <meta-data
                 android:name="entityId"
                 android:value="bluetooth" />
-            <!-- TODO: Make these come from a string array resource instead. -->
             <meta-data
                 android:name="valuePaths"
                 android:value="name,address,bond_state,class,major_class" />
@@ -707,9 +692,9 @@
         <activity
             android:name="interdroid.swan.sensors.impl.TwitterSensor$ConfigurationActivity"
             android:exported="true" >
-            <!-- <intent-filter>
+            &lt;!&ndash; <intent-filter>
                        <action android:name="interdroid.swan.sensor.DISCOVER" />
-            </intent-filter> -->
+            </intent-filter> &ndash;&gt;
         </activity>
         <activity
             android:name="interdroid.swan.sensors.impl.WifiSensor$ConfigurationActivity"
@@ -752,7 +737,6 @@
             <meta-data
                 android:name="entityId"
                 android:value="polar_hrm" />
-            <!-- TODO: Make these come from a string array resource instead. -->
             <meta-data
                 android:name="valuePaths"
                 android:value="bpm,status,index,rri,status_text" />
@@ -830,9 +814,9 @@
             android:process=":batterysensor" >
         </service>
 
-        <!-- <provider
+        &lt;!&ndash; <provider
             android:name="interdroid.swan.sensors.impl.BatterySensor$Provider"
-            android:authorities="interdroid.context.sensor.battery" /> -->
+            android:authorities="interdroid.context.sensor.battery" /> &ndash;&gt;
 
         <service
             android:name="interdroid.swan.sensors.impl.TimeSensor"
@@ -860,9 +844,9 @@
             android:process=":PolarHeartRate" >
         </service>
 
-       <!--  <provider
+       &lt;!&ndash;  <provider
             android:name="interdroid.swan.sensors.impl.PolarHeartRate$Provider"
-            android:authorities="interdroid.context.sensor.polar_hrm" /> -->
+            android:authorities="interdroid.context.sensor.polar_hrm" /> &ndash;&gt;
 
         <service
             android:name="interdroid.swan.sensors.impl.MagnetometerSensor"
@@ -895,9 +879,9 @@
             android:process=":bluetoothsensor" >
         </service>
 
-      <!--   <provider
+      &lt;!&ndash;   <provider
             android:name="interdroid.swan.sensors.impl.BluetoothSensor$Provider"
-            android:authorities="interdroid.context.sensor.bluetooth" /> -->
+            android:authorities="interdroid.context.sensor.bluetooth" /> &ndash;&gt;
 
         <service
             android:name="interdroid.swan.sensors.impl.SignalStrengthSensor"
@@ -905,9 +889,9 @@
             android:process=":signalsensor" >
         </service>
 
-        <!-- <provider
+        &lt;!&ndash; <provider
             android:name="interdroid.swan.sensors.impl.SignalStrengthSensor$Provider"
-            android:authorities="interdroid.context.sensor.signal" /> -->
+            android:authorities="interdroid.context.sensor.signal" /> &ndash;&gt;
 
         <service
             android:name="interdroid.swan.sensors.impl.ScreenSensor"
@@ -915,9 +899,9 @@
             android:process=":screensensor" >
         </service>
 
-        <!-- <provider
+        &lt;!&ndash; <provider
             android:name="interdroid.swan.sensors.impl.ScreenSensor$Provider"
-            android:authorities="interdroid.context.sensor.screen" /> -->
+            android:authorities="interdroid.context.sensor.screen" /> &ndash;&gt;
 
         <service
             android:name="interdroid.swan.sensors.impl.LocationSensor"
@@ -925,9 +909,9 @@
             android:process=":locationsensor" >
         </service>
 
-        <!-- <provider
+        &lt;!&ndash; <provider
             android:name="interdroid.swan.sensors.impl.LocationSensor$Provider"
-            android:authorities="interdroid.context.sensor.location" /> -->
+            android:authorities="interdroid.context.sensor.location" /> &ndash;&gt;
 
         <service
             android:name="interdroid.swan.sensors.impl.SmartLocationSensor"
@@ -938,9 +922,9 @@
         <receiver android:name="interdroid.swan.sensors.impl.SmartLocationSensor$AlarmReceiver" >
         </receiver>
 
-       <!--  <provider
+       &lt;!&ndash;  <provider
             android:name="interdroid.swan.sensors.impl.SmartLocationSensor$Provider"
-            android:authorities="interdroid.context.sensor.smartlocation" /> -->
+            android:authorities="interdroid.context.sensor.smartlocation" /> &ndash;&gt;
 
         <service
             android:name="interdroid.swan.sensors.impl.CallSensor"
@@ -948,9 +932,9 @@
             android:process=":callsensor" >
         </service>
 
-       <!--  <provider
+       &lt;!&ndash;  <provider
             android:name="interdroid.swan.sensors.impl.CallSensor$Provider"
-            android:authorities="interdroid.context.sensor.call" /> -->
+            android:authorities="interdroid.context.sensor.call" /> &ndash;&gt;
 
         <service
             android:name="interdroid.swan.sensors.impl.WifiSensor"
@@ -963,9 +947,9 @@
             android:process=":rainsensor" >
         </service>
         
-      <!--   <provider
+      &lt;!&ndash;   <provider
             android:name="interdroid.swan.sensors.impl.WifiSensor$Provider"
-            android:authorities="interdroid.context.sensor.wifi" /> -->
+            android:authorities="interdroid.context.sensor.wifi" /> &ndash;&gt;
 
         <service
             android:name="interdroid.swan.sensors.impl.CalendarSensor"
@@ -984,19 +968,19 @@
         </service>
         
         
-        <!-- Sense -->
-        <!-- MAIN SERVICE THAT MANAGES SENSING -->
+        &lt;!&ndash; Sense &ndash;&gt;
+        &lt;!&ndash; MAIN SERVICE THAT MANAGES SENSING &ndash;&gt;
          <service
             android:name="nl.sense_os.service.SenseService"
             android:exported="false" >
             
              <intent-filter>
-                <!-- MAKE SURE YOU USE UNIQUE ACTIONS FOR YOUR OWN APP (SEE res/strings.xml) -->
+                &lt;!&ndash; MAKE SURE YOU USE UNIQUE ACTIONS FOR YOUR OWN APP (SEE res/strings.xml) &ndash;&gt;
                 <action android:name="interdroid.swan.SENSE_SERVICE" />  
             </intent-filter>
         </service> 
          
-        <!-- SERVICE TO BUFFER AND SEND DATA TO COMMONSENSE -->
+        &lt;!&ndash; SERVICE TO BUFFER AND SEND DATA TO COMMONSENSE &ndash;&gt;
        <service
             android:name="nl.sense_os.service.MsgHandler"
             android:exported="false" >
@@ -1005,14 +989,14 @@
                 <action android:name="interdroid.swan.SEND_DATA" />
             </intent-filter>
         </service>
-        <!-- SERVICE THAT CHECKS SENSOR REGISTRATION WITH COMMONSENSE -->
+        &lt;!&ndash; SERVICE THAT CHECKS SENSOR REGISTRATION WITH COMMONSENSE &ndash;&gt;
         <service android:name="nl.sense_os.service.commonsense.DefaultSensorRegistrationService" />
         
-        <!-- SERVICE THAT UPDATES THE SENSOR CONFIGURATION WHEN REQUIREMENTS CHANGE -->
-        <!-- CAN BE REMOVED IF NOT USED -->
+        &lt;!&ndash; SERVICE THAT UPDATES THE SENSOR CONFIGURATION WHEN REQUIREMENTS CHANGE &ndash;&gt;
+        &lt;!&ndash; CAN BE REMOVED IF NOT USED &ndash;&gt;
         <service android:name="nl.sense_os.service.configuration.ConfigurationService" />
         
-        <!-- BROADCAST RECEIVER THAT WAKES UP THE APP AGAIN WHEN THE PHONE REBOOTS -->
+        &lt;!&ndash; BROADCAST RECEIVER THAT WAKES UP THE APP AGAIN WHEN THE PHONE REBOOTS &ndash;&gt;
         <receiver
             android:name="nl.sense_os.service.BootRx"
             android:exported="false" >
@@ -1022,17 +1006,17 @@
                 <category android:name="android.intent.category.HOME" />
             </intent-filter>
         </receiver>
-        <!-- BROADCAST RECEIVER THAT MAKES SURE THE SENSE SERVICE IS RESTARTED IF IT IS KILLED -->
+        &lt;!&ndash; BROADCAST RECEIVER THAT MAKES SURE THE SENSE SERVICE IS RESTARTED IF IT IS KILLED &ndash;&gt;
         <receiver
             android:name="nl.sense_os.service.AliveChecker"
             android:exported="false" >
             <intent-filter>
 
-                <!-- MAKE SURE YOU USE UNIQUE ACTIONS FOR YOUR OWN APP (SEE res/strings.xml) -->
+                &lt;!&ndash; MAKE SURE YOU USE UNIQUE ACTIONS FOR YOUR OWN APP (SEE res/strings.xml) &ndash;&gt;
                 <action android:name="interdroid.swan.CHECK_ALIVE" />
             </intent-filter>
         </receiver>
-        <!-- BROADCAST RECEIVER FOR CHANGES IN THE NETWORK STATE -->
+        &lt;!&ndash; BROADCAST RECEIVER FOR CHANGES IN THE NETWORK STATE &ndash;&gt;
         <receiver
             android:name="nl.sense_os.service.NetworkMonitor"
             android:exported="false" >
@@ -1040,29 +1024,29 @@
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
-        <!-- BROADCAST RECEIVER FOR SCHEDULED SAMPLE EXECUTION ALARMS -->
+        &lt;!&ndash; BROADCAST RECEIVER FOR SCHEDULED SAMPLE EXECUTION ALARMS &ndash;&gt;
         <receiver android:name="nl.sense_os.service.scheduler.ExecutionAlarmReceiver" />
         
-        <!-- BROADCAST RECEIVER FOR PUSHED REQUIREMENT CHANGES -->
-        <!-- CAN BE REMOVED IF NOT USED -->
+        &lt;!&ndash; BROADCAST RECEIVER FOR PUSHED REQUIREMENT CHANGES &ndash;&gt;
+        &lt;!&ndash; CAN BE REMOVED IF NOT USED &ndash;&gt;
         <receiver
             android:name="nl.sense_os.service.configuration.RequirementReceiver"
             android:exported="false" >
             <intent-filter>
 
-                <!-- MAKE SURE YOU USE UNIQUE ACTIONS FOR YOUR OWN APP (SEE res/strings.xml) -->
+                &lt;!&ndash; MAKE SURE YOU USE UNIQUE ACTIONS FOR YOUR OWN APP (SEE res/strings.xml) &ndash;&gt;
                 <action android:name="interdroid.swan.NEW_REQUIREMENTS" />
             </intent-filter>
         </receiver>
         
-        <!-- CONTENT PROVIDER THAT GIVES OTHER APPS ACCESS TO THE SENSOR DATA -->
-        <!-- MAKE SURE YOU USE A UNIQUE AUTHORITY FOR YOUR OWN APP (SEE res/strings.xml) -->
-        <!-- CAN BE REMOVED IF NOT USED -->
-      <!--   <provider
+        &lt;!&ndash; CONTENT PROVIDER THAT GIVES OTHER APPS ACCESS TO THE SENSOR DATA &ndash;&gt;
+        &lt;!&ndash; MAKE SURE YOU USE A UNIQUE AUTHORITY FOR YOUR OWN APP (SEE res/strings.xml) &ndash;&gt;
+        &lt;!&ndash; CAN BE REMOVED IF NOT USED &ndash;&gt;
+      &lt;!&ndash;   <provider
             android:name="nl.sense_os.service.provider.SensorDataProvider"
             android:authorities="@string/local_storage_authority"
             android:exported="true" 
-            android:multiprocess="true" /> -->
-    </application>
+            android:multiprocess="true" /> &ndash;&gt;
+    </application>-->
 
  </manifest>
