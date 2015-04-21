@@ -960,14 +960,25 @@ public class EvaluationManager {
 		return false;
 	}
 
-	private static Object promote(Object object) {
-		if (object instanceof Integer) {
-			return Long.valueOf((Integer) object);
+	private static Object promote(Object object1, Object object2) {
+		if (object1 instanceof Integer) {
+			//This if is new
+			if (object2 instanceof Float || object2 instanceof Double) {
+				return Double.valueOf((Integer) object1);
+			} else {
+				return Long.valueOf((Integer) object1);
+			}
 		}
-		if (object instanceof Float) {
-			return Double.valueOf((Float) object);
+		//This if is new
+		if (object1 instanceof Long) {
+			if (object2 instanceof Float || object2 instanceof Double) {
+				return Double.valueOf((Long) object1);
+			}
 		}
-		return object;
+		if (object1 instanceof Float) {
+			return Double.valueOf((Float) object1);
+		}
+		return object1;
 	}
 
 	/**
@@ -983,9 +994,8 @@ public class EvaluationManager {
 	public static TriState comparePair(final Comparator comparator,
 			Object left, Object right) {
 		TriState result = TriState.FALSE;
-		// promote types
-		left = promote(left);
-		right = promote(right);
+		left = promote(left, right);
+		right = promote(right, left);
 
 		switch (comparator) {
 		case LESS_THAN:
@@ -1067,6 +1077,20 @@ public class EvaluationManager {
 					(Location) left.getValue(), operator,
 					(Location) right.getValue()), left.getTimestamp());
 		}
+
+		//This is new
+		Object leftValue = left.getValue();
+		Object rightValue = right.getValue();
+
+		leftValue = promote(leftValue, rightValue);
+		rightValue = promote(rightValue, leftValue);
+
+		if (leftValue instanceof Double
+				&& rightValue instanceof Double) {
+			return new TimestampedValue(operateDouble((Double) leftValue,
+					operator, (Double) rightValue), left.getTimestamp());
+		}
+		//Till this
 
 		throw new SwanException("Trying to operate on incompatible types: "
 				+ left.getValue().getClass() + " and "
