@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 19
-    buildToolsVersion "21.1.2"
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         applicationId "interdroid.swan"
         minSdkVersion 9
-        targetSdkVersion 21
+        targetSdkVersion 22
     }
 
     buildTypes {
@@ -21,8 +21,9 @@ android {
 dependencies {
     ant.importBuild 'src/main/buildgrammar.ant'
     compile project(':senseandroidlibrary')
-    compile 'com.android.support:support-v4:21.+'
-    compile 'com.google.android.gms:play-services:+'
+    compile project(':jsonsensor')
+    compile rootProject.ext.support
+    compile rootProject.ext.playservices
     compile files('libs/antlr-3.4-complete-no-antlrv2.jar')
     compile files('libs/cuckoo-client.jar')
     compile files('libs/gcm-server.jar')

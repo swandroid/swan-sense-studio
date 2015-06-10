@@ -4,7 +4,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.0.0'
+        classpath 'com.android.tools.build:gradle:1.2.3'
     }
 }
 
@@ -12,4 +12,16 @@ allprojects {
     repositories {
         jcenter()
     }
+}
+
+ext {
+    compileSdkVersion = 22
+    buildToolsVersion = "22.0.1"
+    appcompat = 'com.android.support:appcompat-v7:22.2.0'
+    support = 'com.android.support:support-v4:22.2.0'
+    playservices = 'com.google.android.gms:play-services:7.5.0'
+    recyclerview = 'com.android.support:recyclerview-v7:22.2.0'
+    gson = 'com.google.code.gson:gson:2.3.1'
+    volley = 'com.mcxiaoke.volley:library:1.0.15'
+    floatingactionbutton = 'com.melnykov:floatingactionbutton:1.2.0'
 }

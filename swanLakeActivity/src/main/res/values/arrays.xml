@@ -301,4 +301,8 @@
         <item>3</item>
     </string-array>
 
+    <string-array name="json_values">
+        <item>value</item>
+    </string-array>
+
 </resources>

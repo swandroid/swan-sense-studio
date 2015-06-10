@@ -1,0 +1,30 @@
+apply plugin: 'com.android.library'
+
+android {
+    defaultConfig {
+        minSdkVersion 9
+        targetSdkVersion 22
+    }
+
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    buildTypes {
+        debug {
+            debuggable true;
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile rootProject.ext.appcompat
+    //compile 'com.squareup.okhttp:okhttp:2.3.0'
+    compile rootProject.ext.recyclerview
+    compile rootProject.ext.gson
+    compile rootProject.ext.volley
+    compile rootProject.ext.floatingactionbutton
+}

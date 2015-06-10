@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">JSONsensor</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_save">Save</string>
+
+    <string name="title_select_request">Select Request</string>
+    <string name="title_select_value">Select Value</string>
+
+    <string name="selection_click_for_request">Click to select the request</string>
+    <string name="selection_click_for_value">Click to select the value to monitor</string>
+
+    <string name="input_label_name">NAME</string>
+    <string name="input_label_url">URL</string>
+    <string name="input_label_request">REQUEST</string>
+    <string name="input_label_param_title">ADD PARAMETER</string>
+    <string name="input_label_param_name">NAME</string>
+    <string name="input_label_param_value">VALUE</string>
+
+    <string name="json_request_info_add_new">Add new request</string>
+
+    <string-array name="input_array_request">
+        <item>GET</item>
+        <item>POST</item>
+    </string-array>
+
+    <string name="label_enter_name">Set the name for this value</string>
+</resources>

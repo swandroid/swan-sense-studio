@@ -1,0 +1,105 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".SelectionActivity">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar" />
+
+    <LinearLayout
+        android:id="@+id/selection_endpoint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/padding_medium"
+        android:background="@color/grey_white_1000">
+
+        <TextView
+            android:id="@+id/selection_endpoint_name"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.6"
+            android:textAppearance="@android:style/TextAppearance.Medium"
+            android:text="@string/selection_click_for_request"/>
+
+        <TextView
+            android:id="@+id/selection_endpoint_extras"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.4"
+            android:textAppearance="@android:style/TextAppearance.Small"/>
+
+    </LinearLayout>
+
+    <View android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey_200"/>
+
+    <LinearLayout
+        android:id="@+id/selection_value"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/padding_medium"
+        android:visibility="gone"
+        android:background="@color/grey_white_1000">
+
+        <TextView
+            android:id="@+id/selection_value_name"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.6"
+            android:textAppearance="@android:style/TextAppearance.Medium"
+            android:text="@string/selection_click_for_value"/>
+
+        <TextView
+            android:id="@+id/selection_value_path"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.4"
+            android:textAppearance="@android:style/TextAppearance.Small"/>
+
+    </LinearLayout>
+
+    <View android:id="@+id/selection_divider_view"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey_200"
+        android:visibility="gone"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/selection_result"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textAppearance="@android:style/TextAppearance.Large"/>
+
+        <ProgressBar
+            android:id="@+id/selection_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"/>
+
+        <com.melnykov.fab.FloatingActionButton
+            android:id="@+id/selection_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:layout_margin="16dp"
+            android:src="@drawable/ic_check"
+            tools:fab_colorNormal="@color/accent"
+            tools:fab_colorPressed="@color/accent_dark"
+            tools:fab_colorRipple="@color/press_color"
+            android:visibility="gone"/>
+
+    </FrameLayout>
+
+</LinearLayout>
