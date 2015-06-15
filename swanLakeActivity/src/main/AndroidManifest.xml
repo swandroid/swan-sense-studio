@@ -41,6 +41,7 @@
     
     <application        
         android:allowBackup="true"
+        tools:replace="android:label, android:icon"
         android:icon="@drawable/ic_launcher"
         android:label="@string/swan_app_name" >
 
@@ -535,6 +536,23 @@
                 android:value="started" />
         </activity>
         <activity
+            android:name="interdroid.swan.sensors.impl.JsonSensor$ConfigurationActivity"
+            android:exported="true"
+            android:icon="@drawable/json_icon">
+            <intent-filter>
+                <action android:name="interdroid.swan.sensor.DISCOVER" />
+            </intent-filter>
+            <meta-data
+                android:name="entityId"
+                android:value="jsonsensor" />
+            <meta-data
+                android:name="valuePaths"
+                android:value="value" />
+            <meta-data
+                android:name="units"
+                android:value="" />
+        </activity>
+        <activity
             android:name="interdroid.swan.sensors.impl.LocationSensor$ConfigurationActivity"
             android:exported="true"
             android:icon="@drawable/location_icon" >
@@ -699,10 +717,10 @@
                 android:value="time" />
             <meta-data
                 android:name="valuePaths"
-                android:value="current" />
+                android:value="hour_of_day,day_of_week,current" />
             <meta-data
                 android:name="units"
-                android:value="ms" />
+                android:value="h,d,ms" />
         </activity>
         <activity
             android:name="interdroid.swan.sensors.impl.TwitterSensor$ConfigurationActivity"
@@ -981,6 +999,11 @@
             android:name="interdroid.swan.sensors.impl.IntentSensor"
             android:exported="true"
             android:process=":intentsensor" >
+        </service>
+        <service
+            android:name="interdroid.swan.sensors.impl.JsonSensor"
+            android:exported="true"
+            android:process=":jsonsensor" >
         </service>
         
         
