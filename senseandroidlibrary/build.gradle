@@ -1,12 +1,12 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 19
+    compileSdkVersion 22
     buildToolsVersion "21.1.2"
 
     defaultConfig {
         minSdkVersion 9
-        targetSdkVersion 9
+        targetSdkVersion 22
     }
 
     buildTypes {
@@ -18,7 +18,7 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:19.1.0'
+    compile 'com.android.support:support-v4:22.1.0'
     compile 'com.google.android.gms:play-services:+'
     compile files('libs/cordova-2.7.0.jar')
     compile files('libs/gcm.jar')
