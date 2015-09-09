@@ -156,7 +156,6 @@ public class SwanLakeActivity extends ListActivity {
 	@SuppressWarnings("deprecation")
 	@Override
 	protected void onPause() {
-		// mNfcAdapter.disableForegroundDispatch(this);
 		if(mNfcAdapter != null) {
 			mNfcAdapter.disableForegroundNdefPush(this);
 		}
@@ -312,7 +311,7 @@ public class SwanLakeActivity extends ListActivity {
 		return super.onPrepareOptionsMenu(menu);
 	}
 
-	private void registerBackground(final Switch switchWidget) {
+	protected void registerBackground(final Switch switchWidget) {
 		switchWidget.setEnabled(false);
 		new Thread() {
 			public void run() {
