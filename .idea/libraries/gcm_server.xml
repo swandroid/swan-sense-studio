@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="gcm-server">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/swanLakeActivity/libs/gcm-server.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

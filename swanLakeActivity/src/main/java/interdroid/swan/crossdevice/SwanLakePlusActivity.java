@@ -65,11 +65,11 @@ public class SwanLakePlusActivity extends FragmentActivity implements WDPeerToPe
         public Fragment getItem(int i) {
             switch (i) {
                 case 0:
-                    Fragment fragment = new PeerListFragment(mAdapter);
+                    Fragment fragment = new PeerListFragment();
                     return fragment;
 
                 case 1:
-                    fragment = new PeerListFragment(mAdapter);
+                    fragment = new PeerListFragment();
                     return fragment;
 
                 default:
@@ -99,12 +99,6 @@ public class SwanLakePlusActivity extends FragmentActivity implements WDPeerToPe
     public static class PeerListFragment extends ListFragment {
 
         public static final String ARG_SECTION_NUMBER = "section_number";
-
-        RegisteredSWANsAdapter mAdapter;
-
-        public PeerListFragment(RegisteredSWANsAdapter mAdapter) {
-            this.mAdapter = mAdapter;
-        }
 
         @Override
         public void onActivityCreated(Bundle savedInstanceState) {
@@ -143,7 +137,7 @@ public class SwanLakePlusActivity extends FragmentActivity implements WDPeerToPe
                                     Registry.remove(getActivity(), names.get(i));
                                 }
                             }
-                            mAdapter.notifyDataSetChanged();
+                            ((SwanLakePlusActivity)getActivity()).getAdapter().notifyDataSetChanged();
                     }
                     mode.finish();
                     return true;
@@ -156,7 +150,7 @@ public class SwanLakePlusActivity extends FragmentActivity implements WDPeerToPe
                 }
             });
 
-            setListAdapter(mAdapter);
+            setListAdapter(((SwanLakePlusActivity)getActivity()).getAdapter());
         }
 
         /* @Override
@@ -354,8 +348,8 @@ public class SwanLakePlusActivity extends FragmentActivity implements WDPeerToPe
         }.start();
     }
 
-    public void setListView(ListView listView) {
-        this.listView = listView;
+    public BaseAdapter getAdapter() {
+        return mAdapter;
     }
 
     @Override
