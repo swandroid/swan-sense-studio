@@ -3,8 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/senseandroidlibrary/senseandroidlibrary.iml" filepath="$PROJECT_DIR$/senseandroidlibrary/senseandroidlibrary.iml" />
-      <module fileurl="file://$PROJECT_DIR$/swan-sense-studio.iml" filepath="$PROJECT_DIR$/swan-sense-studio.iml" />
       <module fileurl="file://$PROJECT_DIR$/swanLakeActivity/swanLakeActivity.iml" filepath="$PROJECT_DIR$/swanLakeActivity/swanLakeActivity.iml" />
+      <module fileurl="file://$PROJECT_DIR$/swanplus.iml" filepath="$PROJECT_DIR$/swanplus.iml" />
       <module fileurl="file://$PROJECT_DIR$/tabsExample/tabsExample.iml" filepath="$PROJECT_DIR$/tabsExample/tabsExample.iml" />
     </modules>
   </component>
