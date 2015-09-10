@@ -37,11 +37,15 @@
     <ConfirmationsSetting value="0" id="Add" />
     <ConfirmationsSetting value="0" id="Remove" />
   </component>
+<<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
 <<<<<<< 92ce66b8a03d9903a26a161ba42174a072da4d93
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" default="true" assert-keyword="true" jdk-15="true" project-jdk-name="1.7" project-jdk-type="JavaSDK">
 =======
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" default="true" assert-keyword="true" jdk-15="true" project-jdk-name="Android API 23 Platform" project-jdk-type="Android SDK">
 >>>>>>> fixed tabs
+=======
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" default="true" assert-keyword="true" jdk-15="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+>>>>>>> attached lists to tabs
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

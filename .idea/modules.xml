@@ -3,14 +3,17 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/senseandroidlibrary/senseandroidlibrary.iml" filepath="$PROJECT_DIR$/senseandroidlibrary/senseandroidlibrary.iml" />
+<<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
 <<<<<<< 92ce66b8a03d9903a26a161ba42174a072da4d93
       <module fileurl="file://$PROJECT_DIR$/shared/shared.iml" filepath="$PROJECT_DIR$/shared/shared.iml" />
       <module fileurl="file://$PROJECT_DIR$/swan-sense-studio.iml" filepath="$PROJECT_DIR$/swan-sense-studio.iml" />
       <module fileurl="file://$PROJECT_DIR$/swanLakeActivity/swanLakeActivity.iml" filepath="$PROJECT_DIR$/swanLakeActivity/swanLakeActivity.iml" />
       <module fileurl="file://$PROJECT_DIR$/wear/wear.iml" filepath="$PROJECT_DIR$/wear/wear.iml" />
 =======
+=======
+      <module fileurl="file://$PROJECT_DIR$/swan-sense-studio.iml" filepath="$PROJECT_DIR$/swan-sense-studio.iml" />
+>>>>>>> attached lists to tabs
       <module fileurl="file://$PROJECT_DIR$/swanLakeActivity/swanLakeActivity.iml" filepath="$PROJECT_DIR$/swanLakeActivity/swanLakeActivity.iml" />
-      <module fileurl="file://$PROJECT_DIR$/swanplus.iml" filepath="$PROJECT_DIR$/swanplus.iml" />
       <module fileurl="file://$PROJECT_DIR$/tabsExample/tabsExample.iml" filepath="$PROJECT_DIR$/tabsExample/tabsExample.iml" />
 >>>>>>> fixed tabs
     </modules>

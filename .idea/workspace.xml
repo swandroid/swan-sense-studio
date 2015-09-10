@@ -6,29 +6,29 @@
     </shared>
   </component>
   <component name="AndroidLogFilters">
-    <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
+    <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="No Filters" />
   </component>
   <component name="ChangeListManager">
 <<<<<<< 92ce66b8a03d9903a26a161ba42174a072da4d93
     <list default="true" id="cff49d8d-f94a-4ec7-a32c-7db101b5d167" name="Default" comment="" />
 =======
     <list default="true" id="324bd16c-4418-44c6-b32e-3e91db541ccb" name="Default" comment="">
+      <change type="DELETED" beforePath="D:\School\PhD\PhD project\studio\swanplus\.idea\libraries\gcm_server.xml" afterPath="" />
+      <change type="DELETED" beforePath="D:\School\PhD\PhD project\studio\swanplus\.idea\libraries\slf4j_on_android_1_6_2.xml" afterPath="" />
+      <change type="DELETED" beforePath="D:\School\PhD\PhD project\studio\swanplus\.idea\libraries\gcm.xml" afterPath="" />
       <change type="DELETED" beforePath="D:\School\PhD\PhD project\studio\swanplus\.idea\libraries\antlr_3_4_complete_no_antlrv2.xml" afterPath="" />
       <change type="DELETED" beforePath="D:\School\PhD\PhD project\studio\swanplus\.idea\libraries\cordova_2_7_0.xml" afterPath="" />
-      <change type="DELETED" beforePath="D:\School\PhD\PhD project\studio\swanplus\.idea\libraries\cuckoo_client.xml" afterPath="" />
-      <change type="DELETED" beforePath="D:\School\PhD\PhD project\studio\swanplus\.idea\libraries\gcm.xml" afterPath="" />
-      <change type="DELETED" beforePath="D:\School\PhD\PhD project\studio\swanplus\.idea\libraries\gcm_server.xml" afterPath="" />
-      <change type="DELETED" beforePath="D:\School\PhD\PhD project\studio\swanplus\.idea\libraries\scribe_1_2_0.xml" afterPath="" />
       <change type="DELETED" beforePath="D:\School\PhD\PhD project\studio\swanplus\.idea\libraries\slf4j_api_1_6_2.xml" afterPath="" />
-      <change type="DELETED" beforePath="D:\School\PhD\PhD project\studio\swanplus\.idea\libraries\slf4j_on_android_1_6_2.xml" afterPath="" />
+      <change type="DELETED" beforePath="D:\School\PhD\PhD project\studio\swanplus\.idea\libraries\scribe_1_2_0.xml" afterPath="" />
       <change type="DELETED" beforePath="D:\School\PhD\PhD project\studio\swanplus\swan-sense-studio.iml" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/gradle.xml" afterPath="$PROJECT_DIR$/.idea/gradle.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
+      <change type="DELETED" beforePath="D:\School\PhD\PhD project\studio\swanplus\.idea\libraries\cuckoo_client.xml" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/senseandroidlibrary/senseandroidlibrary.iml" afterPath="$PROJECT_DIR$/senseandroidlibrary/senseandroidlibrary.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/gradle.xml" afterPath="$PROJECT_DIR$/.idea/gradle.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/swanLakeActivity/swanLakeActivity.iml" afterPath="$PROJECT_DIR$/swanLakeActivity/swanLakeActivity.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tabsExample/tabsExample.iml" afterPath="$PROJECT_DIR$/tabsExample/tabsExample.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
     </list>
 >>>>>>> fixed tabs
     <ignored path="swan-sense-studio.iws" />
@@ -57,6 +57,7 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
+<<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
 <<<<<<< 92ce66b8a03d9903a26a161ba42174a072da4d93
       <file leaf-file-name="AbstractWearSensor.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/swanLakeActivity/src/main/java/interdroid/swan/sensors/impl/wear/shared/AbstractWearSensor.java">
@@ -87,21 +88,39 @@
                 <element signature="imports" expanded="true" />
 =======
       <file leaf-file-name="SwanLakePlusActivity.java" pinned="false" current-in-tab="false">
+=======
+      <file leaf-file-name="SwanLakePlusActivity.java" pinned="false" current-in-tab="true">
+>>>>>>> attached lists to tabs
         <entry file="file://$PROJECT_DIR$/swanLakeActivity/src/main/java/interdroid/swan/crossdevice/SwanLakePlusActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="307" column="24" selection-start-line="307" selection-start-column="24" selection-end-line="307" selection-end-column="24" />
+            <state vertical-scroll-proportion="0.48134992">
+              <caret line="205" column="59" selection-start-line="205" selection-start-column="59" selection-end-line="205" selection-end-column="59" />
               <folding>
+<<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
                 <element signature="e#8566#8991#0" expanded="true" />
                 <element signature="e#8990#8991#0" expanded="true" />
                 <element signature="e#13535#13536#0" expanded="true" />
                 <element signature="e#13566#13567#0" expanded="true" />
 >>>>>>> fixed tabs
+=======
+                <element signature="imports" expanded="true" />
+                <element signature="e#5821#5822#0" expanded="true" />
+                <element signature="e#5903#5904#0" expanded="true" />
+                <element signature="e#6122#6123#0" expanded="true" />
+                <element signature="e#6154#6155#0" expanded="true" />
+                <element signature="e#7008#7331#0" expanded="true" />
+                <element signature="e#7330#7331#0" expanded="true" />
+                <element signature="e#13840#13841#0" expanded="true" />
+                <element signature="e#13879#13880#0" expanded="true" />
+                <element signature="e#13929#13930#0" expanded="true" />
+                <element signature="e#13971#13972#0" expanded="true" />
+>>>>>>> attached lists to tabs
               </folding>
             </state>
           </provider>
         </entry>
       </file>
+<<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
 <<<<<<< 92ce66b8a03d9903a26a161ba42174a072da4d93
       <file leaf-file-name="SensorService.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/wear/src/main/java/interdroid/swan/SensorService.java">
@@ -115,15 +134,23 @@
                 <element signature="e#4675#4676#0" expanded="true" />
 =======
       <file leaf-file-name="SwanLakeActivity.java" pinned="false" current-in-tab="true">
+=======
+      <file leaf-file-name="SwanLakeActivity.java" pinned="false" current-in-tab="false">
+>>>>>>> attached lists to tabs
         <entry file="file://$PROJECT_DIR$/swanLakeActivity/src/main/java/interdroid/swan/crossdevice/SwanLakeActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.68356645">
-              <caret line="339" column="61" selection-start-line="339" selection-start-column="61" selection-end-line="339" selection-end-column="61" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="173" column="48" selection-start-line="173" selection-start-column="17" selection-end-line="173" selection-end-column="48" />
               <folding>
                 <element signature="imports" expanded="true" />
+<<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
                 <element signature="e#11687#11875#0" expanded="true" />
                 <element signature="e#11874#11875#0" expanded="true" />
 >>>>>>> fixed tabs
+=======
+                <element signature="e#11043#11044#0" expanded="true" />
+                <element signature="e#11060#11061#0" expanded="true" />
+>>>>>>> attached lists to tabs
               </folding>
             </state>
           </provider>
@@ -214,14 +241,18 @@
                 <element signature="e#346#347#0" expanded="false" />
 =======
                 <element signature="e#0#8476#0" expanded="false" />
+                <element signature="imports" expanded="false" />
                 <element signature="e#4724#4725#0" expanded="false" />
                 <element signature="e#4757#4758#0" expanded="false" />
                 <element signature="e#5569#5570#0" expanded="false" />
                 <element signature="e#5601#5602#0" expanded="false" />
                 <element signature="e#5677#5678#0" expanded="false" />
                 <element signature="e#5735#5736#0" expanded="false" />
+<<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
                 <marker date="1441833506792" expanded="true" signature="673:1146" placeholder="..." />
 >>>>>>> fixed tabs
+=======
+>>>>>>> attached lists to tabs
               </folding>
             </state>
           </provider>
@@ -243,7 +274,7 @@
         <entry>
           <key>
             <ExternalProjectPojo>
-              <option name="name" value="swanplus" />
+              <option name="name" value="swan-sense-studio" />
               <option name="path" value="$PROJECT_DIR$" />
             </ExternalProjectPojo>
           </key>
@@ -258,6 +289,7 @@
                 <option name="path" value="$PROJECT_DIR$/senseandroidlibrary" />
               </ExternalProjectPojo>
               <ExternalProjectPojo>
+<<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
 <<<<<<< 92ce66b8a03d9903a26a161ba42174a072da4d93
                 <option name="name" value=":wear" />
                 <option name="path" value="$PROJECT_DIR$/wear" />
@@ -271,6 +303,9 @@
 =======
                 <option name="name" value="swanplus" />
 >>>>>>> fixed tabs
+=======
+                <option name="name" value="swan-sense-studio" />
+>>>>>>> attached lists to tabs
                 <option name="path" value="$PROJECT_DIR$" />
               </ExternalProjectPojo>
             </list>
@@ -284,6 +319,7 @@
           <value>
             <list>
               <ExternalTaskPojo>
+<<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
 <<<<<<< 92ce66b8a03d9903a26a161ba42174a072da4d93
 =======
                 <option name="description" value="Displays the components produced by root project 'swanplus'. [incubating]" />
@@ -337,6 +373,8 @@
               </ExternalTaskPojo>
               <ExternalTaskPojo>
 >>>>>>> fixed tabs
+=======
+>>>>>>> attached lists to tabs
                 <option name="description" value="Displays the Android dependencies of the project." />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
                 <option name="name" value="androidDependencies" />
@@ -913,129 +951,124 @@
                 <option name="name" value="preReleaseUnitTestBuild" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.android.support:appcompat-v7:22.2.0" />
+                <option name="description" value="Prepare com.android.support:appcompat-v7:22.0.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="prepareComAndroidSupportAppcompatV72220Library" />
+                <option name="name" value="prepareComAndroidSupportAppcompatV72200Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.android.support:mediarouter-v7:22.2.0" />
+                <option name="description" value="Prepare com.android.support:mediarouter-v7:22.0.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="prepareComAndroidSupportMediarouterV72220Library" />
+                <option name="name" value="prepareComAndroidSupportMediarouterV72200Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.android.support:support-v4:22.2.0" />
+                <option name="description" value="Prepare com.android.support:support-v4:22.1.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="prepareComAndroidSupportSupportV42220Library" />
+                <option name="name" value="prepareComAndroidSupportSupportV42210Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.google.android.gms:play-services:7.8.0" />
+                <option name="description" value="Prepare com.google.android.gms:play-services:7.5.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="prepareComGoogleAndroidGmsPlayServices780Library" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServices750Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.google.android.gms:play-services-ads:7.8.0" />
+                <option name="description" value="Prepare com.google.android.gms:play-services-ads:7.5.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesAds780Library" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesAds750Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.google.android.gms:play-services-analytics:7.8.0" />
+                <option name="description" value="Prepare com.google.android.gms:play-services-analytics:7.5.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesAnalytics780Library" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesAnalytics750Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.google.android.gms:play-services-appindexing:7.8.0" />
+                <option name="description" value="Prepare com.google.android.gms:play-services-appindexing:7.5.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesAppindexing780Library" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesAppindexing750Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.google.android.gms:play-services-appinvite:7.8.0" />
+                <option name="description" value="Prepare com.google.android.gms:play-services-appinvite:7.5.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesAppinvite780Library" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesAppinvite750Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.google.android.gms:play-services-appstate:7.8.0" />
+                <option name="description" value="Prepare com.google.android.gms:play-services-appstate:7.5.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesAppstate780Library" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesAppstate750Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.google.android.gms:play-services-base:7.8.0" />
+                <option name="description" value="Prepare com.google.android.gms:play-services-base:7.5.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesBase780Library" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesBase750Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.google.android.gms:play-services-cast:7.8.0" />
+                <option name="description" value="Prepare com.google.android.gms:play-services-cast:7.5.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesCast780Library" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesCast750Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.google.android.gms:play-services-drive:7.8.0" />
+                <option name="description" value="Prepare com.google.android.gms:play-services-drive:7.5.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesDrive780Library" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesDrive750Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.google.android.gms:play-services-fitness:7.8.0" />
+                <option name="description" value="Prepare com.google.android.gms:play-services-fitness:7.5.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesFitness780Library" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesFitness750Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.google.android.gms:play-services-games:7.8.0" />
+                <option name="description" value="Prepare com.google.android.gms:play-services-games:7.5.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesGames780Library" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesGames750Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.google.android.gms:play-services-gcm:7.8.0" />
+                <option name="description" value="Prepare com.google.android.gms:play-services-gcm:7.5.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesGcm780Library" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesGcm750Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.google.android.gms:play-services-identity:7.8.0" />
+                <option name="description" value="Prepare com.google.android.gms:play-services-identity:7.5.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesIdentity780Library" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesIdentity750Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.google.android.gms:play-services-location:7.8.0" />
+                <option name="description" value="Prepare com.google.android.gms:play-services-location:7.5.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesLocation780Library" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesLocation750Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.google.android.gms:play-services-maps:7.8.0" />
+                <option name="description" value="Prepare com.google.android.gms:play-services-maps:7.5.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesMaps780Library" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesMaps750Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.google.android.gms:play-services-nearby:7.8.0" />
+                <option name="description" value="Prepare com.google.android.gms:play-services-nearby:7.5.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesNearby780Library" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesNearby750Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.google.android.gms:play-services-panorama:7.8.0" />
+                <option name="description" value="Prepare com.google.android.gms:play-services-panorama:7.5.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesPanorama780Library" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesPanorama750Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.google.android.gms:play-services-plus:7.8.0" />
+                <option name="description" value="Prepare com.google.android.gms:play-services-plus:7.5.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesPlus780Library" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesPlus750Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.google.android.gms:play-services-safetynet:7.8.0" />
+                <option name="description" value="Prepare com.google.android.gms:play-services-safetynet:7.5.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesSafetynet780Library" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesSafetynet750Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.google.android.gms:play-services-vision:7.8.0" />
+                <option name="description" value="Prepare com.google.android.gms:play-services-wallet:7.5.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesVision780Library" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesWallet750Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.google.android.gms:play-services-wallet:7.8.0" />
+                <option name="description" value="Prepare com.google.android.gms:play-services-wearable:7.5.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesWallet780Library" />
-              </ExternalTaskPojo>
-              <ExternalTaskPojo>
-                <option name="description" value="Prepare com.google.android.gms:play-services-wearable:7.8.0" />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesWearable780Library" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesWearable750Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
@@ -1294,6 +1327,7 @@
                 <option name="name" value="transformClassesWithJarMergingForRelease" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
+<<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
                 <option name="name" value="transformClassesWithMultidexlistForDebug" />
               </ExternalTaskPojo>
@@ -1306,14 +1340,21 @@
                 <option name="name" value="transformClassesWithMultidexlistForRelease" />
 =======
                 <option name="description" value="Prepare com.android.support:support-v4:22.2.1" />
+=======
+                <option name="description" value="Prepare com.android.support:support-v4:22.2.0" />
+>>>>>>> attached lists to tabs
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="prepareComAndroidSupportSupportV42221Library" />
+                <option name="name" value="prepareComAndroidSupportSupportV42220Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare swanplus:senseandroidlibrary:unspecified" />
+                <option name="description" value="Prepare swan-sense-studio:senseandroidlibrary:unspecified" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
+<<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
                 <option name="name" value="prepareSwanplusSenseandroidlibraryUnspecifiedLibrary" />
 >>>>>>> fixed tabs
+=======
+                <option name="name" value="prepareSwanSenseStudioSenseandroidlibraryUnspecifiedLibrary" />
+>>>>>>> attached lists to tabs
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="description" value="Uninstalls the Debug build." />
@@ -1525,6 +1566,7 @@
                 <option name="name" value="compileReleaseUnitTestSources" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
+<<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
 <<<<<<< 92ce66b8a03d9903a26a161ba42174a072da4d93
 =======
                 <option name="description" value="Displays the components produced by project ':senseandroidlibrary'. [incubating]" />
@@ -1533,6 +1575,8 @@
               </ExternalTaskPojo>
               <ExternalTaskPojo>
 >>>>>>> fixed tabs
+=======
+>>>>>>> attached lists to tabs
                 <option name="description" value="Installs and runs instrumentation tests for all flavors on connected devices." />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/senseandroidlibrary" />
                 <option name="name" value="connectedAndroidTest" />
@@ -1556,6 +1600,7 @@
                 <option name="name" value="copyReleaseLint" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
+<<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
 <<<<<<< 92ce66b8a03d9903a26a161ba42174a072da4d93
                 <option name="description" value="Installs and runs instrumentation tests using all Device Providers." />
 =======
@@ -1569,6 +1614,8 @@
                 <option name="name" value="dependencyInsight" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
+=======
+>>>>>>> attached lists to tabs
                 <option name="description" value="Installs and runs instrumentation tests using all Device Providers." />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/senseandroidlibrary" />
                 <option name="name" value="deviceAndroidTest" />
@@ -1659,6 +1706,7 @@
                 <option name="name" value="generateReleaseSources" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
+<<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
 <<<<<<< 92ce66b8a03d9903a26a161ba42174a072da4d93
 =======
                 <option name="description" value="Displays a help message." />
@@ -1667,6 +1715,8 @@
               </ExternalTaskPojo>
               <ExternalTaskPojo>
 >>>>>>> fixed tabs
+=======
+>>>>>>> attached lists to tabs
                 <option name="description" value="Installs the android (on device) tests for the Debug build." />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/senseandroidlibrary" />
                 <option name="name" value="installDebugAndroidTest" />
@@ -1744,11 +1794,6 @@
                 <option name="description" value="Creates a version of android.jar that's suitable for unit tests." />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/senseandroidlibrary" />
                 <option name="name" value="mockableAndroidJar" />
-              </ExternalTaskPojo>
-              <ExternalTaskPojo>
-                <option name="description" value="Displays the configuration model of project ':senseandroidlibrary'. [incubating]" />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/senseandroidlibrary" />
-                <option name="name" value="model" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/senseandroidlibrary" />
@@ -1976,134 +2021,137 @@
                 <option name="name" value="preReleaseUnitTestBuild" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.android.support:appcompat-v7:22.2.0" />
+                <option name="description" value="Prepare com.android.support:appcompat-v7:22.0.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/senseandroidlibrary" />
-                <option name="name" value="prepareComAndroidSupportAppcompatV72220Library" />
+                <option name="name" value="prepareComAndroidSupportAppcompatV72200Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.android.support:mediarouter-v7:22.2.0" />
+                <option name="description" value="Prepare com.android.support:mediarouter-v7:22.0.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/senseandroidlibrary" />
-                <option name="name" value="prepareComAndroidSupportMediarouterV72220Library" />
+                <option name="name" value="prepareComAndroidSupportMediarouterV72200Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.android.support:support-v4:22.2.0" />
+                <option name="description" value="Prepare com.android.support:support-v4:22.1.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/senseandroidlibrary" />
-                <option name="name" value="prepareComAndroidSupportSupportV42220Library" />
+                <option name="name" value="prepareComAndroidSupportSupportV42210Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.google.android.gms:play-services:7.8.0" />
+                <option name="description" value="Prepare com.google.android.gms:play-services:7.5.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/senseandroidlibrary" />
-                <option name="name" value="prepareComGoogleAndroidGmsPlayServices780Library" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServices750Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.google.android.gms:play-services-ads:7.8.0" />
+                <option name="description" value="Prepare com.google.android.gms:play-services-ads:7.5.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/senseandroidlibrary" />
-                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesAds780Library" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesAds750Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.google.android.gms:play-services-analytics:7.8.0" />
+                <option name="description" value="Prepare com.google.android.gms:play-services-analytics:7.5.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/senseandroidlibrary" />
-                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesAnalytics780Library" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesAnalytics750Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.google.android.gms:play-services-appindexing:7.8.0" />
+                <option name="description" value="Prepare com.google.android.gms:play-services-appindexing:7.5.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/senseandroidlibrary" />
-                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesAppindexing780Library" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesAppindexing750Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.google.android.gms:play-services-appinvite:7.8.0" />
+                <option name="description" value="Prepare com.google.android.gms:play-services-appinvite:7.5.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/senseandroidlibrary" />
-                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesAppinvite780Library" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesAppinvite750Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.google.android.gms:play-services-appstate:7.8.0" />
+                <option name="description" value="Prepare com.google.android.gms:play-services-appstate:7.5.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/senseandroidlibrary" />
-                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesAppstate780Library" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesAppstate750Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.google.android.gms:play-services-base:7.8.0" />
+                <option name="description" value="Prepare com.google.android.gms:play-services-base:7.5.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/senseandroidlibrary" />
-                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesBase780Library" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesBase750Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.google.android.gms:play-services-cast:7.8.0" />
+                <option name="description" value="Prepare com.google.android.gms:play-services-cast:7.5.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/senseandroidlibrary" />
-                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesCast780Library" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesCast750Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.google.android.gms:play-services-drive:7.8.0" />
+                <option name="description" value="Prepare com.google.android.gms:play-services-drive:7.5.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/senseandroidlibrary" />
-                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesDrive780Library" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesDrive750Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.google.android.gms:play-services-fitness:7.8.0" />
+                <option name="description" value="Prepare com.google.android.gms:play-services-fitness:7.5.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/senseandroidlibrary" />
-                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesFitness780Library" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesFitness750Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.google.android.gms:play-services-games:7.8.0" />
+                <option name="description" value="Prepare com.google.android.gms:play-services-games:7.5.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/senseandroidlibrary" />
-                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesGames780Library" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesGames750Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.google.android.gms:play-services-gcm:7.8.0" />
+                <option name="description" value="Prepare com.google.android.gms:play-services-gcm:7.5.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/senseandroidlibrary" />
-                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesGcm780Library" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesGcm750Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.google.android.gms:play-services-identity:7.8.0" />
+                <option name="description" value="Prepare com.google.android.gms:play-services-identity:7.5.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/senseandroidlibrary" />
-                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesIdentity780Library" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesIdentity750Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.google.android.gms:play-services-location:7.8.0" />
+                <option name="description" value="Prepare com.google.android.gms:play-services-location:7.5.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/senseandroidlibrary" />
-                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesLocation780Library" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesLocation750Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.google.android.gms:play-services-maps:7.8.0" />
+                <option name="description" value="Prepare com.google.android.gms:play-services-maps:7.5.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/senseandroidlibrary" />
-                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesMaps780Library" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesMaps750Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.google.android.gms:play-services-nearby:7.8.0" />
+                <option name="description" value="Prepare com.google.android.gms:play-services-nearby:7.5.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/senseandroidlibrary" />
-                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesNearby780Library" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesNearby750Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.google.android.gms:play-services-panorama:7.8.0" />
+                <option name="description" value="Prepare com.google.android.gms:play-services-panorama:7.5.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/senseandroidlibrary" />
-                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesPanorama780Library" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesPanorama750Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.google.android.gms:play-services-plus:7.8.0" />
+                <option name="description" value="Prepare com.google.android.gms:play-services-plus:7.5.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/senseandroidlibrary" />
-                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesPlus780Library" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesPlus750Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.google.android.gms:play-services-safetynet:7.8.0" />
+                <option name="description" value="Prepare com.google.android.gms:play-services-safetynet:7.5.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/senseandroidlibrary" />
-                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesSafetynet780Library" />
-              </ExternalTaskPojo>
-              <ExternalTaskPojo>
-                <option name="description" value="Prepare com.google.android.gms:play-services-vision:7.8.0" />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/senseandroidlibrary" />
+<<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
                 <option name="name" value="prepareComGoogleAndroidGmsPlayServicesVision780Library" />
 >>>>>>> fixed tabs
+=======
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesSafetynet750Library" />
+>>>>>>> attached lists to tabs
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.google.android.gms:play-services-wallet:7.8.0" />
+                <option name="description" value="Prepare com.google.android.gms:play-services-wallet:7.5.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/senseandroidlibrary" />
-                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesWallet780Library" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesWallet750Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.google.android.gms:play-services-wearable:7.8.0" />
+                <option name="description" value="Prepare com.google.android.gms:play-services-wearable:7.5.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/senseandroidlibrary" />
+<<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
 <<<<<<< 92ce66b8a03d9903a26a161ba42174a072da4d93
                 <option name="name" value="prepareDebugUnitTestDependencies" />
 =======
                 <option name="name" value="prepareComGoogleAndroidGmsPlayServicesWearable780Library" />
 >>>>>>> fixed tabs
+=======
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesWearable750Library" />
+>>>>>>> attached lists to tabs
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/senseandroidlibrary" />
@@ -2292,16 +2340,6 @@
                 <option name="name" value="processReleaseUnitTestJavaRes" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Displays the sub-projects of project ':senseandroidlibrary'." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/senseandroidlibrary" />
-                <option name="name" value="projects" />
-              </ExternalTaskPojo>
-              <ExternalTaskPojo>
-                <option name="description" value="Displays the properties of project ':senseandroidlibrary'." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/senseandroidlibrary" />
-                <option name="name" value="properties" />
-              </ExternalTaskPojo>
-              <ExternalTaskPojo>
                 <option name="description" value="Displays the signing info for each variant." />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/senseandroidlibrary" />
                 <option name="name" value="signingReport" />
@@ -2310,11 +2348,6 @@
                 <option name="description" value="Prints out all the source sets defined in this project." />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/senseandroidlibrary" />
                 <option name="name" value="sourceSets" />
-              </ExternalTaskPojo>
-              <ExternalTaskPojo>
-                <option name="description" value="Displays the tasks runnable from project ':senseandroidlibrary'." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/senseandroidlibrary" />
-                <option name="name" value="tasks" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="description" value="Run unit tests for all variants." />
@@ -2606,11 +2639,6 @@
                 <option name="name" value="compileReleaseUnitTestSources" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Displays the components produced by project ':swanLakeActivity'. [incubating]" />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/swanLakeActivity" />
-                <option name="name" value="components" />
-              </ExternalTaskPojo>
-              <ExternalTaskPojo>
                 <option name="description" value="Installs and runs instrumentation tests for all flavors on connected devices." />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/swanLakeActivity" />
 >>>>>>> fixed tabs
@@ -2629,16 +2657,6 @@
 =======
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/swanLakeActivity" />
                 <option name="name" value="connectedDebugAndroidTest" />
-              </ExternalTaskPojo>
-              <ExternalTaskPojo>
-                <option name="description" value="Displays all dependencies declared in project ':swanLakeActivity'." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/swanLakeActivity" />
-                <option name="name" value="dependencies" />
-              </ExternalTaskPojo>
-              <ExternalTaskPojo>
-                <option name="description" value="Displays the insight into a specific dependency in project ':swanLakeActivity'." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/swanLakeActivity" />
-                <option name="name" value="dependencyInsight" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="description" value="Installs and runs instrumentation tests using all Device Providers." />
@@ -3955,6 +3973,7 @@
                 <option name="name" value="preDebugAndroidTestBuild" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
+<<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/tabsExample" />
                 <option name="name" value="preDebugBuild" />
               </ExternalTaskPojo>
@@ -3962,6 +3981,11 @@
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/tabsExample" />
                 <option name="name" value="preDebugUnitTestBuild" />
 >>>>>>> fixed tabs
+=======
+                <option name="description" value="Installs the Debug build." />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/swanLakeActivity" />
+                <option name="name" value="installDebug" />
+>>>>>>> attached lists to tabs
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/swanLakeActivity" />
@@ -4032,12 +4056,15 @@
                 <option name="name" value="prepareComGoogleAndroidGmsPlayServicesAds840Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
+<<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
                 <option name="description" value="Prepare com.google.android.gms:play-services-analytics:8.4.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/swanLakeActivity" />
                 <option name="name" value="prepareComGoogleAndroidGmsPlayServicesAnalytics840Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="description" value="Prepare com.google.android.gms:play-services-appindexing:8.4.0" />
+=======
+>>>>>>> attached lists to tabs
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/swanLakeActivity" />
                 <option name="name" value="prepareComGoogleAndroidGmsPlayServicesAppindexing840Library" />
               </ExternalTaskPojo>
@@ -4097,6 +4124,7 @@
                 <option name="name" value="prepareComGoogleAndroidGmsPlayServicesIdentity840Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
+<<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
                 <option name="description" value="Prepare com.google.android.gms:play-services-location:8.4.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/swanLakeActivity" />
                 <option name="name" value="prepareComGoogleAndroidGmsPlayServicesLocation840Library" />
@@ -4207,6 +4235,126 @@
               <ExternalTaskPojo>
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/swanLakeActivity" />
                 <option name="name" value="processReleaseJavaRes" />
+=======
+                <option name="description" value="Prepare com.android.support:appcompat-v7:22.0.0" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/swanLakeActivity" />
+                <option name="name" value="prepareComAndroidSupportAppcompatV72200Library" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Prepare com.android.support:mediarouter-v7:22.0.0" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/swanLakeActivity" />
+                <option name="name" value="prepareComAndroidSupportMediarouterV72200Library" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Prepare com.android.support:support-v4:22.2.0" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/swanLakeActivity" />
+                <option name="name" value="prepareComAndroidSupportSupportV42220Library" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Prepare com.google.android.gms:play-services:7.5.0" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/swanLakeActivity" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServices750Library" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Prepare com.google.android.gms:play-services-ads:7.5.0" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/swanLakeActivity" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesAds750Library" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Prepare com.google.android.gms:play-services-analytics:7.5.0" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/swanLakeActivity" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesAnalytics750Library" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Prepare com.google.android.gms:play-services-appindexing:7.5.0" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/swanLakeActivity" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesAppindexing750Library" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Prepare com.google.android.gms:play-services-appinvite:7.5.0" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/swanLakeActivity" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesAppinvite750Library" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Prepare com.google.android.gms:play-services-appstate:7.5.0" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/swanLakeActivity" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesAppstate750Library" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Prepare com.google.android.gms:play-services-base:7.5.0" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/swanLakeActivity" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesBase750Library" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Prepare com.google.android.gms:play-services-cast:7.5.0" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/swanLakeActivity" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesCast750Library" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Prepare com.google.android.gms:play-services-drive:7.5.0" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/swanLakeActivity" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesDrive750Library" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Prepare com.google.android.gms:play-services-fitness:7.5.0" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/swanLakeActivity" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesFitness750Library" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Prepare com.google.android.gms:play-services-games:7.5.0" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/swanLakeActivity" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesGames750Library" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Prepare com.google.android.gms:play-services-gcm:7.5.0" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/swanLakeActivity" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesGcm750Library" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Prepare com.google.android.gms:play-services-identity:7.5.0" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/swanLakeActivity" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesIdentity750Library" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Prepare com.google.android.gms:play-services-location:7.5.0" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/swanLakeActivity" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesLocation750Library" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Prepare com.google.android.gms:play-services-maps:7.5.0" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/swanLakeActivity" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesMaps750Library" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Prepare com.google.android.gms:play-services-nearby:7.5.0" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/swanLakeActivity" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesNearby750Library" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Prepare com.google.android.gms:play-services-panorama:7.5.0" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/swanLakeActivity" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesPanorama750Library" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Prepare com.google.android.gms:play-services-plus:7.5.0" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/swanLakeActivity" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesPlus750Library" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Prepare com.google.android.gms:play-services-safetynet:7.5.0" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/swanLakeActivity" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesSafetynet750Library" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Prepare com.google.android.gms:play-services-wallet:7.5.0" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/swanLakeActivity" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesWallet750Library" />
+              </ExternalTaskPojo>
+              <ExternalTaskPojo>
+                <option name="description" value="Prepare com.google.android.gms:play-services-wearable:7.5.0" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/swanLakeActivity" />
+                <option name="name" value="prepareComGoogleAndroidGmsPlayServicesWearable750Library" />
+>>>>>>> attached lists to tabs
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/swanLakeActivity" />
@@ -4231,9 +4379,15 @@
                 <option name="name" value="sourceSets" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
+<<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
                 <option name="description" value="Run unit tests for all variants." />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/swanLakeActivity" />
                 <option name="name" value="test" />
+=======
+                <option name="description" value="Prepare swan-sense-studio:senseandroidlibrary:unspecified" />
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/swanLakeActivity" />
+                <option name="name" value="prepareSwanSenseStudioSenseandroidlibraryUnspecifiedLibrary" />
+>>>>>>> attached lists to tabs
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="description" value="Run unit tests for the debug build." />
@@ -4282,6 +4436,7 @@
                 <option name="name" value="transformClassesWithMultidexlistForRelease" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
+<<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/swanLakeActivity" />
                 <option name="name" value="transformNative_libsWithMergeJniLibsForDebug" />
               </ExternalTaskPojo>
@@ -4290,6 +4445,9 @@
                 <option name="name" value="transformNative_libsWithMergeJniLibsForDebugAndroidTest" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
+=======
+                <option name="description" value="Displays the signing info for each variant." />
+>>>>>>> attached lists to tabs
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/swanLakeActivity" />
                 <option name="name" value="transformNative_libsWithMergeJniLibsForRelease" />
               </ExternalTaskPojo>
@@ -4298,10 +4456,14 @@
                 <option name="name" value="transformResourcesWithMergeJavaResForDebug" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
+<<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/swanLakeActivity" />
                 <option name="name" value="transformResourcesWithMergeJavaResForDebugAndroidTest" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
+=======
+                <option name="description" value="Run unit tests for all variants." />
+>>>>>>> attached lists to tabs
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/swanLakeActivity" />
                 <option name="name" value="transformResourcesWithMergeJavaResForDebugUnitTest" />
               </ExternalTaskPojo>
@@ -4662,7 +4824,11 @@
                 <option name="name" value="mockableAndroidJar" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
+<<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/wear" />
+=======
+                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/tabsExample" />
+>>>>>>> attached lists to tabs
                 <option name="name" value="packageDebug" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
@@ -4924,16 +5090,6 @@
                 <option name="name" value="processReleaseUnitTestJavaRes" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Displays the sub-projects of project ':tabsExample'." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/tabsExample" />
-                <option name="name" value="projects" />
-              </ExternalTaskPojo>
-              <ExternalTaskPojo>
-                <option name="description" value="Displays the properties of project ':tabsExample'." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/tabsExample" />
-                <option name="name" value="properties" />
-              </ExternalTaskPojo>
-              <ExternalTaskPojo>
                 <option name="description" value="Displays the signing info for each variant." />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/tabsExample" />
                 <option name="name" value="signingReport" />
@@ -4942,11 +5098,6 @@
                 <option name="description" value="Prints out all the source sets defined in this project." />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/tabsExample" />
                 <option name="name" value="sourceSets" />
-              </ExternalTaskPojo>
-              <ExternalTaskPojo>
-                <option name="description" value="Displays the tasks runnable from project ':tabsExample'." />
-                <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/tabsExample" />
-                <option name="name" value="tasks" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="description" value="Run unit tests for all variants." />
@@ -5439,6 +5590,7 @@
                             <option value="$APPLICATION_HOME_DIR$/gradle/m2repository/com/intellij/annotations/12.0/annotations-12.0.jar" />
                             <option value="$APPLICATION_HOME_DIR$/gradle/m2repository/com/android/tools/external/lombok/lombok-ast/0.2.3/lombok-ast-0.2.3-sources.jar" />
                             <option value="$APPLICATION_HOME_DIR$/gradle/m2repository/com/android/tools/external/lombok/lombok-ast/0.2.3/lombok-ast-0.2.3.jar" />
+<<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
                             <option value="D:/Programs/android sdk studio/extras/google/m2repository/com/google/android/gms/play-services/7.8.0/play-services-7.8.0.aar" />
                             <option value="D:/Programs/android sdk studio/extras/google/m2repository/com/google/android/gms/play-services-ads/7.8.0/play-services-ads-7.8.0.aar" />
                             <option value="D:/Programs/android sdk studio/extras/google/m2repository/com/google/android/gms/play-services-analytics/7.8.0/play-services-analytics-7.8.0.aar" />
@@ -5466,6 +5618,33 @@
                             <option value="D:/Programs/android sdk studio/extras/android/m2repository/com/android/support/support-v4/22.2.0/support-v4-22.2.0.aar" />
                             <option value="D:/Programs/android sdk studio/extras/android/m2repository/com/android/support/support-annotations/22.2.0/support-annotations-22.2.0.jar" />
 >>>>>>> fixed tabs
+=======
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/android/m2repository/com/android/support/support-v4/22.1.0/support-v4-22.1.0.aar" />
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/google/m2repository/com/google/android/gms/play-services/7.5.0/play-services-7.5.0.aar" />
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/android/m2repository/com/android/support/support-annotations/22.1.0/support-annotations-22.1.0.jar" />
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/google/m2repository/com/google/android/gms/play-services-ads/7.5.0/play-services-ads-7.5.0.aar" />
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/google/m2repository/com/google/android/gms/play-services-analytics/7.5.0/play-services-analytics-7.5.0.aar" />
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/google/m2repository/com/google/android/gms/play-services-appindexing/7.5.0/play-services-appindexing-7.5.0.aar" />
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/google/m2repository/com/google/android/gms/play-services-appinvite/7.5.0/play-services-appinvite-7.5.0.aar" />
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/google/m2repository/com/google/android/gms/play-services-appstate/7.5.0/play-services-appstate-7.5.0.aar" />
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/google/m2repository/com/google/android/gms/play-services-base/7.5.0/play-services-base-7.5.0.aar" />
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/google/m2repository/com/google/android/gms/play-services-cast/7.5.0/play-services-cast-7.5.0.aar" />
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/google/m2repository/com/google/android/gms/play-services-drive/7.5.0/play-services-drive-7.5.0.aar" />
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/google/m2repository/com/google/android/gms/play-services-fitness/7.5.0/play-services-fitness-7.5.0.aar" />
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/google/m2repository/com/google/android/gms/play-services-games/7.5.0/play-services-games-7.5.0.aar" />
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/google/m2repository/com/google/android/gms/play-services-gcm/7.5.0/play-services-gcm-7.5.0.aar" />
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/google/m2repository/com/google/android/gms/play-services-identity/7.5.0/play-services-identity-7.5.0.aar" />
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/google/m2repository/com/google/android/gms/play-services-location/7.5.0/play-services-location-7.5.0.aar" />
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/google/m2repository/com/google/android/gms/play-services-maps/7.5.0/play-services-maps-7.5.0.aar" />
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/google/m2repository/com/google/android/gms/play-services-nearby/7.5.0/play-services-nearby-7.5.0.aar" />
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/google/m2repository/com/google/android/gms/play-services-panorama/7.5.0/play-services-panorama-7.5.0.aar" />
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/google/m2repository/com/google/android/gms/play-services-plus/7.5.0/play-services-plus-7.5.0.aar" />
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/google/m2repository/com/google/android/gms/play-services-safetynet/7.5.0/play-services-safetynet-7.5.0.aar" />
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/google/m2repository/com/google/android/gms/play-services-wallet/7.5.0/play-services-wallet-7.5.0.aar" />
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/google/m2repository/com/google/android/gms/play-services-wearable/7.5.0/play-services-wearable-7.5.0.aar" />
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/android/m2repository/com/android/support/mediarouter-v7/22.0.0/mediarouter-v7-22.0.0.aar" />
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/android/m2repository/com/android/support/appcompat-v7/22.0.0/appcompat-v7-22.0.0.aar" />
+>>>>>>> attached lists to tabs
                             <option value="$MODULE_DIR$/libs/cordova-2.7.0.jar" />
                             <option value="$MODULE_DIR$/libs/gcm.jar" />
                           </list>
@@ -5809,6 +5988,7 @@
                             <option value="$APPLICATION_HOME_DIR$/gradle/m2repository/com/intellij/annotations/12.0/annotations-12.0.jar" />
                             <option value="$APPLICATION_HOME_DIR$/gradle/m2repository/com/android/tools/external/lombok/lombok-ast/0.2.3/lombok-ast-0.2.3-sources.jar" />
                             <option value="$APPLICATION_HOME_DIR$/gradle/m2repository/com/android/tools/external/lombok/lombok-ast/0.2.3/lombok-ast-0.2.3.jar" />
+<<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
                             <option value="D:/Programs/android sdk studio/extras/android/m2repository/com/android/support/support-v4/22.2.1/support-v4-22.2.1.aar" />
                             <option value="D:/Programs/android sdk studio/extras/google/m2repository/com/google/android/gms/play-services/7.8.0/play-services-7.8.0.aar" />
                             <option value="D:/Programs/android sdk studio/extras/google/m2repository/com/google/android/gms/play-services-ads/7.8.0/play-services-ads-7.8.0.aar" />
@@ -5836,6 +6016,33 @@
                             <option value="D:/Programs/android sdk studio/extras/android/m2repository/com/android/support/appcompat-v7/22.2.0/appcompat-v7-22.2.0.aar" />
                             <option value="D:/Programs/android sdk studio/extras/android/m2repository/com/android/support/support-annotations/22.2.1/support-annotations-22.2.1.jar" />
 >>>>>>> fixed tabs
+=======
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/android/m2repository/com/android/support/support-v4/22.2.0/support-v4-22.2.0.aar" />
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/google/m2repository/com/google/android/gms/play-services/7.5.0/play-services-7.5.0.aar" />
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/google/m2repository/com/google/android/gms/play-services-ads/7.5.0/play-services-ads-7.5.0.aar" />
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/google/m2repository/com/google/android/gms/play-services-analytics/7.5.0/play-services-analytics-7.5.0.aar" />
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/google/m2repository/com/google/android/gms/play-services-appindexing/7.5.0/play-services-appindexing-7.5.0.aar" />
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/google/m2repository/com/google/android/gms/play-services-appinvite/7.5.0/play-services-appinvite-7.5.0.aar" />
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/google/m2repository/com/google/android/gms/play-services-appstate/7.5.0/play-services-appstate-7.5.0.aar" />
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/google/m2repository/com/google/android/gms/play-services-base/7.5.0/play-services-base-7.5.0.aar" />
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/google/m2repository/com/google/android/gms/play-services-cast/7.5.0/play-services-cast-7.5.0.aar" />
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/google/m2repository/com/google/android/gms/play-services-drive/7.5.0/play-services-drive-7.5.0.aar" />
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/google/m2repository/com/google/android/gms/play-services-fitness/7.5.0/play-services-fitness-7.5.0.aar" />
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/google/m2repository/com/google/android/gms/play-services-games/7.5.0/play-services-games-7.5.0.aar" />
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/google/m2repository/com/google/android/gms/play-services-gcm/7.5.0/play-services-gcm-7.5.0.aar" />
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/google/m2repository/com/google/android/gms/play-services-identity/7.5.0/play-services-identity-7.5.0.aar" />
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/google/m2repository/com/google/android/gms/play-services-location/7.5.0/play-services-location-7.5.0.aar" />
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/google/m2repository/com/google/android/gms/play-services-maps/7.5.0/play-services-maps-7.5.0.aar" />
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/google/m2repository/com/google/android/gms/play-services-nearby/7.5.0/play-services-nearby-7.5.0.aar" />
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/google/m2repository/com/google/android/gms/play-services-panorama/7.5.0/play-services-panorama-7.5.0.aar" />
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/google/m2repository/com/google/android/gms/play-services-plus/7.5.0/play-services-plus-7.5.0.aar" />
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/google/m2repository/com/google/android/gms/play-services-safetynet/7.5.0/play-services-safetynet-7.5.0.aar" />
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/google/m2repository/com/google/android/gms/play-services-wallet/7.5.0/play-services-wallet-7.5.0.aar" />
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/google/m2repository/com/google/android/gms/play-services-wearable/7.5.0/play-services-wearable-7.5.0.aar" />
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/android/m2repository/com/android/support/mediarouter-v7/22.0.0/mediarouter-v7-22.0.0.aar" />
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/android/m2repository/com/android/support/appcompat-v7/22.0.0/appcompat-v7-22.0.0.aar" />
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/android/m2repository/com/android/support/support-annotations/22.2.0/support-annotations-22.2.0.jar" />
+>>>>>>> attached lists to tabs
                             <option value="$MODULE_DIR$/libs/antlr-3.4-complete-no-antlrv2.jar" />
                             <option value="$MODULE_DIR$/libs/cuckoo-client.jar" />
                             <option value="$MODULE_DIR$/libs/gcm-server.jar" />
@@ -6043,9 +6250,14 @@
                             <option value="$APPLICATION_HOME_DIR$/gradle/m2repository/com/intellij/annotations/12.0/annotations-12.0.jar" />
                             <option value="$APPLICATION_HOME_DIR$/gradle/m2repository/com/android/tools/external/lombok/lombok-ast/0.2.3/lombok-ast-0.2.3-sources.jar" />
                             <option value="$APPLICATION_HOME_DIR$/gradle/m2repository/com/android/tools/external/lombok/lombok-ast/0.2.3/lombok-ast-0.2.3.jar" />
+<<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
                             <option value="D:/Programs/android sdk studio/extras/android/m2repository/com/android/support/support-v4/22.0.0/support-v4-22.0.0.aar" />
                             <option value="D:/Programs/android sdk studio/extras/android/m2repository/com/android/support/support-annotations/22.0.0/support-annotations-22.0.0.jar" />
 >>>>>>> fixed tabs
+=======
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/android/m2repository/com/android/support/support-v4/22.0.0/support-v4-22.0.0.aar" />
+                            <option value="$USER_HOME$/Programs/android-sdk-studio/extras/android/m2repository/com/android/support/support-annotations/22.0.0/support-annotations-22.0.0.jar" />
+>>>>>>> attached lists to tabs
                           </list>
                         </option>
                         <option name="path" value="$PROJECT_DIR$/wear" />
@@ -6057,6 +6269,7 @@
               <option name="name" value="shared" />
               <option name="projectBuildClasspath">
                 <list>
+<<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
 <<<<<<< 92ce66b8a03d9903a26a161ba42174a072da4d93
                   <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-2.2.1-all/c64ydeuardnfqctvr1gm30w53/gradle-2.2.1/src/reporting" />
                   <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-2.2.1-all/c64ydeuardnfqctvr1gm30w53/gradle-2.2.1/src/base-services" />
@@ -6273,6 +6486,8 @@
                   <option value="$APPLICATION_HOME_DIR$/gradle/gradle-2.4/lib/plugins/gradle-tooling-api-builders-2.4.jar" />
                   <option value="$APPLICATION_HOME_DIR$/gradle/gradle-2.4/lib/plugins/ivy-2.2.0.jar" />
 >>>>>>> fixed tabs
+=======
+>>>>>>> attached lists to tabs
                   <option value="$PROJECT_DIR$/buildSrc/src/main/java" />
                   <option value="$PROJECT_DIR$/buildSrc/src/main/groovy" />
                 </list>
@@ -6322,6 +6537,7 @@
     <order />
   </component>
   <component name="ProjectFrameBounds">
+<<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
 <<<<<<< 92ce66b8a03d9903a26a161ba42174a072da4d93
     <option name="width" value="1600" />
     <option name="height" value="857" />
@@ -6330,6 +6546,11 @@
     <option name="y" value="-9" />
     <option name="width" value="1860" />
     <option name="height" value="1098" />
+=======
+    <option name="x" value="-1" />
+    <option name="width" value="1682" />
+    <option name="height" value="1050" />
+>>>>>>> attached lists to tabs
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -6465,9 +6686,6 @@
       <pane id="AndroidView">
         <subPane />
       </pane>
-      <pane id="Scratches">
-        <subPane />
-      </pane>
       <pane id="ProjectPane">
         <subPane>
 >>>>>>> fixed tabs
@@ -6502,6 +6720,7 @@
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+<<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
               <option name="myItemId" value="swanLakeActivity" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
             </PATH_ELEMENT>
@@ -6626,12 +6845,20 @@
 =======
               <option name="myItemId" value="res" />
 >>>>>>> fixed tabs
+=======
+              <option name="myItemId" value="swan-sense-studio" />
+>>>>>>> attached lists to tabs
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
+        </subPane>
+      </pane>
+      <pane id="PackagesPane">
+        <subPane>
           <PATH>
             <PATH_ELEMENT>
               <option name="myItemId" value="swan-sense-studio" />
+<<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
@@ -6704,6 +6931,19 @@
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
+=======
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewProjectNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
+      <pane id="Scratches">
+        <subPane />
+      </pane>
+      <pane id="Scope">
+        <subPane subId="Problems" />
+        <subPane subId="Production">
+>>>>>>> attached lists to tabs
           <PATH>
             <PATH_ELEMENT>
               <option name="myItemId" value="swan-sense-studio" />
@@ -6739,6 +6979,7 @@
           </PATH>
         </subPane>
       </pane>
+<<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
       <pane id="PackagesPane">
         <subPane>
           <PATH>
@@ -6789,6 +7030,8 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../SwanTest" />
     <property name="FullScreen" value="false" />
 =======
+=======
+>>>>>>> attached lists to tabs
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -6797,9 +7040,14 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$/.." />
     <property name="android.sdk.path" value="$USER_HOME$/Programs/android-sdk-studio" />
     <property name="recentsLimit" value="5" />
+<<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
     <property name="ANDROID_EXTENDED_DEVICE_CHOOSER_SERIALS" value="0434ea67308a0329" />
     <property name="ANDROID_EXTENDED_DEVICE_CHOOSER_AVD" value="Nexus_5_API_23_x86" />
 >>>>>>> fixed tabs
+=======
+    <property name="ANDROID_EXTENDED_DEVICE_CHOOSER_SERIALS" value="TA34801A3M" />
+    <property name="ANDROID_EXTENDED_DEVICE_CHOOSER_AVD" value="Nexus_5_API_22_x86_1" />
+>>>>>>> attached lists to tabs
     <property name="OverrideImplement.combined" value="true" />
     <property name="OverrideImplement.overriding.sorted" value="false" />
     <property name="ANDROID_EXTENDED_DEVICE_CHOOSER_SERIALS" value="127.0.0.1:4444" />
@@ -7010,6 +7258,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
+<<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
 <<<<<<< 92ce66b8a03d9903a26a161ba42174a072da4d93
     <frame x="0" y="0" width="1600" height="857" extended-state="6" />
     <editor active="false" />
@@ -7040,29 +7289,35 @@
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
 =======
     <frame x="69" y="-9" width="1860" height="1098" extended-state="6" />
+=======
+    <frame x="-1" y="0" width="1682" height="1050" extended-state="6" />
+>>>>>>> attached lists to tabs
     <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32899022" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
       <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.19155447" sideWeight="0.36967632" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.36434108" sideWeight="0.50244796" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.27906978" sideWeight="0.50550795" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32890365" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Captures" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.5266015" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2635659" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.269103" sideWeight="0.50367194" order="12" side_tool="true" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.16852678" sideWeight="0.6303237" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.44625407" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.16829865" sideWeight="0.6303237" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.16891065" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="true" content_ui="tabs" />
+<<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.34310532" sideWeight="0.49632803" order="3" side_tool="false" content_ui="tabs" />
 >>>>>>> fixed tabs
+=======
+      <window_info id="Debug" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.27906978" sideWeight="0.49449205" order="3" side_tool="false" content_ui="tabs" />
+>>>>>>> attached lists to tabs
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32991013" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -7072,7 +7327,11 @@
 <<<<<<< 92ce66b8a03d9903a26a161ba42174a072da4d93
 =======
       <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+<<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
 >>>>>>> fixed tabs
+=======
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.44625407" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+>>>>>>> attached lists to tabs
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -7092,24 +7351,121 @@
     </ignored-roots>
   </component>
   <component name="XDebuggerManager">
+<<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
     <breakpoint-manager />
+=======
+    <breakpoint-manager>
+      <option name="time" value="6" />
+    </breakpoint-manager>
+>>>>>>> attached lists to tabs
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/wear/src/main/java/interdroid/swan/MessageReceiverService.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
+<<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
 <<<<<<< 92ce66b8a03d9903a26a161ba42174a072da4d93
           <caret line="45" column="13" selection-start-line="45" selection-start-column="13" selection-end-line="45" selection-end-column="13" />
           <folding>
             <element signature="imports" expanded="true" />
 =======
+=======
+          <caret line="307" column="24" selection-start-line="307" selection-start-column="24" selection-end-line="307" selection-end-column="24" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#5821#5822#0" expanded="true" />
+            <element signature="e#5903#5904#0" expanded="true" />
+            <element signature="e#6122#6123#0" expanded="true" />
+            <element signature="e#6154#6155#0" expanded="true" />
+            <element signature="e#7008#7331#0" expanded="true" />
+            <element signature="e#7330#7331#0" expanded="true" />
+            <element signature="e#13840#13841#0" expanded="true" />
+            <element signature="e#13879#13880#0" expanded="true" />
+            <element signature="e#13929#13930#0" expanded="true" />
+            <element signature="e#13971#13972#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/swanLakeActivity/src/main/java/interdroid/swan/crossdevice/SwanLakeActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+>>>>>>> attached lists to tabs
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#8566#8991#0" expanded="true" />
-            <element signature="e#8990#8991#0" expanded="true" />
-            <element signature="e#13535#13536#0" expanded="true" />
-            <element signature="e#13566#13567#0" expanded="true" />
+            <element signature="imports" expanded="true" />
+            <element signature="e#11043#11044#0" expanded="true" />
+            <element signature="e#11060#11061#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/swanLakeActivity/src/main/java/interdroid/swan/crossdevice/SwanGCMConstants.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="8" column="41" selection-start-line="8" selection-start-column="34" selection-end-line="8" selection-end-column="41" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/swanLakeActivity/src/main/java/interdroid/swan/crossdevice/Registry.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="49" column="14" selection-start-line="49" selection-start-column="14" selection-end-line="49" selection-end-column="14" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/swanLakeActivity/src/main/res/menu/swanlake_cab.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/swanLakeActivity/src/main/AndroidManifest.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="98" column="36" selection-start-line="98" selection-start-column="36" selection-end-line="98" selection-end-column="36" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tabsExample/src/main/java/com/example/android/effectivenavigation/MainActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="40" column="36" selection-start-line="40" selection-start-column="36" selection-end-line="40" selection-end-column="36" />
+          <folding>
+            <element signature="e#0#8476#0" expanded="false" />
+            <element signature="imports" expanded="false" />
+            <element signature="e#4724#4725#0" expanded="false" />
+            <element signature="e#4757#4758#0" expanded="false" />
+            <element signature="e#5569#5570#0" expanded="false" />
+            <element signature="e#5601#5602#0" expanded="false" />
+            <element signature="e#5677#5678#0" expanded="false" />
+            <element signature="e#5735#5736#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/swanLakeActivity/src/main/java/interdroid/swan/crossdevice/SwanLakePlusActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#5821#5822#0" expanded="true" />
+            <element signature="e#5903#5904#0" expanded="true" />
+            <element signature="e#6122#6123#0" expanded="true" />
+            <element signature="e#6154#6155#0" expanded="true" />
+            <element signature="e#7008#7331#0" expanded="true" />
+            <element signature="e#7330#7331#0" expanded="true" />
+            <element signature="e#13840#13841#0" expanded="true" />
+            <element signature="e#13879#13880#0" expanded="true" />
+            <element signature="e#13929#13930#0" expanded="true" />
+            <element signature="e#13971#13972#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -7120,8 +7476,8 @@
           <caret line="114" column="33" selection-start-line="113" selection-start-column="8" selection-end-line="114" selection-end-column="33" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#11687#11875#0" expanded="true" />
-            <element signature="e#11874#11875#0" expanded="true" />
+            <element signature="e#11043#11044#0" expanded="true" />
+            <element signature="e#11060#11061#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -7148,13 +7504,13 @@
           <caret line="40" column="36" selection-start-line="40" selection-start-column="36" selection-end-line="40" selection-end-column="36" />
           <folding>
             <element signature="e#0#8476#0" expanded="false" />
+            <element signature="imports" expanded="false" />
             <element signature="e#4724#4725#0" expanded="false" />
             <element signature="e#4757#4758#0" expanded="false" />
             <element signature="e#5569#5570#0" expanded="false" />
             <element signature="e#5601#5602#0" expanded="false" />
             <element signature="e#5677#5678#0" expanded="false" />
             <element signature="e#5735#5736#0" expanded="false" />
-            <marker date="1441833506792" expanded="true" signature="673:1146" placeholder="..." />
           </folding>
         </state>
       </provider>
@@ -7164,11 +7520,25 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="162" column="67" selection-start-line="162" selection-start-column="67" selection-end-line="162" selection-end-column="67" />
           <folding>
+<<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
             <element signature="e#8566#8991#0" expanded="true" />
             <element signature="e#8990#8991#0" expanded="true" />
             <element signature="e#13535#13536#0" expanded="true" />
             <element signature="e#13566#13567#0" expanded="true" />
 >>>>>>> fixed tabs
+=======
+            <element signature="imports" expanded="true" />
+            <element signature="e#5821#5822#0" expanded="true" />
+            <element signature="e#5903#5904#0" expanded="true" />
+            <element signature="e#6122#6123#0" expanded="true" />
+            <element signature="e#6154#6155#0" expanded="true" />
+            <element signature="e#7008#7331#0" expanded="true" />
+            <element signature="e#7330#7331#0" expanded="true" />
+            <element signature="e#13840#13841#0" expanded="true" />
+            <element signature="e#13879#13880#0" expanded="true" />
+            <element signature="e#13929#13930#0" expanded="true" />
+            <element signature="e#13971#13972#0" expanded="true" />
+>>>>>>> attached lists to tabs
           </folding>
         </state>
       </provider>
@@ -7182,8 +7552,8 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#11687#11875#0" expanded="true" />
-            <element signature="e#11874#11875#0" expanded="true" />
+            <element signature="e#11043#11044#0" expanded="true" />
+            <element signature="e#11060#11061#0" expanded="true" />
           </folding>
 >>>>>>> fixed tabs
         </state>
@@ -7198,13 +7568,13 @@
           <caret line="24" column="46" selection-start-line="24" selection-start-column="46" selection-end-line="24" selection-end-column="46" />
           <folding>
             <element signature="e#0#8476#0" expanded="false" />
+            <element signature="imports" expanded="false" />
             <element signature="e#4724#4725#0" expanded="false" />
             <element signature="e#4757#4758#0" expanded="false" />
             <element signature="e#5569#5570#0" expanded="false" />
             <element signature="e#5601#5602#0" expanded="false" />
             <element signature="e#5677#5678#0" expanded="false" />
             <element signature="e#5735#5736#0" expanded="false" />
-            <marker date="1441833506792" expanded="true" signature="673:1146" placeholder="..." />
           </folding>
 >>>>>>> fixed tabs
         </state>
@@ -7218,10 +7588,17 @@
 =======
           <caret line="162" column="67" selection-start-line="162" selection-start-column="67" selection-end-line="162" selection-end-column="67" />
           <folding>
-            <element signature="e#8566#8991#0" expanded="true" />
-            <element signature="e#8990#8991#0" expanded="true" />
-            <element signature="e#13535#13536#0" expanded="true" />
-            <element signature="e#13566#13567#0" expanded="true" />
+            <element signature="imports" expanded="true" />
+            <element signature="e#5821#5822#0" expanded="true" />
+            <element signature="e#5903#5904#0" expanded="true" />
+            <element signature="e#6122#6123#0" expanded="true" />
+            <element signature="e#6154#6155#0" expanded="true" />
+            <element signature="e#7008#7331#0" expanded="true" />
+            <element signature="e#7330#7331#0" expanded="true" />
+            <element signature="e#13840#13841#0" expanded="true" />
+            <element signature="e#13879#13880#0" expanded="true" />
+            <element signature="e#13929#13930#0" expanded="true" />
+            <element signature="e#13971#13972#0" expanded="true" />
           </folding>
 >>>>>>> fixed tabs
         </state>
@@ -7236,8 +7613,8 @@
 =======
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#11687#11875#0" expanded="true" />
-            <element signature="e#11874#11875#0" expanded="true" />
+            <element signature="e#11043#11044#0" expanded="true" />
+            <element signature="e#11060#11061#0" expanded="true" />
           </folding>
 >>>>>>> fixed tabs
         </state>
@@ -7254,14 +7631,18 @@
             <element signature="e#346#347#0" expanded="false" />
 =======
             <element signature="e#0#8476#0" expanded="false" />
+            <element signature="imports" expanded="false" />
             <element signature="e#4724#4725#0" expanded="false" />
             <element signature="e#4757#4758#0" expanded="false" />
             <element signature="e#5569#5570#0" expanded="false" />
             <element signature="e#5601#5602#0" expanded="false" />
             <element signature="e#5677#5678#0" expanded="false" />
             <element signature="e#5735#5736#0" expanded="false" />
+<<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
             <marker date="1441833506792" expanded="true" signature="673:1146" placeholder="..." />
 >>>>>>> fixed tabs
+=======
+>>>>>>> attached lists to tabs
           </folding>
         </state>
       </provider>
@@ -7295,10 +7676,17 @@
 =======
           <caret line="162" column="67" selection-start-line="162" selection-start-column="67" selection-end-line="162" selection-end-column="67" />
           <folding>
-            <element signature="e#8566#8991#0" expanded="true" />
-            <element signature="e#8990#8991#0" expanded="true" />
-            <element signature="e#13535#13536#0" expanded="true" />
-            <element signature="e#13566#13567#0" expanded="true" />
+            <element signature="imports" expanded="true" />
+            <element signature="e#5821#5822#0" expanded="true" />
+            <element signature="e#5903#5904#0" expanded="true" />
+            <element signature="e#6122#6123#0" expanded="true" />
+            <element signature="e#6154#6155#0" expanded="true" />
+            <element signature="e#7008#7331#0" expanded="true" />
+            <element signature="e#7330#7331#0" expanded="true" />
+            <element signature="e#13840#13841#0" expanded="true" />
+            <element signature="e#13879#13880#0" expanded="true" />
+            <element signature="e#13929#13930#0" expanded="true" />
+            <element signature="e#13971#13972#0" expanded="true" />
           </folding>
 >>>>>>> fixed tabs
         </state>
@@ -7313,8 +7701,8 @@
 =======
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#11687#11875#0" expanded="true" />
-            <element signature="e#11874#11875#0" expanded="true" />
+            <element signature="e#11043#11044#0" expanded="true" />
+            <element signature="e#11060#11061#0" expanded="true" />
           </folding>
 >>>>>>> fixed tabs
         </state>
@@ -7329,13 +7717,13 @@
           <caret line="24" column="46" selection-start-line="24" selection-start-column="46" selection-end-line="24" selection-end-column="46" />
           <folding>
             <element signature="e#0#8476#0" expanded="false" />
+            <element signature="imports" expanded="false" />
             <element signature="e#4724#4725#0" expanded="false" />
             <element signature="e#4757#4758#0" expanded="false" />
             <element signature="e#5569#5570#0" expanded="false" />
             <element signature="e#5601#5602#0" expanded="false" />
             <element signature="e#5677#5678#0" expanded="false" />
             <element signature="e#5735#5736#0" expanded="false" />
-            <marker date="1441833506792" expanded="true" signature="673:1146" placeholder="..." />
           </folding>
 >>>>>>> fixed tabs
         </state>
@@ -7348,10 +7736,17 @@
 <<<<<<< 92ce66b8a03d9903a26a161ba42174a072da4d93
 =======
           <folding>
-            <element signature="e#8566#8991#0" expanded="true" />
-            <element signature="e#8990#8991#0" expanded="true" />
-            <element signature="e#13535#13536#0" expanded="true" />
-            <element signature="e#13566#13567#0" expanded="true" />
+            <element signature="imports" expanded="true" />
+            <element signature="e#5821#5822#0" expanded="true" />
+            <element signature="e#5903#5904#0" expanded="true" />
+            <element signature="e#6122#6123#0" expanded="true" />
+            <element signature="e#6154#6155#0" expanded="true" />
+            <element signature="e#7008#7331#0" expanded="true" />
+            <element signature="e#7330#7331#0" expanded="true" />
+            <element signature="e#13840#13841#0" expanded="true" />
+            <element signature="e#13879#13880#0" expanded="true" />
+            <element signature="e#13929#13930#0" expanded="true" />
+            <element signature="e#13971#13972#0" expanded="true" />
           </folding>
 >>>>>>> fixed tabs
         </state>
@@ -7386,24 +7781,28 @@
           <caret line="24" column="46" selection-start-line="24" selection-start-column="46" selection-end-line="24" selection-end-column="46" />
           <folding>
             <element signature="e#0#8476#0" expanded="false" />
+            <element signature="imports" expanded="false" />
             <element signature="e#4724#4725#0" expanded="false" />
             <element signature="e#4757#4758#0" expanded="false" />
             <element signature="e#5569#5570#0" expanded="false" />
             <element signature="e#5601#5602#0" expanded="false" />
             <element signature="e#5677#5678#0" expanded="false" />
             <element signature="e#5735#5736#0" expanded="false" />
-            <marker date="1441833506792" expanded="true" signature="673:1146" placeholder="..." />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tabsExample/src/main/res/layout/fragment_section_launchpad.xml">
+      <provider selected="true" editor-type-id="android-designer">
+        <state />
+      </provider>
       <provider editor-type-id="text-editor">
 >>>>>>> fixed tabs
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
+<<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
 <<<<<<< 92ce66b8a03d9903a26a161ba42174a072da4d93
     </entry>
     <entry file="file://$PROJECT_DIR$/swanLakeActivity/build.gradle">
@@ -7432,19 +7831,29 @@
       <provider selected="true" editor-type-id="android-designer">
         <state />
       </provider>
+=======
+>>>>>>> attached lists to tabs
     </entry>
     <entry file="file://$PROJECT_DIR$/tabsExample/src/main/res/layout/activity_main.xml">
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="16" column="0" selection-start-line="16" selection-start-column="0" selection-end-line="19" selection-end-column="43" />
         </state>
       </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/swanLakeActivity/src/main/res/layout/activity_swanlakeplus.xml">
       <provider editor-type-id="android-designer">
         <state />
       </provider>
+<<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
     </entry>
     <entry file="file://$PROJECT_DIR$/swanLakeActivity/src/main/res/layout/activity_swanlakeplus.xml">
 >>>>>>> fixed tabs
+=======
+>>>>>>> attached lists to tabs
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -7456,9 +7865,6 @@
         <state vertical-scroll-proportion="0.16816144">
           <caret line="5" column="102" selection-start-line="5" selection-start-column="102" selection-end-line="5" selection-end-column="102" />
         </state>
-      </provider>
-      <provider editor-type-id="android-designer">
-        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/swanLakeActivity/src/main/res/xml/gyroscope_preferences.xml">
@@ -7530,27 +7936,35 @@
     <entry file="file:///opt/android-sdk/sources/android-23/android/hardware/Sensor.java">
 =======
     <entry file="file://$PROJECT_DIR$/tabsExample/src/main/res/layout/fragment_section_launchpad.xml">
+      <provider selected="true" editor-type-id="android-designer">
+        <state />
+      </provider>
       <provider editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
-      <provider selected="true" editor-type-id="android-designer">
-        <state />
-      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tabsExample/src/main/res/layout/activity_main.xml">
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-8.0">
           <caret line="16" column="0" selection-start-line="16" selection-start-column="0" selection-end-line="19" selection-end-column="43" />
         </state>
       </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/swanLakeActivity/src/main/res/layout/activity_swanlakeplus.xml">
       <provider editor-type-id="android-designer">
         <state />
       </provider>
+<<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
     </entry>
     <entry file="file://$PROJECT_DIR$/swanLakeActivity/src/main/res/layout/activity_swanlakeplus.xml">
 >>>>>>> fixed tabs
+=======
+>>>>>>> attached lists to tabs
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.33333334">
           <caret line="408" column="28" selection-start-line="408" selection-start-column="28" selection-end-line="408" selection-end-column="28" />
@@ -7565,6 +7979,7 @@
         </state>
       </provider>
     </entry>
+<<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
     <entry file="file://$PROJECT_DIR$/swanLakeActivity/src/main/java/interdroid/swan/sensors/impl/wear/shared/data/WearSensor.java">
 =======
       <provider editor-type-id="android-designer">
@@ -7573,13 +7988,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/swanLakeActivity/src/main/res/layout/fragment_section_dummy.xml">
 >>>>>>> fixed tabs
+=======
+    <entry file="file://$PROJECT_DIR$/swanLakeActivity/src/main/res/layout/fragment_section_dummy.xml">
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+>>>>>>> attached lists to tabs
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
         </state>
-      </provider>
-      <provider editor-type-id="android-designer">
-        <state />
       </provider>
     </entry>
     <entry file="file:///opt/android-sdk/sources/android-22/android/app/Service.java">
@@ -7653,14 +8071,18 @@
             <element signature="e#346#347#0" expanded="false" />
 =======
             <element signature="e#0#8476#0" expanded="false" />
+            <element signature="imports" expanded="false" />
             <element signature="e#4724#4725#0" expanded="false" />
             <element signature="e#4757#4758#0" expanded="false" />
             <element signature="e#5569#5570#0" expanded="false" />
             <element signature="e#5601#5602#0" expanded="false" />
             <element signature="e#5677#5678#0" expanded="false" />
             <element signature="e#5735#5736#0" expanded="false" />
+<<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
             <marker date="1441833506792" expanded="true" signature="673:1146" placeholder="..." />
 >>>>>>> fixed tabs
+=======
+>>>>>>> attached lists to tabs
           </folding>
         </state>
       </provider>
@@ -7710,6 +8132,7 @@
         </state>
       </provider>
     </entry>
+<<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
 <<<<<<< 92ce66b8a03d9903a26a161ba42174a072da4d93
     <entry file="file://$PROJECT_DIR$/swanLakeActivity/src/main/java/interdroid/swan/sensors/impl/wear/shared/AbstractWearSensor.java">
       <provider selected="true" editor-type-id="text-editor">
@@ -7738,6 +8161,8 @@
         </state>
       </provider>
     </entry>
+=======
+>>>>>>> attached lists to tabs
     <entry file="file://$PROJECT_DIR$/swanLakeActivity/src/main/java/interdroid/swan/crossdevice/Registry.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -7747,6 +8172,7 @@
         </state>
       </provider>
     </entry>
+<<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
 <<<<<<< 92ce66b8a03d9903a26a161ba42174a072da4d93
     <entry file="file://$PROJECT_DIR$/swanLakeActivity/src/main/java/interdroid/swan/sensors/impl/wear/shared/RemoteSensorManager.java">
       <provider selected="true" editor-type-id="text-editor">
@@ -7758,10 +8184,17 @@
         <state vertical-scroll-proportion="0.3539652">
           <caret line="162" column="31" selection-start-line="162" selection-start-column="31" selection-end-line="162" selection-end-column="31" />
 >>>>>>> fixed tabs
+=======
+    <entry file="file://$PROJECT_DIR$/swanLakeActivity/src/main/java/interdroid/swan/crossdevice/SwanGCMConstants.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="8" column="41" selection-start-line="8" selection-start-column="34" selection-end-line="8" selection-end-column="41" />
+>>>>>>> attached lists to tabs
           <folding />
         </state>
       </provider>
     </entry>
+<<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
 <<<<<<< 92ce66b8a03d9903a26a161ba42174a072da4d93
     <entry file="file://$PROJECT_DIR$/wear/src/main/java/interdroid/swan/MessageReceiverService.java">
       <provider selected="true" editor-type-id="text-editor">
@@ -7773,15 +8206,21 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="307" column="24" selection-start-line="307" selection-start-column="24" selection-end-line="307" selection-end-column="24" />
 >>>>>>> fixed tabs
+=======
+    <entry file="file://$PROJECT_DIR$/swanLakeActivity/src/main/java/interdroid/swan/crossdevice/SwanLakeActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="173" column="48" selection-start-line="173" selection-start-column="17" selection-end-line="173" selection-end-column="48" />
+>>>>>>> attached lists to tabs
           <folding>
-            <element signature="e#8566#8991#0" expanded="true" />
-            <element signature="e#8990#8991#0" expanded="true" />
-            <element signature="e#13535#13536#0" expanded="true" />
-            <element signature="e#13566#13567#0" expanded="true" />
+            <element signature="imports" expanded="true" />
+            <element signature="e#11043#11044#0" expanded="true" />
+            <element signature="e#11060#11061#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+<<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
 <<<<<<< 92ce66b8a03d9903a26a161ba42174a072da4d93
     <entry file="file://$PROJECT_DIR$/wear/src/main/java/interdroid/swan/DeviceClient.java">
       <provider selected="true" editor-type-id="text-editor">
@@ -7810,14 +8249,30 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/swanLakeActivity/src/main/java/interdroid/swan/crossdevice/SwanLakeActivity.java">
+=======
+    <entry file="file://$PROJECT_DIR$/swanLakeActivity/src/main/java/interdroid/swan/crossdevice/SwanLakePlusActivity.java">
+>>>>>>> attached lists to tabs
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.68356645">
-          <caret line="339" column="61" selection-start-line="339" selection-start-column="61" selection-end-line="339" selection-end-column="61" />
+        <state vertical-scroll-proportion="0.48134992">
+          <caret line="205" column="59" selection-start-line="205" selection-start-column="59" selection-end-line="205" selection-end-column="59" />
           <folding>
             <element signature="imports" expanded="true" />
+<<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
             <element signature="e#11687#11875#0" expanded="true" />
             <element signature="e#11874#11875#0" expanded="true" />
 >>>>>>> fixed tabs
+=======
+            <element signature="e#5821#5822#0" expanded="true" />
+            <element signature="e#5903#5904#0" expanded="true" />
+            <element signature="e#6122#6123#0" expanded="true" />
+            <element signature="e#6154#6155#0" expanded="true" />
+            <element signature="e#7008#7331#0" expanded="true" />
+            <element signature="e#7330#7331#0" expanded="true" />
+            <element signature="e#13840#13841#0" expanded="true" />
+            <element signature="e#13879#13880#0" expanded="true" />
+            <element signature="e#13929#13930#0" expanded="true" />
+            <element signature="e#13971#13972#0" expanded="true" />
+>>>>>>> attached lists to tabs
           </folding>
         </state>
       </provider>

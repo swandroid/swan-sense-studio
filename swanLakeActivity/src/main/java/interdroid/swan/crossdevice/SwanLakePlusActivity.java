@@ -53,7 +53,10 @@ public class SwanLakePlusActivity extends FragmentActivity implements WDPeerToPe
     AppSectionsPagerAdapter mAppSectionsPagerAdapter;
     ViewPager mViewPager;
     ListView listView;
-    private RegisteredSWANsAdapter mAdapter;
+    private RegisteredSWANsAdapter mContactsAdapter;
+    private RegisteredSWANsAdapter mNearbyPeersAdapter;
+    ListFragment mContactsFragment = new PeerListFragment();
+    ListFragment mNearbyPeersFragment = new PeerListFragment();
 
     public class AppSectionsPagerAdapter extends FragmentPagerAdapter {
 
@@ -65,12 +68,10 @@ public class SwanLakePlusActivity extends FragmentActivity implements WDPeerToPe
         public Fragment getItem(int i) {
             switch (i) {
                 case 0:
-                    Fragment fragment = new PeerListFragment();
-                    return fragment;
+                    return mContactsFragment;
 
                 case 1:
-                    fragment = new PeerListFragment();
-                    return fragment;
+                    return mNearbyPeersFragment;
 
                 default:
                     return null;
@@ -89,7 +90,7 @@ public class SwanLakePlusActivity extends FragmentActivity implements WDPeerToPe
                     return "Contacts";
 
                 case 1:
-                    return "Browse";
+                    return "Nearby Peers";
 
                 default:
                     return "";
@@ -137,7 +138,7 @@ public class SwanLakePlusActivity extends FragmentActivity implements WDPeerToPe
                                     Registry.remove(getActivity(), names.get(i));
                                 }
                             }
-                            ((SwanLakePlusActivity)getActivity()).getAdapter().notifyDataSetChanged();
+                            ((SwanLakePlusActivity)getActivity()).getNearbyPeersAdapter().notifyDataSetChanged();
                     }
                     mode.finish();
                     return true;
@@ -150,7 +151,7 @@ public class SwanLakePlusActivity extends FragmentActivity implements WDPeerToPe
                 }
             });
 
-            setListAdapter(((SwanLakePlusActivity)getActivity()).getAdapter());
+            setListAdapter(((SwanLakePlusActivity)getActivity()).getNearbyPeersAdapter());
         }
 
         /* @Override
@@ -202,7 +203,7 @@ public class SwanLakePlusActivity extends FragmentActivity implements WDPeerToPe
 
                         @Override
                         public void onClick(View v) {
-                            listView.setItemChecked(position,
+                            mContactsFragment.getListView().setItemChecked(position,
                                     !((CheckedTextView) v).isChecked());
                         }
                     });
@@ -259,8 +260,12 @@ public class SwanLakePlusActivity extends FragmentActivity implements WDPeerToPe
                             .setTabListener(this));
         }
 
-        mAdapter = new RegisteredSWANsAdapter();
+        mContactsAdapter = new RegisteredSWANsAdapter();
+        mNearbyPeersAdapter = new RegisteredSWANsAdapter();
         onNewIntent(getIntent());
+
+        Registry.add(this, "bob", "123");
+        Registry.add(this, "alice", "456");
     }
 
     @Override
@@ -348,8 +353,12 @@ public class SwanLakePlusActivity extends FragmentActivity implements WDPeerToPe
         }.start();
     }
 
-    public BaseAdapter getAdapter() {
-        return mAdapter;
+    public BaseAdapter getContactsAdapter() {
+        return mContactsAdapter;
+    }
+
+    public BaseAdapter getNearbyPeersAdapter() {
+        return mNearbyPeersAdapter;
     }
 
     @Override
