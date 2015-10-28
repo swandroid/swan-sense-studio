@@ -551,6 +551,15 @@
             <meta-data
                 android:name="units"
                 android:value="" />
+            <meta-data
+                android:name="sample_interval"
+                android:value="10000" />
+            <!--<meta-data
+                android:name="json_configuration"
+                android:value="" /> -->
+            <meta-data
+                android:name="json_configuration_full"
+                android:value="" />
         </activity>
         <activity
             android:name="interdroid.swan.sensors.impl.LocationSensor$ConfigurationActivity"
@@ -646,6 +655,29 @@
                	<meta-data
                 android:name="units"
                 android:value="mm/Hr" />               
+        </activity>
+        <activity
+            android:name="interdroid.swan.sensors.impl.RSSSensor$ConfigurationActivity"
+            android:exported="true"
+            android:icon="@drawable/rss_icon">
+            <intent-filter>
+                <action android:name="interdroid.swan.sensor.DISCOVER" />
+            </intent-filter>
+            <meta-data
+                android:name="entityId"
+                android:value="rss" />
+            <meta-data
+                android:name="valuePaths"
+                android:value="title,description,both" />
+            <meta-data
+                android:name="sample_interval"
+                android:value="10000" />
+            <meta-data
+                android:name="url"
+                android:value="" />
+            <meta-data
+                android:name="units"
+                android:value="" />
         </activity>
         <activity
             android:name="interdroid.swan.sensors.impl.ScreenSensor$ConfigurationActivity"
@@ -979,6 +1011,11 @@
             android:name="interdroid.swan.sensors.impl.RainSensor"
             android:exported="true"
             android:process=":rainsensor" >
+        </service>
+        <service
+            android:name="interdroid.swan.sensors.impl.RSSSensor"
+            android:exported="true"
+            android:process=":rsssensor" >
         </service>
         
       <!--   <provider

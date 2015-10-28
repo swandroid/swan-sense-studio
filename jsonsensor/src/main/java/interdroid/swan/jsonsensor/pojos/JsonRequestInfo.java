@@ -43,6 +43,16 @@ public class JsonRequestInfo implements Parcelable {
         this.maxPathToValueId = maxPathToValueId;
     }
 
+    public JsonRequestInfo(JsonRequestComplete jsonRequestComplete) {
+        this.id = jsonRequestComplete.id;
+        this.name = jsonRequestComplete.name;
+        this.url = jsonRequestComplete.url;
+        this.requestType = jsonRequestComplete.requestType;
+        this.parameterList = jsonRequestComplete.parameterList;
+        this.pathToValueList = null;
+        this.maxPathToValueId = 0;
+    }
+
     public void readFromParcel(Parcel in) {
         this.id = in.readInt();
         this.name = in.readString();

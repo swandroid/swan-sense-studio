@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">rss_sensor</string>
+
+    <string name="input_label_name">NAME</string>
+    <string name="input_label_url">URL</string>
+    <string name="input_label_string">STRING</string>
+</resources>

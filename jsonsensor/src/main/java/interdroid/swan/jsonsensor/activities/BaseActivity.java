@@ -10,7 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.liutoapps.android.jsonsensor.R;
+import interdroid.swan.jsonsensor.R;
 
 public abstract class BaseActivity extends ActionBarActivity {
 

@@ -14,11 +14,14 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import interdroid.swan.jsonsensor.JsonSensorSettings;
-import com.liutoapps.android.jsonsensor.R;
+import interdroid.swan.jsonsensor.R;
 import interdroid.swan.jsonsensor.pojos.JsonItem;
 import interdroid.swan.jsonsensor.pojos.JsonPathType;
+import interdroid.swan.jsonsensor.pojos.JsonRequestComplete;
 import interdroid.swan.jsonsensor.pojos.JsonRequestInfo;
 import interdroid.swan.jsonsensor.pojos.PathToValue;
+
+import com.google.gson.Gson;
 import com.melnykov.fab.FloatingActionButton;
 
 import org.json.JSONArray;
@@ -40,6 +43,7 @@ public class SelectionActivity extends BaseActivity {
     private static final int REQUEST_CODE_VALUE = 1002;
 
     public static final String REQUEST_EXTRA_RESULT = "result";
+    public static final String REQUEST_EXTRA_RESULT_FULL = "result_full";
 
     private View mEndpoint;
     private TextView mEndpointName;
@@ -77,7 +81,7 @@ public class SelectionActivity extends BaseActivity {
         mValue.setOnClickListener(mOnValueClickListener);
         mDividerView = findViewById(R.id.selection_divider_view);
         mExecute = (FloatingActionButton) findViewById(R.id.selection_fab);
-        mExecute.setOnClickListener(mOnExecuteClickListener);
+        mExecute.setOnClickListener(mOnSaveClickListener);
         mResult = (TextView) findViewById(R.id.selection_result);
         mProgress = (ProgressBar) findViewById(R.id.selection_progress);
     }
@@ -106,10 +110,15 @@ public class SelectionActivity extends BaseActivity {
         }
     };
 
-    private View.OnClickListener mOnExecuteClickListener = new View.OnClickListener() {
+    private View.OnClickListener mOnSaveClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            downloadData();
+            Intent intent = new Intent();
+            //intent.putExtra(REQUEST_EXTRA_RESULT, mJsonRequestKeyId + "," + mJsonRequestValueId);
+            intent.putExtra(REQUEST_EXTRA_RESULT_FULL, new Gson().toJson(new JsonRequestComplete(mJsonRequestInfo, mPathToValue)));
+            setResult(RESULT_OK, intent);
+            finish();
+            //downloadData();
         }
     };
 

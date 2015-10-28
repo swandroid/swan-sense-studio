@@ -305,4 +305,10 @@
         <item>value</item>
     </string-array>
 
+    <string-array name="rss_valuepaths">
+        <item>title</item>
+        <item>description</item>
+        <item>both</item>
+    </string-array>
+
 </resources>

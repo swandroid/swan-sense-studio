@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+	<PreferenceCategory android:title="Value Path">
+		<ListPreference android:title="Value Path"
+			android:summary="Select a Value Path" android:key="valuepath"
+			android:entries="@array/rss_valuepaths" android:entryValues="@array/rss_valuepaths" />
+	</PreferenceCategory>
+
+
+	<PreferenceCategory android:title="Configuration">
+		<interdroid.swan.util.SeekBarPreference
+			android:text="seconds" android:max="3600" android:defaultValue="300"
+			android:title="Sample Interval" android:key="sample_interval" />
+		<EditTextPreference android:key="url"
+			android:title="URL" android:summary="URL of RSS feed"
+			android:dialogTitle="Enter the URL of the RSS feed" />
+		<Preference
+			android:key="rss_configuration_full"
+			android:title="RSS configuration full"
+			android:summary="Select the url and value"
+			android:defaultValue="">
+			<intent
+				android:action="android.intent.action.VIEW"
+				android:targetPackage="interdroid.swan"
+				android:targetClass="interdroid.swan.rss_sensor.MainActivity" />
+		</Preference>
+
+	</PreferenceCategory>
+</PreferenceScreen>
+

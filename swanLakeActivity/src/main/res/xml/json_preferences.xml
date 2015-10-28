@@ -10,6 +10,26 @@
 			android:text=" seconds" android:max="3600" android:defaultValue="300"
 			android:title="Sample Interval" android:key="sample_interval"
 			android:persistent="false" />
+		<!--<Preference
+            android:key="json_configuration"
+			android:title="Json configuration"
+			android:summary="Select the url and value"
+			android:defaultValue="">
+			<intent
+				android:action="android.intent.action.VIEW"
+				android:targetPackage="interdroid.swan"
+				android:targetClass="interdroid.swan.jsonsensor.activities.SelectionActivity" />
+		</Preference>-->
+		<Preference
+			android:key="json_configuration_full"
+			android:title="Json configuration full"
+			android:summary="Select the url and value"
+			android:defaultValue="">
+			<intent
+				android:action="android.intent.action.VIEW"
+				android:targetPackage="interdroid.swan"
+				android:targetClass="interdroid.swan.jsonsensor.activities.SelectionActivity" />
+		</Preference>
 	</PreferenceCategory>
 	<!-- TODO add/change -->
 </PreferenceScreen>

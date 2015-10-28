@@ -20,10 +20,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import interdroid.swan.jsonsensor.JsonSensorSettings;
+import interdroid.swan.jsonsensor.R;
 import interdroid.swan.jsonsensor.adapters.JsonHeaderListAdapter;
 import interdroid.swan.jsonsensor.pojos.JsonItem;
 import interdroid.swan.jsonsensor.adapters.JsonListAdapter;
-import com.liutoapps.android.jsonsensor.R;
 import interdroid.swan.jsonsensor.pojos.JsonPathType;
 import interdroid.swan.jsonsensor.pojos.JsonRequestInfo;
 import interdroid.swan.jsonsensor.pojos.JsonRequestList;
@@ -358,7 +358,7 @@ public class JsonActivity extends BaseActivity {
             Log.d(TAG, "key: " + i + " " + jsonItems.get(i).key);
             JsonItem jsonItem = jsonItems.get(i);
 
-            JsonPathType jsonPathType = null;
+            JsonPathType jsonPathType;
             String key = jsonItem.key;
             if (isArray) {
                 jsonPathType = new JsonPathType(Integer.parseInt(key));
@@ -378,7 +378,7 @@ public class JsonActivity extends BaseActivity {
             }
             pathToValue.jsonPathTypes.add(jsonPathType);
         }
-        JsonPathType jsonPathType = null;
+        JsonPathType jsonPathType;
         String key = jsonValueItem.key;
         if (isArray) {
             jsonPathType = new JsonPathType((Integer.parseInt(key)));

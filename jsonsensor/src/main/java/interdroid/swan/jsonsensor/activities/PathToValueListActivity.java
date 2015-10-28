@@ -6,7 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.liutoapps.android.jsonsensor.R;
+import interdroid.swan.jsonsensor.R;
 import interdroid.swan.jsonsensor.adapters.PathToValueListAdapter;
 import interdroid.swan.jsonsensor.pojos.JsonRequestInfo;
 import interdroid.swan.jsonsensor.pojos.PathToValue;

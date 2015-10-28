@@ -6,8 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import interdroid.swan.jsonsensor.R;
 import interdroid.swan.jsonsensor.pojos.JsonItem;
-import com.liutoapps.android.jsonsensor.R;
 
 import java.util.ArrayList;
 import java.util.Collections;

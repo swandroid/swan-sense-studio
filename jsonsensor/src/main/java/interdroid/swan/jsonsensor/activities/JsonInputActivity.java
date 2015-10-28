@@ -13,7 +13,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import interdroid.swan.jsonsensor.JsonSensorSettings;
-import com.liutoapps.android.jsonsensor.R;
+import interdroid.swan.jsonsensor.R;
 import interdroid.swan.jsonsensor.adapters.ParameterListAdapter;
 import interdroid.swan.jsonsensor.pojos.JsonRequestInfo;
 import interdroid.swan.jsonsensor.pojos.JsonRequestList;
@@ -49,7 +49,7 @@ public class JsonInputActivity extends BaseActivity {
 
     private void getViews() {
         mSelectionSpinner = (Spinner) findViewById(R.id.json_input_selection_spinner);
-        //TODO: adapter from preferences
+        //TODO: adapter from preferences if possible
         JsonRequestList jsonRequestList = JsonSensorSettings.getInstance().getJsonRequestList();
         mSelectionAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_dropdown_item, jsonRequestList.jsonRequestInfoList);
@@ -119,7 +119,7 @@ public class JsonInputActivity extends BaseActivity {
         int menuId = item.getItemId();
 
         if (menuId == R.id.action_save) {
-            JsonRequestInfo jsonRequestInfo = null;
+            JsonRequestInfo jsonRequestInfo;
             JsonRequestList jsonRequestList = JsonSensorSettings.getInstance().getJsonRequestList();
             if (((JsonRequestInfo)mSelectionSpinner.getSelectedItem()).id == 0) {
                 int id = jsonRequestList.maxId += 1;

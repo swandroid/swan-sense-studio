@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.liutoapps.android.jsonsensor.R;
+import interdroid.swan.jsonsensor.R;
 import interdroid.swan.jsonsensor.pojos.JsonPathType;
 import interdroid.swan.jsonsensor.pojos.PathToValue;
 
