@@ -56,6 +56,13 @@ public class Registry {
 		setDirty(context, true);
 	}
 
+	public static void removeAll(Context context) {
+		for(String name : names) {
+			removeFromDb(context, name);
+			setDirty(context, true);
+		}
+	}
+
 	public static String get(Context context, String name) {
 		if (name.startsWith(Expression.REGID_PREFIX)) {
 			return name.substring(Expression.REGID_PREFIX.length() - 1);

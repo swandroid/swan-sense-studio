@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "interdroid.swan"
-        minSdkVersion 14
+        minSdkVersion 16
         targetSdkVersion 22
     }
 
