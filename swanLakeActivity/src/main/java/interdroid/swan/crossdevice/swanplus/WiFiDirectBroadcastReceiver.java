@@ -1,4 +1,4 @@
-package interdroid.swan.crossdevice;
+package interdroid.swan.crossdevice.swanplus;
 
 import java.net.InetAddress;
 

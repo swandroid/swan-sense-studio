@@ -95,7 +95,7 @@
         </activity> 
 
         <activity
-            android:name="interdroid.swan.crossdevice.SwanLakePlusActivity"
+            android:name=".crossdevice.swanplus.SwanLakePlusActivity"
             android:label="SwanLake+"
             android:screenOrientation="portrait">
             <intent-filter>

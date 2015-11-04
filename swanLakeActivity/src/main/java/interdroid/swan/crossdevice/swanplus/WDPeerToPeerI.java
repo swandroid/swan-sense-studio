@@ -1,4 +1,4 @@
-package interdroid.swan.crossdevice;
+package interdroid.swan.crossdevice.swanplus;
 
 import android.net.wifi.p2p.WifiP2pDevice;
 

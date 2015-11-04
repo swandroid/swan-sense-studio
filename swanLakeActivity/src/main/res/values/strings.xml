@@ -9,6 +9,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_share">Share</string>
     <string name="action_delete">Delete</string>
+    <string name="action_save">Save</string>
     <string name="action_set_name">Set Name</string>
     <string name="action_enable">Enable</string>
     <string name="action_refresh">Refresh</string>

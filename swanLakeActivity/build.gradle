@@ -1,7 +1,6 @@
 apply plugin: 'com.android.application'
 
 android {
-<<<<<<< 81e3a3942c2fda28fa5c9e644828dc5b6e99635f
     compileSdkVersion 23
     buildToolsVersion '23.0.2'
 
