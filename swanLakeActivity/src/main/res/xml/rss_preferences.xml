@@ -11,9 +11,9 @@
 		<interdroid.swan.util.SeekBarPreference
 			android:text="seconds" android:max="3600" android:defaultValue="300"
 			android:title="Sample Interval" android:key="sample_interval" />
-		<EditTextPreference android:key="url"
-			android:title="URL" android:summary="URL of RSS feed"
-			android:dialogTitle="Enter the URL of the RSS feed" />
+		<!--<EditTextPreference android:key="url"-->
+			<!--android:title="URL" android:summary="URL of RSS feed"-->
+			<!--android:dialogTitle="Enter the URL of the RSS feed" />-->
 		<Preference
 			android:key="rss_configuration_full"
 			android:title="RSS configuration full"
@@ -22,7 +22,7 @@
 			<intent
 				android:action="android.intent.action.VIEW"
 				android:targetPackage="interdroid.swan"
-				android:targetClass="interdroid.swan.rss_sensor.MainActivity" />
+				android:targetClass="interdroid.swan.rss_sensor.activities.RssMainActivity" />
 		</Preference>
 
 	</PreferenceCategory>

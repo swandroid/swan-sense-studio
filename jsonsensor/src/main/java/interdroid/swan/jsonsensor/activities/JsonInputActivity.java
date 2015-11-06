@@ -50,7 +50,7 @@ public class JsonInputActivity extends BaseActivity {
     private void getViews() {
         mSelectionSpinner = (Spinner) findViewById(R.id.json_input_selection_spinner);
         //TODO: adapter from preferences if possible
-        JsonRequestList jsonRequestList = JsonSensorSettings.getInstance().getJsonRequestList();
+        JsonRequestList jsonRequestList = JsonSensorSettings.getInstance(getApplicationContext()).getJsonRequestList();
         mSelectionAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_dropdown_item, jsonRequestList.jsonRequestInfoList);
         mSelectionSpinner.setAdapter(mSelectionAdapter);
@@ -120,7 +120,7 @@ public class JsonInputActivity extends BaseActivity {
 
         if (menuId == R.id.action_save) {
             JsonRequestInfo jsonRequestInfo;
-            JsonRequestList jsonRequestList = JsonSensorSettings.getInstance().getJsonRequestList();
+            JsonRequestList jsonRequestList = JsonSensorSettings.getInstance(getApplicationContext()).getJsonRequestList();
             if (((JsonRequestInfo)mSelectionSpinner.getSelectedItem()).id == 0) {
                 int id = jsonRequestList.maxId += 1;
                 jsonRequestList.maxId = id;
@@ -135,7 +135,7 @@ public class JsonInputActivity extends BaseActivity {
             jsonRequestInfo.url = mUrl.getText().toString();
             jsonRequestInfo.parameterList = mAdapter.getParamterList();
 
-            JsonSensorSettings.getInstance().setJsonRequestList(jsonRequestList);
+            JsonSensorSettings.getInstance(getApplicationContext()).setJsonRequestList(jsonRequestList);
 
             Intent intent = new Intent();
             intent.putExtra(SelectionActivity.REQUEST_EXTRA_RESULT, jsonRequestInfo.id);

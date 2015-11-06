@@ -309,6 +309,8 @@
         <item>title</item>
         <item>description</item>
         <item>both</item>
+        <item>count</item>
+        <item>present</item>
     </string-array>
 
 </resources>

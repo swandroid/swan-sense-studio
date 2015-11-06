@@ -657,7 +657,7 @@
                 android:value="mm/Hr" />               
         </activity>
         <activity
-            android:name="interdroid.swan.sensors.impl.RSSSensor$ConfigurationActivity"
+            android:name=".sensors.impl.RssSensor$ConfigurationActivity"
             android:exported="true"
             android:icon="@drawable/rss_icon">
             <intent-filter>
@@ -668,16 +668,16 @@
                 android:value="rss" />
             <meta-data
                 android:name="valuePaths"
-                android:value="title,description,both" />
+                android:value="title,description,both,count,present" />
             <meta-data
                 android:name="sample_interval"
                 android:value="10000" />
             <meta-data
-                android:name="url"
+                android:name="rss_configuration_full"
                 android:value="" />
             <meta-data
                 android:name="units"
-                android:value="" />
+                android:value=",,,,z" />
         </activity>
         <activity
             android:name="interdroid.swan.sensors.impl.ScreenSensor$ConfigurationActivity"
@@ -1013,7 +1013,7 @@
             android:process=":rainsensor" >
         </service>
         <service
-            android:name="interdroid.swan.sensors.impl.RSSSensor"
+            android:name=".sensors.impl.RssSensor"
             android:exported="true"
             android:process=":rsssensor" >
         </service>

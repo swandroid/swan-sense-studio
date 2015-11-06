@@ -129,7 +129,6 @@ public class JsonSensor extends AbstractSwanSensor {
 		private String valuePath;
 		private String id;
 
-        private String url;
         private JsonRequestInfo mJsonRequestInfo;
         private PathToValue mPathToValue;
         private long mStart;

@@ -19,16 +19,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import interdroid.swan.jsonsensor.JsonSensorSettings;
-import interdroid.swan.jsonsensor.R;
-import interdroid.swan.jsonsensor.adapters.JsonHeaderListAdapter;
-import interdroid.swan.jsonsensor.pojos.JsonItem;
-import interdroid.swan.jsonsensor.adapters.JsonListAdapter;
-import interdroid.swan.jsonsensor.pojos.JsonPathType;
-import interdroid.swan.jsonsensor.pojos.JsonRequestInfo;
-import interdroid.swan.jsonsensor.pojos.JsonRequestList;
-import interdroid.swan.jsonsensor.pojos.Parameter;
-import interdroid.swan.jsonsensor.pojos.PathToValue;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,6 +29,17 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import interdroid.swan.jsonsensor.JsonSensorSettings;
+import interdroid.swan.jsonsensor.R;
+import interdroid.swan.jsonsensor.adapters.JsonHeaderListAdapter;
+import interdroid.swan.jsonsensor.adapters.JsonListAdapter;
+import interdroid.swan.jsonsensor.pojos.JsonItem;
+import interdroid.swan.jsonsensor.pojos.JsonPathType;
+import interdroid.swan.jsonsensor.pojos.JsonRequestInfo;
+import interdroid.swan.jsonsensor.pojos.JsonRequestList;
+import interdroid.swan.jsonsensor.pojos.Parameter;
+import interdroid.swan.jsonsensor.pojos.PathToValue;
 
 
 public class JsonActivity extends BaseActivity {
@@ -395,7 +396,7 @@ public class JsonActivity extends BaseActivity {
     }
 
     private void savePathToValue(PathToValue pathToValue) {
-        JsonRequestList jsonRequestList = JsonSensorSettings.getInstance().getJsonRequestList();
+        JsonRequestList jsonRequestList = JsonSensorSettings.getInstance(getApplicationContext()).getJsonRequestList();
         List<JsonRequestInfo> jsonRequestInfoList = jsonRequestList.jsonRequestInfoList;
         int id = 0;
         for (int i = 0; i < jsonRequestInfoList.size(); i++) {
@@ -405,7 +406,7 @@ public class JsonActivity extends BaseActivity {
                 pathToValue.id = jsonRequestInfo.maxPathToValueId;
                 id = jsonRequestInfo.maxPathToValueId;
                 jsonRequestInfo.pathToValueList.add(pathToValue);
-                JsonSensorSettings.getInstance().setJsonRequestList(jsonRequestList);
+                JsonSensorSettings.getInstance(getApplicationContext()).setJsonRequestList(jsonRequestList);
                 Intent intent = new Intent();
                 intent.putExtra(SelectionActivity.REQUEST_EXTRA_RESULT, id);
                 setResult(RESULT_OK, intent);

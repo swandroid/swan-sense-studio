@@ -29,17 +29,17 @@ public class RssSensorSettings {
     private ArrayList<RssRequestInfo> mRssRequestUrls;
     private ArrayList<String> mRssRequestStrings;
 
-    private RssSensorSettings() {
+    private RssSensorSettings(Context context) {
         mExecutor = Executors.newSingleThreadExecutor();
         //mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(JsonSensorApp.getInstance());
-        mSharedPreferences = RssSensorApp.getInstance().getSharedPreferences("RssSensor", Context.MODE_PRIVATE);
+        mSharedPreferences = context.getSharedPreferences("RssSensor", Context.MODE_PRIVATE);
 
         loadData();
     }
 
-    public static RssSensorSettings getInstance() {
+    public static RssSensorSettings getInstance(Context context) {
         if (sInstance == null) {
-            sInstance = new RssSensorSettings();
+            sInstance = new RssSensorSettings(context);
         }
         return sInstance;
     }
@@ -47,17 +47,17 @@ public class RssSensorSettings {
     private void loadData() {
         String rssRequestUrls = mSharedPreferences.getString(KEY_RSS_REQUEST_URLS, null);
         if (rssRequestUrls == null) {
-            mRssRequestUrls = new ArrayList<String>();
-            mRssRequestUrls.add("Add new request");
+            mRssRequestUrls = new ArrayList<RssRequestInfo>();
+            mRssRequestUrls.add(new RssRequestInfo(0, "Add new request"));
         } else {
-            Type listObject = new TypeToken<List<String>>(){}.getType();
+            Type listObject = new TypeToken<List<RssRequestInfo>>(){}.getType();
             mRssRequestUrls = new Gson().fromJson(rssRequestUrls, listObject);
         }
 
         String rssRequestStrings = mSharedPreferences.getString(KEY_RSS_REQUEST_STRINGS, null);
         if (rssRequestStrings == null) {
             mRssRequestStrings = new ArrayList<String>();
-            mRssRequestStrings.add("Add new string");
+            mRssRequestStrings.add("Add new word");
         } else {
             Type listObject = new TypeToken<List<String>>(){}.getType();
             mRssRequestStrings = new Gson().fromJson(rssRequestStrings, listObject);
@@ -75,12 +75,12 @@ public class RssSensorSettings {
         });
     }
 
-    public void setRssRequestUrls(ArrayList<String> rssRequestUrls) {
+    public void setRssRequestUrls(ArrayList<RssRequestInfo> rssRequestUrls) {
         mRssRequestUrls = rssRequestUrls;
         persistString(KEY_RSS_REQUEST_URLS, new Gson().toJson(mRssRequestUrls));
     }
 
-    public ArrayList<String> getRssRequestUrls() {
+    public ArrayList<RssRequestInfo> getRssRequestUrls() {
         return mRssRequestUrls;
     }
 }

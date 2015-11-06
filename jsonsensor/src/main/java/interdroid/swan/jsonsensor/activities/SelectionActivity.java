@@ -13,14 +13,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import interdroid.swan.jsonsensor.JsonSensorSettings;
-import interdroid.swan.jsonsensor.R;
-import interdroid.swan.jsonsensor.pojos.JsonItem;
-import interdroid.swan.jsonsensor.pojos.JsonPathType;
-import interdroid.swan.jsonsensor.pojos.JsonRequestComplete;
-import interdroid.swan.jsonsensor.pojos.JsonRequestInfo;
-import interdroid.swan.jsonsensor.pojos.PathToValue;
-
 import com.google.gson.Gson;
 import com.melnykov.fab.FloatingActionButton;
 
@@ -31,6 +23,14 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import interdroid.swan.jsonsensor.JsonSensorSettings;
+import interdroid.swan.jsonsensor.R;
+import interdroid.swan.jsonsensor.pojos.JsonItem;
+import interdroid.swan.jsonsensor.pojos.JsonPathType;
+import interdroid.swan.jsonsensor.pojos.JsonRequestComplete;
+import interdroid.swan.jsonsensor.pojos.JsonRequestInfo;
+import interdroid.swan.jsonsensor.pojos.PathToValue;
 
 /**
  * Created by steven on 04/06/15.
@@ -65,7 +65,7 @@ public class SelectionActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setActionBarIcon(0);
+        setActionBarIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
 
         getViews();
     }
@@ -128,7 +128,7 @@ public class SelectionActivity extends BaseActivity {
         if (requestCode == REQUEST_CODE_ENDPOINT) {
             if (resultCode == RESULT_OK) {
                 mJsonRequestKeyId = data.getIntExtra(REQUEST_EXTRA_RESULT, 0);
-                List<JsonRequestInfo> jsonRequestInfoList = JsonSensorSettings.getInstance().getJsonRequestList().jsonRequestInfoList;
+                List<JsonRequestInfo> jsonRequestInfoList = JsonSensorSettings.getInstance(getApplicationContext()).getJsonRequestList().jsonRequestInfoList;
                 int size = jsonRequestInfoList.size();
                 for (int i = 0; i < size; i++) {
                     if (jsonRequestInfoList.get(i).id == mJsonRequestKeyId) {

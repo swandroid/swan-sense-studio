@@ -8,10 +8,17 @@ import android.os.Parcelable;
  */
 public class RssRequestInfo implements Parcelable {
 
+    public int id;
     public String name;
     public String url;
 
+    public RssRequestInfo(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     protected RssRequestInfo(Parcel in) {
+        id = in.readInt();
         name = in.readString();
         url = in.readString();
     }
@@ -49,7 +56,13 @@ public class RssRequestInfo implements Parcelable {
      */
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
         dest.writeString(name);
         dest.writeString(url);
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

@@ -1,4 +1,4 @@
-package interdroid.swan.jsonsensor.activities;
+package interdroid.swan.rss_sensor.activities;
 
 /**
  * Created by steven on 24/10/14.
@@ -10,7 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import interdroid.swan.jsonsensor.R;
+import interdroid.swan.rss_sensor.R;
 
 public abstract class BaseActivity extends AppCompatActivity {
 

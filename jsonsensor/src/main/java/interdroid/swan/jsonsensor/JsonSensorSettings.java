@@ -2,14 +2,14 @@ package interdroid.swan.jsonsensor;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 
 import com.google.gson.Gson;
-import interdroid.swan.jsonsensor.pojos.JsonRequestInfo;
-import interdroid.swan.jsonsensor.pojos.JsonRequestList;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import interdroid.swan.jsonsensor.pojos.JsonRequestInfo;
+import interdroid.swan.jsonsensor.pojos.JsonRequestList;
 
 /**
  * Created by steven on 19/05/15.
@@ -24,17 +24,17 @@ public class JsonSensorSettings {
 
     private JsonRequestList mJsonRequestList;
 
-    private JsonSensorSettings() {
+    private JsonSensorSettings(Context context) {
         mExecutor = Executors.newSingleThreadExecutor();
         //mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(JsonSensorApp.getInstance());
-        mSharedPreferences = JsonSensorApp.getInstance().getSharedPreferences("JsonSensor", Context.MODE_PRIVATE);
+        mSharedPreferences = context.getSharedPreferences("JsonSensor", Context.MODE_PRIVATE);
 
         loadData();
     }
 
-    public static JsonSensorSettings getInstance() {
+    public static JsonSensorSettings getInstance(Context context) {
         if (sInstance == null) {
-            sInstance = new JsonSensorSettings();
+            sInstance = new JsonSensorSettings(context);
         }
         return sInstance;
     }
