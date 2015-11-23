@@ -179,7 +179,8 @@ public class ExpressionManager {
 						BitmapFactory.decodeResource(
 								pm.getResourcesForApplication(discoveredSensor.activityInfo.packageName),
 								discoveredSensor.activityInfo.icon));
-				Log.d(TAG, "\t" + discoveredSensor.activityInfo.name);
+//				Log.d(TAG, "\t" + discoveredSensor.activityInfo.name);
+				Log.d(TAG, "\t" + discoveredSensor.activityInfo.metaData.getString("entityId"));
 				result.add(new SensorInfo(new ComponentName(
 						discoveredSensor.activityInfo.packageName,
 						discoveredSensor.activityInfo.name),
