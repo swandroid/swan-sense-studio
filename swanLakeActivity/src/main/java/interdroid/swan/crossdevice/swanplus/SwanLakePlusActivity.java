@@ -425,7 +425,7 @@ public class SwanLakePlusActivity extends FragmentActivity implements WDPeerToPe
         initPeersDiscovery();
         registerService();
 
-        Registry.removeAll(this);
+//        Registry.removeAll(this);
     }
 
     @Override
@@ -453,7 +453,7 @@ public class SwanLakePlusActivity extends FragmentActivity implements WDPeerToPe
                             });
                             return;
                         }
-                        unregisterService();
+
                         PreferenceManager
                                 .getDefaultSharedPreferences(
                                         SwanLakePlusActivity.this)
@@ -572,6 +572,10 @@ public class SwanLakePlusActivity extends FragmentActivity implements WDPeerToPe
 
         userAttribMap.put("name", userFriendlyName);
         userAttribMap.put("regId", regId);
+
+        if(serviceInfo != null) {
+            unregisterService();
+        }
 
         // Service information.  Pass it an instance name, service type
         // _protocol._transportlayer , and the map containing

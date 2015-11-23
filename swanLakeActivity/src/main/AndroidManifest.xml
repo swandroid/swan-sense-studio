@@ -113,6 +113,24 @@
         </activity>
 
         <activity
+            android:name=".crossdevice.swanplus.TestActivity"
+            android:label="SwanLakeTest+"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:scheme="swan" />
+            </intent-filter>
+        </activity>
+
+        <activity
             android:name="interdroid.sense.LoginActivity"
             android:icon="@drawable/ic_launcher_lake"
             android:label="@string/title_activity_login"

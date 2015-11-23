@@ -46,4 +46,7 @@
     <string name="sense_logout">Logout from Sense</string>
     <string name="sense_signup">Sign up to Sense</string>
     <string name="sense_settings">Sense Settings</string>
+
+    <!-- tmp stuff -->
+    <string name="accelerometer_value">Accelerometer Value</string>
 </resources>
