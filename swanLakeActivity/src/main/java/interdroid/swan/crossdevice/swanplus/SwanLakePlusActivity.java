@@ -558,7 +558,6 @@ public class SwanLakePlusActivity extends FragmentActivity implements WDPeerToPe
                 .getString("name", null);
         if (userFriendlyName == null) {
             runOnUiThread(new Runnable() {
-
                 @Override
                 public void run() {
                     Toast.makeText(SwanLakePlusActivity.this,
@@ -634,14 +633,31 @@ public class SwanLakePlusActivity extends FragmentActivity implements WDPeerToPe
         WifiP2pManager.DnsSdTxtRecordListener txtListener = new WifiP2pManager.DnsSdTxtRecordListener() {
             @Override
             public void onDnsSdTxtRecordAvailable(String fullDomain, Map<String, String> userAttribMap, WifiP2pDevice device) {
-                SwanUser nearbyUser = new SwanUser(userAttribMap.get("name"), userAttribMap.get("regId"));
+                final SwanUser nearbyUser = new SwanUser(userAttribMap.get("name"), userAttribMap.get("regId"));
 
                 if(!nearbyPeers.contains(nearbyUser)) {
                     nearbyPeers.add(nearbyUser);
-                    mNearbyPeersAdapter.notifyDataSetChanged();;
-                }
+                    mNearbyPeersAdapter.notifyDataSetChanged();
+                    Log.d(TAG, "Found new nearby user " + nearbyUser);
+                } else {
+                    SwanUser user = nearbyPeers.get(nearbyPeers.indexOf(nearbyUser));
 
-                Log.d(TAG, "Found new nearby user " + nearbyUser);
+                    if(!user.getRegId().equals(nearbyUser.getRegId())) {
+                        // TODO this could have other implications later
+                        // (for example if there is an active connection between the 2 users)
+                        nearbyPeers.remove(user);
+                        nearbyPeers.add(nearbyUser);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(SwanLakePlusActivity.this,
+                                        "Updated nearby user " + nearbyUser,
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        Log.d(TAG, "Updated nearby user " + nearbyUser);
+                    }
+                }
             }
         };
 
@@ -661,7 +677,7 @@ public class SwanLakePlusActivity extends FragmentActivity implements WDPeerToPe
         p2pManager.discoverServices(p2pChannel, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
-                Log.d(TAG, "peer discovery was successful");
+                /*Log.d(TAG, "peer discovery was successful");*/
             }
 
             @Override

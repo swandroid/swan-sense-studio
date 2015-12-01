@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 public class TestActivity extends Activity {
@@ -29,6 +30,8 @@ public class TestActivity extends Activity {
     public final int REQUEST_CODE = 123;
 
     TextView tv = null;
+    String mExpression;
+    private boolean mRegistered = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +43,7 @@ public class TestActivity extends Activity {
     }
 
     public void testSensor() {
-        String myExpression = "self@light:lux{ANY,0}";
+        String myExpression = "SWAN1@light:lux{ANY,0}";
         registerSWANSensor(myExpression);
     }
 
@@ -58,6 +61,24 @@ public class TestActivity extends Activity {
 
     }
 
+    public void registerExpression(View view) {
+        if (mExpression != null) {
+            if(!mRegistered) {
+                registerSWANSensor(mExpression);
+            } else {
+                Log.d(TAG, "Already registered");
+            }
+        }
+    }
+
+    public void unregisterExpression(View view) {
+        if(mRegistered) {
+            unregisterSWANSensor();
+        } else {
+            Log.d(TAG, "Already unregistered");
+        }
+    }
+
     /* Invoked on pressing back key from the sensor configuration activity */
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -66,12 +87,9 @@ public class TestActivity extends Activity {
         if (resultCode == RESULT_OK) {
 
             if (REQUEST_CODE == requestCode) {
-                String myExpression = data.getStringExtra("Expression");
+                mExpression = data.getStringExtra("Expression");
 					/*Based on sensor configuration an expression will be created*/
-                Log.d(TAG, "expression: " + myExpression);
-
-                registerSWANSensor(myExpression);
-
+                Log.d(TAG, "expression: " + mExpression);
             }
         }
 
@@ -79,7 +97,6 @@ public class TestActivity extends Activity {
 
     /* Register expression to SWAN */
     private void registerSWANSensor(String myExpression){
-
         try {
             ExpressionManager.registerValueExpression(this, String.valueOf(REQUEST_CODE),
                     (ValueExpression) ExpressionFactory.parse(myExpression),
@@ -98,6 +115,7 @@ public class TestActivity extends Activity {
 
                         }
                     });
+            mRegistered = true;
         } catch (SwanException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -111,9 +129,8 @@ public class TestActivity extends Activity {
 
     /* Unregister expression from SWAN */
     private void unregisterSWANSensor(){
-
         ExpressionManager.unregisterExpression(this, String.valueOf(REQUEST_CODE));
-
+        mRegistered = false;
     }
 
 
