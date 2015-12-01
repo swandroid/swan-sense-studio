@@ -130,6 +130,16 @@
             </intent-filter>
         </activity>
 
+        <receiver android:name="interdroid.swan.crossdevice.swanplus.TestReceiver" >
+            <intent-filter>
+                <data
+                    android:host="interdroid.swan.crossdevice.swanplus"
+                    android:scheme="swan" />
+
+                <action android:name="interdroid.swan.NEW_TRISTATE" />
+            </intent-filter>
+        </receiver>
+
         <activity
             android:name="interdroid.sense.LoginActivity"
             android:icon="@drawable/ic_launcher_lake"

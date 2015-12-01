@@ -14,4 +14,27 @@
         android:layout_height="wrap_content"
         android:text="@string/accelerometer_value" />
 
+    <LinearLayout
+        android:id="@+id/mLlayoutBottomButtons"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/buttonReg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="registerExpression"
+            android:text="Register" />
+
+        <Button
+            android:id="@+id/buttonUnreg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="unregisterExpression"
+            android:text="Unregister" />
+    </LinearLayout>
 </RelativeLayout>

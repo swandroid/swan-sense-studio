@@ -335,8 +335,17 @@ public class EvaluationManager {
 		throw new RuntimeException("Unknown expression type: " + expression);
 	}
 
+	// send a push message with 'unregister'
 	private void stopRemote(String id, Expression expression) {
-		// send a push message with 'unregister'
+		// for some reason this was set to null in the original version of swan, which made it impossible
+		// to unregister remotely
+		String fromRegistrationId = Registry.get(mContext,
+				Expression.LOCATION_SELF);
+		if (fromRegistrationId == null) {
+			throw new RuntimeException(
+					"Device not registered with Google Cloud Messaging, unable to use remote sensors.");
+		}
+
 		String toRegistrationId = Registry.get(mContext,
 				expression.getLocation());
 		if (toRegistrationId == null) {
@@ -347,7 +356,7 @@ public class EvaluationManager {
 		}
 		// resolve all remote locations in the expression with respect to the
 		// new location.
-		Pusher.push(null, toRegistrationId, id,
+		Pusher.push(fromRegistrationId, toRegistrationId, id,
 				EvaluationEngineService.ACTION_UNREGISTER_REMOTE,
 				toCrossDeviceString(expression, toRegistrationId));
 	}
@@ -723,6 +732,7 @@ public class EvaluationManager {
 				// TODO make this a constant (configurable?)
 				result.setDeferUntil(now + 1000);
 				result.setDeferUntilGuaranteed(false);
+				Log.d(TAG, "Deferred until: " + (now + 1000));
 				return result;
 			}
 
@@ -737,6 +747,7 @@ public class EvaluationManager {
 				// when they arrive
 				result.setDeferUntil(Long.MAX_VALUE);
 				result.setDeferUntilGuaranteed(false);
+				Log.d(TAG, "Cannot defer based on values");
 			} else {
 				result.setDeferUntil(values.get(values.size() - 1)
 						.getTimestamp() + expression.getHistoryLength());

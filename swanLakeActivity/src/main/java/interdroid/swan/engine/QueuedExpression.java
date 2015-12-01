@@ -94,6 +94,15 @@ public class QueuedExpression implements Comparable<QueuedExpression> {
 		}
 	}
 
+	/**
+	 * added as patch by Vladimir to get distributed sensing working (see where it's called)
+	 */
+	public void setDeferUntil(long deferUntil) {
+		if(mCurrentResult != null) {
+			mCurrentResult.setDeferUntil(deferUntil);
+		}
+	}
+
 	public boolean isDeferUntilGuaranteed() {
 		if (mCurrentResult != null) {
 			return mCurrentResult.isDeferUntilGuaranteed();
