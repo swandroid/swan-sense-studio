@@ -11,6 +11,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.TypedArray;
+import android.net.wifi.WpsInfo;
+import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceInfo;
@@ -82,15 +84,16 @@ public class SwanLakePlusActivity extends FragmentActivity implements WDPeerToPe
     ListFragment mContactsFragment = new ContactsListFragment();
     ListFragment mNearbyPeersFragment = new NearbyPeersListFragment();
 
-    private WifiP2pManager p2pManager;
+    public static WifiP2pManager p2pManager;
 
-    private WifiP2pManager.Channel p2pChannel;
+    private static WifiP2pManager.Channel p2pChannel;
     private BroadcastReceiver p2pReceiver;
     private IntentFilter p2pIntentFilter;
     private Handler handler;
     private WifiP2pDnsSdServiceInfo serviceInfo;
+    private WifiDirectAutoAccept wdAutoAccept;
 
-    static List<SwanUser> nearbyPeers = new ArrayList<SwanUser>();
+    public static List<SwanUser> nearbyPeers = new ArrayList<SwanUser>();
     private static RegisteredSWANsAdapter mContactsAdapter;
     private static NearbySWANsAdapter mNearbyPeersAdapter;
 
@@ -418,14 +421,41 @@ public class SwanLakePlusActivity extends FragmentActivity implements WDPeerToPe
         /* initialize WifiDirect service */
         p2pManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
         p2pChannel = p2pManager.initialize(this, getMainLooper(), null);
-        p2pReceiver = new WiFiDirectBroadcastReceiver(p2pManager, p2pChannel, this);
+        p2pReceiver = new WDBroadcastReceiver(p2pManager, p2pChannel, this);
         p2pIntentFilter = new IntentFilter();
+        p2pIntentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
+        wdAutoAccept = new WifiDirectAutoAccept(this);
         handler = new Handler();
 
         initPeersDiscovery();
         registerService();
 
 //        Registry.removeAll(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(p2pReceiver, p2pIntentFilter);
+        wdAutoAccept.intercept(true);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(p2pReceiver);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        wdAutoAccept.intercept(false);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        wdAutoAccept.intercept(false);
     }
 
     @Override
@@ -633,7 +663,7 @@ public class SwanLakePlusActivity extends FragmentActivity implements WDPeerToPe
         WifiP2pManager.DnsSdTxtRecordListener txtListener = new WifiP2pManager.DnsSdTxtRecordListener() {
             @Override
             public void onDnsSdTxtRecordAvailable(String fullDomain, Map<String, String> userAttribMap, WifiP2pDevice device) {
-                final SwanUser nearbyUser = new SwanUser(userAttribMap.get("name"), userAttribMap.get("regId"));
+                final SwanUser nearbyUser = new SwanUser(userAttribMap.get("name"), userAttribMap.get("regId"), device);
 
                 if(!nearbyPeers.contains(nearbyUser)) {
                     nearbyPeers.add(nearbyUser);
@@ -687,6 +717,40 @@ public class SwanLakePlusActivity extends FragmentActivity implements WDPeerToPe
                     Log.d(TAG, "P2P isn't supported on this device.");
                 } else {
                     Log.d(TAG, "some other error");
+                }
+            }
+        });
+    }
+
+    public static void connect(WifiP2pDevice device) {
+        WifiP2pConfig config = new WifiP2pConfig();
+        config.deviceAddress = device.deviceAddress;
+        config.wps.setup = WpsInfo.PBC;
+
+        Log.d("connect", "connecting to peer");
+        p2pManager.connect(p2pChannel, config, new WifiP2pManager.ActionListener() {
+
+            @Override
+            public void onSuccess() {
+                Log.d("connect", "connection succesful");
+            }
+
+            @Override
+            public void onFailure(int reason) {
+                Log.d(TAG, "Connect failed. Retry.");
+
+                switch (reason) {
+                    case WifiP2pManager.P2P_UNSUPPORTED:
+                        Log.e("connect failed", "p2p unsupported");
+                        break;
+                    case WifiP2pManager.ERROR:
+                        Log.e("connect failed", "internal error");
+                        break;
+                    case WifiP2pManager.BUSY:
+                        Log.e("connect failed", "busy");
+                        break;
+                    default:
+                        break;
                 }
             }
         });

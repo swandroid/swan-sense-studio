@@ -15,6 +15,7 @@ import com.google.android.gcm.server.Result;
 import com.google.android.gcm.server.Sender;
 
 import interdroid.swan.crossdevice.swanplus.SwanLakePlusActivity;
+import interdroid.swan.crossdevice.swanplus.SwanUser;
 
 public class Pusher {
 
@@ -31,7 +32,8 @@ public class Pusher {
 			final String action, final String data) {
 		new Thread() {
 			public void run() {
-				sendOverGCM(fromRegistrationId, toRegistrationId, expressionId, action, data);
+//				sendOverGCM(fromRegistrationId, toRegistrationId, expressionId, action, data);
+				sendOverWD(fromRegistrationId, toRegistrationId, expressionId, action, data);
 			}
 		}.start();
 	}
@@ -55,10 +57,16 @@ public class Pusher {
 			os.writeObject(dataMap);
 			byte[] sendData = outputStream.toByteArray();
 
-			DatagramSocket clientSocket = new DatagramSocket();
-			DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, null /* TODO */, PORT);
-			clientSocket.send(sendPacket);
-			clientSocket.close();
+			for(SwanUser user : SwanLakePlusActivity.nearbyPeers) {
+				if(user.getRegId().equals(toRegistrationId)) {
+					SwanLakePlusActivity.connect(user.getDevice());
+				}
+			}
+
+//			DatagramSocket clientSocket = new DatagramSocket();
+//			DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, null /* TODO */, PORT);
+//			clientSocket.send(sendPacket);
+//			clientSocket.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

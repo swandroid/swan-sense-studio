@@ -246,7 +246,7 @@ public class WifiDirectAutoAccept {
 
                 @Override
                 public void onSuccess() {
-                    // WiFiDirectBroadcastReceiver will notify us. Ignore for now.
+                    // WDBroadcastReceiver will notify us. Ignore for now.
                 }
 
                 @Override
