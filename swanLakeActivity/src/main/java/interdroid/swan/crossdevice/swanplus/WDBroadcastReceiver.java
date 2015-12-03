@@ -17,7 +17,7 @@ import android.util.Log;
 /**
  * A BroadcastReceiver that notifies of important Wi-Fi p2p events.
  */
-public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
+public class WDBroadcastReceiver extends BroadcastReceiver {
 	
 	private final String TAG = getClass().getName();
 
@@ -25,7 +25,7 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
     private Channel p2pChannel;
     private WDPeerToPeerI wdP2pActivity;
 
-    public WiFiDirectBroadcastReceiver(WifiP2pManager manager, Channel channel, WDPeerToPeerI activity) {
+    public WDBroadcastReceiver(WifiP2pManager manager, Channel channel, WDPeerToPeerI activity) {
         this.p2pManager = manager;
         this.p2pChannel = channel;
         this.wdP2pActivity = activity;
@@ -56,9 +56,10 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
                 });
             }
         } else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)) {
-        	log("conncection received", false);
             // Respond to new connection or disconnections
-        	if (p2pManager == null) {
+            log("conncection received", false);
+
+            if (p2pManager == null) {
                 return;
             }
 

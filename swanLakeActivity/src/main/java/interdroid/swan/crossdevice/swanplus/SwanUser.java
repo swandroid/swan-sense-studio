@@ -1,5 +1,7 @@
 package interdroid.swan.crossdevice.swanplus;
 
+import android.net.wifi.p2p.WifiP2pDevice;
+
 /**
  * Created by vladimir on 11/3/15.
  */
@@ -7,10 +9,12 @@ public class SwanUser {
 
     String username;
     String regId;
+    WifiP2pDevice device;
 
-    public SwanUser(String username, String regId) {
+    public SwanUser(String username, String regId, WifiP2pDevice device) {
         this.username = username;
         this.regId = regId;
+        this.device = device;
     }
 
     public String getUsername() {
@@ -27,6 +31,14 @@ public class SwanUser {
 
     public void setRegId(String regId) {
         this.regId = regId;
+    }
+
+    public WifiP2pDevice getDevice() {
+        return device;
+    }
+
+    public void setDevice(WifiP2pDevice device) {
+        this.device = device;
     }
 
     @Override
