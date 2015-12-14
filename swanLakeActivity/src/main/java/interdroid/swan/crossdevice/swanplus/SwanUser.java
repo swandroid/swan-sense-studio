@@ -2,6 +2,8 @@ package interdroid.swan.crossdevice.swanplus;
 
 import android.net.wifi.p2p.WifiP2pDevice;
 
+import java.net.InetAddress;
+
 /**
  * Created by vladimir on 11/3/15.
  */
@@ -10,6 +12,7 @@ public class SwanUser {
     String username;
     String regId;
     WifiP2pDevice device;
+    InetAddress ip;
 
     public SwanUser(String username, String regId, WifiP2pDevice device) {
         this.username = username;
@@ -60,5 +63,13 @@ public class SwanUser {
     @Override
     public int hashCode() {
         return username.hashCode();
+    }
+
+    public InetAddress getIp() {
+        return ip;
+    }
+
+    public void setIp(InetAddress ip) {
+        this.ip = ip;
     }
 }

@@ -13,22 +13,23 @@ import android.net.wifi.p2p.WifiP2pManager.Channel;
 import android.net.wifi.p2p.WifiP2pManager.ConnectionInfoListener;
 import android.net.wifi.p2p.WifiP2pManager.PeerListListener;
 import android.util.Log;
+import android.widget.Toast;
 
 /**
  * A BroadcastReceiver that notifies of important Wi-Fi p2p events.
  */
 public class WDBroadcastReceiver extends BroadcastReceiver {
 	
-	private final String TAG = getClass().getName();
+	private final String TAG = "WDBroadcastReceiver";
 
     private WifiP2pManager p2pManager;
     private Channel p2pChannel;
-    private WDPeerToPeerI wdP2pActivity;
+    private WDManager wdManager;
 
-    public WDBroadcastReceiver(WifiP2pManager manager, Channel channel, WDPeerToPeerI activity) {
+    public WDBroadcastReceiver(WifiP2pManager manager, Channel channel, WDManager wdManager) {
         this.p2pManager = manager;
         this.p2pChannel = channel;
-        this.wdP2pActivity = activity;
+        this.wdManager = wdManager;
     }
 
     @Override
@@ -44,14 +45,13 @@ public class WDBroadcastReceiver extends BroadcastReceiver {
                 log("p2p not enabled", true);
             }
         } else if (WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action)) {
-        	log("peer list changed", false);
+//        	log("peer list changed", false);
 
         	if(p2pManager != null) {
             	p2pManager.requestPeers(p2pChannel, new PeerListListener() {
 					@Override
 					public void onPeersAvailable(WifiP2pDeviceList peers) {
-						log("peer list changed", false);
-                        wdP2pActivity.updatePeers(peers.getDeviceList());
+//						log("peer list changed", false);
 					}
                 });
             }
@@ -75,9 +75,11 @@ public class WDBroadcastReceiver extends BroadcastReceiver {
 				        InetAddress groupOwnerAddress = info.groupOwnerAddress;
 
 				        if (info.groupFormed && info.isGroupOwner) {
-				        	log("[connected] I'm group owner with ip = " + groupOwnerAddress.getHostAddress(), true);
-				        } else if (info.groupFormed) {
-				        	log("[connected] I'm not group owner; group owner ip = " + groupOwnerAddress.getHostAddress(), true);
+                            wdManager.connected(groupOwnerAddress.getHostAddress(), true);
+                            log("[connected] group owner with ip = " + groupOwnerAddress.getHostAddress() + " (me)", true);
+                        } else if (info.groupFormed) {
+                            wdManager.connected(groupOwnerAddress.getHostAddress(), false);
+                            log("[connected] group owner ip = " + groupOwnerAddress.getHostAddress(), true);
 				        }
 					}
 				});
@@ -90,12 +92,8 @@ public class WDBroadcastReceiver extends BroadcastReceiver {
         	log("Device details have changed", true);
         }
     }
-    
-    private void log(String message, boolean logInAppConsole) {
-    	Log.d(TAG, message);
-    	
-    	if(logInAppConsole) {
-            wdP2pActivity.processWDUpdate(message);
-    	}
+
+    public void log(String message, boolean display) {
+        Log.d(TAG, message);
     }
 }

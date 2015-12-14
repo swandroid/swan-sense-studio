@@ -16,6 +16,7 @@ import com.google.android.gcm.server.Sender;
 
 import interdroid.swan.crossdevice.swanplus.SwanLakePlusActivity;
 import interdroid.swan.crossdevice.swanplus.SwanUser;
+import interdroid.swan.crossdevice.swanplus.WDManager;
 
 public class Pusher {
 
@@ -41,35 +42,49 @@ public class Pusher {
 	private static void sendOverWD(final String fromRegistrationId,
 			final String toRegistrationId, final String expressionId,
 			final String action, final String data) {
-		try {
-			HashMap<String, String> dataMap = new HashMap<String, String>();
-			if (fromRegistrationId != null) {
-				// from is not allowed and results in InvalidDataKey, see:
-				// http://developer.android.com/google/gcm/gcm.html
-				dataMap.put("source", fromRegistrationId);
-			}
-			dataMap.put("action", action);
-			dataMap.put("data", data);
-			dataMap.put("id", expressionId);
+		new Thread() {
+			public void run() {
+				try {
+					WDManager wdManager = SwanLakePlusActivity.getWdManager();
 
-			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-			ObjectOutputStream os = new ObjectOutputStream(outputStream);
-			os.writeObject(dataMap);
-			byte[] sendData = outputStream.toByteArray();
+					SwanUser user = wdManager.getPeerByRegId(toRegistrationId);
+					if (user != null) {
+						if(wdManager.connect(user, this)) {
+							synchronized(this) {
+								wait();
+							}
+						}
+						if(user.getIp() != null) {
+							HashMap<String, String> dataMap = new HashMap<String, String>();
 
-			for(SwanUser user : SwanLakePlusActivity.nearbyPeers) {
-				if(user.getRegId().equals(toRegistrationId)) {
-					SwanLakePlusActivity.connect(user.getDevice());
+							if (fromRegistrationId != null) {
+								// from is not allowed and results in InvalidDataKey, see:
+								// http://developer.android.com/google/gcm/gcm.html
+								dataMap.put("source", fromRegistrationId);
+							}
+							dataMap.put("action", action);
+							dataMap.put("data", data);
+							dataMap.put("id", expressionId);
+
+							ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+							ObjectOutputStream os = new ObjectOutputStream(outputStream);
+							os.writeObject(dataMap);
+							byte[] sendData = outputStream.toByteArray();
+
+							DatagramSocket clientSocket = new DatagramSocket();
+							DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, user.getIp(), PORT);
+							clientSocket.send(sendPacket);
+							clientSocket.close();
+
+							Log.d(TAG, "successfully sent push message for id: "
+											+ expressionId + ", type: " + action + ", data: " + data);
+						}
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
 			}
-
-//			DatagramSocket clientSocket = new DatagramSocket();
-//			DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, null /* TODO */, PORT);
-//			clientSocket.send(sendPacket);
-//			clientSocket.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		}.start();
 	}
 
 	private static void sendOverGCM(final String fromRegistrationId,
