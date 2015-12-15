@@ -56,6 +56,7 @@ import nl.sense_os.service.constants.SensePrefs;
  * Created by vladimir on 9/8/15.
  *
  * TODO implement mechanism from removing nearby nodes when they are no longer around
+ * TODO if peers are already connected when starting the app, they should request user details from each other
  */
 public class SwanLakePlusActivity extends FragmentActivity implements ActionBar.TabListener {
 
@@ -479,6 +480,9 @@ public class SwanLakePlusActivity extends FragmentActivity implements ActionBar.
                 break;
             case R.id.settings:
                 startActivity(new Intent(this, SettingsActivity.class));
+                break;
+            case R.id.action_disconnect:
+                mWdManager.disconnect();
                 break;
             case R.id.action_test:
                 startActivity(new Intent(this, TestActivity.class));

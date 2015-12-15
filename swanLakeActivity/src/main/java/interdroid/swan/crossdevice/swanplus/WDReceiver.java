@@ -17,14 +17,18 @@ import java.util.HashMap;
 public class WDReceiver extends AsyncTask<Void, String, Void> {
 
     private static final String TAG = "WDReceiver";
-    final static int PORT = 2222;
+    private WDManager wdManager;
+    private final static int PORT = 2222;
+
+    public WDReceiver(WDManager wdManager) {
+        this.wdManager = wdManager;
+    }
 
     @Override
     protected Void doInBackground(Void... params) {
         try {
             while (true) {
                 receive();
-                Log.d(TAG, "Got message");
             }
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
@@ -40,12 +44,20 @@ public class WDReceiver extends AsyncTask<Void, String, Void> {
             byte[] receiveData = new byte[1024];
             DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
             serverSocket.receive(receivePacket);
+
             byte[] data = receivePacket.getData();
             ByteArrayInputStream in = new ByteArrayInputStream(data);
             ObjectInputStream is = new ObjectInputStream(in);
+
             HashMap<String, String> dataMap = (HashMap<String, String>) is.readObject();
-            Log.d(TAG, "received " + dataMap.get("action"));
-            InetAddress remoteIp = receivePacket.getAddress();
+            String action = dataMap.get("action");
+            Log.d(TAG, "received " + action);
+
+            if(action.equals("initConnect")) {
+                InetAddress remoteIp = receivePacket.getAddress();
+                wdManager.connected(remoteIp.getHostAddress(), false);
+            }
+
             serverSocket.close();
         } catch (Exception e) {
             e.printStackTrace();
