@@ -81,15 +81,19 @@ public class WDBroadcastReceiver extends BroadcastReceiver {
                             wdManager.connected(groupOwnerAddress.getHostAddress(), false);
                             log("[connected] group owner ip = " + groupOwnerAddress.getHostAddress(), true);
 				        }
+
+                        wdManager.setConnected(true);
 					}
 				});
             } else {
             	// this is called also when the other peer refuses connection
-            	log("connectivity lost", true);
+                wdManager.setConnected(false);
+                log("disconnected", true);
             }
         } else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action)) {
             // This is called when the connectivity is lost
-        	log("Device details have changed", true);
+            wdManager.setConnected(false);
+            log("connectivity lost", true);
         }
     }
 

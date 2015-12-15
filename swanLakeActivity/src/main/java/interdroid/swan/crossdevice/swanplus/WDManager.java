@@ -54,6 +54,8 @@ public class WDManager {
     private Thread waitingThread;
     private SwanUser waitingUser;
 
+    private boolean connected = false;
+
     /* we schedule peer discovery to take place at regular intervals */
     Runnable nearbyPeersChecker = new Runnable() {
         public void run() {
@@ -85,7 +87,7 @@ public class WDManager {
         registerService();
         slpActivity.registerReceiver(p2pReceiver, p2pIntentFilter);
         wdAutoAccept.intercept(true);
-        new WDReceiver().execute();
+        new WDReceiver(this).execute();
     }
 
     public void clean() {
@@ -272,20 +274,22 @@ public class WDManager {
         return true;
     }
 
-    public void connected(String ip, boolean isGroupOwner) {
+    public void connected(String ip, boolean myIp) {
         try {
             if(waitingThread != null && waitingUser != null) {
-                if(!isGroupOwner) {
+                if(!myIp) {
                     waitingUser.setIp(InetAddress.getByName(ip));
                     synchronized (waitingThread) {
                         waitingThread.notify();
                     }
-                    Log.d(TAG, "Not group owner, notify sending thread");
+                    waitingThread = null;
+                    waitingUser = null;
+                    Log.d(TAG, "notify sending thread");
                 }
             } else {
-                if(!isGroupOwner) {
+                if(!myIp) {
                     initConn(InetAddress.getByName(ip));
-                    Log.d(TAG, "Not group owner, send initConn to GO");
+                    Log.d(TAG, "send initConn to GO");
                 }
             }
         } catch (UnknownHostException e) {
@@ -315,6 +319,21 @@ public class WDManager {
                 }
             }
         }.start();
+    }
+
+    public void disconnect() {
+        p2pManager.removeGroup(p2pChannel, new WifiP2pManager.ActionListener() {
+            @Override
+            public void onSuccess() {
+                setConnected(false);
+                Log.d(TAG, "disconnected successfully");
+            }
+
+            @Override
+            public void onFailure(int code) {
+                Log.e(TAG, "couldn't disconnect");
+            }
+        });
     }
 
     public int getPeerCount() {
@@ -380,5 +399,13 @@ public class WDManager {
         if(display) {
             Toast.makeText(slpActivity, message, Toast.LENGTH_LONG).show();
         }
+    }
+
+    public boolean isConnected() {
+        return connected;
+    }
+
+    public void setConnected(boolean connected) {
+        this.connected = connected;
     }
 }
