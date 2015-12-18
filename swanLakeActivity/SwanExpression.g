@@ -50,6 +50,19 @@ public static final long convertTime(Token time, Token unit) {
 
 // Simple rules
 
+http_configuration_options returns [Bundle http_configuration]
+@init {
+	Bundle http_config = new Bundle();
+}
+	:	
+	(hid=ID hval=CONFIG_VAL) 
+		{http_config.putString($hid.getText(), $hval.getText().substring(1));}
+	(CONFIG_TILT more_hid=ID more_hval=CONFIG_VAL)*
+		{http_config.putString($more_hid.getText(), $more_hval.getText().substring(1));}
+		{$http_configuration = http_config;}
+	;
+
+
 configuration_options returns [Bundle configuration]
 @init {
 	Bundle config = new Bundle();
@@ -57,7 +70,7 @@ configuration_options returns [Bundle configuration]
 	:	
 	(id=ID val=CONFIG_VAL) 
 		{config.putString($id.getText(), $val.getText().substring(1));}
-	(CONFIG_AND more_id=ID more_val=CONFIG_VAL 
+	(CONFIG_HASH more_id=ID more_val=CONFIG_VAL 
 		{config.putString($more_id.getText(), $more_val.getText().substring(1));}
 	)*
 		{$configuration = config;}
@@ -138,20 +151,20 @@ history_mode returns [HistoryReductionMode history_mode]
 // Parser rules
 sensor_value_expression returns [SensorValueExpression value_expression]
 	:	location=ID '@' entity=ID ':' path=value_path
-			{$value_expression = new SensorValueExpression(location.getText(), entity.getText(), path /*.value_path */, null, HistoryReductionMode.ANY, 0);}
+			{$value_expression = new SensorValueExpression(location.getText(), entity.getText(), path /*.value_path */, null, HistoryReductionMode.ANY, 0,null);}
 	|	location=ID '@' entity=ID ':' path=value_path '?' config=configuration_options
-			{$value_expression = new SensorValueExpression(location.getText(), entity.getText(), path /*.value_path */, config /*.configuration */, HistoryReductionMode.ANY, 0);}
-	|	location=ID '@' entity=ID ':' path=value_path '{' ((mode=history_mode ',' time=time_value) | mode=history_mode | time=time_value) '}'
+			{$value_expression = new SensorValueExpression(location.getText(), entity.getText(), path /*.value_path */, config /*.configuration */, HistoryReductionMode.ANY, 0,null);}
+	|	location=ID '@' entity=ID ':' path=value_path '$' http_config=http_configuration_options '{' ((mode=history_mode ',' time=time_value) | mode=history_mode | time=time_value) '}'
 			{if (time == null) {
-				$value_expression = new SensorValueExpression(location.getText(), entity.getText(), path /* .value_path */, null, mode /*.history_mode */, 0);
+				$value_expression = new SensorValueExpression(location.getText(), entity.getText(), path /* .value_path */, null, mode /*.history_mode */, 0,http_config);
 			} else {
-				$value_expression = new SensorValueExpression(location.getText(), entity.getText(), path /* .value_path */, null, mode /*.history_mode */, time);
+				$value_expression = new SensorValueExpression(location.getText(), entity.getText(), path /* .value_path */, null, mode /*.history_mode */, time,http_config);
 			}}
-	|	location=ID '@' entity=ID ':' path=value_path '?' config=configuration_options '{' ((mode=history_mode ',' time=time_value) | mode=history_mode | time=time_value) '}'
+	|	location=ID '@' entity=ID ':' path=value_path '?' config=configuration_options '$' http_config=http_configuration_options '{' ((mode=history_mode ',' time=time_value) | mode=history_mode | time=time_value) '}'
 			{if (time == null) {
-				$value_expression = new SensorValueExpression(location.getText(), entity.getText(), path /* .value_path */ , config /*.configuration */ , mode /* .history_mode */, 0);
+				$value_expression = new SensorValueExpression(location.getText(), entity.getText(), path /* .value_path */ , config /*.configuration */ , mode /* .history_mode */, 0,http_config);
 			} else {
-				$value_expression = new SensorValueExpression(location.getText(), entity.getText(), path /* .value_path */ , config /*.configuration */ , mode /* .history_mode */ , time);
+				$value_expression = new SensorValueExpression(location.getText(), entity.getText(), path /* .value_path */ , config /*.configuration */ , mode /* .history_mode */ , time,http_config);
 			}}
 	;
 
@@ -329,9 +342,10 @@ NOT   :    '!' | 'not' | 'NOT';
 // Config
 CONFIG_IS
     :   '=';
-CONFIG_AND
-    :   '&';
-
+CONFIG_HASH
+    :   '#';
+CONFIG_TILT
+    :	'~';
 // Comparators
 EQUALS
       :    '==' | '=';
@@ -416,8 +430,9 @@ CONFIG_VAL
             /* String uses setText which drops the '='. Put it back so it is the same as the other branch. */ 
             setText("=" + getText());
             }
-        | ('a'..'z'|'A'..'Z'|'0'..'9'|'.')*)
+        | ('a'..'z'|'A'..'Z'|'0'..'9'|'.'|'/'|':'|'='|'&')*)
     ;
+
 
 fragment
 EXPONENT : ('e'|'E') ('+'|'-')? ('0'..'9')+ ;
