@@ -24,7 +24,7 @@ public class TestActivity extends Activity {
     SensorInfo swanSensor;
 
     /* name of the sensor */
-    final String SENSOR_NAME = "light";
+    final String SENSOR_NAME = "fitness";
 
     /* random id */
     public final int REQUEST_CODE = 123;
@@ -38,12 +38,14 @@ public class TestActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.test_activity_main);
         tv = (TextView) findViewById(R.id.textView1);
-        initialize();
-//        testSensor();
+//        initialize();
+        testSensor();
     }
 
     public void testSensor() {
-        String myExpression = "SWAN1@light:lux{ANY,0}";
+        String myExpression = "self@fitness:avg_speed{ANY,0}";
+//        String myExpression = "self@light:lux{ANY,0}";
+
         registerSWANSensor(myExpression);
     }
 

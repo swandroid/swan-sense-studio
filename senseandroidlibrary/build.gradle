@@ -19,7 +19,7 @@ android {
 
 dependencies {
     compile 'com.android.support:support-v4:22.1.0'
-    compile 'com.google.android.gms:play-services:+'
+    compile 'com.google.android.gms:play-services:8.3.0'
     compile files('libs/cordova-2.7.0.jar')
     compile files('libs/gcm.jar')
 }
