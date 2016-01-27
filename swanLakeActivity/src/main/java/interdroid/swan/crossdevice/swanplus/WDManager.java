@@ -87,7 +87,7 @@ public class WDManager {
         registerService();
         slpActivity.registerReceiver(p2pReceiver, p2pIntentFilter);
         wdAutoAccept.intercept(true);
-        new WDReceiver(this).execute();
+        new WDReceiver(this, slpActivity).execute();
     }
 
     public void clean() {

@@ -1,5 +1,7 @@
 package interdroid.swan.crossdevice.swanplus;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -11,6 +13,8 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.HashMap;
 
+import interdroid.swan.engine.EvaluationEngineService;
+
 /**
  * Created by vladimir on 12/1/15.
  */
@@ -18,10 +22,12 @@ public class WDReceiver extends AsyncTask<Void, String, Void> {
 
     private static final String TAG = "WDReceiver";
     private WDManager wdManager;
+    private Context context;
     private final static int PORT = 2222;
 
-    public WDReceiver(WDManager wdManager) {
+    public WDReceiver(WDManager wdManager, Context context) {
         this.wdManager = wdManager;
+        this.context = context;
     }
 
     @Override
@@ -46,6 +52,7 @@ public class WDReceiver extends AsyncTask<Void, String, Void> {
             serverSocket.receive(receivePacket);
 
             byte[] data = receivePacket.getData();
+            InetAddress remoteIp = receivePacket.getAddress();
             ByteArrayInputStream in = new ByteArrayInputStream(data);
             ObjectInputStream is = new ObjectInputStream(in);
 
@@ -54,8 +61,31 @@ public class WDReceiver extends AsyncTask<Void, String, Void> {
             Log.d(TAG, "received " + action);
 
             if(action.equals("initConnect")) {
-                InetAddress remoteIp = receivePacket.getAddress();
                 wdManager.connected(remoteIp.getHostAddress(), false);
+            } else if(action.equals(EvaluationEngineService.ACTION_REGISTER_REMOTE)) {
+                String source = dataMap.get("source");
+
+                if(source != null) {
+                    SwanUser user = wdManager.getPeerByRegId(source);
+                    if(user != null) {
+                        user.setIp(remoteIp);
+                    }
+                } else {
+                    Log.w(TAG, "source field is empty");
+                }
+
+                Intent intent = new Intent(action);
+                intent.setClass(context, EvaluationEngineService.class);
+                intent.putExtra("source", source);
+                intent.putExtra("id", dataMap.get("id"));
+                intent.putExtra("data", dataMap.get("data"));
+                context.startService(intent);
+            } else if(action.equals(EvaluationEngineService.ACTION_NEW_RESULT_REMOTE)) {
+                Intent intent = new Intent(action);
+                intent.setClass(context, EvaluationEngineService.class);
+                intent.putExtra("id", dataMap.get("id"));
+                intent.putExtra("data", dataMap.get("data"));
+                context.startService(intent);
             }
 
             serverSocket.close();

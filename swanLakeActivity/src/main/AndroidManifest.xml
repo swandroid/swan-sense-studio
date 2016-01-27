@@ -7,8 +7,8 @@
     tools:ignore="ExportedService,ExportedReceiver">
 
 	<uses-sdk
-        android:minSdkVersion="14"
-        android:targetSdkVersion="21" />
+        android:minSdkVersion="16"
+        android:targetSdkVersion="22" />
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
@@ -677,6 +677,23 @@
                 android:value="mm/Hr" />               
         </activity>
         <activity
+            android:name="interdroid.swan.sensors.impl.FitnessSensor$ConfigurationActivity"
+            android:exported="true"
+            android:icon="@drawable/movement_icon">
+            <intent-filter>
+				<action android:name="interdroid.swan.sensor.DISCOVER" />
+            </intent-filter>
+                <meta-data
+                android:name="entityId"
+                android:value="fitness" />
+                <meta-data
+                android:name="valuePaths"
+                android:value="avg_speed" />
+                <meta-data
+                android:name="units"
+                android:value="" />
+        </activity>
+        <activity
             android:name="interdroid.swan.sensors.impl.ScreenSensor$ConfigurationActivity"
             android:exported="true"
             android:icon="@drawable/screen_icon" >
@@ -1009,7 +1026,12 @@
             android:exported="true"
             android:process=":rainsensor" >
         </service>
-        
+		<service
+            android:name="interdroid.swan.sensors.impl.FitnessSensor"
+            android:exported="true"
+            android:process=":fitnesssensor" >
+        </service>
+
       <!--   <provider
             android:name="interdroid.swan.sensors.impl.WifiSensor$Provider"
             android:authorities="interdroid.context.sensor.wifi" /> -->

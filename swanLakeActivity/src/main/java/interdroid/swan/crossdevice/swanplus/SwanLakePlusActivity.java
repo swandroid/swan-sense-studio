@@ -57,6 +57,7 @@ import nl.sense_os.service.constants.SensePrefs;
  *
  * TODO implement mechanism from removing nearby nodes when they are no longer around
  * TODO if peers are already connected when starting the app, they should request user details from each other
+ * TODO if disconnected, attempting to unregister from remote will fail
  */
 public class SwanLakePlusActivity extends FragmentActivity implements ActionBar.TabListener {
 
@@ -524,7 +525,7 @@ public class SwanLakePlusActivity extends FragmentActivity implements ActionBar.
                         @Override
                         public void run() {
                             switchWidget.setChecked(false);
-                            log("Failed to register with Google Cloud Messaging", true);
+                            log("Failed to register with Google Cloud Messaging (check internet connection)", true);
                         }
                     });
                 }

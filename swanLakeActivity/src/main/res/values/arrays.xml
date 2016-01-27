@@ -255,6 +255,11 @@
         <item>expected_mm</item>
     </string-array>
 
+    <!-- fitness sensor -->
+    <string-array name="fitness_valuepaths">
+        <item>avg_speed</item>
+    </string-array>
+
     <!-- screen sensor -->
     <string-array name="screen_valuepaths">
         <item>is_screen_on</item>

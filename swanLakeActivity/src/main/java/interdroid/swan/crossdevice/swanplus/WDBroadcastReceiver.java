@@ -57,7 +57,7 @@ public class WDBroadcastReceiver extends BroadcastReceiver {
             }
         } else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)) {
             // Respond to new connection or disconnections
-            log("conncection received", false);
+            log("conncection changed", false);
 
             if (p2pManager == null) {
                 return;
@@ -92,6 +92,7 @@ public class WDBroadcastReceiver extends BroadcastReceiver {
             }
         } else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action)) {
             // This is called when the connectivity is lost
+            // TODO unregister here any registered expressions with the remote
             wdManager.setConnected(false);
             log("connectivity lost", true);
         }
