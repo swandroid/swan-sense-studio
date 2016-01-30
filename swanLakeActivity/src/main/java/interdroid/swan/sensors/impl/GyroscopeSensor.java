@@ -1,11 +1,5 @@
 package interdroid.swan.sensors.impl;
 
-import interdroid.swan.R;
-import interdroid.swan.sensors.AbstractConfigurationActivity;
-import interdroid.swan.sensors.AbstractSwanSensor;
-
-import java.util.List;
-
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -13,6 +7,12 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
+
+import java.util.List;
+
+import interdroid.swan.R;
+import interdroid.swan.sensors.AbstractConfigurationActivity;
+import interdroid.swan.sensors.AbstractSwanSensor;
 
 public class GyroscopeSensor extends AbstractSwanSensor {
 
@@ -56,13 +56,17 @@ public class GyroscopeSensor extends AbstractSwanSensor {
 		public void onSensorChanged(SensorEvent event) {
 			long now = System.currentTimeMillis();
 			if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
+				counter += 1;
 				for (int i = 0; i < 3; i++) {
+					Log.d(TAG, "gyro counter: " + counter + ", time: " + now);
 					putValueTrimSize(VALUE_PATHS[i], null, now,
 							event.values[i]);
 				}
 			}
 		}
 	};
+
+	private int counter;
 
 	@Override
 	public String[] getValuePaths() {

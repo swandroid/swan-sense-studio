@@ -1,15 +1,15 @@
 package interdroid.swan;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
 import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Stores and keeps tracks of sensor service information.
@@ -238,6 +238,10 @@ public class SensorInfo {
 		Intent result = new Intent().setComponent(component);
 		result.putExtra("entityId", entityId);
 		return result;
+	}
+
+	public final Bundle getConfiguration() {
+		return configuration;
 	}
 
 	@Override

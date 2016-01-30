@@ -1,9 +1,6 @@
 package interdroid.swan.sensors.impl;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.preference.Preference;
-import android.util.Log;
+import com.google.gson.Gson;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -11,11 +8,15 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.gson.Gson;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.preference.Preference;
+import android.util.Log;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -82,7 +83,7 @@ public class RssSensor extends AbstractSwanSensor {
 
 	/*Configuration */
 	public static final String SAMPLE_INTERVAL = "sample_interval";
-	public static final int DEFAULT_SAMPLE_INTERVAL = 5 * 60;
+	public static final int DEFAULT_SAMPLE_INTERVAL = 5 * 60 * 1000;
 //	public static final String URL_CONFIGURATION = "url";
 //	public static final String DEFAULT_URL = "";
     public static final String RSS_CONFIGURATION_FULL = "rss_configuration_full";
@@ -160,9 +161,9 @@ public class RssSensor extends AbstractSwanSensor {
                     }
                 }
 
-
+                //TODO: ook zonder cache de reponses bewaren, om het verschil te kunnen bekijken
                 //TODO: save parsed xml to cache and check in if one already exists that can now be used
-                //TODO: get correct url from configuration
+                //TODO: get correct url from configuration, al gedaan denk
                 doGetRequest(rssRequestComplete.url, valuePath, id, rssRequestComplete);
 
                 try {
@@ -170,7 +171,7 @@ public class RssSensor extends AbstractSwanSensor {
 							0,
 							configuration.getInt(SAMPLE_INTERVAL,
                                     mDefaultConfiguration
-                                            .getInt(SAMPLE_INTERVAL)) * 1000
+                                            .getInt(SAMPLE_INTERVAL))
 									+ mStart - System.currentTimeMillis()));
 				} catch (InterruptedException e) {
 				}

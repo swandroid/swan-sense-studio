@@ -677,7 +677,7 @@
                 android:value="" />
             <meta-data
                 android:name="units"
-                android:value=",,,,z" />
+                android:value=",,,," />
         </activity>
         <activity
             android:name="interdroid.swan.sensors.impl.ScreenSensor$ConfigurationActivity"

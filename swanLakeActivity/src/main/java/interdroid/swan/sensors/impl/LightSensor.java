@@ -1,11 +1,5 @@
 package interdroid.swan.sensors.impl;
 
-import interdroid.swan.R;
-import interdroid.swan.sensors.AbstractConfigurationActivity;
-import interdroid.swan.sensors.AbstractSwanSensor;
-
-import java.util.List;
-
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -13,6 +7,12 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
+
+import java.util.List;
+
+import interdroid.swan.R;
+import interdroid.swan.sensors.AbstractConfigurationActivity;
+import interdroid.swan.sensors.AbstractSwanSensor;
 
 public class LightSensor extends AbstractSwanSensor {
 	public static final String TAG = "LightSensor";
@@ -51,10 +51,13 @@ public class LightSensor extends AbstractSwanSensor {
 		public void onSensorChanged(SensorEvent event) {
 			long now = System.currentTimeMillis();
 			if (event.sensor.getType() == Sensor.TYPE_LIGHT) {
+				counter += 1;
+				Log.d(TAG, "light counter: " + counter + ", time: " + now);
 				putValueTrimSize(LUX_FIELD, null, now, event.values[0]);
 			}
 		}
 	};
+	private int counter;
 
 	@Override
 	public String[] getValuePaths() {

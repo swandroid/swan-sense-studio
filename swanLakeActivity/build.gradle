@@ -22,7 +22,7 @@ dependencies {
     ant.importBuild 'src/main/buildgrammar.ant'
     compile project(':senseandroidlibrary')
     compile project(':jsonsensor')
-    compile project(':rss_sensor')
+    compile project(':RssSensor')
     compile rootProject.ext.support
     compile rootProject.ext.playservices
     compile files('libs/antlr-3.4-complete-no-antlrv2.jar')

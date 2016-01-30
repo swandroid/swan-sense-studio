@@ -1,5 +1,7 @@
 package interdroid.swan.rss_sensor.activities;
 
+import com.google.gson.Gson;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,8 +12,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
-
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 

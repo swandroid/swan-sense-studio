@@ -1,4 +1,4 @@
 include ':senseandroidlibrary'
-include ':rss_sensor'
+include ':RssSensor'
 include ':jsonsensor'
 include ':swanLakeActivity'

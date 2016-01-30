@@ -13,4 +13,12 @@ public class RssItem {
         this.description = description;
     }
 
+    @Override
+    public boolean equals(Object object) {
+        if (object == null || !(object instanceof RssItem)) {
+            return false;
+        }
+        RssItem rssItem = (RssItem) object;
+        return title.equals(rssItem.title) && description.equals(rssItem.description);
+    }
 }
