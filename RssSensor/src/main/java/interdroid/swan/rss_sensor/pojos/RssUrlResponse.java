@@ -12,4 +12,15 @@ public class RssUrlResponse {
     public long responseTime;
     public List<RssItem> rssItemList;
 
+    public RssUrlResponse() {
+
+    }
+
+    public RssUrlResponse(int urlId, String urlString, long responseTime, List<RssItem> rssItemList) {
+        this.urlId = urlId;
+        this.urlString = urlString;
+        this.responseTime = responseTime;
+        this.rssItemList = rssItemList;
+    }
+
 }

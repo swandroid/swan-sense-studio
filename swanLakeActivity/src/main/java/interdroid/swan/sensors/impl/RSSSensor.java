@@ -173,6 +173,7 @@ public class RssSensor extends AbstractSwanSensor {
                     rssSensorRequest = new RssSensorRequest(rssRequestComplete, id, sampleRate, this);
                 }
 
+                Log.d(TAG, "Add request to RssSensorCache");
                 RssSensorCache.getInstance(getApplicationContext()).addRequestToQueue(rssSensorRequest);
 
                 try {
