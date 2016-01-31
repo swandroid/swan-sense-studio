@@ -20,8 +20,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import interdroid.swan.rss_sensor.pojos.RssItem;
 import interdroid.swan.rss_sensor.pojos.RssSensorRequest;
@@ -45,7 +43,7 @@ public class RssSensorCache {
     private List<RssSensorResponse> mSensorResponseCache;
     private List<RssUrlResponse> mUrlResponseCache;
 
-    private ExecutorService mThreadPool;
+//    private ExecutorService mThreadPool;
 
     private RssSensorCache(Context context) {
         mContext = context;
@@ -62,30 +60,40 @@ public class RssSensorCache {
      * Add a request from a RssSensor to the cache Queue
      * @param rssSensorRequest the request information to add to the queue
      */
-    public void addRequestToQueue(RssSensorRequest rssSensorRequest) {
-        addRequestToQueueSynchronized(rssSensorRequest);
+    public synchronized void addRequestToQueue(RssSensorRequest rssSensorRequest) {
+        //addRequestToQueueSynchronized(rssSensorRequest);
+        Log.d(TAG, "addRequestToQueue: " + rssSensorRequest.sensorId);
+        if (mRequestQueue == null) {
+            mRequestQueue = new LinkedList<>();
+        }
+        Log.d(TAG, "mRequestQueue.size(): " + mRequestQueue.size());
+        if (mRequestQueue.offer(rssSensorRequest) && mRequestQueue.size() == 1) {
+            Log.d(TAG, "mRequestQueue.size() after adding size == 1: " + mRequestQueue.size());
+            doRequest(rssSensorRequest);
+        }
+        Log.d(TAG, "mRequestQueue.size() after adding: " + mRequestQueue.size());
     }
 
-    private synchronized void addRequestToQueueSynchronized(final RssSensorRequest rssSensorRequest) {
-        if (mThreadPool == null) {
-            mThreadPool = Executors.newCachedThreadPool();
-        }
-        mThreadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                Log.d(TAG, "addRequestToQueue: " + rssSensorRequest.sensorId);
-                if (mRequestQueue == null) {
-                    mRequestQueue = new LinkedList<>();
-                }
-                Log.d(TAG, "mRequestQueue.size(): " + mRequestQueue.size());
-                if (mRequestQueue.offer(rssSensorRequest) && mRequestQueue.size() == 1) {
-                    Log.d(TAG, "mRequestQueue.size() after adding size == 1: " + mRequestQueue.size());
-                    doRequest(rssSensorRequest);
-                }
-                Log.d(TAG, "mRequestQueue.size() after adding: " + mRequestQueue.size());
-            }
-        });
-    }
+//    private synchronized void addRequestToQueueSynchronized(final RssSensorRequest rssSensorRequest) {
+//        if (mThreadPool == null) {
+//            mThreadPool = Executors.newCachedThreadPool();
+//        }
+//        mThreadPool.execute(new Runnable() {
+//            @Override
+//            public void run() {
+//                Log.d(TAG, "addRequestToQueue: " + rssSensorRequest.sensorId);
+//                if (mRequestQueue == null) {
+//                    mRequestQueue = new LinkedList<>();
+//                }
+//                Log.d(TAG, "mRequestQueue.size(): " + mRequestQueue.size());
+//                if (mRequestQueue.offer(rssSensorRequest) && mRequestQueue.size() == 1) {
+//                    Log.d(TAG, "mRequestQueue.size() after adding size == 1: " + mRequestQueue.size());
+//                    doRequest(rssSensorRequest);
+//                }
+//                Log.d(TAG, "mRequestQueue.size() after adding: " + mRequestQueue.size());
+//            }
+//        });
+//    }
 
 //    /**
 //     * Remove the oldest request from the queue
@@ -98,23 +106,29 @@ public class RssSensorCache {
     /**
      * Check if there are requests left in the queue
      */
-    private void removeFromQueueAndCheckForNextRequest() {
-        removeFromQueueAndCheckForNextRequestSynchronized();
+    private synchronized void removeFromQueueAndCheckForNextRequest() {
+//        removeFromQueueAndCheckForNextRequestSynchronized();
+        Log.d(TAG, "checkForNextRequest: " + mRequestQueue.size());
+        mRequestQueue.poll();
+        RssSensorRequest rssSensorRequest = mRequestQueue.peek();
+        if (rssSensorRequest != null) {
+            doRequest(rssSensorRequest);
+        }
     }
 
-    private synchronized void removeFromQueueAndCheckForNextRequestSynchronized() {
-        mThreadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                Log.d(TAG, "checkForNextRequest: " + mRequestQueue.size());
-                mRequestQueue.poll();
-                RssSensorRequest rssSensorRequest = mRequestQueue.peek();
-                if (rssSensorRequest != null) {
-                    doRequest(rssSensorRequest);
-                }
-            }
-        });
-    }
+//    private synchronized void removeFromQueueAndCheckForNextRequestSynchronized() {
+//        mThreadPool.execute(new Runnable() {
+//            @Override
+//            public void run() {
+//                Log.d(TAG, "checkForNextRequest: " + mRequestQueue.size());
+//                mRequestQueue.poll();
+//                RssSensorRequest rssSensorRequest = mRequestQueue.peek();
+//                if (rssSensorRequest != null) {
+//                    doRequest(rssSensorRequest);
+//                }
+//            }
+//        });
+//    }
 
     /**
      * Do a request
@@ -122,7 +136,7 @@ public class RssSensorCache {
      * If the cache cannot satisfy the request, do a request to the url
      * @param rssSensorRequest the request information
      */
-    private void doRequest(RssSensorRequest rssSensorRequest) {
+    private synchronized void doRequest(RssSensorRequest rssSensorRequest) {
         if (mUrlResponseCache == null) { //Create the url response cache if it doesn't exists
             mUrlResponseCache = new ArrayList<>();
         }
@@ -137,17 +151,18 @@ public class RssSensorCache {
                     Log.d(TAG, "doGetRequest: " + "!rssUrlResponse.urlString.equals(rssSensorRequest.sensorUrl)");
                     doGetRequest(rssSensorRequest);
                 } else {
-                    long timePaseSinceLastResponse = System.currentTimeMillis() - rssUrlResponse.responseTime;
-                    Log.d(TAG, "Time passed: " + timePaseSinceLastResponse);
-                    if (timePaseSinceLastResponse < rssSensorRequest.sampleRate / CACHE_TIME_DIVIDER) {
-                        Log.d(TAG, "Use cached response: " + timePaseSinceLastResponse);
-                        List<RssItem> rssItemList = updateResponseWithSensorCache(rssSensorRequest, rssUrlResponse.rssItemList);
+                    long timePastSinceLastResponse = System.currentTimeMillis() - rssUrlResponse.responseTime;
+                    Log.d(TAG, "Time passed: " + timePastSinceLastResponse);
+                    if (timePastSinceLastResponse < rssSensorRequest.sampleRate / CACHE_TIME_DIVIDER) {
+                        Log.d(TAG, "Use cached response: " + timePastSinceLastResponse);
+                        Log.i(TAG, "rssUrlResponse.rssItemList.size(): " + rssUrlResponse.rssItemList.size() + ", sensorId: " + rssSensorRequest.sensorId);
+                        List<RssItem> rssItemList = updateResponseWithSensorCache(rssSensorRequest, getCopyOfRssItemList(rssUrlResponse.rssItemList));
                         if (rssSensorRequest.listener != null) {
                             rssSensorRequest.listener.onResult(rssItemList);
                         }
                         removeFromQueueAndCheckForNextRequest();
                     } else {
-                        Log.d(TAG, "doGetRequest: " + "!timePaseSinceLastResponse < rssSensorRequest.sampleRate / CACHE_TIME_DIVIDER");
+                        Log.d(TAG, "doGetRequest: " + "!timePastSinceLastResponse < rssSensorRequest.sampleRate / CACHE_TIME_DIVIDER");
                         doGetRequest(rssSensorRequest);
                     }
                 }
@@ -160,7 +175,7 @@ public class RssSensorCache {
     }
 
     private synchronized List<RssItem> updateResponseWithSensorCache(RssSensorRequest rssSensorRequest, List<RssItem> rssItemList) {
-        if (mSensorResponseCache == null) { //Create the sensor response cache if it doens't exists
+        if (mSensorResponseCache == null) { //Create the sensor response cache if it doesn't exists
             mSensorResponseCache = new ArrayList<>();
         }
         String sensorId = rssSensorRequest.sensorId;
@@ -194,7 +209,7 @@ public class RssSensorCache {
     }
 
     private void removeRssItemsIfExists(List<RssItem> rssCachedItemList, List<RssItem> rssItemList) {
-        Log.d(TAG, "removeRssItemsIfExists: rssCachecItemList.size() " + rssCachedItemList.size() + ", rssItemList.size() " + rssItemList.size());
+        Log.d(TAG, "removeRssItemsIfExists: rssCachedItemList.size() " + rssCachedItemList.size() + ", rssItemList.size() " + rssItemList.size());
         for (int i = 0; i < rssCachedItemList.size(); i++) {
             removeRssItemIfExists(rssCachedItemList.get(i), rssItemList);
         }
@@ -233,7 +248,7 @@ public class RssSensorCache {
         }
     }
 
-    private List<RssItem> addNewSensorResponseToCache(RssSensorRequest rssSensorRequest, List<RssItem> rssItemList) {
+    private synchronized List<RssItem> addNewSensorResponseToCache(RssSensorRequest rssSensorRequest, List<RssItem> rssItemList) {
         RssSensorResponse rssSensorResponse = new RssSensorResponse();
         rssSensorResponse.sensorId = rssSensorRequest.sensorId;
         rssSensorResponse.urlId = rssSensorRequest.sensorUrlId;
@@ -272,6 +287,7 @@ public class RssSensorCache {
 
             List<RssItem> rssItemList = readRss(xpp);
             putResultsInUrlCache(rssSensorRequest, rssItemList, currentTime);
+            Log.i(TAG, "rssItemList.size(): " + rssItemList.size() + ", sensorId: " + rssSensorRequest.sensorId);
             updateResponseWithSensorCache(rssSensorRequest, rssItemList);
 
             if (rssSensorRequest.listener != null) {
