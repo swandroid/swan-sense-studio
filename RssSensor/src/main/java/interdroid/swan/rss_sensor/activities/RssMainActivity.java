@@ -30,6 +30,7 @@ public class RssMainActivity extends BaseActivity {
     private EditText mNameEditText;
     private EditText mUrlEditText;
     private Spinner mStringSpinner;
+    private ArrayAdapter<String> mStringSelectionAdapter;
     private EditText mStringEditText;
 
     @Override
@@ -49,14 +50,19 @@ public class RssMainActivity extends BaseActivity {
         mNameSpinner = (Spinner) findViewById(R.id.rss_input_name_spinner);
 
         ArrayList<RssRequestInfo> rssRequestUrls = RssSensorSettings.getInstance(getApplicationContext()).getRssRequestUrls();
-        mSelectionAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_dropdown_item, rssRequestUrls);
+        mSelectionAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, rssRequestUrls);
         mNameSpinner.setAdapter(mSelectionAdapter);
         mNameSpinner.setOnItemSelectedListener(mOnItemSelectedListener);
 
         mNameEditText = (EditText) findViewById(R.id.rss_input_name);
         mUrlEditText = (EditText) findViewById(R.id.rss_input_url);
         mStringSpinner = (Spinner) findViewById(R.id.rss_input_string_spinner);
+
+        ArrayList<String> rssRequestStrings = RssSensorSettings.getInstance(getApplicationContext()).getRssRequestStrings();
+        mStringSelectionAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, rssRequestStrings);
+        mStringSpinner.setAdapter(mStringSelectionAdapter);
+        mStringSpinner.setOnItemSelectedListener(mOnStringItemSelectedListener);
+
         mStringEditText = (EditText) findViewById(R.id.rss_input_string);
     }
 
@@ -67,6 +73,21 @@ public class RssMainActivity extends BaseActivity {
             if (!rssRequestInfo.name.equals(getString(R.string.rss_spinner_add_new_request))) {
                 mNameEditText.setText(rssRequestInfo.name);
                 mUrlEditText.setText(rssRequestInfo.url);
+            }
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+
+        }
+    };
+
+    private AdapterView.OnItemSelectedListener mOnStringItemSelectedListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            String word = mStringSelectionAdapter.getItem(position);
+            if (!word.equals(getString(R.string.rss_spinner_add_new_word))) {
+                mStringEditText.setText(word);
             }
         }
 
@@ -98,10 +119,29 @@ public class RssMainActivity extends BaseActivity {
     }
 
     private void saveRssInfo() {
+        RssRequestInfo rssRequestInfo = getAndSaveRssRequestInfo();
+        if (rssRequestInfo == null) {
+            return;
+        }
+
+        Intent intent = new Intent();
+        String rssRequestFull = new Gson().toJson(
+                new RssRequestComplete(rssRequestInfo, getAndSaveWord()));
+        Log.d(TAG, rssRequestFull);
+        intent.putExtra(REQUEST_EXTRA_RESULT_FULL, rssRequestFull);
+        setResult(RESULT_OK, intent);
+        finish();
+    }
+
+    private RssRequestInfo getAndSaveRssRequestInfo() {
         RssRequestInfo rssRequestInfo = null;
         ArrayList<RssRequestInfo> rssRequestList = RssSensorSettings.getInstance(getApplicationContext()).getRssRequestUrls();
         if (((RssRequestInfo)mNameSpinner.getSelectedItem()).name.equals(getString(R.string.rss_spinner_add_new_request))) {
             String name = mNameEditText.getText().toString();
+            if (name.length() < 1) {
+                mNameEditText.setError("Name cannot be empty");
+                return null;
+            }
             rssRequestInfo = new RssRequestInfo(getNewId(rssRequestList), name);
             rssRequestList.add(rssRequestInfo);
         } else {
@@ -124,13 +164,7 @@ public class RssMainActivity extends BaseActivity {
 
         RssSensorSettings.getInstance(getApplicationContext()).setRssRequestUrls(rssRequestList);
 
-        Intent intent = new Intent();
-        String rssRequestFull = new Gson().toJson(
-                new RssRequestComplete(rssRequestInfo, mStringEditText.getText().toString()));
-        Log.d(TAG, rssRequestFull);
-        intent.putExtra(REQUEST_EXTRA_RESULT_FULL, rssRequestFull);
-        setResult(RESULT_OK, intent);
-        finish();
+        return rssRequestInfo;
     }
 
     private int getNewId(ArrayList<RssRequestInfo> rssRequestList) {
@@ -141,5 +175,25 @@ public class RssMainActivity extends BaseActivity {
             }
         }
         return maxId + 1;
+    }
+
+    private String getAndSaveWord() {
+        String word = mStringEditText.getText().toString();
+        if (word.length() < 1) {
+            return "";
+        }
+        ArrayList<String> rssRequestStrings = RssSensorSettings.getInstance(getApplicationContext()).getRssRequestStrings();
+        if (((String)mStringSpinner.getSelectedItem()).equals(getString(R.string.rss_spinner_add_new_word))) {
+            for (int i = 0; i < rssRequestStrings.size(); i++) {
+                if (rssRequestStrings.get(i).equals(word)) {
+                    mStringSpinner.setSelection(i);
+                }
+            }
+        } else {
+            rssRequestStrings.remove(mStringSpinner.getSelectedItemPosition());
+            rssRequestStrings.add(mStringSpinner.getSelectedItemPosition(), word);
+        }
+        RssSensorSettings.getInstance(getApplicationContext()).setRssRequestStrings(rssRequestStrings);
+        return word;
     }
 }

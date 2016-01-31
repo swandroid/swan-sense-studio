@@ -8,7 +8,6 @@ public class RssRequestComplete {
     public int id;
     public String name;
     public String url;
-    public int idWord; //Probably not used in this object
     public String word;
 
     public RssRequestComplete(RssRequestInfo rssRequestInfo, String word) {

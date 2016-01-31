@@ -83,4 +83,13 @@ public class RssSensorSettings {
     public ArrayList<RssRequestInfo> getRssRequestUrls() {
         return mRssRequestUrls;
     }
+
+    public void setRssRequestStrings(ArrayList<String> rssRequestStrings) {
+        mRssRequestStrings = rssRequestStrings;
+        persistString(KEY_RSS_REQUEST_STRINGS, new Gson().toJson(mRssRequestStrings));
+    }
+
+    public ArrayList<String> getRssRequestStrings() {
+        return mRssRequestStrings;
+    }
 }
