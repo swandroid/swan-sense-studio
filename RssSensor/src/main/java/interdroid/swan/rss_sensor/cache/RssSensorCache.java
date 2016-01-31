@@ -62,16 +62,12 @@ public class RssSensorCache {
      */
     public synchronized void addRequestToQueue(RssSensorRequest rssSensorRequest) {
         //addRequestToQueueSynchronized(rssSensorRequest);
-        Log.d(TAG, "addRequestToQueue: " + rssSensorRequest.sensorId);
         if (mRequestQueue == null) {
             mRequestQueue = new LinkedList<>();
         }
-        Log.d(TAG, "mRequestQueue.size(): " + mRequestQueue.size());
         if (mRequestQueue.offer(rssSensorRequest) && mRequestQueue.size() == 1) {
-            Log.d(TAG, "mRequestQueue.size() after adding size == 1: " + mRequestQueue.size());
             doRequest(rssSensorRequest);
         }
-        Log.d(TAG, "mRequestQueue.size() after adding: " + mRequestQueue.size());
     }
 
 //    private synchronized void addRequestToQueueSynchronized(final RssSensorRequest rssSensorRequest) {
@@ -108,7 +104,6 @@ public class RssSensorCache {
      */
     private synchronized void removeFromQueueAndCheckForNextRequest() {
 //        removeFromQueueAndCheckForNextRequestSynchronized();
-        Log.d(TAG, "checkForNextRequest: " + mRequestQueue.size());
         mRequestQueue.poll();
         RssSensorRequest rssSensorRequest = mRequestQueue.peek();
         if (rssSensorRequest != null) {
@@ -140,29 +135,22 @@ public class RssSensorCache {
         if (mUrlResponseCache == null) { //Create the url response cache if it doesn't exists
             mUrlResponseCache = new ArrayList<>();
         }
-        Log.d(TAG, "mUrlResponseCache.size(): " + mUrlResponseCache.size());
         for (int i = 0; i < mUrlResponseCache.size(); i++) {
             if (mUrlResponseCache.get(i).urlId == rssSensorRequest.sensorUrlId) { //There is already an (old) response for this request
-                Log.d(TAG, "Check if cache is new enough");
                 //Update url if necessary
                 RssUrlResponse rssUrlResponse = mUrlResponseCache.get(i);
                 if (!rssUrlResponse.urlString.equals(rssSensorRequest.sensorUrl)) {
                     rssUrlResponse.urlString = rssSensorRequest.sensorUrl;
-                    Log.d(TAG, "doGetRequest: " + "!rssUrlResponse.urlString.equals(rssSensorRequest.sensorUrl)");
                     doGetRequest(rssSensorRequest);
                 } else {
                     long timePastSinceLastResponse = System.currentTimeMillis() - rssUrlResponse.responseTime;
-                    Log.d(TAG, "Time passed: " + timePastSinceLastResponse);
                     if (timePastSinceLastResponse < rssSensorRequest.sampleRate / CACHE_TIME_DIVIDER) {
-                        Log.d(TAG, "Use cached response: " + timePastSinceLastResponse);
-                        Log.i(TAG, "rssUrlResponse.rssItemList.size(): " + rssUrlResponse.rssItemList.size() + ", sensorId: " + rssSensorRequest.sensorId);
                         List<RssItem> rssItemList = updateResponseWithSensorCache(rssSensorRequest, getCopyOfRssItemList(rssUrlResponse.rssItemList));
                         if (rssSensorRequest.listener != null) {
                             rssSensorRequest.listener.onResult(rssItemList);
                         }
                         removeFromQueueAndCheckForNextRequest();
                     } else {
-                        Log.d(TAG, "doGetRequest: " + "!timePastSinceLastResponse < rssSensorRequest.sampleRate / CACHE_TIME_DIVIDER");
                         doGetRequest(rssSensorRequest);
                     }
                 }
@@ -170,7 +158,6 @@ public class RssSensorCache {
             }
         }
         //No (old) response was found, do a request to the url
-        Log.d(TAG, "doGetRequest: " + "No (old) response was found, do a request to the url");
         doGetRequest(rssSensorRequest);
     }
 
@@ -209,16 +196,13 @@ public class RssSensorCache {
     }
 
     private void removeRssItemsIfExists(List<RssItem> rssCachedItemList, List<RssItem> rssItemList) {
-        Log.d(TAG, "removeRssItemsIfExists: rssCachedItemList.size() " + rssCachedItemList.size() + ", rssItemList.size() " + rssItemList.size());
         for (int i = 0; i < rssCachedItemList.size(); i++) {
             removeRssItemIfExists(rssCachedItemList.get(i), rssItemList);
         }
     }
 
     private void removeRssItemIfExists(RssItem rssCachedItem, List<RssItem> rssItemList) {
-        Log.d(TAG, "removeRssItemIfExists: rssItemList.size() " + rssItemList.size());
         for (int i = 0; i < rssItemList.size(); i++) {
-            Log.d(TAG, "removeRssItemIfExists loop: rssCachedItem.title " + rssCachedItem.title + "rssItemList.get(i).title " + rssItemList.get(i).title);
             if (rssCachedItem.equals(rssItemList.get(i))) {
                 rssItemList.remove(i);
                 return;
@@ -287,7 +271,6 @@ public class RssSensorCache {
 
             List<RssItem> rssItemList = readRss(xpp);
             putResultsInUrlCache(rssSensorRequest, rssItemList, currentTime);
-            Log.i(TAG, "rssItemList.size(): " + rssItemList.size() + ", sensorId: " + rssSensorRequest.sensorId);
             updateResponseWithSensorCache(rssSensorRequest, rssItemList);
 
             if (rssSensorRequest.listener != null) {
@@ -299,7 +282,6 @@ public class RssSensorCache {
     }
 
     private synchronized void putResultsInUrlCache(RssSensorRequest rssSensorRequest, List<RssItem> rssItemList, long currentTime) {
-        Log.d(TAG, "put results in url cache");
         List<RssItem> rssItemListCopy = getCopyOfRssItemList(rssItemList);
         for (int i = 0; i < mUrlResponseCache.size(); i++) {
             if (mUrlResponseCache.get(i).urlId == rssSensorRequest.sensorUrlId) {
@@ -310,22 +292,18 @@ public class RssSensorCache {
                 return;
             }
         }
-        Log.d(TAG, "add new result to url cache");
         mUrlResponseCache.add(new RssUrlResponse(rssSensorRequest.sensorUrlId, rssSensorRequest.sensorUrl, currentTime, rssItemListCopy));
     }
 
     private List<RssItem> readRss(XmlPullParser parser) throws XmlPullParserException, IOException {
         List<RssItem> items = new ArrayList<>();
         int eventType = parser.getEventType();
-        Log.i("TAG", "The event type is: " + eventType);
 
         while (eventType != XmlPullParser.START_DOCUMENT) {
             eventType = parser.next();
-            Log.i("TAG", "The event type is: " + eventType);
         }
         while (eventType != XmlPullParser.START_TAG) {
             eventType = parser.next();
-            Log.i("TAG", "The event type is: " + eventType);
         }
         parser.require(XmlPullParser.START_TAG, null, "rss");
         while (parser.next() != XmlPullParser.END_TAG) {
