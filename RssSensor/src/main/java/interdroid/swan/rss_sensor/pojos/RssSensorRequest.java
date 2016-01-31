@@ -13,6 +13,18 @@ public class RssSensorRequest {
     public long sampleRate;
     public RssSensorRequestListener listener;
 
+    public RssSensorRequest() {
+
+    }
+
+    public RssSensorRequest(RssRequestComplete rssRequestComplete, String sensorId, long sampleRate, RssSensorRequestListener listener) {
+        this.sensorId = sensorId;
+        this.sensorUrlId = rssRequestComplete.id;
+        this.sensorUrl = rssRequestComplete.url;
+        this.sampleRate = sampleRate;
+        this.listener = listener;
+    }
+
     public interface RssSensorRequestListener {
         void onResult(List<RssItem> rssItemList);
     }

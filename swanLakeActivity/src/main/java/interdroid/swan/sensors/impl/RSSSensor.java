@@ -27,15 +27,17 @@ import java.util.Map;
 
 import interdroid.swan.R;
 import interdroid.swan.rss_sensor.activities.RssMainActivity;
+import interdroid.swan.rss_sensor.cache.RssSensorCache;
 import interdroid.swan.rss_sensor.pojos.RssItem;
 import interdroid.swan.rss_sensor.pojos.RssRequestComplete;
+import interdroid.swan.rss_sensor.pojos.RssSensorRequest;
 import interdroid.swan.sensors.AbstractConfigurationActivity;
 import interdroid.swan.sensors.AbstractSwanSensor;
 
 
 public class RssSensor extends AbstractSwanSensor {
 	
-	public static final String TAG = "RSS";
+	public static final String TAG = "RssSensor";
 
     private static final int REQUEST_CODE_RSS = 5124;
 
@@ -64,7 +66,7 @@ public class RssSensor extends AbstractSwanSensor {
 
                     //Full
                     Preference preference = findPreference("rss_configuration_full");
-                    Log.d(TAG, "rssPrefenrece: " + data.getStringExtra(RssMainActivity.REQUEST_EXTRA_RESULT_FULL));
+                    Log.d(TAG, "rssPreference: " + data.getStringExtra(RssMainActivity.REQUEST_EXTRA_RESULT_FULL));
                     preference.getEditor().putString("rss_configuration_full", data.getStringExtra(RssMainActivity.REQUEST_EXTRA_RESULT_FULL)).apply();
                 }
                 // should be getting called now
@@ -128,13 +130,14 @@ public class RssSensor extends AbstractSwanSensor {
 		activeThreads.remove(id).interrupt();
 	}
 
-	class RSSPoller extends Thread {
+	class RSSPoller extends Thread implements RssSensorRequest.RssSensorRequestListener {
 
 		private Bundle configuration;
 		private String valuePath;
 		private String id;
 
         private RssRequestComplete rssRequestComplete;
+        private RssSensorRequest rssSensorRequest;
 
         RSSPoller(String id, String valuePath, Bundle configuration) {
 			this.id = id;
@@ -162,9 +165,15 @@ public class RssSensor extends AbstractSwanSensor {
                 }
 
                 //TODO: ook zonder cache de reponses bewaren, om het verschil te kunnen bekijken
-                //TODO: save parsed xml to cache and check in if one already exists that can now be used
                 //TODO: get correct url from configuration, al gedaan denk
-                doGetRequest(rssRequestComplete.url, valuePath, id, rssRequestComplete);
+                //doGetRequest(rssRequestComplete.url, valuePath, id, rssRequestComplete);
+                int sampleRate = configuration.getInt(SAMPLE_INTERVAL,
+                        mDefaultConfiguration.getInt(SAMPLE_INTERVAL));
+                if (rssSensorRequest == null) {
+                    rssSensorRequest = new RssSensorRequest(rssRequestComplete, id, sampleRate, this);
+                }
+
+                RssSensorCache.getInstance(getApplicationContext()).addRequestToQueue(rssSensorRequest);
 
                 try {
 					Thread.sleep(Math.max(
@@ -178,12 +187,22 @@ public class RssSensor extends AbstractSwanSensor {
 			}
 		}
 
-	}
+        @Override
+        public void onResult(List<RssItem> rssItemList) {
+            Log.d(TAG, "result: " + rssItemList);
+            processList(rssItemList, valuePath, id, rssRequestComplete);
+        }
+
+        public void destroyPoller() {
+            RssSensorCache.getInstance(getApplicationContext()).removeSensorFromCache(rssSensorRequest);
+        }
+    }
 
 	@Override
 	public void onDestroySensor() {
 		for (RSSPoller rssPoller : activeThreads.values()) {
             rssPoller.interrupt();
+            rssPoller.destroyPoller();
 		}
 		super.onDestroySensor();
 	};

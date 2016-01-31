@@ -21,4 +21,8 @@ public class RssItem {
         RssItem rssItem = (RssItem) object;
         return title.equals(rssItem.title) && description.equals(rssItem.description);
     }
+
+    public RssItem copy() {
+        return new RssItem(title, description);
+    }
 }

@@ -54,6 +54,10 @@ public class RssSensorCache {
         return sInstance;
     }
 
+    /**
+     * Add a request from a RssSensor to the cache Queue
+     * @param rssSensorRequest the request information to add to the queue
+     */
     public synchronized void addRequestToQueue(RssSensorRequest rssSensorRequest) {
         if (mRequestQueue == null) {
             mRequestQueue = new LinkedList<>();
@@ -63,10 +67,16 @@ public class RssSensorCache {
         }
     }
 
-    private synchronized void removeRequestFromQueue() {
+    /**
+     * Remove the oldest request from the queue
+     */
+    private synchronized void removeOldestRequestFromQueue() {
         mRequestQueue.poll();
     }
 
+    /**
+     * Check if there are requests left in the queue
+     */
     private synchronized void checkForNextRequest() {
         RssSensorRequest rssSensorRequest = mRequestQueue.peek();
         if (rssSensorRequest != null) {
@@ -74,12 +84,18 @@ public class RssSensorCache {
         }
     }
 
+    /**
+     * Do a request
+     * First check if the cache can satisfy the request
+     * If the cache cannot satisfy the request, do a request to the url
+     * @param rssSensorRequest the request information
+     */
     private void doRequest(RssSensorRequest rssSensorRequest) {
-        if (mUrlResponseCache == null) {
+        if (mUrlResponseCache == null) { //Create the url response cache if it doesn't exists
             mUrlResponseCache = new ArrayList<>();
         }
         for (int i = 0; i < mUrlResponseCache.size(); i++) {
-            if (mUrlResponseCache.get(i).urlId == rssSensorRequest.sensorUrlId) {
+            if (mUrlResponseCache.get(i).urlId == rssSensorRequest.sensorUrlId) { //There is already an (old) response for this request
                 //Update url if necessary
                 RssUrlResponse rssUrlResponse = mUrlResponseCache.get(i);
                 if (!rssUrlResponse.urlString.equals(rssSensorRequest.sensorUrl)) {
@@ -96,41 +112,58 @@ public class RssSensorCache {
                         doGetRequest(rssSensorRequest);
                     }
                 }
+                return;
             }
         }
-        //TODO: check if we need to do a get or cached request
-
+        //No (old) response was found, do a request to the url
+        doGetRequest(rssSensorRequest);
     }
 
-    private List<RssItem> updateResponseWithSensorCache(RssSensorRequest rssSensorRequest, List<RssItem> rssItemList) {
-        String sensorId = rssSensorRequest.sensorId;
-        if (mSensorResponseCache == null) {
+    private synchronized List<RssItem> updateResponseWithSensorCache(RssSensorRequest rssSensorRequest, List<RssItem> rssItemList) {
+        if (mSensorResponseCache == null) { //Create the sensor response cache if it doens't exists
             mSensorResponseCache = new ArrayList<>();
         }
+        String sensorId = rssSensorRequest.sensorId;
         for (int i = 0; i < mSensorResponseCache.size(); i++) {
+            //Check if there is an older response for this sensor
             if (mSensorResponseCache.get(i).sensorId.equals(sensorId)) {
-                removeRssItemsIfExists(mSensorResponseCache.get(i).rssItemList, rssItemList);
-                mSensorResponseCache.get(i).rssItemList = rssItemList;
-                return rssItemList;
+                //Check if the url isn't changed
+                if (mSensorResponseCache.get(i).urlId == rssSensorRequest.sensorUrlId) {
+                    List<RssItem> rssItemListCopy = getCopyOfRssItemList(rssItemList);
+                    //Remove RSS items that where found in a previous request
+                    removeRssItemsIfExists(mSensorResponseCache.get(i).rssItemList, rssItemList);
+                    //Put the received results in the cache
+                    mSensorResponseCache.get(i).rssItemList = rssItemListCopy;
+                    //Return the stripped response
+                    return rssItemList;
+                } else {
+                    removeSensorFromCache(rssSensorRequest);
+                }
             }
         }
-        RssSensorResponse rssSensorResponse = new RssSensorResponse();
-        rssSensorResponse.sensorId = sensorId;
-        rssSensorResponse.urlId = rssSensorRequest.sensorUrlId;
-        rssSensorResponse.urlString = rssSensorRequest.sensorUrl;
-        rssSensorResponse.rssItemList = rssItemList;
-        mSensorResponseCache.add(rssSensorResponse);
-        return rssItemList;
+        //There was no old response (or the old response was removed), create a new response
+        return addNewSensorResponseToCache(rssSensorRequest, rssItemList);
+    }
+
+    private List<RssItem> getCopyOfRssItemList(List<RssItem> rssItemList) {
+        List<RssItem> rssItemListCopy = new ArrayList<>(rssItemList.size());
+        for (int i = 0; i < rssItemList.size(); i++) {
+            rssItemListCopy.add(rssItemList.get(i).copy());
+        }
+        return rssItemListCopy;
     }
 
     private void removeRssItemsIfExists(List<RssItem> rssCachedItemList, List<RssItem> rssItemList) {
+        Log.d(TAG, "removeRssItemsIfExists: rssCachecItemList.size() " + rssCachedItemList.size() + ", rssItemList.size() " + rssItemList.size());
         for (int i = 0; i < rssCachedItemList.size(); i++) {
             removeRssItemIfExists(rssCachedItemList.get(i), rssItemList);
         }
     }
 
     private void removeRssItemIfExists(RssItem rssCachedItem, List<RssItem> rssItemList) {
+        Log.d(TAG, "removeRssItemIfExists: rssItemList.size() " + rssItemList.size());
         for (int i = 0; i < rssItemList.size(); i++) {
+            Log.d(TAG, "removeRssItemIfExists loop: rssCachedItem.title " + rssCachedItem.title + "rssItemList.get(i).title " + rssItemList.get(i).title);
             if (rssCachedItem.equals(rssItemList.get(i))) {
                 rssItemList.remove(i);
                 return;
@@ -138,11 +171,39 @@ public class RssSensorCache {
         }
     }
 
-    public void removeSensorFromCache() {
-
+    public synchronized void removeSensorFromCache(RssSensorRequest rssSensorRequest) {
+        //Remove the sensor from the sensor cache
+        for (int i = 0; i < mSensorResponseCache.size(); i++) {
+            if (mSensorResponseCache.get(i).sensorId.equals(rssSensorRequest.sensorId)) {
+                mSensorResponseCache.remove(i);
+            }
+        }
+        //Check if there are still sensors left with the same urlId
+        for (int i = 0; i < mSensorResponseCache.size(); i++) {
+            if (mSensorResponseCache.get(i).urlId == rssSensorRequest.sensorUrlId) {
+                return;
+            }
+        }
+        //If there are no sensors left with the same urlId, remove the urlId from the cache
+        for (int i = 0; i < mUrlResponseCache.size(); i++) {
+            if (mUrlResponseCache.get(i).urlId == rssSensorRequest.sensorUrlId) {
+                mUrlResponseCache.remove(i);
+                return;
+            }
+        }
     }
 
-    public void doGetRequest(final RssSensorRequest rssSensorRequest) {
+    private List<RssItem> addNewSensorResponseToCache(RssSensorRequest rssSensorRequest, List<RssItem> rssItemList) {
+        RssSensorResponse rssSensorResponse = new RssSensorResponse();
+        rssSensorResponse.sensorId = rssSensorRequest.sensorId;
+        rssSensorResponse.urlId = rssSensorRequest.sensorUrlId;
+        rssSensorResponse.urlString = rssSensorRequest.sensorUrl;
+        rssSensorResponse.rssItemList = rssItemList;
+        mSensorResponseCache.add(rssSensorResponse);
+        return rssItemList;
+    }
+
+    private void doGetRequest(final RssSensorRequest rssSensorRequest) {
         RequestQueue queue = Volley.newRequestQueue(mContext);
 
         // Request a string response from the provided URL.
@@ -152,6 +213,8 @@ public class RssSensorCache {
                     public void onResponse(String response) {
                         Log.d(TAG, response);
                         parseRSS(response, rssSensorRequest, System.currentTimeMillis());
+                        removeOldestRequestFromQueue();
+                        checkForNextRequest();
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -171,7 +234,7 @@ public class RssSensorCache {
             List<RssItem> rssItemList = readRss(xpp);
             putResultsInUrlCache(rssSensorRequest, rssItemList, currentTime);
             updateResponseWithSensorCache(rssSensorRequest, rssItemList);
-            
+
             if (rssSensorRequest.listener != null) {
                 rssSensorRequest.listener.onResult(rssItemList);
             }
@@ -180,12 +243,8 @@ public class RssSensorCache {
         }
     }
 
-    private void putResultsInUrlCache(RssSensorRequest rssSensorRequest, List<RssItem> rssItemList, long currentTime) {
-        List<RssItem> rssItemListCopy = new ArrayList<>(rssItemList.size());
-        for (int i = 0; i < rssItemList.size(); i++) {
-            RssItem rssItem = new RssItem(rssItemList.get(i).title, rssItemList.get(i).description);
-            rssItemListCopy.add(rssItem);
-        }
+    private synchronized void putResultsInUrlCache(RssSensorRequest rssSensorRequest, List<RssItem> rssItemList, long currentTime) {
+        List<RssItem> rssItemListCopy = getCopyOfRssItemList(rssItemList);
         for (int i = 0; i < mUrlResponseCache.size(); i++) {
             if (mUrlResponseCache.get(i).urlId == rssSensorRequest.sensorUrlId) {
                 RssUrlResponse rssUrlResponse = mUrlResponseCache.get(i);
@@ -195,6 +254,11 @@ public class RssSensorCache {
                 return;
             }
         }
+        RssUrlResponse rssUrlResponse = new RssUrlResponse();
+        rssUrlResponse.responseTime = currentTime;
+        rssUrlResponse.urlString = rssSensorRequest.sensorUrl;
+        rssUrlResponse.rssItemList = rssItemListCopy;
+        mUrlResponseCache.add(rssUrlResponse);
     }
 
     private List<RssItem> readRss(XmlPullParser parser) throws XmlPullParserException, IOException {
@@ -307,5 +371,4 @@ public class RssSensorCache {
             }
         }
     }
-
 }
