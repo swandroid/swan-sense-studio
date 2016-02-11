@@ -28,6 +28,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
@@ -554,12 +555,20 @@ public class EvaluationEngineService extends Service {
 				break;
 			}
 		}
-		mNotification.icon = hasRemote ? R.drawable.ic_stat_swan_warning
-				: R.drawable.ic_stat_swan;
-		mNotification.setLatestEventInfo(this, "Swan",
-				"number of expressions: " + mRegisteredExpressions.size(),
-				contentIntent);
-		mNotificationManager.notify(NOTIFICATION_ID, mNotification);
+		NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+
+		builder.setContentIntent(contentIntent)
+				.setSmallIcon( hasRemote ? R.drawable.ic_stat_swan_warning
+				: R.drawable.ic_stat_swan)
+				.setContentText("Swan")
+				.setContentText("number of expressions: " + mRegisteredExpressions.size());
+
+//		mNotification.icon = hasRemote ? R.drawable.ic_stat_swan_warning
+//				: R.drawable.ic_stat_swan;
+//		mNotification.setLatestEventInfo(this, "Swan",
+//				"number of expressions: " + mRegisteredExpressions.size(),
+//				contentIntent);
+		mNotificationManager.notify(NOTIFICATION_ID, builder.build());
 	}
 
 	private void sendUpdate(QueuedExpression queued, Result result) {
