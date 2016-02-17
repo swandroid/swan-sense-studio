@@ -526,10 +526,6 @@ public class EvaluationEngineService extends Service {
 		mEvaluationThread.start();
 		// init the notification stuff
 		mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-		mNotification = new Notification(R.drawable.ic_stat_swan,
-				"Swan active", System.currentTimeMillis());
-		mNotification.flags |= Notification.FLAG_ONGOING_EVENT;
-		mNotification.flags |= Notification.FLAG_NO_CLEAR;
 	}
 
 	@Override
@@ -560,15 +556,11 @@ public class EvaluationEngineService extends Service {
 		builder.setContentIntent(contentIntent)
 				.setSmallIcon( hasRemote ? R.drawable.ic_stat_swan_warning
 				: R.drawable.ic_stat_swan)
-				.setContentText("Swan")
+				.setContentTitle("Swan Active")
 				.setContentText("number of expressions: " + mRegisteredExpressions.size());
 
-//		mNotification.icon = hasRemote ? R.drawable.ic_stat_swan_warning
-//				: R.drawable.ic_stat_swan;
-//		mNotification.setLatestEventInfo(this, "Swan",
-//				"number of expressions: " + mRegisteredExpressions.size(),
-//				contentIntent);
-		mNotificationManager.notify(NOTIFICATION_ID, builder.build());
+		mNotification = builder.build();
+		mNotificationManager.notify(NOTIFICATION_ID, mNotification);
 	}
 
 	private void sendUpdate(QueuedExpression queued, Result result) {
