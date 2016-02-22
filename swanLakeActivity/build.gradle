@@ -30,8 +30,10 @@ android {
 dependencies {
     ant.importBuild 'src/main/buildgrammar.ant'
     compile project(':senseandroidlibrary')
+    compile project(':shared')
     compile 'com.android.support:support-v4:23.0.1'
     compile 'com.google.android.gms:play-services:+'
+    compile 'com.squareup:otto:1.3.6'
     compile files('libs/antlr-3.4-complete-no-antlrv2.jar')
     compile files('libs/cuckoo-client.jar')
     compile files('libs/gcm-server.jar')
