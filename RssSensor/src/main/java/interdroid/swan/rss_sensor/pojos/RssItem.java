@@ -22,7 +22,8 @@ public class RssItem {
         return title.equals(rssItem.title) && description.equals(rssItem.description);
     }
 
-    public RssItem copy() {
+    @Override
+    public RssItem clone() {
         return new RssItem(title, description);
     }
 }

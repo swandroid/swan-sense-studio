@@ -11,6 +11,7 @@ public class RssRequestInfo implements Parcelable {
     public int id;
     public String name;
     public String url;
+    public long lastUpdate;
 
     public RssRequestInfo(int id, String name) {
         this.id = id;
@@ -21,6 +22,7 @@ public class RssRequestInfo implements Parcelable {
         id = in.readInt();
         name = in.readString();
         url = in.readString();
+        lastUpdate = in.readLong();
     }
 
     public static final Creator<RssRequestInfo> CREATOR = new Creator<RssRequestInfo>() {
@@ -59,6 +61,7 @@ public class RssRequestInfo implements Parcelable {
         dest.writeInt(id);
         dest.writeString(name);
         dest.writeString(url);
+        dest.writeLong(lastUpdate);
     }
 
     @Override

@@ -139,8 +139,9 @@ public class RssSensorCache {
             if (mUrlResponseCache.get(i).urlId == rssSensorRequest.sensorUrlId) { //There is already an (old) response for this request
                 //Update url if necessary
                 RssUrlResponse rssUrlResponse = mUrlResponseCache.get(i);
-                if (!rssUrlResponse.urlString.equals(rssSensorRequest.sensorUrl)) {
+                if (rssUrlResponse.lastUpdate < rssSensorRequest.lastUpdate) {
                     rssUrlResponse.urlString = rssSensorRequest.sensorUrl;
+                    rssUrlResponse.lastUpdate = rssSensorRequest.lastUpdate;
                     doGetRequest(rssSensorRequest);
                 } else {
                     long timePastSinceLastResponse = System.currentTimeMillis() - rssUrlResponse.responseTime;
@@ -151,7 +152,11 @@ public class RssSensorCache {
                         }
                         removeFromQueueAndCheckForNextRequest();
                     } else {
-                        doGetRequest(rssSensorRequest);
+                        if (rssSensorRequest.lastUpdate < rssUrlResponse.lastUpdate) {
+                            rssSensorRequest.sensorUrl = rssUrlResponse.urlString;
+                            rssSensorRequest.lastUpdate = rssUrlResponse.lastUpdate;
+                            doGetRequest(rssSensorRequest);
+                        }
                     }
                 }
                 return;
@@ -190,7 +195,7 @@ public class RssSensorCache {
     private List<RssItem> getCopyOfRssItemList(List<RssItem> rssItemList) {
         List<RssItem> rssItemListCopy = new ArrayList<>(rssItemList.size());
         for (int i = 0; i < rssItemList.size(); i++) {
-            rssItemListCopy.add(rssItemList.get(i).copy());
+            rssItemListCopy.add(rssItemList.get(i).clone());
         }
         return rssItemListCopy;
     }
@@ -292,7 +297,8 @@ public class RssSensorCache {
                 return;
             }
         }
-        mUrlResponseCache.add(new RssUrlResponse(rssSensorRequest.sensorUrlId, rssSensorRequest.sensorUrl, currentTime, rssItemListCopy));
+        mUrlResponseCache.add(new RssUrlResponse(rssSensorRequest.sensorUrlId, rssSensorRequest.sensorUrl, currentTime,
+                rssItemListCopy, rssSensorRequest.lastUpdate));
     }
 
     private List<RssItem> readRss(XmlPullParser parser) throws XmlPullParserException, IOException {

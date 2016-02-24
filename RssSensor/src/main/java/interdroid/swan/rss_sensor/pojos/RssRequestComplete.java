@@ -9,11 +9,13 @@ public class RssRequestComplete {
     public String name;
     public String url;
     public String word;
+    public long lastUpdate;
 
     public RssRequestComplete(RssRequestInfo rssRequestInfo, String word) {
         this.id = rssRequestInfo.id;
         this.name = rssRequestInfo.name;
         this.url = rssRequestInfo.url;
         this.word = word;
+        this.lastUpdate = rssRequestInfo.lastUpdate;
     }
 }

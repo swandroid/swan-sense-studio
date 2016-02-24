@@ -47,7 +47,7 @@ public class RssSensorSettings {
     private void loadData() {
         String rssRequestUrls = mSharedPreferences.getString(KEY_RSS_REQUEST_URLS, null);
         if (rssRequestUrls == null) {
-            mRssRequestUrls = new ArrayList<RssRequestInfo>();
+            mRssRequestUrls = new ArrayList<>();
             mRssRequestUrls.add(new RssRequestInfo(0, "Add new request"));
         } else {
             Type listObject = new TypeToken<List<RssRequestInfo>>(){}.getType();
@@ -56,7 +56,7 @@ public class RssSensorSettings {
 
         String rssRequestStrings = mSharedPreferences.getString(KEY_RSS_REQUEST_STRINGS, null);
         if (rssRequestStrings == null) {
-            mRssRequestStrings = new ArrayList<String>();
+            mRssRequestStrings = new ArrayList<>();
             mRssRequestStrings.add("Add new word");
         } else {
             Type listObject = new TypeToken<List<String>>(){}.getType();

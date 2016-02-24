@@ -161,6 +161,7 @@ public class RssMainActivity extends BaseActivity {
         }
 
         rssRequestInfo.url = mUrlEditText.getText().toString();
+        rssRequestInfo.lastUpdate = System.currentTimeMillis();
 
         RssSensorSettings.getInstance(getApplicationContext()).setRssRequestUrls(rssRequestList);
 

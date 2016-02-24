@@ -11,16 +11,18 @@ public class RssUrlResponse {
     public String urlString;
     public long responseTime;
     public List<RssItem> rssItemList;
+    public long lastUpdate;
 
     public RssUrlResponse() {
 
     }
 
-    public RssUrlResponse(int urlId, String urlString, long responseTime, List<RssItem> rssItemList) {
+    public RssUrlResponse(int urlId, String urlString, long responseTime, List<RssItem> rssItemList, long lastUpdate) {
         this.urlId = urlId;
         this.urlString = urlString;
         this.responseTime = responseTime;
         this.rssItemList = rssItemList;
+        this.lastUpdate = lastUpdate;
     }
 
 }
