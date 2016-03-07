@@ -802,7 +802,7 @@
                 android:value="wear_heartrate" />
             <meta-data
                 android:name="valuePaths"
-                android:value="wear_heartrate_valuepaths" />
+                android:value="heart_rate" />
             <meta-data
                 android:name="units"
                 android:value="bpm" />
