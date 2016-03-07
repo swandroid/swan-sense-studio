@@ -3,9 +3,9 @@
 
     <PreferenceCategory android:title="Value Path" >
         <ListPreference
-            android:entries="@array/wear_heartrate_values"
-            android:entryValues="@array/wear_heartrate_values"
-            android:key="valuepaths"
+            android:entries="@array/wear_heartrate_valuepaths"
+            android:entryValues="@array/wear_heartrate_valuepaths"
+            android:key="valuepath"
             android:summary="Select a Value Path"
             android:title="Value Path" />
     </PreferenceCategory>

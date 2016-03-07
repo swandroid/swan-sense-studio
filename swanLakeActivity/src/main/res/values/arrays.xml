@@ -301,8 +301,9 @@
         <item>3</item>
     </string-array>
 
-    <string-array name="wear_heartrate_values">
+    <string-array name="wear_heartrate_valuepaths">
         <item>heart_rate</item>
+        <item>status</item>
     </string-array>
 
 </resources>

@@ -788,7 +788,32 @@
                 android:name="units"
                 android:value="" />
         </activity>
-        
+
+        <activity
+            android:name="interdroid.swan.sensors.impl.wear.HeartRateSensor$ConfigurationActivity"
+            android:exported="true"
+            android:icon="@drawable/polar_hrm_icon" >
+            <intent-filter>
+                <action android:name="interdroid.swan.sensor.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="wear_heartrate" />
+            <meta-data
+                android:name="valuePaths"
+                android:value="wear_heartrate_valuepaths" />
+            <meta-data
+                android:name="units"
+                android:value="bpm" />
+        </activity>
+
+        <service
+            android:name="interdroid.swan.sensors.impl.wear.HeartRateSensor"
+            android:exported="true"
+            android:process=":wearheartratesensor" >
+        </service>
+
         <service
             android:name="interdroid.swan.sensors.impl.StepDetectorSensor"
             android:exported="true"
