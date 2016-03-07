@@ -58,7 +58,7 @@ public class WDReceiver extends AsyncTask<Void, String, Void> {
 
             HashMap<String, String> dataMap = (HashMap<String, String>) is.readObject();
             String action = dataMap.get("action");
-            Log.d(TAG, "received " + action);
+            Log.d(TAG, "received " + action + " from " + remoteIp);
 
             if(action.equals("initConnect")) {
                 wdManager.connected(remoteIp.getHostAddress(), false);
