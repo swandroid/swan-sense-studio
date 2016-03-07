@@ -44,6 +44,7 @@ public class WDManager {
 
     public static WifiP2pManager p2pManager;
     private static WifiP2pManager.Channel p2pChannel;
+
     private BroadcastReceiver p2pReceiver;
     private IntentFilter p2pIntentFilter;
     private Handler handler;
@@ -88,9 +89,11 @@ public class WDManager {
         slpActivity.registerReceiver(p2pReceiver, p2pIntentFilter);
         wdAutoAccept.intercept(true);
         new WDReceiver(this, slpActivity).execute();
+        Log.d(TAG, "WDManager initilized successfully");
     }
 
     public void clean() {
+        disconnect();
         slpActivity.unregisterReceiver(p2pReceiver);
         wdAutoAccept.intercept(false);
     }
@@ -391,6 +394,20 @@ public class WDManager {
         }
 
         return updated;
+    }
+
+    public void resetPeers() {
+        for(SwanUser peer : nearbyPeers) {
+            peer.setIp(null);
+        }
+    }
+
+    public BroadcastReceiver getP2pReceiver() {
+        return p2pReceiver;
+    }
+
+    public void setP2pReceiver(BroadcastReceiver p2pReceiver) {
+        this.p2pReceiver = p2pReceiver;
     }
 
     public void log(String message, boolean display) {

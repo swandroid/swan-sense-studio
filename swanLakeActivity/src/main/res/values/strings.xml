@@ -49,4 +49,5 @@
 
     <!-- tmp stuff -->
     <string name="accelerometer_value">Accelerometer Value</string>
+    <string name="title_activity_nearby_runners">NearbyRunnersActivity</string>
 </resources>

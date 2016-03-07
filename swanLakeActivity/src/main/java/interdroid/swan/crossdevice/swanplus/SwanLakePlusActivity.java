@@ -48,6 +48,7 @@ import interdroid.sense.SettingsActivity;
 import interdroid.swan.R;
 import interdroid.swan.crossdevice.Registry;
 import interdroid.swan.crossdevice.SwanGCMConstants;
+import interdroid.swan.crossdevice.swanplus.run2gether.ActivityRun2gether;
 import interdroid.swan.swansong.Expression;
 import nl.sense_os.service.constants.SensePrefs;
 
@@ -58,6 +59,8 @@ import nl.sense_os.service.constants.SensePrefs;
  * TODO implement mechanism from removing nearby nodes when they are no longer around
  * TODO if peers are already connected when starting the app, they should request user details from each other
  * TODO if disconnected, attempting to unregister from remote will fail
+ * TODO when disconnected, unset the IPs of the disconnected peer
+ * TODO disable "Invitation to connect" popup when phone is connecting to group
  */
 public class SwanLakePlusActivity extends FragmentActivity implements ActionBar.TabListener {
 
@@ -114,8 +117,6 @@ public class SwanLakePlusActivity extends FragmentActivity implements ActionBar.
     }
 
     public static class NearbyPeersListFragment extends ListFragment {
-
-        public static final String ARG_SECTION_NUMBER = "section_number";
 
         @Override
         public void onActivityCreated(Bundle savedInstanceState) {
@@ -179,8 +180,6 @@ public class SwanLakePlusActivity extends FragmentActivity implements ActionBar.
     }
 
     public static class ContactsListFragment extends ListFragment {
-
-        public static final String ARG_SECTION_NUMBER = "section_number";
 
         @Override
         public void onActivityCreated(Bundle savedInstanceState) {
@@ -392,6 +391,16 @@ public class SwanLakePlusActivity extends FragmentActivity implements ActionBar.
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
     protected Dialog onCreateDialog(int id) {
         final EditText mNameEditText = new EditText(this);
         mNameEditText.setPadding(10, 10, 10, 10);
@@ -487,6 +496,9 @@ public class SwanLakePlusActivity extends FragmentActivity implements ActionBar.
                 break;
             case R.id.action_test:
                 startActivity(new Intent(this, TestActivity.class));
+                break;
+            case R.id.action_r2g:
+                startActivity(new Intent(this, ActivityRun2gether.class));
                 break;
             default:
                 break;

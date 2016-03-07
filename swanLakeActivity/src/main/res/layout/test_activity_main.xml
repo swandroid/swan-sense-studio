@@ -37,4 +37,12 @@
             android:onClick="unregisterExpression"
             android:text="Unregister" />
     </LinearLayout>
+
+    <Button
+        android:id="@+id/buttonBind"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="testBind"
+        android:layout_above="@id/mLlayoutBottomButtons"
+        android:text="Test bind" />
 </RelativeLayout>

@@ -5,13 +5,20 @@ import interdroid.swan.R;
 import interdroid.swan.SensorInfo;
 import interdroid.swan.SwanException;
 import interdroid.swan.ValueExpressionListener;
+import interdroid.swan.sensors.impl.FitnessSensor;
 import interdroid.swan.swansong.ExpressionFactory;
 import interdroid.swan.swansong.ExpressionParseException;
 import interdroid.swan.swansong.TimestampedValue;
 import interdroid.swan.swansong.ValueExpression;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.os.Messenger;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,7 +31,8 @@ public class TestActivity extends Activity {
     SensorInfo swanSensor;
 
     /* name of the sensor */
-    final String SENSOR_NAME = "fitness";
+//    final String SENSOR_NAME = "fitness";
+    final String SENSOR_NAME = "light";
 
     /* random id */
     public final int REQUEST_CODE = 123;
@@ -38,14 +46,13 @@ public class TestActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.test_activity_main);
         tv = (TextView) findViewById(R.id.textView1);
-//        initialize();
-        testSensor();
+        initialize();
+//        testSensor();
     }
 
     public void testSensor() {
-        String myExpression = "self@fitness:avg_speed{ANY,0}";
-//        String myExpression = "self@light:lux{ANY,0}";
-
+        String myExpression = "SWAN1@fitness:avg_speed{ANY,0}";
+//        String myExpression = "SWAN1@light:lux{ANY,0}";
         registerSWANSensor(myExpression);
     }
 
@@ -79,6 +86,9 @@ public class TestActivity extends Activity {
         } else {
             Log.d(TAG, "Already unregistered");
         }
+    }
+
+    public void testBind(View view) {
     }
 
     /* Invoked on pressing back key from the sensor configuration activity */
