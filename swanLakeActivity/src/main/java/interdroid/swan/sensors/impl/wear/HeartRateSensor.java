@@ -4,6 +4,8 @@ import android.os.Bundle;
 
 import java.io.IOException;
 
+import interdroid.swan.R;
+import interdroid.swan.sensors.AbstractConfigurationActivity;
 import interdroid.swan.sensors.AbstractSwanSensor;
 
 /**
@@ -12,6 +14,16 @@ import interdroid.swan.sensors.AbstractSwanSensor;
 public class HeartRateSensor extends AbstractSwanSensor {
 
     public static final String TAG = "HeartRateSensor";
+
+    public static class ConfigurationActivity extends
+            AbstractConfigurationActivity {
+
+        @Override
+        public final int getPreferencesXML() {
+            return R.xml.wear_heartrate_preferences;
+        }
+
+    }
     @Override
     public void initDefaultConfiguration(Bundle defaults) {
 
