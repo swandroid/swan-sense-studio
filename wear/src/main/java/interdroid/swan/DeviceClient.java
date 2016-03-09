@@ -1,11 +1,10 @@
-package com.github.pocmo.sensordashboard;
+package interdroid.swan;
 
 import android.content.Context;
 import android.util.Log;
-import android.util.SparseBooleanArray;
 import android.util.SparseLongArray;
 
-import com.github.pocmo.sensordashboard.shared.DataMapKeys;
+import interdroid.swan.sensordashboard.shared.DataMapKeys;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;

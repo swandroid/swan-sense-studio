@@ -6,7 +6,7 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
-        applicationId "com.github.pocmo.sensordashboard"
+        applicationId "interdroid.swan"
         minSdkVersion 20
         targetSdkVersion 22
         versionCode 5

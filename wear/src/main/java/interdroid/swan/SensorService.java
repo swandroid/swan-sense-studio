@@ -1,4 +1,4 @@
-package com.github.pocmo.sensordashboard;
+package interdroid.swan;
 
 import android.app.Notification;
 import android.app.Service;
@@ -13,6 +13,8 @@ import android.util.Log;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+import interdroid.swan.R;
 
 public class SensorService extends Service implements SensorEventListener {
     private static final String TAG = "SensorDashboard/SensorService";
