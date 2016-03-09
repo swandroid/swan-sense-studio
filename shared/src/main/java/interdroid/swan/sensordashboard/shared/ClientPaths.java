@@ -1,4 +1,4 @@
-package com.github.pocmo.sensordashboard.shared;
+package interdroid.swan.sensordashboard.shared;
 
 public class ClientPaths {
     public static final String START_MEASUREMENT = "/start";
