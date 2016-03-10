@@ -46,6 +46,9 @@ public class RemoteSensorManager {
     private SensorNames sensorNames;
     private GoogleApiClient googleApiClient;
 
+    public static final String REGISTER_MESSAGE = "RegisterMessage";
+    public static final String UPDATE_MESSAGE   = "SensorUpdateMessage";
+
     private LinkedList<TagData> tags = new LinkedList<>();
 
     public static synchronized RemoteSensorManager getInstance(Context context) {
@@ -84,7 +87,7 @@ public class RemoteSensorManager {
         sensorMapping.append(id, sensor);
 
         //BusProvider.postOnMainThread(new NewSensorEvent(sensor));
-        Intent i = new Intent("MyMessage");
+        Intent i = new Intent(REGISTER_MESSAGE);
         i.putExtra("sensor", sensor);
         context.sendBroadcast(i);
 
@@ -110,7 +113,10 @@ public class RemoteSensorManager {
         sensor.addDataPoint(dataPoint);
 
         Log.d(TAG, "Sensor Update Event!!!++++++++++++++++++");
-        BusProvider.postOnMainThread(new SensorUpdatedEvent(sensor, dataPoint));
+        Intent i = new Intent(UPDATE_MESSAGE);
+        i.putExtra("sensor", sensor);
+        i.putExtra("data", dataPoint);
+        context.sendBroadcast(i);
     }
 
     public synchronized void addTag(String pTagName) {

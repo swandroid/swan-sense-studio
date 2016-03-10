@@ -18,8 +18,10 @@ import interdroid.swan.sensors.AbstractConfigurationActivity;
 import interdroid.swan.sensors.AbstractSwanSensor;
 import interdroid.swan.sensors.impl.wear.shared.RemoteSensorManager;
 import interdroid.swan.sensors.impl.wear.shared.data.Sensor;
+import interdroid.swan.sensors.impl.wear.shared.data.SensorDataPoint;
 import interdroid.swan.sensors.impl.wear.shared.events.BusProvider;
 import interdroid.swan.sensors.impl.wear.shared.events.NewSensorEvent;
+import nl.sense_os.service.constants.SensorData;
 
 /**
  * Created by slavik on 2/22/16.
@@ -27,26 +29,53 @@ import interdroid.swan.sensors.impl.wear.shared.events.NewSensorEvent;
 public class HeartRateSensor extends AbstractSwanSensor {
 
     public static final String TAG = "HeartRateSensor";
-    public static final String HEART_RATE = "heart_rate";
+    public static final String HEART_RATE = "Heart Rate";
+    public static final String VALUE_PATH = "heart_rate";
     RemoteSensorManager sensorMngr;
     String id;
 
-    private newMessage messageReceiver = new newMessage();
+    private SensorRegister messageReceiver = new SensorRegister();
+    private SensorUpdate   updateReceiver = new SensorUpdate();
 
 
     ArrayList<Integer>  ids = new ArrayList<>();
 
-    public class newMessage extends BroadcastReceiver
+    public class SensorRegister extends BroadcastReceiver
     {
         @Override
         public void onReceive(Context context, Intent intent)
         {
             String action = intent.getAction();
-            if(action.equalsIgnoreCase("MyMessage")){
+            if(action.equalsIgnoreCase(RemoteSensorManager.REGISTER_MESSAGE)){
                 Bundle extra = intent.getExtras();
                 //String who = extra.getString("sensor");
                 Sensor s = (Sensor)extra.getSerializable("sensor");
                 Log.d(TAG, "Got message+++++++++++++++++++++" + s.getName());
+                if(s.getName().equals(HEART_RATE))
+                    registerListener();
+            }
+
+        }
+    }
+
+    public class SensorUpdate extends BroadcastReceiver
+    {
+        @Override
+        public void onReceive(Context context, Intent intent)
+        {
+            String action = intent.getAction();
+            if(action.equalsIgnoreCase(RemoteSensorManager.UPDATE_MESSAGE)){
+                Bundle extra = intent.getExtras();
+                //String who = extra.getString("sensor");
+                Sensor s = (Sensor)extra.getSerializable("sensor");
+                SensorDataPoint d = (SensorDataPoint)extra.getSerializable("data");
+                if(s.getName().equals(HEART_RATE)) {
+                    Log.d(TAG, "Got update+++++++++++++++++++++" + s.getName());
+                    float[] dataz = d.getValues();
+                    if(dataz[0] != 0.0f)
+                        putValueTrimSize(VALUE_PATH, id, System.currentTimeMillis(), dataz[0]);
+                }
+
             }
 
         }
@@ -75,17 +104,17 @@ public class HeartRateSensor extends AbstractSwanSensor {
         if(sensorMngr == null)
             sensorMngr = RemoteSensorManager.getInstance(getApplicationContext());
 
-        registerReceiver(messageReceiver, new IntentFilter("MyMessage"));
+        //registerReceiver(messageReceiver, new IntentFilter(RemoteSensorManager.REGISTER_MESSAGE));
+        registerReceiver(updateReceiver, new IntentFilter(RemoteSensorManager.UPDATE_MESSAGE));
         SENSOR_NAME = "Wear Heart Rate Sensor";
         Log.d("Heart RATE", "Register++++++++++++++++++++++++++++++++");
-
-        //BusProvider.getInstance().register(this);
 
         List<Sensor> sensors = RemoteSensorManager.getInstance(getApplicationContext()).getSensors();
 
         sensorMngr.startMeasurement();
         for(Sensor s : sensors){
             Log.d("Heart rate", "Found Sensor" + s.getName());
+
         }
 
 
@@ -96,9 +125,9 @@ public class HeartRateSensor extends AbstractSwanSensor {
 
         Log.d("Heart RATE", "Unregister++++++++++++++++++++++++++");
         this.id = id;
-        unregisterReceiver(messageReceiver);
+        //unregisterReceiver(messageReceiver);
+        unregisterReceiver(updateReceiver);
         sensorMngr.stopMeasurement();
-       // BusProvider.getInstance().unregister(this);
     }
 
     @Override
@@ -112,12 +141,9 @@ public class HeartRateSensor extends AbstractSwanSensor {
         sensorMngr.startMeasurement();
     }
 
-    @Subscribe
-    public void onNewSensorEvent(final NewSensorEvent event) {
-        Sensor s = event.getSensor();
-
-        Log.d("Heart Rate", "Got new sensor " + s.getName() + "++++++++++++++++++++++");
-
-        putValueTrimSize(HEART_RATE,id, System.currentTimeMillis(), 13);
+    public void registerListener(){
+        Log.d(TAG, "Registering Updater +++++++++++++++");
+        registerReceiver(updateReceiver, new IntentFilter(RemoteSensorManager.UPDATE_MESSAGE));
     }
+
 }

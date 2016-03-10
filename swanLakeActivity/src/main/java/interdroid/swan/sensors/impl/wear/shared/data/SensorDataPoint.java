@@ -10,7 +10,7 @@ public class SensorDataPoint implements Serializable{
     public SensorDataPoint(long timestamp, int accuracy, float[] values) {
         this.timestamp = timestamp;
         this.accuracy = accuracy;
-        this.values = values;
+        this.values = values.clone();
     }
 
     public float[] getValues() {
