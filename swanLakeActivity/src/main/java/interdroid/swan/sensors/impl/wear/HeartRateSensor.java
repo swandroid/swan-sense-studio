@@ -1,5 +1,9 @@
 package interdroid.swan.sensors.impl.wear;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -27,8 +31,26 @@ public class HeartRateSensor extends AbstractSwanSensor {
     RemoteSensorManager sensorMngr;
     String id;
 
+    private newMessage messageReceiver = new newMessage();
+
 
     ArrayList<Integer>  ids = new ArrayList<>();
+
+    public class newMessage extends BroadcastReceiver
+    {
+        @Override
+        public void onReceive(Context context, Intent intent)
+        {
+            String action = intent.getAction();
+            if(action.equalsIgnoreCase("MyMessage")){
+                Bundle extra = intent.getExtras();
+                //String who = extra.getString("sensor");
+                Sensor s = (Sensor)extra.getSerializable("sensor");
+                Log.d(TAG, "Got message+++++++++++++++++++++" + s.getName());
+            }
+
+        }
+    }
 
     public static class ConfigurationActivity extends
             AbstractConfigurationActivity {
@@ -53,10 +75,11 @@ public class HeartRateSensor extends AbstractSwanSensor {
         if(sensorMngr == null)
             sensorMngr = RemoteSensorManager.getInstance(getApplicationContext());
 
+        registerReceiver(messageReceiver, new IntentFilter("MyMessage"));
         SENSOR_NAME = "Wear Heart Rate Sensor";
         Log.d("Heart RATE", "Register++++++++++++++++++++++++++++++++");
 
-        BusProvider.getInstance().register(this);
+        //BusProvider.getInstance().register(this);
 
         List<Sensor> sensors = RemoteSensorManager.getInstance(getApplicationContext()).getSensors();
 
@@ -73,8 +96,9 @@ public class HeartRateSensor extends AbstractSwanSensor {
 
         Log.d("Heart RATE", "Unregister++++++++++++++++++++++++++");
         this.id = id;
+        unregisterReceiver(messageReceiver);
         sensorMngr.stopMeasurement();
-        BusProvider.getInstance().unregister(this);
+       // BusProvider.getInstance().unregister(this);
     }
 
     @Override

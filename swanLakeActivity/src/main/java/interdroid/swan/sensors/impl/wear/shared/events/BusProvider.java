@@ -8,22 +8,27 @@ import com.squareup.otto.ThreadEnforcer;
 
 public final class BusProvider
 {
-    private static final Bus BUS = new Bus(ThreadEnforcer.ANY);
+    private static final Bus BUS = new Bus();
 
     public static Bus getInstance() {
         return BUS;
     }
 
+
+    private static final Handler mHandler = new Handler(Looper.getMainLooper());
+
     public static void postOnMainThread(final Object event) {
-        Handler handler = new Handler(Looper.getMainLooper());
-
-        handler.post(new Runnable() {
-            public void run() {
-                BUS.post(event);
-            }
-        });
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            BUS.post(event);
+        } else {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    BUS.post(event);
+                }
+            });
+        }
     }
-
     private BusProvider() {
     }
 }

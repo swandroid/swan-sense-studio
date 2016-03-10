@@ -3,8 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="interdroid.swan"
     android:versionCode="1"
-    android:versionName="1.0" 
-    tools:ignore="ExportedService,ExportedReceiver">
+    android:versionName="1.0">
 
 	<uses-sdk
         android:minSdkVersion="9"
@@ -17,6 +16,7 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BODY_SENSORS" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -1088,6 +1088,17 @@
             android:authorities="@string/local_storage_authority"
             android:exported="true" 
             android:multiprocess="true" /> -->
+
+        <!--
+            Used by wear remote sensor service
+        -->
+        <service android:name="interdroid.swan.sensors.impl.wear.shared.SensorReceiverService">
+            <intent-filter>
+                <action
+                    android:name="com.google.android.gms.wearable.BIND_LISTENER"/>
+            </intent-filter>
+        </service>
+
     </application>
 
  </manifest>

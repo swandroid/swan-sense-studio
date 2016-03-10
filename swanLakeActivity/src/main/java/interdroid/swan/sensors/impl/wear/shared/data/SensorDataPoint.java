@@ -1,6 +1,8 @@
 package interdroid.swan.sensors.impl.wear.shared.data;
 
-public class SensorDataPoint {
+import java.io.Serializable;
+
+public class SensorDataPoint implements Serializable{
     private long timestamp;
     private float[] values;
     private int accuracy;

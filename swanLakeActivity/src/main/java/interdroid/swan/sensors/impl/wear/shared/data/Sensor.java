@@ -5,9 +5,10 @@ import android.util.Log;
 import interdroid.swan.sensors.impl.wear.shared.events.BusProvider;
 import interdroid.swan.sensors.impl.wear.shared.events.SensorRangeEvent;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 
-public class Sensor {
+public class Sensor implements Serializable{
     private static final String TAG = "SensorDashboard/Sensor";
     private static final int MAX_DATA_POINTS = 1000;
 

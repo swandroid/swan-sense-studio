@@ -18,7 +18,7 @@ import java.util.Arrays;
 //import io.realm.Realm;
 
 public class SensorReceiverService extends WearableListenerService {
-    private static final String TAG = "SensorDashboard/SensorReceiverService";
+    private static final String TAG = "Swan_Wear/SensorReceiverService";
 
     private RemoteSensorManager sensorManager;
 

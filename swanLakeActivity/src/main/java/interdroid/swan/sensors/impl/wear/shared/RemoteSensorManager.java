@@ -1,6 +1,7 @@
 package interdroid.swan.sensors.impl.wear.shared;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.util.SparseArray;
 
@@ -33,7 +34,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class RemoteSensorManager {
-    private static final String TAG = "SensorDashboard/RemoteSensorManager";
+    private static final String TAG = "Wear/RemoteSensorManager";
     private static final int CLIENT_CONNECTION_TIMEOUT = 15000;
 
     private static RemoteSensorManager instance;
@@ -82,7 +83,10 @@ public class RemoteSensorManager {
         sensors.add(sensor);
         sensorMapping.append(id, sensor);
 
-        BusProvider.postOnMainThread(new NewSensorEvent(sensor));
+        //BusProvider.postOnMainThread(new NewSensorEvent(sensor));
+        Intent i = new Intent("MyMessage");
+        i.putExtra("sensor", sensor);
+        context.sendBroadcast(i);
 
         return sensor;
     }
@@ -105,6 +109,7 @@ public class RemoteSensorManager {
 
         sensor.addDataPoint(dataPoint);
 
+        Log.d(TAG, "Sensor Update Event!!!++++++++++++++++++");
         BusProvider.postOnMainThread(new SensorUpdatedEvent(sensor, dataPoint));
     }
 
