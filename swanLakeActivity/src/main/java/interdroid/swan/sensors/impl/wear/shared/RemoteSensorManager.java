@@ -8,11 +8,6 @@ import android.util.SparseArray;
 import interdroid.swan.sensors.impl.wear.shared.data.Sensor;
 import interdroid.swan.sensors.impl.wear.shared.data.SensorDataPoint;
 import interdroid.swan.sensors.impl.wear.shared.data.SensorNames;
-import interdroid.swan.sensors.impl.wear.shared.data.TagData;
-import interdroid.swan.sensors.impl.wear.shared.events.BusProvider;
-import interdroid.swan.sensors.impl.wear.shared.events.NewSensorEvent;
-import interdroid.swan.sensors.impl.wear.shared.events.SensorUpdatedEvent;
-import interdroid.swan.sensors.impl.wear.shared.events.TagAddedEvent;
 import interdroid.swan.sensordashboard.shared.ClientPaths;
 import interdroid.swan.sensordashboard.shared.DataMapKeys;
 import com.google.android.gms.common.ConnectionResult;
@@ -49,8 +44,6 @@ public class RemoteSensorManager {
     public static final String REGISTER_MESSAGE = "RegisterMessage";
     public static final String UPDATE_MESSAGE   = "SensorUpdateMessage";
 
-    private LinkedList<TagData> tags = new LinkedList<>();
-
     public static synchronized RemoteSensorManager getInstance(Context context) {
         if (instance == null) {
             instance = new RemoteSensorManager(context.getApplicationContext());
@@ -86,7 +79,6 @@ public class RemoteSensorManager {
         sensors.add(sensor);
         sensorMapping.append(id, sensor);
 
-        //BusProvider.postOnMainThread(new NewSensorEvent(sensor));
         Intent i = new Intent(REGISTER_MESSAGE);
         i.putExtra("sensor", sensor);
         context.sendBroadcast(i);
@@ -117,18 +109,6 @@ public class RemoteSensorManager {
         i.putExtra("sensor", sensor);
         i.putExtra("data", dataPoint);
         context.sendBroadcast(i);
-    }
-
-    public synchronized void addTag(String pTagName) {
-        TagData tag = new TagData(pTagName, System.currentTimeMillis());
-        this.tags.add(tag);
-
-
-        BusProvider.postOnMainThread(new TagAddedEvent(tag));
-    }
-
-    public LinkedList<TagData> getTags() {
-        return (LinkedList<TagData>) tags.clone();
     }
 
     private boolean validateConnection() {

@@ -7,8 +7,6 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.squareup.otto.Subscribe;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,12 +17,9 @@ import interdroid.swan.sensors.AbstractSwanSensor;
 import interdroid.swan.sensors.impl.wear.shared.RemoteSensorManager;
 import interdroid.swan.sensors.impl.wear.shared.data.Sensor;
 import interdroid.swan.sensors.impl.wear.shared.data.SensorDataPoint;
-import interdroid.swan.sensors.impl.wear.shared.events.BusProvider;
-import interdroid.swan.sensors.impl.wear.shared.events.NewSensorEvent;
-import nl.sense_os.service.constants.SensorData;
 
 /**
- * Created by slavik on 2/22/16.
+ * Created by veaceslav on 2/22/16.
  */
 public class HeartRateSensor extends AbstractSwanSensor {
 
@@ -104,7 +99,6 @@ public class HeartRateSensor extends AbstractSwanSensor {
         if(sensorMngr == null)
             sensorMngr = RemoteSensorManager.getInstance(getApplicationContext());
 
-        //registerReceiver(messageReceiver, new IntentFilter(RemoteSensorManager.REGISTER_MESSAGE));
         registerReceiver(updateReceiver, new IntentFilter(RemoteSensorManager.UPDATE_MESSAGE));
         SENSOR_NAME = "Wear Heart Rate Sensor";
         Log.d("Heart RATE", "Register++++++++++++++++++++++++++++++++");

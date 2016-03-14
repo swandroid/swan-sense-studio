@@ -2,8 +2,6 @@ package interdroid.swan.sensors.impl.wear.shared.data;
 
 import android.util.Log;
 
-import interdroid.swan.sensors.impl.wear.shared.events.BusProvider;
-import interdroid.swan.sensors.impl.wear.shared.events.SensorRangeEvent;
 
 import java.io.Serializable;
 import java.util.LinkedList;
@@ -62,8 +60,6 @@ public class Sensor implements Serializable{
 
         if (newLimits) {
             Log.d(TAG, "New range for sensor " + id + ": " + minValue + " - " + maxValue);
-
-            BusProvider.postOnMainThread(new SensorRangeEvent(this));
         }
     }
 
