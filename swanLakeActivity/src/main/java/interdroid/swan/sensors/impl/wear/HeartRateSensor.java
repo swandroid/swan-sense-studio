@@ -15,7 +15,7 @@ import interdroid.swan.R;
 import interdroid.swan.sensors.AbstractConfigurationActivity;
 import interdroid.swan.sensors.AbstractSwanSensor;
 import interdroid.swan.sensors.impl.wear.shared.RemoteSensorManager;
-import interdroid.swan.sensors.impl.wear.shared.data.Sensor;
+import interdroid.swan.sensors.impl.wear.shared.data.WearSensor;
 import interdroid.swan.sensors.impl.wear.shared.data.SensorDataPoint;
 
 /**
@@ -26,34 +26,14 @@ public class HeartRateSensor extends AbstractSwanSensor {
     public static final String TAG = "HeartRateSensor";
     public static final String HEART_RATE = "Heart Rate";
     public static final String VALUE_PATH = "heart_rate";
-    RemoteSensorManager sensorMngr;
     String id;
 
-    private SensorRegister messageReceiver = new SensorRegister();
     private SensorUpdate   updateReceiver = new SensorUpdate();
 
 
     ArrayList<Integer>  ids = new ArrayList<>();
 
-    public class SensorRegister extends BroadcastReceiver
-    {
-        @Override
-        public void onReceive(Context context, Intent intent)
-        {
-            String action = intent.getAction();
-            if(action.equalsIgnoreCase(RemoteSensorManager.REGISTER_MESSAGE)){
-                Bundle extra = intent.getExtras();
-                //String who = extra.getString("sensor");
-                Sensor s = (Sensor)extra.getSerializable("sensor");
-                Log.d(TAG, "Got message+++++++++++++++++++++" + s.getName());
-                if(s.getName().equals(HEART_RATE))
-                    registerListener();
-            }
-
-        }
-    }
-
-    public class SensorUpdate extends BroadcastReceiver
+    private class SensorUpdate extends BroadcastReceiver
     {
         @Override
         public void onReceive(Context context, Intent intent)
@@ -62,7 +42,7 @@ public class HeartRateSensor extends AbstractSwanSensor {
             if(action.equalsIgnoreCase(RemoteSensorManager.UPDATE_MESSAGE)){
                 Bundle extra = intent.getExtras();
                 //String who = extra.getString("sensor");
-                Sensor s = (Sensor)extra.getSerializable("sensor");
+                WearSensor s = (WearSensor)extra.getSerializable("sensor");
                 SensorDataPoint d = (SensorDataPoint)extra.getSerializable("data");
                 if(s.getName().equals(HEART_RATE)) {
                     Log.d(TAG, "Got update+++++++++++++++++++++" + s.getName());
@@ -88,30 +68,14 @@ public class HeartRateSensor extends AbstractSwanSensor {
     @Override
     public void initDefaultConfiguration(Bundle defaults) {
         Log.d("Heart Rate Sensor", "Init default configuration");
-        sensorMngr = RemoteSensorManager.getInstance(getApplicationContext());
-
-
     }
 
     @Override
     public void register(String id, String valuePath, Bundle configuration) throws IOException {
 
-        if(sensorMngr == null)
-            sensorMngr = RemoteSensorManager.getInstance(getApplicationContext());
-
         registerReceiver(updateReceiver, new IntentFilter(RemoteSensorManager.UPDATE_MESSAGE));
         SENSOR_NAME = "Wear Heart Rate Sensor";
         Log.d("Heart RATE", "Register++++++++++++++++++++++++++++++++");
-
-        List<Sensor> sensors = RemoteSensorManager.getInstance(getApplicationContext()).getSensors();
-
-        sensorMngr.startMeasurement();
-        for(Sensor s : sensors){
-            Log.d("Heart rate", "Found Sensor" + s.getName());
-
-        }
-
-
     }
 
     @Override
@@ -121,7 +85,7 @@ public class HeartRateSensor extends AbstractSwanSensor {
         this.id = id;
         //unregisterReceiver(messageReceiver);
         unregisterReceiver(updateReceiver);
-        sensorMngr.stopMeasurement();
+        RemoteSensorManager.getInstance(this).stopMeasurement();
     }
 
     @Override
@@ -132,7 +96,7 @@ public class HeartRateSensor extends AbstractSwanSensor {
     @Override
     public void onConnected() {
 
-        sensorMngr.startMeasurement();
+        RemoteSensorManager.getInstance(this).startMeasurement();
     }
 
     public void registerListener(){
