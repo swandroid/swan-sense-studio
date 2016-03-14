@@ -6,7 +6,7 @@ import android.util.Log;
 import java.io.Serializable;
 import java.util.LinkedList;
 
-public class Sensor implements Serializable{
+public class WearSensor implements Serializable{
     private static final String TAG = "SensorDashboard/Sensor";
     private static final int MAX_DATA_POINTS = 1000;
 
@@ -17,7 +17,7 @@ public class Sensor implements Serializable{
 
     private LinkedList<SensorDataPoint> dataPoints = new LinkedList<SensorDataPoint>();
 
-    public Sensor(int id, String name) {
+    public WearSensor(int id, String name) {
         this.id = id;
         this.name = name;
     }

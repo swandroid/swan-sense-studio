@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.util.Log;
 import android.util.SparseArray;
 
-import interdroid.swan.sensors.impl.wear.shared.data.Sensor;
+import interdroid.swan.sensors.impl.wear.shared.data.WearSensor;
 import interdroid.swan.sensors.impl.wear.shared.data.SensorDataPoint;
 import interdroid.swan.sensors.impl.wear.shared.data.SensorNames;
 import interdroid.swan.sensordashboard.shared.ClientPaths;
@@ -22,7 +22,6 @@ import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -36,8 +35,8 @@ public class RemoteSensorManager {
 
     private Context context;
     private ExecutorService executorService;
-    private SparseArray<Sensor> sensorMapping;
-    private ArrayList<Sensor> sensors;
+    private SparseArray<WearSensor> sensorMapping;
+    private ArrayList<WearSensor> sensors;
     private SensorNames sensorNames;
     private GoogleApiClient googleApiClient;
 
@@ -54,9 +53,9 @@ public class RemoteSensorManager {
 
     private RemoteSensorManager(Context context) {
         this.context = context;
-        this.sensorMapping = new SparseArray<Sensor>();
-        this.sensors = new ArrayList<Sensor>();
-        this.sensorNames = new SensorNames();
+        this.sensorMapping = new SparseArray<WearSensor>();
+        this.sensors = new ArrayList<WearSensor>();
+        this.sensorNames = SensorNames.getInstance();
 
         this.googleApiClient = new GoogleApiClient.Builder(context)
                 .addApi(Wearable.API)
@@ -65,16 +64,16 @@ public class RemoteSensorManager {
         this.executorService = Executors.newCachedThreadPool();
     }
 
-    public List<Sensor> getSensors() {
-        return (List<Sensor>) sensors.clone();
+    public List<WearSensor> getSensors() {
+        return (List<WearSensor>) sensors.clone();
     }
 
-    public Sensor getSensor(long id) {
+    public WearSensor getSensor(long id) {
         return sensorMapping.get((int) id);
     }
 
-    private Sensor createSensor(int id) {
-        Sensor sensor = new Sensor(id, sensorNames.getName(id));
+    private WearSensor createSensor(int id) {
+        WearSensor sensor = new WearSensor(id, sensorNames.getName(id));
 
         sensors.add(sensor);
         sensorMapping.append(id, sensor);
@@ -86,8 +85,8 @@ public class RemoteSensorManager {
         return sensor;
     }
 
-    private Sensor getOrCreateSensor(int id) {
-        Sensor sensor = sensorMapping.get(id);
+    private WearSensor getOrCreateSensor(int id) {
+        WearSensor sensor = sensorMapping.get(id);
 
         if (sensor == null) {
             sensor = createSensor(id);
@@ -97,7 +96,7 @@ public class RemoteSensorManager {
     }
 
     public synchronized void addSensorData(int sensorType, int accuracy, long timestamp, float[] values) {
-        Sensor sensor = getOrCreateSensor(sensorType);
+        WearSensor sensor = getOrCreateSensor(sensorType);
 
         // TODO: We probably want to pull sensor data point objects from a pool here
         SensorDataPoint dataPoint = new SensorDataPoint(timestamp, accuracy, values);

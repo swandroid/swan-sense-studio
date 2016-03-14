@@ -7,7 +7,13 @@ import android.util.SparseArray;
 public class SensorNames {
     public SparseArray<String> names;
 
-    public SensorNames() {
+    public static SensorNames sensor = new SensorNames();
+
+    public static SensorNames getInstance(){
+        return sensor;
+    }
+
+    private SensorNames() {
         names = new SparseArray<String>();
 
         names.append(0, "Debug Sensor");
