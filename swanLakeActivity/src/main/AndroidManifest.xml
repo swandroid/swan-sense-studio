@@ -1132,6 +1132,35 @@
             android:process=":wearmovementsensor" >
         </service>
 
+        <!-- Wear Gyroscope Sensor-->
+        <activity
+            android:name="interdroid.swan.sensors.impl.wear.WearGyroscopeSensor$ConfigurationActivity"
+            android:exported="true"
+            android:icon="@drawable/gyroscope_icon" >
+            <intent-filter>
+                <action android:name="interdroid.swan.sensor.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="wear_gyroscope" />
+            <meta-data
+                android:name="valuePaths"
+                android:value="x,y,z" />
+            <meta-data
+                android:name="accuracy"
+                android:value="3" />
+            <meta-data
+                android:name="units"
+                android:value="Degrees,Degrees,Degrees" />
+        </activity>
+
+        <service
+            android:name="interdroid.swan.sensors.impl.wear.WearGyroscopeSensor"
+            android:exported="true"
+            android:process=":weargyroscopesensor" >
+        </service>
+
     </application>
 
  </manifest>
