@@ -1,12 +1,6 @@
 package interdroid.swan.crossdevice;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.util.HashMap;
-
+import android.bluetooth.BluetoothSocket;
 import android.util.Log;
 
 import com.google.android.gcm.server.Constants;
@@ -14,9 +8,19 @@ import com.google.android.gcm.server.Message;
 import com.google.android.gcm.server.Result;
 import com.google.android.gcm.server.Sender;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.util.HashMap;
+import java.util.Map;
+
 import interdroid.swan.crossdevice.swanplus.SwanLakePlusActivity;
 import interdroid.swan.crossdevice.swanplus.SwanUser;
-import interdroid.swan.crossdevice.swanplus.WDManager;
+import interdroid.swan.crossdevice.swanplus.bluetooth.BTManager;
+import interdroid.swan.crossdevice.swanplus.wifidirect.WDManager;
 
 public class Pusher {
 
@@ -34,18 +38,19 @@ public class Pusher {
 		new Thread() {
 			public void run() {
 //				sendOverGCM(fromRegistrationId, toRegistrationId, expressionId, action, data);
-				sendOverWD(fromRegistrationId, toRegistrationId, expressionId, action, data);
+//				sendOverWD(fromRegistrationId, toRegistrationId, expressionId, action, data);
+				sendOverBT(fromRegistrationId, toRegistrationId, expressionId, action, data);
 			}
 		}.start();
 	}
 
 	private static void sendOverWD(final String fromRegistrationId,
-			final String toRegistrationId, final String expressionId,
-			final String action, final String data) {
+				final String toRegistrationId, final String expressionId,
+				final String action, final String data) {
 		new Thread() {
 			public void run() {
 				try {
-					WDManager wdManager = SwanLakePlusActivity.getWdManager();
+					WDManager wdManager = (WDManager) SwanLakePlusActivity.getProximityManager();
 
 					SwanUser user = wdManager.getPeerByRegId(toRegistrationId);
 					if (user != null) {
@@ -79,6 +84,52 @@ public class Pusher {
 							Log.d(TAG, "successfully sent push message for id: "
 											+ expressionId + ", type: " + action + ", data: " + data);
 						}
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}.start();
+	}
+
+	private static void sendOverBT(final String fromRegistrationId,
+			   final String toRegistrationId, final String expressionId,
+			   final String action, final String data) {
+		new Thread() {
+			public void run() {
+				try {
+					BTManager btManager = (BTManager) SwanLakePlusActivity.getProximityManager();
+					SwanUser user = btManager.getPeerByUsername(toRegistrationId);
+
+					if (user != null) {
+						BluetoothSocket btSocket = btManager.connect(user);
+
+						if(btSocket != null) {
+							ObjectOutputStream oos = user.getOos();
+							HashMap<String, String> dataMap = new HashMap<String, String>();
+
+							if(oos == null) {
+								OutputStream os = btSocket.getOutputStream();
+								oos = new ObjectOutputStream(os);
+								user.setOos(oos);
+							}
+
+							if (fromRegistrationId != null) {
+								// from is not allowed and results in InvalidDataKey, see:
+								// http://developer.android.com/google/gcm/gcm.html
+								dataMap.put("source", btManager.getBtAdapter().getName());
+							}
+							dataMap.put("action", action);
+							dataMap.put("data", data);
+							dataMap.put("id", expressionId);
+
+							oos.writeObject(dataMap);
+
+							Log.d(TAG, "successfully sent push message for id: "
+									+ expressionId + ", type: " + action + ", data: " + data);
+						}
+					} else {
+						Log.e(TAG, "user not found");
 					}
 				} catch (Exception e) {
 					e.printStackTrace();

@@ -14,7 +14,7 @@
  *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package interdroid.swan.crossdevice.swanplus;
+package interdroid.swan.crossdevice.swanplus.wifidirect;
 
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Method;

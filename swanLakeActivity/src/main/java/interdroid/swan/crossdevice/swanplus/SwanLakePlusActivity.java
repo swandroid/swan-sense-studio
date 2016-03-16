@@ -4,11 +4,14 @@ import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.FragmentTransaction;
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.TypedArray;
-import android.net.wifi.p2p.WifiP2pDevice;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -39,7 +42,6 @@ import android.widget.Toast;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.List;
 
 import interdroid.sense.LoginActivity;
@@ -48,7 +50,9 @@ import interdroid.sense.SettingsActivity;
 import interdroid.swan.R;
 import interdroid.swan.crossdevice.Registry;
 import interdroid.swan.crossdevice.SwanGCMConstants;
+import interdroid.swan.crossdevice.swanplus.bluetooth.BTManager;
 import interdroid.swan.crossdevice.swanplus.run2gether.ActivityRun2gether;
+import interdroid.swan.crossdevice.swanplus.wifidirect.WDManager;
 import interdroid.swan.swansong.Expression;
 import nl.sense_os.service.constants.SensePrefs;
 
@@ -72,9 +76,20 @@ public class SwanLakePlusActivity extends FragmentActivity implements ActionBar.
     private ListFragment mNearbyPeersFragment = new NearbyPeersListFragment();
     private ViewPager mViewPager;
 
-    private static WDManager mWdManager;
+    private static ProximityManagerI mProximityManager;
     private static RegisteredSWANsAdapter mContactsAdapter;
     private static NearbySWANsAdapter mNearbyPeersAdapter;
+
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+
+            // When discovery finds a device
+            if(BTManager.ACTION_NEARBY_DEVICE_FOUND.equals(action)) {
+                getNearbyPeersAdapter().notifyDataSetChanged();
+            }
+        }
+    };
 
     public class AppSectionsPagerAdapter extends FragmentPagerAdapter {
 
@@ -148,10 +163,10 @@ public class SwanLakePlusActivity extends FragmentActivity implements ActionBar.
                         case R.id.action_save:
                             SparseBooleanArray array = getListView().getCheckedItemPositions();
                             SwanLakePlusActivity activity = (SwanLakePlusActivity) getActivity();
-                            WDManager wdManager = activity.getWdManager();
+                            ProximityManagerI proximityManager = activity.getProximityManager();
 
-                            for (int i = 0; i < wdManager.getPeerCount(); i++) {
-                                final SwanUser neighbor = wdManager.getPeerAt(i);
+                            for (int i = 0; i < proximityManager.getPeerCount(); i++) {
+                                final SwanUser neighbor = proximityManager.getPeerAt(i);
 
                                 if (array.get(i)) {
                                     if (!Registry.add(getActivity(), neighbor.getUsername(), neighbor.getRegId())) {
@@ -280,20 +295,20 @@ public class SwanLakePlusActivity extends FragmentActivity implements ActionBar.
 
     class NearbySWANsAdapter extends BaseAdapter {
 
-        private WDManager mWdManager;
+        private ProximityManagerI mProximityManager;
 
-        public NearbySWANsAdapter(WDManager wdManager) {
-            this.mWdManager = wdManager;
+        public NearbySWANsAdapter(ProximityManagerI proximityManager) {
+            this.mProximityManager = proximityManager;
         }
 
         @Override
         public int getCount() {
-            return mWdManager.getPeerCount();
+            return mProximityManager.getPeerCount();
         }
 
         @Override
         public Object getItem(int position) {
-            return mWdManager.getPeerAt(position);
+            return mProximityManager.getPeerAt(position);
         }
 
         @Override
@@ -371,12 +386,16 @@ public class SwanLakePlusActivity extends FragmentActivity implements ActionBar.
                             .setTabListener(this));
         }
 
-        // setup wifi direct manager
-        mWdManager = new WDManager(this);
-        mWdManager.init();
+        IntentFilter intentFilter = new IntentFilter(BTManager.ACTION_NEARBY_DEVICE_FOUND);
+        registerReceiver(mReceiver, intentFilter);
+
+        // setup proximity manager
+//        mProximityManager = new WDManager(this);
+        mProximityManager = new BTManager(this);
+        mProximityManager.init();
 
         mContactsAdapter = new RegisteredSWANsAdapter();
-        mNearbyPeersAdapter = new NearbySWANsAdapter(mWdManager);
+        mNearbyPeersAdapter = new NearbySWANsAdapter(mProximityManager);
         mContactsFragment.setListAdapter(mContactsAdapter);
         mNearbyPeersFragment.setListAdapter(mNearbyPeersAdapter);
 
@@ -387,7 +406,7 @@ public class SwanLakePlusActivity extends FragmentActivity implements ActionBar.
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mWdManager.clean();
+        mProximityManager.clean();
     }
 
     @Override
@@ -428,7 +447,7 @@ public class SwanLakePlusActivity extends FragmentActivity implements ActionBar.
                                 .edit()
                                 .putString("name", mNameEditText.getText().toString())
                                 .commit();
-                        mWdManager.registerService();
+                        mProximityManager.registerService();
                     }
                 }).create();
     }
@@ -491,8 +510,8 @@ public class SwanLakePlusActivity extends FragmentActivity implements ActionBar.
             case R.id.settings:
                 startActivity(new Intent(this, SettingsActivity.class));
                 break;
-            case R.id.action_disconnect:
-                mWdManager.disconnect();
+            case R.id.action_discovery:
+                mProximityManager.discoverPeers();
                 break;
             case R.id.action_test:
                 startActivity(new Intent(this, TestActivity.class));
@@ -530,7 +549,7 @@ public class SwanLakePlusActivity extends FragmentActivity implements ActionBar.
                         }
                     });
 
-                    mWdManager.registerService();
+                    mProximityManager.registerService();
 
                 } catch (IOException e) {
                     runOnUiThread(new Runnable() {
@@ -551,8 +570,8 @@ public class SwanLakePlusActivity extends FragmentActivity implements ActionBar.
         }.start();
     }
 
-    public static WDManager getWdManager() {
-        return mWdManager;
+    public static ProximityManagerI getProximityManager() {
+        return mProximityManager;
     }
 
     public BaseAdapter getNearbyPeersAdapter() {

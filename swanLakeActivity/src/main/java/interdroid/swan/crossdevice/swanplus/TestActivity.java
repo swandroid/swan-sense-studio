@@ -176,10 +176,10 @@ public class TestActivity extends Activity {
         if (id == R.id.action_settings) {
             return true;
         }
-        if (id == R.id.action_disconnect) {
-
-            return true;
-        }
+//        if (id == R.id.action_disconnect) {
+//
+//            return true;
+//        }
 
         return super.onOptionsItemSelected(item);
     }

@@ -1,4 +1,4 @@
-package interdroid.swan.crossdevice.swanplus;
+package interdroid.swan.crossdevice.swanplus.wifidirect;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -26,12 +26,15 @@ import java.util.List;
 import java.util.Map;
 
 import interdroid.swan.crossdevice.Registry;
+import interdroid.swan.crossdevice.swanplus.ProximityManagerI;
+import interdroid.swan.crossdevice.swanplus.SwanLakePlusActivity;
+import interdroid.swan.crossdevice.swanplus.SwanUser;
 import interdroid.swan.swansong.Expression;
 
 /**
  * Created by vladimir on 12/3/15.
  */
-public class WDManager {
+public class WDManager implements ProximityManagerI {
 
     private static final String TAG = "WDManager";
     private final int PEER_DISCOVERY_INTERVAL = 10000;
@@ -60,7 +63,7 @@ public class WDManager {
     /* we schedule peer discovery to take place at regular intervals */
     Runnable nearbyPeersChecker = new Runnable() {
         public void run() {
-            discover();
+            discoverPeers();
             handler.postDelayed(nearbyPeersChecker, PEER_DISCOVERY_INTERVAL);
         }
     };
@@ -98,7 +101,7 @@ public class WDManager {
         wdAutoAccept.intercept(false);
     }
 
-    public void discover() {
+    public void discoverPeers() {
         p2pManager.discoverServices(p2pChannel, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {

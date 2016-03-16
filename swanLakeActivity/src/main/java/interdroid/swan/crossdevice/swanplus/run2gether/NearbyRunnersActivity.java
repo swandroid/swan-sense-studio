@@ -1,17 +1,12 @@
 package interdroid.swan.crossdevice.swanplus.run2gether;
 
 import android.app.ListActivity;
-import android.content.BroadcastReceiver;
-import android.content.IntentFilter;
-import android.content.res.TypedArray;
 import android.os.Bundle;
-import android.app.Activity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.CheckedTextView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -23,8 +18,6 @@ import interdroid.swan.ExpressionManager;
 import interdroid.swan.R;
 import interdroid.swan.SwanException;
 import interdroid.swan.ValueExpressionListener;
-import interdroid.swan.crossdevice.swanplus.WDManager;
-import interdroid.swan.sensors.impl.FitnessSensor;
 import interdroid.swan.swansong.ExpressionFactory;
 import interdroid.swan.swansong.ExpressionParseException;
 import interdroid.swan.swansong.TimestampedValue;
@@ -66,17 +59,17 @@ public class NearbyRunnersActivity extends ListActivity {
             ((TextView) (convertView.findViewById(R.id.username)))
                     .setText(((Runner)getItem(position)).getUsername());
             ((TextView) (convertView.findViewById(R.id.goal)))
-                    .setText("Goal: " + ((Runner)getItem(position)).getGoal());
+                    .setText("Goal: " + ((Runner) getItem(position)).getGoal());
             ((TextView) (convertView.findViewById(R.id.level)))
                     .setText("Level: " + ((Runner)getItem(position)).getLevel());
             ((TextView) (convertView.findViewById(R.id.gender)))
-                    .setText("Gender: " +((Runner)getItem(position)).getGender());
+                    .setText("Gender: " + ((Runner) getItem(position)).getGender());
             ((TextView) (convertView.findViewById(R.id.age)))
                     .setText("Age: " + ((Runner)getItem(position)).getAge());
             ((TextView) (convertView.findViewById(R.id.weight)))
                     .setText("Weight: " + ((Runner)getItem(position)).getWeight());
             ((TextView) (convertView.findViewById(R.id.height)))
-                    .setText("Height: " + ((Runner)getItem(position)).getHeight());
+                    .setText("Height: " + ((Runner) getItem(position)).getHeight());
 
             return convertView;
         }
