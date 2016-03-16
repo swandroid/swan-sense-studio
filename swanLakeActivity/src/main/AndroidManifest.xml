@@ -789,30 +789,6 @@
                 android:value="" />
         </activity>
 
-        <activity
-            android:name="interdroid.swan.sensors.impl.wear.HeartRateSensor$ConfigurationActivity"
-            android:exported="true"
-            android:icon="@drawable/polar_hrm_icon" >
-            <intent-filter>
-                <action android:name="interdroid.swan.sensor.DISCOVER" />
-            </intent-filter>
-
-            <meta-data
-                android:name="entityId"
-                android:value="wear_heartrate" />
-            <meta-data
-                android:name="valuePaths"
-                android:value="heart_rate" />
-            <meta-data
-                android:name="units"
-                android:value="bpm" />
-        </activity>
-
-        <service
-            android:name="interdroid.swan.sensors.impl.wear.HeartRateSensor"
-            android:exported="true"
-            android:process=":wearheartratesensor" >
-        </service>
 
         <service
             android:name="interdroid.swan.sensors.impl.StepDetectorSensor"
@@ -1097,6 +1073,63 @@
                 <action
                     android:name="com.google.android.gms.wearable.BIND_LISTENER"/>
             </intent-filter>
+        </service>
+
+        <!-- Wear Sensors activities and services -->
+
+        <!-- Heart Rate-->
+        <activity
+            android:name="interdroid.swan.sensors.impl.wear.HeartRateSensor$ConfigurationActivity"
+            android:exported="true"
+            android:icon="@drawable/polar_hrm_icon" >
+            <intent-filter>
+                <action android:name="interdroid.swan.sensor.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="wear_heartrate" />
+            <meta-data
+                android:name="valuePaths"
+                android:value="heart_rate" />
+            <meta-data
+                android:name="units"
+                android:value="bpm" />
+        </activity>
+
+        <service
+            android:name="interdroid.swan.sensors.impl.wear.HeartRateSensor"
+            android:exported="true"
+            android:process=":wearheartratesensor" >
+        </service>
+
+        <!-- Wear Movement Sensor-->
+        <activity
+            android:name="interdroid.swan.sensors.impl.wear.WearMovementSensor$ConfigurationActivity"
+            android:exported="true"
+            android:icon="@drawable/movement_icon" >
+            <intent-filter>
+                <action android:name="interdroid.swan.sensor.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="wear_movement" />
+            <meta-data
+                android:name="valuePaths"
+                android:value="x,y,z,total" />
+            <meta-data
+                android:name="accuracy"
+                android:value="3" />
+            <meta-data
+                android:name="units"
+                android:value="m/s2,m/s2,m/s2,m/s2" />
+        </activity>
+
+        <service
+            android:name="interdroid.swan.sensors.impl.wear.WearMovementSensor"
+            android:exported="true"
+            android:process=":wearmovementsensor" >
         </service>
 
     </application>

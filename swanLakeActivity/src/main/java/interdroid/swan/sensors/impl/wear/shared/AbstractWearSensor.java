@@ -27,8 +27,8 @@ import interdroid.swan.sensors.impl.wear.shared.data.WearSensor;
 public abstract class AbstractWearSensor  extends AbstractSwanSensor{
 
     final String ABSTRACT_SENSOR = "Abstract Sensor";
-    HashMap<String, Integer> valuePathMappings = new HashMap<>();
-    String sensor_name = ABSTRACT_SENSOR;
+    protected HashMap<String, Integer> valuePathMappings = new HashMap<>();
+    protected String sensor_name = ABSTRACT_SENSOR;
     ArrayList<String> ids = new ArrayList<>();
     ReentrantLock lock = new ReentrantLock();
 
@@ -77,7 +77,7 @@ public abstract class AbstractWearSensor  extends AbstractSwanSensor{
             Log.w(ABSTRACT_SENSOR, "You need to set the path mappings");
             return;
         }
-        
+
         lock.lock();
         ids.add(id);
         lock.unlock();

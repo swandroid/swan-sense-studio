@@ -1,29 +1,20 @@
 package interdroid.swan.sensors.impl.wear;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
-import android.util.Log;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 import interdroid.swan.R;
+
 import interdroid.swan.sensors.AbstractConfigurationActivity;
-import interdroid.swan.sensors.AbstractSwanSensor;
-import interdroid.swan.sensors.impl.wear.shared.RemoteSensorManager;
-import interdroid.swan.sensors.impl.wear.shared.data.SensorDataPoint;
-import interdroid.swan.sensors.impl.wear.shared.data.SensorNames;
-import interdroid.swan.sensors.impl.wear.shared.data.WearSensor;
+import interdroid.swan.sensors.impl.wear.shared.AbstractWearSensor;
+
 
 /**
  * Created by Veaceslav Munteanu on 14-March-16.
  * @email veaceslav.munteanu90@gmail.com
  */
-public class WearMovementSensor extends AbstractSwanSensor {
+public class WearMovementSensor extends AbstractWearSensor {
 
     public static final String X_FIELD = "x";
     public static final String Y_FIELD = "y";
@@ -31,10 +22,6 @@ public class WearMovementSensor extends AbstractSwanSensor {
     public static final String TOTAL_FIELD = "total";
 
     public static final String TAG = "MovementSensor";
-
-    SensorUpdate updateReceiver = new SensorUpdate();
-
-    ArrayList<String> ids = new ArrayList<>();
 
     /**
      * The configuration activity for this sensor.
@@ -52,31 +39,6 @@ public class WearMovementSensor extends AbstractSwanSensor {
 
     }
 
-    private class SensorUpdate extends BroadcastReceiver
-    {
-        @Override
-        public void onReceive(Context context, Intent intent)
-        {
-            String action = intent.getAction();
-            if(action.equalsIgnoreCase(RemoteSensorManager.UPDATE_MESSAGE)){
-                Bundle extra = intent.getExtras();
-                WearSensor s = (WearSensor)extra.getSerializable("sensor");
-                SensorDataPoint d = (SensorDataPoint)extra.getSerializable("data");
-                if(s.getName().equals(SensorNames.getInstance().getName(android.hardware.Sensor.TYPE_ACCELEROMETER))) {
-                    Log.d(TAG, "Got update+++++++++++++++++++++" + s.getName());
-                    float[] dataz = d.getValues();
-
-                    long time = System.currentTimeMillis();
-                    for(String id : ids) {
-                        putValueTrimSize(X_FIELD, id, time, dataz[0]);
-                        putValueTrimSize(Y_FIELD, id, time, dataz[1]);
-                        putValueTrimSize(Z_FIELD, id, time, dataz[2]);
-                    }
-                }
-            }
-        }
-    }
-
     @Override
     public void initDefaultConfiguration(Bundle defaults) {
 
@@ -84,26 +46,17 @@ public class WearMovementSensor extends AbstractSwanSensor {
 
     @Override
     public void register(String id, String valuePath, Bundle configuration) throws IOException {
-        ids.add(id);
-        registerReceiver(updateReceiver, new IntentFilter(RemoteSensorManager.UPDATE_MESSAGE));
         SENSOR_NAME = "Wear Movement Sensor";
-    }
+        sensor_name = "Accelerometer";
+        valuePathMappings.put(X_FIELD, 0);
+        valuePathMappings.put(Y_FIELD, 1);
+        valuePathMappings.put(Z_FIELD, 2);
 
-    @Override
-    public void unregister(String id) {
-        RemoteSensorManager.getInstance(this).stopMeasurement();
+        super.register(id, valuePath, configuration);
     }
 
     @Override
     public String[] getValuePaths() {
         return new String[] { X_FIELD, Y_FIELD, Z_FIELD, TOTAL_FIELD };
     }
-
-    @Override
-    public void onConnected() {
-        RemoteSensorManager.getInstance(this).startMeasurement();
-
-    }
-
-
 }
