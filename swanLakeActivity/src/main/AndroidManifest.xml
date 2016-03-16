@@ -1185,6 +1185,7 @@
                 android:value="m/s2,m/s2,m/s2,m/s2" />
         </activity>
 
+        <!-- Wear Light Sensor-->
         <service
             android:name="interdroid.swan.sensors.impl.wear.WearGameRotationSensor"
             android:exported="true"
@@ -1219,6 +1220,34 @@
             android:process=":wearlightsensor" >
         </service>
 
+        <!-- Wear Movement Sensor-->
+        <activity
+            android:name="interdroid.swan.sensors.impl.wear.WearLinearAcceleration$ConfigurationActivity"
+            android:exported="true"
+            android:icon="@drawable/movement_icon" >
+            <intent-filter>
+                <action android:name="interdroid.swan.sensor.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="wear_linearacceleration" />
+            <meta-data
+                android:name="valuePaths"
+                android:value="x,y,z,total" />
+            <meta-data
+                android:name="accuracy"
+                android:value="3" />
+            <meta-data
+                android:name="units"
+                android:value="m/s2,m/s2,m/s2,m/s2" />
+        </activity>
+
+        <service
+            android:name="interdroid.swan.sensors.impl.wear.WearLinearAcceleration"
+            android:exported="true"
+            android:process=":wearlinearaccsensor" >
+        </service>
     </application>
 
  </manifest>
