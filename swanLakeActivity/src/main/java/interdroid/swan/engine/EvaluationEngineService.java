@@ -26,6 +26,8 @@ import interdroid.swan.SensorConfigurationException;
 import interdroid.swan.SwanException;
 import interdroid.swan.crossdevice.Converter;
 import interdroid.swan.crossdevice.Pusher;
+import interdroid.swan.crossdevice.swanplus.ProximityManagerI;
+import interdroid.swan.crossdevice.swanplus.bluetooth.BTManager;
 import interdroid.swan.sensors.SensorInterface;
 import interdroid.swan.swansong.Expression;
 import interdroid.swan.swansong.ExpressionFactory;
@@ -167,6 +169,7 @@ public class EvaluationEngineService extends Service {
 	NotificationManager mNotificationManager;
 	Notification mNotification;
 	EvaluationManager mEvaluationManager;
+	ProximityManagerI mProximityManager;
 
 	/**
 	 * @return all expressions saved in the database.
@@ -532,6 +535,9 @@ public class EvaluationEngineService extends Service {
 	@Override
 	public final void onCreate() {
 		super.onCreate();
+		// initialize the proximity manager
+		mProximityManager = new BTManager(this);
+		mProximityManager.init();
 		// construct the sensor manager
 		mEvaluationManager = new EvaluationManager(this);
 		// kick off the evaluation thread
@@ -542,6 +548,7 @@ public class EvaluationEngineService extends Service {
 
 	@Override
 	public void onDestroy() {
+		mProximityManager.clean();
 		mEvaluationManager.destroyAll();
 		mEvaluationThread.interrupt();
 		super.onDestroy();

@@ -1,4 +1,4 @@
-package interdroid.swan.crossdevice.swanplus;
+package interdroid.swan.crossdevice.swanplus.wifidirect;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,13 +6,13 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.HashMap;
 
+import interdroid.swan.crossdevice.swanplus.SwanUser;
 import interdroid.swan.engine.EvaluationEngineService;
 
 /**
@@ -86,6 +86,8 @@ public class WDReceiver extends AsyncTask<Void, String, Void> {
                 intent.putExtra("id", dataMap.get("id"));
                 intent.putExtra("data", dataMap.get("data"));
                 context.startService(intent);
+            } else {
+                Log.d(TAG, "got something else: " + action);
             }
 
             serverSocket.close();

@@ -38,10 +38,10 @@
         android:showAsAction="never"
         android:title="@string/sense_settings"/>
     <item
-        android:id="@+id/action_disconnect"
+        android:id="@+id/action_discovery"
         android:orderInCategory="100"
         android:showAsAction="never"
-        android:title="Disconnect"/>
+        android:title="Discovery"/>
     <item
         android:id="@+id/action_test"
         android:orderInCategory="100"
