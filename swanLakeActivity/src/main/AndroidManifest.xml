@@ -1248,6 +1248,64 @@
             android:exported="true"
             android:process=":wearlinearaccsensor" >
         </service>
+
+        <activity
+            android:name="interdroid.swan.sensors.impl.wear.WearStepCounterSensor$ConfigurationActivity"
+            android:exported="true"
+            android:icon="@drawable/step" >
+            <intent-filter>
+                <action android:name="interdroid.swan.sensor.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="wear_step_counter" />
+            <meta-data
+                android:name="valuePaths"
+                android:value="step_counter" />
+            <meta-data
+                android:name="authority"
+                android:value="interdroid.context.sensor.step_counter" />
+            <meta-data
+                android:name="units"
+                android:value="steps" />
+        </activity>
+
+        <service
+            android:name="interdroid.swan.sensors.impl.wear.WearStepCounterSensor"
+            android:exported="true"
+            android:process=":wearstepcountersensor">
+
+        </service>
+
+        <!-- Wear  Gravity Sensor-->
+        <activity
+            android:name="interdroid.swan.sensors.impl.wear.WearGravitySensor$ConfigurationActivity"
+            android:exported="true"
+            android:icon="@drawable/movement_icon" >
+            <intent-filter>
+                <action android:name="interdroid.swan.sensor.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="wear_gravity" />
+            <meta-data
+                android:name="valuePaths"
+                android:value="x,y,z" />
+            <meta-data
+                android:name="accuracy"
+                android:value="3" />
+            <meta-data
+                android:name="units"
+                android:value="m/s2,m/s2,m/s2,m/s2" />
+        </activity>
+
+        <service
+            android:name="interdroid.swan.sensors.impl.wear.WearGravitySensor"
+            android:exported="true"
+            android:process=":weargravitysensor" >
+        </service>
     </application>
 
  </manifest>

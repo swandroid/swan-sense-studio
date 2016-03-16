@@ -305,4 +305,10 @@
         <item>heart_rate</item>
     </string-array>
 
+    <string-array name="gravity_valuepaths">
+        <item>x</item>
+        <item>y</item>
+        <item>z</item>
+    </string-array>
+
 </resources>
