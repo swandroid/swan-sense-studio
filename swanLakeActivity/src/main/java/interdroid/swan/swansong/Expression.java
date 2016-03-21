@@ -20,6 +20,7 @@ public interface Expression extends Parseable<Expression> {
 	public static final String LOCATION_SELF = "self";
 	public static final String LOCATION_INDEPENDENT = "independent";
 	public static final String LOCATION_INFER = "infer";
+	public static final String LOCATION_NEARBY = "NEARBY";
 	public static final String REGID_PREFIX = "regid:";
 
 	public void setInferredLocation(String location);

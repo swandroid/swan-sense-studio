@@ -46,14 +46,14 @@ public class TestActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.test_activity_main);
         tv = (TextView) findViewById(R.id.textView1);
-        initialize();
-//        testSensor();
+//        initialize();
+        testSensor();
     }
 
     public void testSensor() {
-        String myExpression = "SWAN1@fitness:avg_speed{ANY,0}";
-//        String myExpression = "SWAN1@light:lux{ANY,0}";
-        registerSWANSensor(myExpression);
+//        String myExpression = "SWAN1@fitness:avg_speed{ANY,0}";
+        mExpression = "NEARBY@light:lux{ANY,0}";
+//        registerSWANSensor(myExpression);
     }
 
     public void initialize(){

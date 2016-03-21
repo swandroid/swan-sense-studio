@@ -169,7 +169,7 @@ public class EvaluationEngineService extends Service {
 	NotificationManager mNotificationManager;
 	Notification mNotification;
 	EvaluationManager mEvaluationManager;
-	ProximityManagerI mProximityManager;
+	ProximityManagerI mProximityManager; //TODO consider moving this to EvaluationManager class
 
 	/**
 	 * @return all expressions saved in the database.
@@ -539,7 +539,7 @@ public class EvaluationEngineService extends Service {
 		mProximityManager = new BTManager(this);
 		mProximityManager.init();
 		// construct the sensor manager
-		mEvaluationManager = new EvaluationManager(this);
+		mEvaluationManager = new EvaluationManager(this, mProximityManager);
 		// kick off the evaluation thread
 		mEvaluationThread.start();
 		// init the notification stuff

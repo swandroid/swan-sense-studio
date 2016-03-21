@@ -232,6 +232,10 @@ public class WDManager implements ProximityManagerI {
         });
     }
 
+    public void registerExpression(String id, String expression,String resolvedLocation) {
+        // TODO implement me
+    }
+
     /**
      * returns true if the sending thread from Pusher has to wait for getting the IP of user
      *
