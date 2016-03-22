@@ -150,20 +150,20 @@ public class RemoteSensorManager {
         }
     }
 
-    public void startMeasurement() {
+    public void startMeasurement(final byte id) {
         executorService.submit(new Runnable() {
             @Override
             public void run() {
-                controlMeasurementInBackground(ClientPaths.START_MEASUREMENT);
+                controlMeasurementInBackground(ClientPaths.START_MEASUREMENT, id);
             }
         });
     }
 
-    public void stopMeasurement() {
+    public void stopMeasurement(final byte id) {
         executorService.submit(new Runnable() {
             @Override
             public void run() {
-                controlMeasurementInBackground(ClientPaths.STOP_MEASUREMENT);
+                controlMeasurementInBackground(ClientPaths.STOP_MEASUREMENT, id);
             }
         });
     }
@@ -172,7 +172,7 @@ public class RemoteSensorManager {
         Wearable.NodeApi.getConnectedNodes(googleApiClient).setResultCallback(pCallback);
     }
 
-    private void controlMeasurementInBackground(final String path) {
+    private void controlMeasurementInBackground(final String path, byte sensorid) {
         if (validateConnection()) {
             List<Node> nodes = Wearable.NodeApi.getConnectedNodes(googleApiClient).await().getNodes();
 

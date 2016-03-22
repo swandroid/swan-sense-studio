@@ -68,6 +68,7 @@ public abstract class AbstractWearSensor  extends AbstractSwanSensor{
     @Override
     public void register(String id, String valuePath, Bundle configuration) throws IOException {
 
+        byte sensorId = 0;
         if(sensor_name.equals(ABSTRACT_SENSOR)){
             Log.w(ABSTRACT_SENSOR, "You need to set the sensor name");
             return;
@@ -80,7 +81,7 @@ public abstract class AbstractWearSensor  extends AbstractSwanSensor{
 
         lock.lock();
         if(ids.isEmpty()) {
-            RemoteSensorManager.getInstance(this).startMeasurement();
+            RemoteSensorManager.getInstance(this).startMeasurement(sensorId);
         }
         ids.add(id);
         lock.unlock();
@@ -94,8 +95,10 @@ public abstract class AbstractWearSensor  extends AbstractSwanSensor{
         lock.lock();
         ids.remove(id);
 
+        byte sensorId = 0;
+
         if(ids.isEmpty())
-            RemoteSensorManager.getInstance(this).stopMeasurement();
+            RemoteSensorManager.getInstance(this).stopMeasurement(sensorId);
         lock.unlock();
 
         unregisterReceiver(updateReceiver);
