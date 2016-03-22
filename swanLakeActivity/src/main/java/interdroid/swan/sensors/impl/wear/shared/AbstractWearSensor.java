@@ -79,6 +79,9 @@ public abstract class AbstractWearSensor  extends AbstractSwanSensor{
         }
 
         lock.lock();
+        if(ids.isEmpty()) {
+            RemoteSensorManager.getInstance(this).startMeasurement();
+        }
         ids.add(id);
         lock.unlock();
 
@@ -90,14 +93,16 @@ public abstract class AbstractWearSensor  extends AbstractSwanSensor{
     public void unregister(String id) {
         lock.lock();
         ids.remove(id);
+
+        if(ids.isEmpty())
+            RemoteSensorManager.getInstance(this).stopMeasurement();
         lock.unlock();
 
-        RemoteSensorManager.getInstance(this).stopMeasurement();
         unregisterReceiver(updateReceiver);
     }
 
     @Override
     public void onConnected() {
-        RemoteSensorManager.getInstance(this).startMeasurement();
+
     }
 }
