@@ -194,9 +194,6 @@ public class RemoteSensorManager {
 
             Log.d(TAG, "Sending to nodes: " + nodes.size());
 
-            for(byte bb : extra){
-                Log.d(TAG, "+++" + bb);
-            }
 
             for (Node node : nodes) {
                 Log.i(TAG, "add node " + node.getDisplayName());

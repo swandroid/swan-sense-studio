@@ -19,6 +19,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import interdroid.swan.sensors.AbstractSwanSensor;
 import interdroid.swan.sensors.impl.wear.shared.data.SensorDataPoint;
+import interdroid.swan.sensors.impl.wear.shared.data.SensorNames;
 import interdroid.swan.sensors.impl.wear.shared.data.WearSensor;
 
 /**
@@ -72,10 +73,6 @@ public abstract class AbstractWearSensor  extends AbstractSwanSensor{
     @Override
     public void register(String id, String valuePath, Bundle configuration) throws IOException {
 
-        if(sensor_name.equals(ABSTRACT_SENSOR)){
-            Log.w(ABSTRACT_SENSOR, "You need to set the sensor name");
-            return;
-        }
 
         if(valuePathMappings.isEmpty()) {
             Log.w(ABSTRACT_SENSOR, "You need to set the path mappings");
@@ -86,6 +83,8 @@ public abstract class AbstractWearSensor  extends AbstractSwanSensor{
             Log.w(ABSTRACT_SENSOR, "You need to specify the sensor id");
             return;
         }
+
+        sensor_name = SensorNames.getInstance().getName(sensorId);
 
         configuration.putInt(SENSOR_ID, sensorId);
 

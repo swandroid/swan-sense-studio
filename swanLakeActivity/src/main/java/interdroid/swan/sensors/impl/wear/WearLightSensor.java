@@ -1,5 +1,6 @@
 package interdroid.swan.sensors.impl.wear;
 
+import android.hardware.Sensor;
 import android.os.Bundle;
 
 import java.io.IOException;
@@ -44,7 +45,7 @@ public class WearLightSensor extends AbstractWearSensor {
     @Override
     public void register(String id, String valuePath, Bundle configuration) throws IOException {
         SENSOR_NAME = "Wear Light Sensor";
-        sensor_name = "Light";
+        sensorId = Sensor.TYPE_LIGHT;
         valuePathMappings.put(LUX_FIELD, 0);
 
         super.register(id, valuePath, configuration);

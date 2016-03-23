@@ -52,7 +52,6 @@ public class HeartRateSensor extends AbstractWearSensor {
     @Override
     public void register(String id, String valuePath, Bundle configuration) throws IOException {
         SENSOR_NAME = "Wear Heart Rate Sensor";
-        sensor_name = "Heart Rate";
         sensorId = Sensor.TYPE_HEART_RATE;
         valuePathMappings.put(VALUE_PATH, 0);
         Log.d("Heart RATE", "Register++++++++++++++++++++++++++++++++");

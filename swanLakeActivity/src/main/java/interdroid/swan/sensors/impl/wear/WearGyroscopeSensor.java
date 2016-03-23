@@ -1,5 +1,6 @@
 package interdroid.swan.sensors.impl.wear;
 
+import android.hardware.Sensor;
 import android.os.Bundle;
 
 import java.io.IOException;
@@ -35,7 +36,7 @@ public class WearGyroscopeSensor extends AbstractWearSensor{
     public final void register(String id, String valuePath, Bundle configuration) throws IOException{
 
         SENSOR_NAME = "Wear Gyroscope Sensor";
-        sensor_name = "Gyroscope";
+        sensorId = Sensor.TYPE_GYROSCOPE;
         valuePathMappings.put(X_FIELD, 0);
         valuePathMappings.put(Y_FIELD, 1);
         valuePathMappings.put(Z_FIELD, 2);

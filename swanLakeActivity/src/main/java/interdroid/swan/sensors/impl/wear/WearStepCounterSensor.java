@@ -1,5 +1,6 @@
 package interdroid.swan.sensors.impl.wear;
 
+import android.hardware.Sensor;
 import android.os.Bundle;
 
 import java.io.IOException;
@@ -30,7 +31,7 @@ public class WearStepCounterSensor extends AbstractWearSensor{
     @Override
     public void register(String id, String valuePath, Bundle configuration) throws IOException {
         SENSOR_NAME = "Wear Step Counter Sensor";
-        sensor_name = "Step Counter";
+        sensorId = Sensor.TYPE_STEP_COUNTER;
         valuePathMappings.put(STEP_COUNTER, 0);
         super.register(id, valuePath, configuration);
     }

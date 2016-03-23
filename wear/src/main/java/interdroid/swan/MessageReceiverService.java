@@ -62,8 +62,6 @@ public class MessageReceiverService extends WearableListenerService {
         if(sensorId == 0)
             Log.w(TAG, "Request to start an unknown sensor");
 
-        Log.d(TAG, "Received data" + sensorId + " " + accuracy + " data size " + data.length);
-
         if (messageEvent.getPath().equals(ClientPaths.START_MEASUREMENT)) {
             Intent intent = new Intent(this, SensorService.class);
             intent.putExtra("sensorID", sensorId);

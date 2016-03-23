@@ -1,5 +1,6 @@
 package interdroid.swan.sensors.impl.wear;
 
+import android.hardware.Sensor;
 import android.os.Bundle;
 
 import java.io.IOException;
@@ -28,7 +29,8 @@ public class WearGravitySensor extends AbstractWearSensor{
     @Override
     public void register(String id, String valuePath, Bundle configuration) throws IOException {
         SENSOR_NAME = "Wear Gravity Sensor";
-        sensor_name = "Gravity";
+
+        sensorId = Sensor.TYPE_GRAVITY;
         valuePathMappings.put(X_FIELD, 0);
         valuePathMappings.put(Y_FIELD, 1);
         valuePathMappings.put(Z_FIELD, 2);
