@@ -10,6 +10,9 @@ import java.util.ArrayList;
  */
 public class JsonRequestInfo implements Parcelable {
 
+    public static final String GET = "GET";
+    public static final String POST = "POST";
+
     public int id;
     public String name;
     public String url;
@@ -17,12 +20,13 @@ public class JsonRequestInfo implements Parcelable {
     public ArrayList<Parameter> parameterList;
     public ArrayList<PathToValue> pathToValueList;
     public int maxPathToValueId;
+    public long lastUpdate;
 
     public JsonRequestInfo(int id, String name) {
         this.id = id;
         this.name = name;
         this.url = "";
-        this.requestType = "GET";
+        this.requestType = GET;
         this.parameterList = new ArrayList<>();
         this.pathToValueList = new ArrayList<>();
         this.maxPathToValueId = -1;
@@ -33,7 +37,7 @@ public class JsonRequestInfo implements Parcelable {
     }
 
     public JsonRequestInfo(int id, String name, String url, String requestType, ArrayList<Parameter> parameterList,
-                           ArrayList<PathToValue> pathToValueList, int maxPathToValueId) {
+                           ArrayList<PathToValue> pathToValueList, int maxPathToValueId, long lastUpdate) {
         this.id = id;
         this.name = name;
         this.url = url;
@@ -41,6 +45,7 @@ public class JsonRequestInfo implements Parcelable {
         this.parameterList = parameterList;
         this.pathToValueList = pathToValueList;
         this.maxPathToValueId = maxPathToValueId;
+        this.lastUpdate = lastUpdate;
     }
 
     public JsonRequestInfo(JsonRequestComplete jsonRequestComplete) {
@@ -51,6 +56,7 @@ public class JsonRequestInfo implements Parcelable {
         this.parameterList = jsonRequestComplete.parameterList;
         this.pathToValueList = null;
         this.maxPathToValueId = 0;
+        this.lastUpdate = jsonRequestComplete.lastUpdate;
     }
 
     public void readFromParcel(Parcel in) {
@@ -61,6 +67,7 @@ public class JsonRequestInfo implements Parcelable {
         this.parameterList = in.readArrayList(Parameter.class.getClassLoader());
         this.pathToValueList = in.readArrayList(PathToValue.class.getClassLoader());
         this.maxPathToValueId = in.readInt();
+        this.lastUpdate = in.readLong();
     }
 
     @Override
@@ -82,6 +89,7 @@ public class JsonRequestInfo implements Parcelable {
         dest.writeList(parameterList);
         dest.writeList(pathToValueList);
         dest.writeInt(maxPathToValueId);
+        dest.writeLong(lastUpdate);
     }
 
     public static Creator<JsonRequestInfo> CREATOR = new Creator<JsonRequestInfo>() {
@@ -97,4 +105,13 @@ public class JsonRequestInfo implements Parcelable {
         }
 
     };
+
+    public JsonRequestInfo cloneForCache() {
+        JsonRequestInfo jsonRequestInfo = new JsonRequestInfo(id, name, url, requestType,
+                new ArrayList<Parameter>(parameterList.size()), null, maxPathToValueId, lastUpdate);
+        for (int i = 0; i < parameterList.size(); i++) {
+            jsonRequestInfo.parameterList.add(parameterList.get(i).clone());
+        }
+        return jsonRequestInfo;
+    }
 }

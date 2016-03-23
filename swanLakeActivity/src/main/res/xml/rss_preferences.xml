@@ -9,7 +9,7 @@
 
 	<PreferenceCategory android:title="Configuration">
 		<interdroid.swan.util.SeekBarPreference
-			android:text="seconds" android:max="3600" android:defaultValue="300"
+			android:text="seconds" android:max="60" android:defaultValue="60"
 			android:title="Sample Interval" android:key="sample_interval" />
 		<!--<EditTextPreference android:key="url"-->
 			<!--android:title="URL" android:summary="URL of RSS feed"-->

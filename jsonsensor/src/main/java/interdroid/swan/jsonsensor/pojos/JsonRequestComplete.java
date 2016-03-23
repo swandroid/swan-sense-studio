@@ -13,6 +13,7 @@ public class JsonRequestComplete {
     public String requestType;
     public ArrayList<Parameter> parameterList;
     public PathToValue pathToValue;
+    public long lastUpdate;
 
     public JsonRequestComplete(JsonRequestInfo jsonRequestInfo, PathToValue pathToValue) {
         this.id = jsonRequestInfo.id;
@@ -21,6 +22,7 @@ public class JsonRequestComplete {
         this.requestType = jsonRequestInfo.requestType;
         this.parameterList = jsonRequestInfo.parameterList;
         this.pathToValue = pathToValue;
+        this.lastUpdate = jsonRequestInfo.lastUpdate;
     }
 
 }

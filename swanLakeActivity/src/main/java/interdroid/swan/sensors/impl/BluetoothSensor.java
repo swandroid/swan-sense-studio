@@ -1,8 +1,5 @@
 package interdroid.swan.sensors.impl;
 
-import interdroid.swan.R;
-import interdroid.swan.sensors.AbstractConfigurationActivity;
-import interdroid.swan.sensors.AbstractSwanSensor;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -11,6 +8,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
+
+import interdroid.swan.R;
+import interdroid.swan.sensors.AbstractConfigurationActivity;
+import interdroid.swan.sensors.AbstractSwanSensor;
 
 /**
  * A sensor for discovered bluetooth devices.
@@ -69,7 +70,7 @@ public class BluetoothSensor extends AbstractSwanSensor {
 	/**
 	 * The default discovery interval.
 	 */
-	public static final long DEFAULT_DISCOVERY_INTERVAL = 5 * 60 * 1000; // ms
+	public static final long DEFAULT_DISCOVERY_INTERVAL = 5 * 60;// * 1000; // ms
 
 	
 	/**
@@ -117,7 +118,7 @@ public class BluetoothSensor extends AbstractSwanSensor {
 				}
 				try {
 					Thread.sleep(currentConfiguration
-							.getLong(DISCOVERY_INTERVAL)
+							.getLong(DISCOVERY_INTERVAL) * 1000
 							+ start
 							- System.currentTimeMillis());
 				} catch (InterruptedException e) {

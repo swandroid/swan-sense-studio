@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".JsonInputActivity">
+    tools:context=".activities.JsonInputActivity">
 
     <include
         android:id="@+id/toolbar"
@@ -83,66 +83,21 @@
 
         </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/grey_500"
-            android:layout_marginTop="@dimen/padding_small"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/input_label_param_title"
-            android:layout_marginTop="@dimen/padding_small"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="0.7"
-                android:text="@string/input_label_param_name"
-                android:gravity="center_vertical"/>
-
-            <EditText
-                android:id="@+id/json_input_param_name"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="0.3"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="@dimen/padding_small">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="0.7"
-                android:text="@string/input_label_param_value"
-                android:gravity="center_vertical"/>
-
-            <EditText
-                android:id="@+id/json_input_param_value"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="0.3"/>
-
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/grey_500"
-            android:layout_marginTop="@dimen/padding_small"/>
 
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey_500"
+        android:layout_marginTop="@dimen/padding_small"/>
+
+    <Button
+        android:id="@+id/json_input_button_add_parameter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/input_label_param_title"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/json_input_recycler"

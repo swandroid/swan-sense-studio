@@ -127,7 +127,11 @@ public class RssSensor extends AbstractSwanSensor {
 
 	@Override
 	public final void unregister(String id) {
-		activeThreads.remove(id).interrupt();
+        Log.d(TAG, "unregister sensor");
+        RSSPoller rssPoller = activeThreads.remove(id);
+        rssPoller.destroyPoller();
+        rssPoller.interrupt();
+//		activeThreads.remove(id).interrupt();
 	}
 
 	class RSSPoller extends Thread implements RssSensorRequest.RssSensorRequestListener {
@@ -164,28 +168,32 @@ public class RssSensor extends AbstractSwanSensor {
                     }
                 }
 
-                //TODO: ook zonder cache de reponses bewaren, om het verschil te kunnen bekijken
+                //TODO: ook zonder cache de responses bewaren (zodat alleen de nieuwste doorgegeven worden), om het verschil te kunnen bekijken
                 //TODO: get correct url from configuration, al gedaan denk
                 //doGetRequest(rssRequestComplete.url, valuePath, id, rssRequestComplete);
                 int sampleRate = configuration.getInt(SAMPLE_INTERVAL,
-                        mDefaultConfiguration.getInt(SAMPLE_INTERVAL));
+                        mDefaultConfiguration.getInt(SAMPLE_INTERVAL)) * 1000;
                 if (rssSensorRequest == null) {
                     rssSensorRequest = new RssSensorRequest(rssRequestComplete, id, sampleRate, this);
                 }
 
                 Log.d(TAG, "Add request to RssSensorCache");
-                RssSensorCache.getInstance(getApplicationContext()).addRequestToQueue(rssSensorRequest);
+                RssSensorCache.getInstance(getApplicationContext()).addRequestToQueueSynchronized(rssSensorRequest);
 
                 try {
 					Thread.sleep(Math.max(
 							0,
 							configuration.getInt(SAMPLE_INTERVAL,
                                     mDefaultConfiguration
-                                            .getInt(SAMPLE_INTERVAL))
+                                            .getInt(SAMPLE_INTERVAL)) * 1000
 									+ mStart - System.currentTimeMillis()));
 				} catch (InterruptedException e) {
+                    Log.w(TAG, "interrupted");
+                    break;
 				}
 			}
+            Log.w(TAG, "isInterrupted after: " + isInterrupted());
+//            destroyPoller(); //Remove the sensor from the queue if it starts once more
 		}
 
         @Override
@@ -195,28 +203,19 @@ public class RssSensor extends AbstractSwanSensor {
         }
 
         public void destroyPoller() {
-            RssSensorCache.getInstance(getApplicationContext()).removeSensorFromCache(rssSensorRequest);
+//            rssSensorRequest.listener = null;
+            RssSensorCache.getInstance(getApplicationContext()).removeSensorFromCacheSynchronized(rssSensorRequest);
         }
     }
 
 	@Override
 	public void onDestroySensor() {
 		for (RSSPoller rssPoller : activeThreads.values()) {
-            rssPoller.interrupt();
             rssPoller.destroyPoller();
+            rssPoller.interrupt();
 		}
 		super.onDestroySensor();
 	};
-
-//    private class RSSItem {
-//        public String title;
-//        public String description;
-//
-//        public RSSItem(String title, String description) {
-//            this.title = title;
-//            this.description = description;
-//        }
-//    }
 
     private void doGetRequest(String url, final String valuePath, final String id,
                               final RssRequestComplete rssRequestComplete) {
@@ -369,14 +368,29 @@ public class RssSensor extends AbstractSwanSensor {
         if (valuePath.equals(TITLE)) {
             for (int i = 0; i < rssItems.size(); i++) {
                 putValueTrimSize(valuePath, id, mStart, rssItems.get(i).title);
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         } else if (valuePath.equals(DESCRIPTION)) {
             for (int i = 0; i < rssItems.size(); i++) {
                 putValueTrimSize(valuePath, id, mStart, rssItems.get(i).description);
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         } else if (valuePath.equals(BOTH)) {
             for (int i = 0; i < rssItems.size(); i++) {
                 putValueTrimSize(valuePath, id, mStart, rssItems.get(i).title + " " + rssItems.get(i).description);
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         } else if (valuePath.equals(COUNT)) {
             for (int i = 0; i < rssItems.size(); i++) {
@@ -392,6 +406,11 @@ public class RssSensor extends AbstractSwanSensor {
                     }
                 }
                 putValueTrimSize(valuePath, id, mStart, count);
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         } else if (valuePath.equals(PRESENT)) {
             for (int i = 0; i < rssItems.size(); i++) {
@@ -403,6 +422,11 @@ public class RssSensor extends AbstractSwanSensor {
                     putValueTrimSize(valuePath, id, mStart, 1);
                 } else {
                     putValueTrimSize(valuePath, id, mStart, 0);
+                }
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
         }

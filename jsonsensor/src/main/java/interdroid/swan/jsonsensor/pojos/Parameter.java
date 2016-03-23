@@ -45,4 +45,9 @@ public class Parameter implements Parcelable {
             return new Parameter[size];
         }
     };
+
+    @Override
+    public Parameter clone() {
+        return new Parameter(name, value);
+    }
 }

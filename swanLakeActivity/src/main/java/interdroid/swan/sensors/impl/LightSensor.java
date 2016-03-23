@@ -51,13 +51,13 @@ public class LightSensor extends AbstractSwanSensor {
 		public void onSensorChanged(SensorEvent event) {
 			long now = System.currentTimeMillis();
 			if (event.sensor.getType() == Sensor.TYPE_LIGHT) {
-				counter += 1;
-				Log.d(TAG, "light counter: " + counter + ", time: " + now);
+//				counter += 1;
+//				Log.d(TAG, "light counter: " + counter + ", time: " + now);
 				putValueTrimSize(LUX_FIELD, null, now, event.values[0]);
 			}
 		}
 	};
-	private int counter;
+//	private int counter;
 
 	@Override
 	public String[] getValuePaths() {

@@ -1,9 +1,6 @@
 package interdroid.swan.sensors.impl;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.preference.Preference;
-import android.util.Log;
+import com.google.gson.Gson;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -11,11 +8,15 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.preference.Preference;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,10 +26,12 @@ import java.util.Map;
 
 import interdroid.swan.R;
 import interdroid.swan.jsonsensor.activities.SelectionActivity;
+import interdroid.swan.jsonsensor.cache.JsonSensorCache;
 import interdroid.swan.jsonsensor.pojos.JsonItem;
 import interdroid.swan.jsonsensor.pojos.JsonPathType;
 import interdroid.swan.jsonsensor.pojos.JsonRequestComplete;
 import interdroid.swan.jsonsensor.pojos.JsonRequestInfo;
+import interdroid.swan.jsonsensor.pojos.JsonSensorRequest;
 import interdroid.swan.jsonsensor.pojos.PathToValue;
 import interdroid.swan.sensors.AbstractConfigurationActivity;
 import interdroid.swan.sensors.AbstractSwanSensor;
@@ -123,7 +126,7 @@ public class JsonSensor extends AbstractSwanSensor {
 		activeThreads.remove(id).interrupt();
 	}
 
-	class JsonPoller extends Thread {
+	class JsonPoller extends Thread implements JsonSensorRequest.JsonRequestListener {
 
 		private Bundle configuration;
 		private String valuePath;
@@ -132,6 +135,7 @@ public class JsonSensor extends AbstractSwanSensor {
         private JsonRequestInfo mJsonRequestInfo;
         private PathToValue mPathToValue;
         private long mStart;
+        private JsonSensorRequest mJsonSensorRequest;
 
 		JsonPoller(String id, String valuePath, Bundle configuration) {
 			this.id = id;
@@ -186,8 +190,15 @@ public class JsonSensor extends AbstractSwanSensor {
                 long end = System.currentTimeMillis();
                 Log.d("JsonSensor", "testtimer end: " + end);
 
+                int sampleRate = configuration.getInt(SAMPLE_INTERVAL,
+                        mDefaultConfiguration.getInt(SAMPLE_INTERVAL)) * 1000;
+                if (mJsonSensorRequest == null) {
+                    mJsonSensorRequest = new JsonSensorRequest(id, mJsonRequestInfo, sampleRate, this);
+                }
+
                 if (mPathToValue != null) {
-                    doGetRequest(mJsonRequestInfo.url);
+                    JsonSensorCache.getInstance(getApplicationContext()).addRequestToQueue(mJsonSensorRequest);
+//                    doGetRequest(mJsonRequestInfo.url);
                 }
 
 				//TODO: download the json
@@ -205,9 +216,17 @@ public class JsonSensor extends AbstractSwanSensor {
 											.getInt(SAMPLE_INTERVAL)) * 1000
 									+ mStart - System.currentTimeMillis()));
 				} catch (InterruptedException e) {
+                    break;
 				}
 			}
 		}
+
+        @Override
+        public void onResult(JsonItem jsonItem) {
+            if (jsonItem.jsonItems != null) {
+                walkToValue(jsonItem);
+            }
+        }
 
         private void doGetRequest(String url) {
             RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
@@ -353,8 +372,7 @@ public class JsonSensor extends AbstractSwanSensor {
             }
             return jsonItem;
         }
-		
-	}
+    }
 
 	@Override
 	public void onDestroySensor() {

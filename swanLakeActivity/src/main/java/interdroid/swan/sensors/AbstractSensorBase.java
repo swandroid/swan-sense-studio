@@ -1,18 +1,20 @@
 package interdroid.swan.sensors;
 
-import interdroid.swan.swansong.TimestampedValue;
+import android.app.Service;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.IBinder;
+import android.os.PowerManager;
+import android.os.RemoteException;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import android.app.Service;
-import android.content.Intent;
-import android.os.Bundle;
-import android.os.IBinder;
-import android.os.RemoteException;
-import android.util.Log;
+import interdroid.swan.swansong.TimestampedValue;
 
 /**
  * This class is the abstract base for all Sensor services. Sensor implementors
@@ -78,7 +80,10 @@ public abstract class AbstractSensorBase extends Service implements
 	 */
 	protected abstract void init();
 
-	@Override
+    private PowerManager.WakeLock mWakeLock;
+
+
+    @Override
 	public abstract String[] getValuePaths();
 	
 	/*
@@ -94,6 +99,10 @@ public abstract class AbstractSensorBase extends Service implements
 		init();
 		initDefaultConfiguration(mDefaultConfiguration);
 		onConnected();
+
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "SWAN sensor");
+        mWakeLock.acquire();
 	}
 		 
 	/** The binder. */
@@ -214,6 +223,7 @@ public abstract class AbstractSensorBase extends Service implements
 		} catch (Exception e) {
 			Log.e(TAG, "Got exception destroying sensor service", e);
 		}
+        mWakeLock.release();
 		super.onDestroy();
 	}
 
@@ -229,6 +239,7 @@ public abstract class AbstractSensorBase extends Service implements
 		Intent notifyIntent = new Intent(ACTION_NOTIFY);
 		notifyIntent.putExtra("expressionIds", ids);
 		sendBroadcast(notifyIntent);
+		Log.d("AbstractSensorBase", "changed: " + ids.toString());
 	}
 
 	@Override

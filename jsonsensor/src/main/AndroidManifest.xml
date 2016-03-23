@@ -4,8 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET"/>
 
-    <application
-        android:name="interdroid.swan.jsonsensor.JsonSensorApp">
+    <application>
         <activity
             android:name="interdroid.swan.jsonsensor.activities.SelectionActivity"
             android:label="@string/label_json_sensor"

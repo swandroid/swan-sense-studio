@@ -1,5 +1,11 @@
 package interdroid.swan.rss_sensor.cache;
 
+import android.content.Context;
+import android.os.AsyncTask;
+import android.os.Environment;
+import android.util.Log;
+
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -11,14 +17,16 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-import android.content.Context;
-import android.util.Log;
-
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -46,6 +54,15 @@ public class RssSensorCache {
     private List<RssUrlResponse> mUrlResponseCache;
 
     private ExecutorService mThreadPool;
+
+    private long mTotalResponseSize = 0;
+    private long mTotalResponseSizeWithoutCache = 0;
+    private int mNumberOfResponses = 0;
+    private int mNumberOfVolleyErrors = 0;
+    private int mNumberOfEncodingErrors = 0;
+    private String mLastVolleyError = "";
+    private int mNumberOfRequests1 = 0;
+    private int mNumberOfRequests2 = 0;
 
     private RssSensorCache(Context context) {
         mContext = context;
@@ -81,13 +98,18 @@ public class RssSensorCache {
         });
     }
 
-    private synchronized void addRequestToQueueSynchronized(final RssSensorRequest rssSensorRequest) {
+    public synchronized void addRequestToQueueSynchronized(final RssSensorRequest rssSensorRequest) {
 //        if (mThreadPool == null) {
 //            mThreadPool = Executors.newCachedThreadPool();
 //        }
 //        mThreadPool.execute(new Runnable() {
 //            @Override
 //            public void run() {
+                if (rssSensorRequest.sensorUrlId == 1) {
+                    mNumberOfRequests1 += 1;
+                } else if (rssSensorRequest.sensorUrlId == 2) {
+                    mNumberOfRequests2 += 1;
+                }
                 Log.d(TAG, "addRequestToQueue: " + rssSensorRequest.sensorId);
                 if (mRequestQueue == null) {
                     mRequestQueue = new LinkedList<>();
@@ -167,7 +189,7 @@ public class RssSensorCache {
                         if (rssSensorRequest.listener != null) {
                             rssSensorRequest.listener.onResult(rssItemList);
                         }
-                        removeFromQueueAndCheckForNextRequest();
+                        removeFromQueueAndCheckForNextRequestSynchronized();
                     } else {
                         if (rssSensorRequest.lastUpdate < rssUrlResponse.lastUpdate) {
                             rssSensorRequest.sensorUrl = rssUrlResponse.urlString;
@@ -201,7 +223,7 @@ public class RssSensorCache {
                     //Return the stripped response
                     return rssItemList;
                 } else {
-                    removeSensorFromCache(rssSensorRequest);
+                    removeSensorFromCacheSynchronized(rssSensorRequest);
                 }
             }
         }
@@ -243,7 +265,11 @@ public class RssSensorCache {
         });
     }
 
-    private synchronized void removeSensorFromCacheSynchronized(RssSensorRequest rssSensorRequest) {
+    public synchronized void removeSensorFromCacheSynchronized(RssSensorRequest rssSensorRequest) {
+        Log.d(TAG, "removeSensorFromCache");
+
+        new ExportDataToCsv().execute();
+
         for (int i = 0; i < mSensorResponseCache.size(); i++) {
             if (mSensorResponseCache.get(i).sensorId.equals(rssSensorRequest.sensorId)) {
                 mSensorResponseCache.remove(i);
@@ -261,6 +287,46 @@ public class RssSensorCache {
                 mUrlResponseCache.remove(i);
                 return;
             }
+        }
+
+
+    }
+
+    private class ExportDataToCsv extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+                File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS),
+                        "SwanRssLogs");
+                Log.w(TAG, "Create directory");
+                if (!file.exists()) {
+                    if (!file.mkdirs()) {
+                        Log.e(TAG, "Directory not created");
+                    }
+                }
+
+                Log.d(TAG, "storagelocation: " + Environment
+                        .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString());
+                FileWriter f = new FileWriter(
+                        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString()
+                                + "/SwanRssLogs/" + System.currentTimeMillis() + ".csv", true);
+                f.write("timestamp;numberOfResponses;totalResponseSize;totalResponseSizeWithoutCache\n");
+                f.write(System.currentTimeMillis() + ";" + mNumberOfResponses + ";" + mTotalResponseSize + ";" + mTotalResponseSizeWithoutCache + "\n");
+                f.write("requests1;requests2\n");
+                f.write(mNumberOfRequests1 + ";" + mNumberOfRequests2 + "\n");
+                f.write("numberOfVolleyErrors;numberOfEncodingErrors\n");
+                f.write(mNumberOfVolleyErrors + ";" + mNumberOfEncodingErrors + "\n");
+                f.write(mLastVolleyError);
+                f.close();
+            } catch (IOException e) {
+                System.out.println(
+                        "Failed to create file: " + System.currentTimeMillis() + ".csv");
+                e.printStackTrace();
+                return null;
+            }
+
+            return null;
         }
     }
 
@@ -283,16 +349,67 @@ public class RssSensorCache {
                     @Override
                     public void onResponse(String response) {
                         Log.d(TAG, "response:" + response);
+                        int responseSize = 0;
+                        try {
+                            responseSize = response.getBytes("UTF-8").length;
+                        } catch (UnsupportedEncodingException e) {
+                            mNumberOfEncodingErrors += 1;
+                            e.printStackTrace();
+                        }
+//                        mTotalResponseSize += responseSize;
+//                        mNumberOfResponses += 1;
+                        Log.w(TAG, "response size: " + responseSize);
+                        Log.w(TAG, "Total response size: " + mTotalResponseSize);
+                        Log.w(TAG, "Total with cache repsonse size: " + mTotalResponseSizeWithoutCache);
                         parseRSS(response, rssSensorRequest, System.currentTimeMillis());
-                        removeFromQueueAndCheckForNextRequest();
+                        removeFromQueueAndCheckForNextRequestSynchronized();
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                mNumberOfVolleyErrors += 1;
+                mLastVolleyError = error.getMessage();
             }
-        });
+        }) {
+            @Override
+            protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                mTotalResponseSize += response.data.length;
+                if (!response.notModified) {
+                    mTotalResponseSizeWithoutCache += response.data.length;
+                } else {
+                    mTotalResponseSizeWithoutCache += new PrettyPrintingMap<String, String>(response.headers).toString().getBytes().length;
+                }
+                mNumberOfResponses += 1;
+                return super.parseNetworkResponse(response);
+            }
+        };
         // Add the request to the RequestQueue.
         queue.add(stringRequest);
+    }
+
+    public class PrettyPrintingMap<K, V> {
+        private Map<K, V> map;
+
+        public PrettyPrintingMap(Map<K, V> map) {
+            this.map = map;
+        }
+
+        public String toString() {
+            StringBuilder sb = new StringBuilder();
+            Iterator<Map.Entry<K, V>> iter = map.entrySet().iterator();
+            while (iter.hasNext()) {
+                Map.Entry<K, V> entry = iter.next();
+                sb.append(entry.getKey());
+                sb.append('=').append('"');
+                sb.append(entry.getValue());
+                sb.append('"');
+                if (iter.hasNext()) {
+                    sb.append(',').append(' ');
+                }
+            }
+            return sb.toString();
+
+        }
     }
 
     private void parseRSS(String rss, RssSensorRequest rssSensorRequest, long currentTime) {

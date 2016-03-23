@@ -1,5 +1,16 @@
 package interdroid.swan.jsonsensor.activities;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,17 +23,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -66,21 +66,20 @@ public class JsonActivity extends BaseActivity {
 
         getViews();
 
-        //mClient = new OkHttpClient();
-
-        //new DownloadFilesTask().execute();
-        //String url = getIntent().getStringExtra(EXTRA_URL);
         mJsonRequestInfo = getIntent().getParcelableExtra(EXTRA_JSON_REQUEST_INFO);
+        ArrayList<Parameter> parameterList = mJsonRequestInfo.parameterList;
         if (mJsonRequestInfo.requestType.equals("GET")) {
-            doGetRequest(mJsonRequestInfo.url);
+            doGetRequest(mJsonRequestInfo.url, parameterList);
         } else {
             Map<String, String> parameters = new Hashtable<>();
-            ArrayList<Parameter> parameterList = mJsonRequestInfo.parameterList;
-            int size = mJsonRequestInfo.parameterList.size();
-            for (int i = 0; i < size; i++) {
-                Parameter parameter = parameterList.get(i);
-                parameters.put(parameter.name, parameter.value);
+            if (parameterList != null) {
+                int size = mJsonRequestInfo.parameterList.size();
+                for (int i = 0; i < size; i++) {
+                    Parameter parameter = parameterList.get(i);
+                    parameters.put(parameter.name, parameter.value);
+                }
             }
+
             doPostRequest(mJsonRequestInfo.url, parameters);
         }
     }
@@ -110,8 +109,19 @@ public class JsonActivity extends BaseActivity {
         mRecyclerView.setAdapter(mAdapter);
     }
 
-    private void doGetRequest(String url) {
+    private void doGetRequest(String url, ArrayList<Parameter> parameters) {
         RequestQueue queue = Volley.newRequestQueue(this);
+
+        if (parameters != null && parameters.size() > 0) {
+            if (!url.contains("?")) {
+                url += "?";
+            }
+            url += parameters.get(0).name + "=" + parameters.get(0).value;
+            int size = parameters.size();
+            for (int i = 1; i < size; i++) {
+                url += "&" + parameters.get(i).name + "=" + parameters.get(i).value;
+            }
+        }
 
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -119,13 +129,12 @@ public class JsonActivity extends BaseActivity {
                     @Override
                     public void onResponse(String response) {
                         parseJson(response);
-                        // Display the first 500 characters of the response string.
-                        //mTextView.setText("Response is: "+ response.substring(0,500));
+                        Log.i(TAG, response);
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                //mTextView.setText("That didn't work!");
+
             }
         });
         // Add the request to the RequestQueue.
@@ -142,13 +151,11 @@ public class JsonActivity extends BaseActivity {
                     @Override
                     public void onResponse(String response) {
                         parseJson(response);
-                        // Display the first 500 characters of the response string.
-                        //mTextView.setText("Response is: "+ response.substring(0,500));
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                //mTextView.setText("That didn't work!");
+
             }
         }) {
             @Override
@@ -164,6 +171,7 @@ public class JsonActivity extends BaseActivity {
     private void parseJson(String response) {
         JsonItem jsonItem = new JsonItem("root");
         try {
+            Log.w(TAG, "object");
             JSONObject jsonObject = new JSONObject(response);
             Iterator<String> strings = jsonObject.keys();
             ArrayList<JsonItem> jsonItems = new ArrayList<>();
@@ -175,7 +183,13 @@ public class JsonActivity extends BaseActivity {
             }
             jsonItem.jsonItems = jsonItems;
         } catch (JSONException e) {
-            e.printStackTrace();
+            try {
+                Log.w(TAG, "array");
+                JSONArray jsonArray = new JSONArray(response);
+                getNextJsonArray(jsonArray, jsonItem);
+            } catch (JSONException e1) {
+                e1.printStackTrace();
+            }
         }
 
         if (jsonItem.jsonItems != null) {

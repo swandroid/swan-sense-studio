@@ -1,7 +1,9 @@
 package interdroid.swan.jsonsensor.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -9,7 +11,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 import interdroid.swan.jsonsensor.JsonSensorSettings;
@@ -29,9 +33,7 @@ public class JsonInputActivity extends BaseActivity {
     private EditText mName;
     private EditText mUrl;
     private Spinner mRequestTypeSpinner;
-    private EditText mParamName;
-    private EditText mParamValue;
-
+    private Button mAddParameterButton;
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private ParameterListAdapter mAdapter;
@@ -49,7 +51,6 @@ public class JsonInputActivity extends BaseActivity {
 
     private void getViews() {
         mSelectionSpinner = (Spinner) findViewById(R.id.json_input_selection_spinner);
-        //TODO: adapter from preferences if possible
         JsonRequestList jsonRequestList = JsonSensorSettings.getInstance(getApplicationContext()).getJsonRequestList();
         mSelectionAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_dropdown_item, jsonRequestList.jsonRequestInfoList);
@@ -61,8 +62,9 @@ public class JsonInputActivity extends BaseActivity {
         ArrayAdapter requestTypeAdapter = ArrayAdapter.createFromResource(this,
                 R.array.input_array_request, android.R.layout.simple_spinner_dropdown_item);
         mRequestTypeSpinner.setAdapter(requestTypeAdapter);
-        mParamName = (EditText) findViewById(R.id.json_input_param_name);
-        mParamValue = (EditText) findViewById(R.id.json_input_param_value);
+
+        mAddParameterButton = (Button) findViewById(R.id.json_input_button_add_parameter);
+        mAddParameterButton.setOnClickListener(onAddParameterClickListener);
 
         //Main recycler view
         mRecyclerView = (RecyclerView) findViewById(R.id.json_input_recycler);
@@ -92,6 +94,14 @@ public class JsonInputActivity extends BaseActivity {
         }
     };
 
+    private View.OnClickListener onAddParameterClickListener = new View.OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+            showDialog();
+        }
+    };
+
     private ParameterListAdapter.OnParameterClickListener mOnParameterClickListener = new ParameterListAdapter.OnParameterClickListener() {
         @Override
         public void onParameter(Parameter parameter) {
@@ -102,6 +112,36 @@ public class JsonInputActivity extends BaseActivity {
     @Override
     protected int getLayoutResource() {
         return R.layout.activity_json_input;
+    }
+
+    private void showDialog() {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+        //alert.setTitle("Title");
+        alert.setMessage(R.string.input_label_param_title);
+
+        // Set an EditText view to get user input
+        LinearLayout layout = (LinearLayout) View.inflate(this, R.layout.dialog_parameter, null);
+        final EditText nameEditText = (EditText) layout.findViewById(R.id.param_input_param_name);
+        final EditText valueEditText = (EditText) layout.findViewById(R.id.param_input_param_value);
+        //nameEditText.setText(jsonValueItem.key);
+        alert.setView(layout);
+
+        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                String name = nameEditText.getText().toString();
+                String value = valueEditText.getText().toString();
+                mAdapter.addParameter(new Parameter(name, value));
+            }
+        });
+
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // Canceled.
+            }
+        });
+
+        alert.show();
     }
 
     @Override
@@ -134,6 +174,7 @@ public class JsonInputActivity extends BaseActivity {
 
             jsonRequestInfo.url = mUrl.getText().toString();
             jsonRequestInfo.parameterList = mAdapter.getParamterList();
+            jsonRequestInfo.lastUpdate = System.currentTimeMillis();
 
             JsonSensorSettings.getInstance(getApplicationContext()).setJsonRequestList(jsonRequestList);
 

@@ -132,6 +132,7 @@ public class ExpressionManager {
 			Log.d(TAG, "on receive");
 			if (sListeners.containsKey(id)) {
 				if (intent.getAction().equals(ACTION_NEW_VALUES)) {
+					Log.d(TAG, "new values");
 					// do the conversion from Parcelable[] to
 					// TimestampedValue[], casting doesn't work
 					Parcelable[] parcelables = (Parcelable[]) intent

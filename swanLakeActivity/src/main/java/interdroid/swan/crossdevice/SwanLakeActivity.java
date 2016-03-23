@@ -157,7 +157,7 @@ public class SwanLakeActivity extends ListActivity {
 	@Override
 	protected void onPause() {
 		// mNfcAdapter.disableForegroundDispatch(this);
-		mNfcAdapter.disableForegroundNdefPush(this);
+//		mNfcAdapter.disableForegroundNdefPush(this);
 		super.onPause();
 	}
 

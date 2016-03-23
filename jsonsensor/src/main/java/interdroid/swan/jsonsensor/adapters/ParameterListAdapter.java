@@ -6,10 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 import interdroid.swan.jsonsensor.R;
 import interdroid.swan.jsonsensor.pojos.Parameter;
-
-import java.util.ArrayList;
 
 /**
  * Created by steven on 21/10/14.
@@ -88,7 +88,7 @@ public class ParameterListAdapter extends RecyclerView.Adapter<ParameterListAdap
     };
 
     public interface OnParameterClickListener {
-        public void onParameter(Parameter parameter);
+        void onParameter(Parameter parameter);
     }
 
     public ArrayList<Parameter> getParamterList() {

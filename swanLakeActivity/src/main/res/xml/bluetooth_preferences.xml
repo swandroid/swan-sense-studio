@@ -7,7 +7,7 @@
 	</PreferenceCategory>
 	<PreferenceCategory android:title="Configuration">
 		<interdroid.swan.util.SeekBarPreference
-			android:text=" seconds" android:max="3600" android:defaultValue="300"
+			android:text=" seconds" android:max="1800" android:defaultValue="1800"
 			android:title="Discovery Interval" android:key="discovery_interval" />
 	</PreferenceCategory>
 </PreferenceScreen>
