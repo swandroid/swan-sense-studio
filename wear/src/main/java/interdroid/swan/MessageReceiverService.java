@@ -1,5 +1,7 @@
 package interdroid.swan;
 
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
@@ -13,6 +15,8 @@ import com.google.android.gms.wearable.DataMap;
 import com.google.android.gms.wearable.DataMapItem;
 import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.WearableListenerService;
+
+import java.nio.ByteBuffer;
 
 public class MessageReceiverService extends WearableListenerService {
     private static final String TAG = "Wear/MessageReceiverService";
@@ -49,12 +53,36 @@ public class MessageReceiverService extends WearableListenerService {
     public void onMessageReceived(MessageEvent messageEvent) {
         Log.d(TAG, "Received message: " + messageEvent.getPath());
 
+        byte[] data = messageEvent.getData();
+        ByteBuffer bb = ByteBuffer.wrap(data);
+
+        int sensorId = bb.getInt();
+        int accuracy = bb.getInt();
+
+        if(sensorId == 0)
+            Log.w(TAG, "Request to start an unknown sensor");
+
+        Log.d(TAG, "Received data" + sensorId + " " + accuracy + " data size " + data.length);
+
         if (messageEvent.getPath().equals(ClientPaths.START_MEASUREMENT)) {
-            startService(new Intent(this, SensorService.class));
+            Intent intent = new Intent(this, SensorService.class);
+            intent.putExtra("sensorID", sensorId);
+            intent.putExtra("accuracy", accuracy);
+            startService(intent);
         }
 
         if (messageEvent.getPath().equals(ClientPaths.STOP_MEASUREMENT)) {
             stopService(new Intent(this, SensorService.class));
         }
+    }
+
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

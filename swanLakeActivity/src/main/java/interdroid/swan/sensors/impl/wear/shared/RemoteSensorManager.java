@@ -2,6 +2,7 @@ package interdroid.swan.sensors.impl.wear.shared;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 import android.util.SparseArray;
 
@@ -21,6 +22,7 @@ import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -150,20 +152,34 @@ public class RemoteSensorManager {
         }
     }
 
-    public void startMeasurement(final byte id) {
+    public void startMeasurement(Bundle config) {
+
+        ByteBuffer byteBuffer = ByteBuffer.allocate(12);
+
+        byteBuffer.position(0);
+        byteBuffer.putInt(config.getInt(AbstractWearSensor.SENSOR_ID));
+        byteBuffer.putInt(config.getInt("accuracy"));
+
+        final byte[] data = byteBuffer.array();
+
         executorService.submit(new Runnable() {
             @Override
             public void run() {
-                controlMeasurementInBackground(ClientPaths.START_MEASUREMENT, id);
+                controlMeasurementInBackground(ClientPaths.START_MEASUREMENT, data);
             }
         });
     }
 
-    public void stopMeasurement(final byte id) {
+    public void stopMeasurement(Bundle config) {
+
+        ByteBuffer byteBuffer = ByteBuffer.allocate(12);
+        byteBuffer.putInt(config.getInt(AbstractWearSensor.SENSOR_ID));
+        final byte[] data = byteBuffer.array();
+
         executorService.submit(new Runnable() {
             @Override
             public void run() {
-                controlMeasurementInBackground(ClientPaths.STOP_MEASUREMENT, id);
+                controlMeasurementInBackground(ClientPaths.STOP_MEASUREMENT, data);
             }
         });
     }
@@ -172,16 +188,20 @@ public class RemoteSensorManager {
         Wearable.NodeApi.getConnectedNodes(googleApiClient).setResultCallback(pCallback);
     }
 
-    private void controlMeasurementInBackground(final String path, byte sensorid) {
+    private void controlMeasurementInBackground(final String path, byte[] extra) {
         if (validateConnection()) {
             List<Node> nodes = Wearable.NodeApi.getConnectedNodes(googleApiClient).await().getNodes();
 
             Log.d(TAG, "Sending to nodes: " + nodes.size());
 
+            for(byte bb : extra){
+                Log.d(TAG, "+++" + bb);
+            }
+
             for (Node node : nodes) {
                 Log.i(TAG, "add node " + node.getDisplayName());
                 Wearable.MessageApi.sendMessage(
-                        googleApiClient, node.getId(), path, null
+                        googleApiClient, node.getId(), path, extra
                 ).setResultCallback(new ResultCallback<MessageApi.SendMessageResult>() {
                     @Override
                     public void onResult(MessageApi.SendMessageResult sendMessageResult) {

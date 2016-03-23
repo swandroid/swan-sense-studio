@@ -29,6 +29,10 @@ public abstract class AbstractWearSensor  extends AbstractSwanSensor{
     final String ABSTRACT_SENSOR = "Abstract Sensor";
     protected HashMap<String, Integer> valuePathMappings = new HashMap<>();
     protected String sensor_name = ABSTRACT_SENSOR;
+
+    final static public String SENSOR_ID = "Sensor_ID";
+
+    protected int sensorId = -1;
     ArrayList<String> ids = new ArrayList<>();
     ReentrantLock lock = new ReentrantLock();
 
@@ -68,7 +72,6 @@ public abstract class AbstractWearSensor  extends AbstractSwanSensor{
     @Override
     public void register(String id, String valuePath, Bundle configuration) throws IOException {
 
-        byte sensorId = 0;
         if(sensor_name.equals(ABSTRACT_SENSOR)){
             Log.w(ABSTRACT_SENSOR, "You need to set the sensor name");
             return;
@@ -79,13 +82,22 @@ public abstract class AbstractWearSensor  extends AbstractSwanSensor{
             return;
         }
 
+        if(sensorId == -1){
+            Log.w(ABSTRACT_SENSOR, "You need to specify the sensor id");
+            return;
+        }
+
+        configuration.putInt(SENSOR_ID, sensorId);
+
+
         lock.lock();
         if(ids.isEmpty()) {
-            RemoteSensorManager.getInstance(this).startMeasurement(sensorId);
+            RemoteSensorManager.getInstance(this).startMeasurement(configuration);
         }
         ids.add(id);
         lock.unlock();
 
+        Log.d(TAG,"Configuration " + configuration.toString());
         registerReceiver(updateReceiver, new IntentFilter(RemoteSensorManager.UPDATE_MESSAGE));
 
     }
@@ -95,10 +107,11 @@ public abstract class AbstractWearSensor  extends AbstractSwanSensor{
         lock.lock();
         ids.remove(id);
 
-        byte sensorId = 0;
+        Bundle configuration = new Bundle();
+        configuration.putInt(SENSOR_ID, sensorId);
 
         if(ids.isEmpty())
-            RemoteSensorManager.getInstance(this).stopMeasurement(sensorId);
+            RemoteSensorManager.getInstance(this).stopMeasurement(configuration);
         lock.unlock();
 
         unregisterReceiver(updateReceiver);

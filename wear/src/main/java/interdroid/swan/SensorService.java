@@ -10,6 +10,7 @@ import android.hardware.SensorManager;
 import android.os.IBinder;
 import android.util.Log;
 
+import java.util.HashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -42,12 +43,14 @@ public class SensorService extends Service implements SensorEventListener {
     private final static int SENS_GEOMAGNETIC = Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR;
     private final static int SENS_HEARTRATE = Sensor.TYPE_HEART_RATE;
 
-    SensorManager mSensorManager;
+    SensorManager mSensorManager = null;
 
     private Sensor mHeartrateSensor;
 
     private DeviceClient client;
     private ScheduledExecutorService mScheduler;
+
+    private HashMap<Integer, Sensor> activeSensors = new HashMap<>();
 
     @Override
     public void onCreate() {
@@ -55,14 +58,16 @@ public class SensorService extends Service implements SensorEventListener {
 
         client = DeviceClient.getInstance(this);
 
+        //startMeasurement();
+
         Notification.Builder builder = new Notification.Builder(this);
         builder.setContentTitle("Swan");
         builder.setContentText("Collecting sensor data..");
         builder.setSmallIcon(R.drawable.ic_launcher);
 
+
         startForeground(1, builder.build());
 
-        startMeasurement();
     }
 
     @Override
@@ -75,6 +80,41 @@ public class SensorService extends Service implements SensorEventListener {
     @Override
     public IBinder onBind(Intent intent) {
         return null;
+    }
+
+
+    public  int onStartCommand (Intent intent, int flags, int startId) {
+
+        Log.d(TAG, intent.getExtras().toString());
+        int sensorId = intent.getExtras().getInt("sensorID");
+
+        startSingleMeasurement(sensorId, 0);
+
+        return super.onStartCommand(intent,flags, startId);
+    }
+
+    protected void startSingleMeasurement(int sensorId, int accuracy){
+        if(sensorId <= 0) {
+            Log.w(TAG, "Bad sensor ID");
+            return;
+        }
+
+        if(mSensorManager == null){
+            mSensorManager = ((SensorManager) getSystemService(SENSOR_SERVICE));
+        }
+
+        Sensor sensor = mSensorManager.getDefaultSensor(sensorId);
+
+            if(sensor != null){
+                activeSensors.put(sensorId,sensor);
+                mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+            } else {
+                Log.w(TAG, "Sensor with id " + sensorId + " not found");
+            }
+    }
+
+    protected void stopSingleMeasurement(Sensor sensor){
+
     }
 
     protected void startMeasurement() {

@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -28,7 +30,8 @@ public class HeartRateSensor extends AbstractWearSensor {
     public static final String HEART_RATE = "Heart Rate";
     public static final String VALUE_PATH = "heart_rate";
 
-
+    /** Value of ACCURACY must be one of SensorManager.SENSOR_DELAY_* */
+    public static final String ACCURACY = "accuracy";
 
     public static class ConfigurationActivity extends
             AbstractConfigurationActivity {
@@ -42,12 +45,15 @@ public class HeartRateSensor extends AbstractWearSensor {
     @Override
     public void initDefaultConfiguration(Bundle defaults) {
         Log.d("Heart Rate Sensor", "Init default configuration");
+        defaults.putInt(ACCURACY,
+                SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
     public void register(String id, String valuePath, Bundle configuration) throws IOException {
         SENSOR_NAME = "Wear Heart Rate Sensor";
         sensor_name = "Heart Rate";
+        sensorId = Sensor.TYPE_HEART_RATE;
         valuePathMappings.put(VALUE_PATH, 0);
         Log.d("Heart RATE", "Register++++++++++++++++++++++++++++++++");
 
