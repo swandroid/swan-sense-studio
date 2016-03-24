@@ -149,7 +149,7 @@ public class TestActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterSWANSensor();
+//        unregisterSWANSensor();
     }
 
 

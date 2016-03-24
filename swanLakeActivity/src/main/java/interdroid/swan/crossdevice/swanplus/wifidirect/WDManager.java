@@ -432,4 +432,9 @@ public class WDManager implements ProximityManagerI {
     public void setConnected(boolean connected) {
         this.connected = connected;
     }
+
+    public boolean send(String toUsername, String expressionId, String action, String data) {
+        // TODO implement me
+        return false;
+    }
 }
