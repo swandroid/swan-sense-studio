@@ -81,12 +81,21 @@ public class MessageReceiverService extends WearableListenerService {
             } else {
                 addSensor(sensorId, accuracy);
             }
+            activeSensors++;
 
             lock.unlock();
         }
 
         if (messageEvent.getPath().equals(ClientPaths.STOP_MEASUREMENT)) {
-            stopService(new Intent(this, SensorService.class));
+            lock.lock();
+
+            activeSensors--;
+
+            if(activeSensors == 0) {
+                stopService(new Intent(this, SensorService.class));
+            }
+
+            lock.unlock();
         }
     }
 
@@ -107,5 +116,9 @@ public class MessageReceiverService extends WearableListenerService {
         getApplicationContext().sendBroadcast(i);
     }
 
-    private void remo
+    private void removeSensor(int sensorId){
+        Intent i = new Intent(WearConstants.BROADCAST_REMOVE_SENSOR);
+        i.putExtra(SensorConstants.SENSOR_ID, sensorId);
+        getApplicationContext().sendBroadcast(i);
+    }
 }
