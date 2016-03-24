@@ -629,8 +629,13 @@ public class EvaluationEngineService extends Service {
 			final String expressionId, final Result result) {
 		// pusher is async
 		try {
-			Pusher.push(registrationId, expressionId, ACTION_NEW_RESULT_REMOTE,
-					Converter.objectToString(result));
+			if(mProximityManager.hasPeer(registrationId)) {
+				mProximityManager.send(registrationId, expressionId, ACTION_NEW_RESULT_REMOTE,
+						Converter.objectToString(result));
+			} else {
+				Pusher.push(registrationId, expressionId, ACTION_NEW_RESULT_REMOTE,
+						Converter.objectToString(result));
+			}
 		} catch (IOException e) {
 			Log.d(TAG, "Exception in converting result to string", e);
 		}

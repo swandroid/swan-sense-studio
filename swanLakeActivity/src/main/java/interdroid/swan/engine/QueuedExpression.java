@@ -38,7 +38,12 @@ public class QueuedExpression implements Comparable<QueuedExpression> {
 	}
 
 	public int compareTo(QueuedExpression another) {
-		return mCurrentResult.compareTo(another.mCurrentResult);
+		// mCurrentResult can be null if, for example, a NEARBY expression is registered,
+		// but there are no deviced nearby
+		if(mCurrentResult == null) {
+			return -1;
+		}
+ 		return mCurrentResult.compareTo(another.mCurrentResult);
 	};
 
 	public Expression getExpression() {

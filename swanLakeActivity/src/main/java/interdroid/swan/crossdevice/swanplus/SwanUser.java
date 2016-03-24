@@ -60,10 +60,6 @@ public class SwanUser {
 
     public void setBtSocket(BluetoothSocket btSocket) {
         this.btSocket = btSocket;
-
-        if(!isConnectable()) {
-            setConnectable(true);
-        }
     }
 
     public void setDevice(WifiP2pDevice device) {
