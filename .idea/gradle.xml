@@ -5,10 +5,14 @@
       <GradleProjectSettings>
         <option name="distributionType" value="LOCAL" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
+<<<<<<< b128fb26ad14055afa5d7f676ba602f53349d793
 <<<<<<< 92ce66b8a03d9903a26a161ba42174a072da4d93
         <option name="gradleJvm" value="1.7" />
 =======
         <option name="gradleHome" value="C:\Program Files\Android\Android Studio\gradle\gradle-2.4" />
+=======
+        <option name="gradleHome" value="C:\Program Files\Android\Android Studio\gradle\gradle-2.8" />
+>>>>>>> achieved all-to-all connectivity over BT between 3 phones :D
         <option name="gradleJvm" value="1.8" />
 >>>>>>> fixed tabs
         <option name="modules">

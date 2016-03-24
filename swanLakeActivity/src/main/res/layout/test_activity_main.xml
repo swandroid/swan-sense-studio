@@ -12,7 +12,7 @@
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/accelerometer_value" />
+        android:text="Sensor value" />
 
     <LinearLayout
         android:id="@+id/mLlayoutBottomButtons"
@@ -37,5 +37,13 @@
             android:onClick="unregisterExpression"
             android:text="Unregister" />
     </LinearLayout>
+
+    <EditText
+        android:id="@+id/username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Connect to peer"
+        android:layout_above="@id/mLlayoutBottomButtons"
+        android:inputType="text" />
 
 </RelativeLayout>
