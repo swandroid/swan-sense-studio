@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/senseandroidlibrary/senseandroidlibrary.iml" filepath="$PROJECT_DIR$/senseandroidlibrary/senseandroidlibrary.iml" />
+<<<<<<< 5300e800f89e2a8468f2cc8f297c6d89eb0fac01
 <<<<<<< b128fb26ad14055afa5d7f676ba602f53349d793
 <<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
 <<<<<<< 92ce66b8a03d9903a26a161ba42174a072da4d93
@@ -15,6 +16,10 @@
       <module fileurl="file://$PROJECT_DIR$/swan-sense-studio.iml" filepath="$PROJECT_DIR$/swan-sense-studio.iml" />
 >>>>>>> attached lists to tabs
       <module fileurl="file://$PROJECT_DIR$/swanLakeActivity/swanLakeActivity.iml" filepath="$PROJECT_DIR$/swanLakeActivity/swanLakeActivity.iml" />
+=======
+      <module fileurl="file://$PROJECT_DIR$/swanLakeActivity/swanLakeActivity.iml" filepath="$PROJECT_DIR$/swanLakeActivity/swanLakeActivity.iml" />
+      <module fileurl="file://$PROJECT_DIR$/swanplus.iml" filepath="$PROJECT_DIR$/swanplus.iml" />
+>>>>>>> achieved all-to-all connectivity over BT between 3 phones :D
 =======
       <module fileurl="file://$PROJECT_DIR$/swanLakeActivity/swanLakeActivity.iml" filepath="$PROJECT_DIR$/swanLakeActivity/swanLakeActivity.iml" />
       <module fileurl="file://$PROJECT_DIR$/swanplus.iml" filepath="$PROJECT_DIR$/swanplus.iml" />
