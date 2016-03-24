@@ -44,8 +44,6 @@ public class BTReceiver extends AsyncTask<Void, String, Void>  {
                 if (socket != null) {
                     // Do work to manage the connection (in a separate thread)
                     btManager.manageBtSocket(socket);
-//                    mmServerSocket.close();
-//                    break;
                 }
             }
         } catch (Exception e) {

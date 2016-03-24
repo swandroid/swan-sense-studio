@@ -245,6 +245,9 @@ public class EvaluationManager {
 		if(resolvedLocation.equals(Expression.LOCATION_NEARBY)) {
 			// get sensor info from nearby devices
 			mProximityManager.registerExpression(id, toCrossDeviceString(expression, resolvedLocation), resolvedLocation);
+		} else if(mProximityManager.hasPeer(resolvedLocation)) {
+			mProximityManager.send(resolvedLocation, id, EvaluationEngineService.ACTION_REGISTER_REMOTE,
+					toCrossDeviceString(expression, resolvedLocation));
 		} else {
 			// send a push message with 'register' instead of 'initialize',
 			// disadvantage is that we will only later on get exceptions
@@ -272,8 +275,15 @@ public class EvaluationManager {
 
 	private String toCrossDeviceString(Expression expression,
 			String toRegistrationId) {
-		String registrationId = toRegistrationId.equals(Expression.LOCATION_NEARBY) ?
-				Expression.LOCATION_NEARBY : Registry.get(mContext, expression.getLocation());
+		String registrationId = Registry.get(mContext, expression.getLocation());
+
+		// we check if we have a wildcard as location or if the remote device is in proximity
+		if(registrationId == null) {
+			if(mProximityManager.hasPeer(toRegistrationId) || toRegistrationId.equals(Expression.LOCATION_NEARBY)) {
+				registrationId = toRegistrationId;
+			}
+		}
+
 		if (expression instanceof SensorValueExpression) {
 			String result = ((registrationId.equals(toRegistrationId)) ? Expression.LOCATION_SELF
 					: registrationId)
