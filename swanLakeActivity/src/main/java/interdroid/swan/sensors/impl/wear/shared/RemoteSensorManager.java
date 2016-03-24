@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.util.SparseArray;
 
+import interdroid.swan.sensordashboard.shared.SensorConstants;
 import interdroid.swan.sensors.impl.wear.shared.data.WearSensor;
 import interdroid.swan.sensors.impl.wear.shared.data.SensorDataPoint;
 import interdroid.swan.sensors.impl.wear.shared.data.SensorNames;
@@ -107,8 +108,8 @@ public class RemoteSensorManager {
 
         Log.d(TAG, "Sensor Update Event!!!++++++++++++++++++");
         Intent i = new Intent(UPDATE_MESSAGE);
-        i.putExtra("sensor", sensor);
-        i.putExtra("data", dataPoint);
+        i.putExtra(SensorConstants.SENSOR_OBJECT, sensor);
+        i.putExtra(SensorConstants.SENSOR_DATA, dataPoint);
         context.sendBroadcast(i);
     }
 
@@ -157,8 +158,8 @@ public class RemoteSensorManager {
         ByteBuffer byteBuffer = ByteBuffer.allocate(12);
 
         byteBuffer.position(0);
-        byteBuffer.putInt(config.getInt(AbstractWearSensor.SENSOR_ID));
-        byteBuffer.putInt(config.getInt("accuracy"));
+        byteBuffer.putInt(config.getInt(SensorConstants.SENSOR_ID));
+        byteBuffer.putInt(config.getInt(SensorConstants.ACCURACY));
 
         final byte[] data = byteBuffer.array();
 
@@ -173,7 +174,7 @@ public class RemoteSensorManager {
     public void stopMeasurement(Bundle config) {
 
         ByteBuffer byteBuffer = ByteBuffer.allocate(12);
-        byteBuffer.putInt(config.getInt(AbstractWearSensor.SENSOR_ID));
+        byteBuffer.putInt(config.getInt(SensorConstants.SENSOR_ID));
         final byte[] data = byteBuffer.array();
 
         executorService.submit(new Runnable() {

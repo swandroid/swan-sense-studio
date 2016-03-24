@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import interdroid.swan.R;
+import interdroid.swan.sensordashboard.shared.SensorConstants;
 import interdroid.swan.sensors.AbstractConfigurationActivity;
 import interdroid.swan.sensors.AbstractSwanSensor;
 import interdroid.swan.sensors.impl.wear.shared.AbstractWearSensor;
@@ -27,11 +28,10 @@ import interdroid.swan.sensors.impl.wear.shared.data.SensorDataPoint;
 public class HeartRateSensor extends AbstractWearSensor {
 
     public static final String TAG = "HeartRateSensor";
-    public static final String HEART_RATE = "Heart Rate";
+
     public static final String VALUE_PATH = "heart_rate";
 
     /** Value of ACCURACY must be one of SensorManager.SENSOR_DELAY_* */
-    public static final String ACCURACY = "accuracy";
 
     public static class ConfigurationActivity extends
             AbstractConfigurationActivity {
@@ -45,7 +45,7 @@ public class HeartRateSensor extends AbstractWearSensor {
     @Override
     public void initDefaultConfiguration(Bundle defaults) {
         Log.d("Heart Rate Sensor", "Init default configuration");
-        defaults.putInt(ACCURACY,
+        defaults.putInt(SensorConstants.ACCURACY,
                 SensorManager.SENSOR_DELAY_NORMAL);
     }
 

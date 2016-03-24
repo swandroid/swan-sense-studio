@@ -17,21 +17,20 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import interdroid.swan.sensordashboard.shared.SensorConstants;
 import interdroid.swan.sensors.AbstractSwanSensor;
 import interdroid.swan.sensors.impl.wear.shared.data.SensorDataPoint;
 import interdroid.swan.sensors.impl.wear.shared.data.SensorNames;
 import interdroid.swan.sensors.impl.wear.shared.data.WearSensor;
 
 /**
- * Created by slavik on 3/14/16.
+ * Created by Veaceslav Munteanu on 3/14/16.
  */
 public abstract class AbstractWearSensor  extends AbstractSwanSensor{
 
     final String ABSTRACT_SENSOR = "Abstract Sensor";
     protected HashMap<String, Integer> valuePathMappings = new HashMap<>();
     protected String sensor_name = ABSTRACT_SENSOR;
-
-    final static public String SENSOR_ID = "Sensor_ID";
 
     protected int sensorId = -1;
     ArrayList<String> ids = new ArrayList<>();
@@ -48,8 +47,8 @@ public abstract class AbstractWearSensor  extends AbstractSwanSensor{
             if(action.equalsIgnoreCase(RemoteSensorManager.UPDATE_MESSAGE)){
                 Bundle extra = intent.getExtras();
                 //String who = extra.getString("sensor");
-                WearSensor s = (WearSensor)extra.getSerializable("sensor");
-                SensorDataPoint d = (SensorDataPoint)extra.getSerializable("data");
+                WearSensor s = (WearSensor)extra.getSerializable(SensorConstants.SENSOR_OBJECT);
+                SensorDataPoint d = (SensorDataPoint)extra.getSerializable(SensorConstants.SENSOR_DATA);
                 if(s.getName().equals(sensor_name)) {
                     Log.d(TAG, "Got update+++++++++++++++++++++" + s.getName());
                     float[] dataz = d.getValues();
@@ -86,7 +85,7 @@ public abstract class AbstractWearSensor  extends AbstractSwanSensor{
 
         sensor_name = SensorNames.getInstance().getName(sensorId);
 
-        configuration.putInt(SENSOR_ID, sensorId);
+        configuration.putInt(SensorConstants.SENSOR_ID, sensorId);
 
 
         lock.lock();
@@ -107,7 +106,7 @@ public abstract class AbstractWearSensor  extends AbstractSwanSensor{
         ids.remove(id);
 
         Bundle configuration = new Bundle();
-        configuration.putInt(SENSOR_ID, sensorId);
+        configuration.putInt(SensorConstants.SENSOR_ID, sensorId);
 
         if(ids.isEmpty())
             RemoteSensorManager.getInstance(this).stopMeasurement(configuration);
