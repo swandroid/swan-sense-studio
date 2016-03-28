@@ -232,7 +232,7 @@ public class WDManager implements ProximityManagerI {
         });
     }
 
-    public void registerExpression(String id, String expression,String resolvedLocation) {
+    public void registerExpression(String id, String expression,String resolvedLocation, String action) {
         // TODO implement me
     }
 
