@@ -12,11 +12,13 @@ public class BTRemoteExpression {
     private String id;
     private SwanUser user;
     private String expression;
+    private String action;
 
-    public BTRemoteExpression(String id, SwanUser user, String expression) {
+    public BTRemoteExpression(String id, SwanUser user, String expression, String action) {
         this.id = id;
         this.user = user;
         this.expression = expression;
+        this.action = action;
     }
 
     public String getId() {
@@ -29,6 +31,14 @@ public class BTRemoteExpression {
 
     public String getExpression() {
         return expression;
+    }
+
+    public String getAction() {
+        return action;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
     }
 
     public void setExpression(String expression) {
