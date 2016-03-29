@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -26,9 +27,11 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import interdroid.swan.crossdevice.Converter;
 import interdroid.swan.crossdevice.swanplus.ProximityManagerI;
 import interdroid.swan.crossdevice.swanplus.SwanUser;
 import interdroid.swan.engine.EvaluationEngineService;
+import interdroid.swan.swansong.Result;
 
 /**
  * Created by vladimir on 3/9/16.
@@ -37,6 +40,7 @@ import interdroid.swan.engine.EvaluationEngineService;
  * TODO run peer discovery periodically
  * TODO do something with the device name
  * TODO handle properly the cases when BT is switched on/off during usage
+ * TODO handle Broken pipe exceptions
  */
 public class BTManager implements ProximityManagerI {
 
@@ -62,6 +66,8 @@ public class BTManager implements ProximityManagerI {
         public void run() {
             if(!isBusy()) {
                 discoverPeers();
+            } else {
+                Log.d(TAG, "BT manager busy, postpone discovery");
             }
             handler.postDelayed(nearbyPeersChecker, PEER_DISCOVERY_INTERVAL);
         }
@@ -117,8 +123,9 @@ public class BTManager implements ProximityManagerI {
             } else if(BluetoothAdapter.ACTION_STATE_CHANGED.equals(action)) {
                 int connState = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1);
 
-                if(connState == BluetoothAdapter.STATE_ON && btReceiver.getStatus() == AsyncTask.Status.PENDING) {
+                if(connState == BluetoothAdapter.STATE_ON && btReceiver == null) {
                     Log.d(TAG, "bluetooth connected, starting receiver thread...");
+                    btReceiver = new BTReceiver(BTManager.this, context);
                     btReceiver.execute();
                 }
             }
@@ -134,7 +141,6 @@ public class BTManager implements ProximityManagerI {
             return;
         }
 
-        btReceiver = new BTReceiver(this, context);
         evalQueue = new ConcurrentLinkedQueue<BTRemoteExpression>();
         handler = new Handler();
 
@@ -161,6 +167,7 @@ public class BTManager implements ProximityManagerI {
         evalThread.start();
 
         if(btAdapter.isEnabled()) {
+            btReceiver = new BTReceiver(this, context);
             btReceiver.execute();
         }
 
@@ -176,6 +183,8 @@ public class BTManager implements ProximityManagerI {
         if(!btAdapter.isDiscovering()) {
             Log.d(TAG, "Discovering...");
             btAdapter.startDiscovery();
+        } else {
+            Log.d(TAG, "Discovery already started");
         }
     }
 
@@ -206,14 +215,21 @@ public class BTManager implements ProximityManagerI {
         //TODO implement me
     }
 
-    public void registerExpression(String id, String expression,String resolvedLocation) {
-        registeredExpressions.put(id, expression);
+    public void registerExpression(String id, String expression, String resolvedLocation, String action) {
         boolean addedExpr = false;
+
+        if(action.equals(EvaluationEngineService.ACTION_REGISTER_REMOTE)) {
+            registeredExpressions.put(id, expression);
+        } else if(action.equals(EvaluationEngineService.ACTION_UNREGISTER_REMOTE)) {
+            registeredExpressions.remove(id);
+        } else {
+            Log.e(TAG, "not a valid action");
+        }
 
         // TODO filter by name
         for(SwanUser user : nearbyPeers) {
             if(user.isConnectable()) {
-                BTRemoteExpression remoteExpr = new BTRemoteExpression(id, user, expression);
+                BTRemoteExpression remoteExpr = new BTRemoteExpression(id, user, expression, action);
                 evalQueue.add(remoteExpr);
                 addedExpr = true;
                 Log.d(TAG, "added new expression to queue: " + expression);
@@ -246,51 +262,9 @@ public class BTManager implements ProximityManagerI {
         setBusy(true);
 
         if(!send(expression.getUser().getUsername(), expression.getId(),
-                EvaluationEngineService.ACTION_REGISTER_REMOTE, expression.getExpression())) {
+                expression.getAction(), expression.getExpression())) {
             setBusy(false);
         }
-    }
-
-    public boolean send(String toUsername, String expressionId,
-                      String action, String data) {
-        try {
-            SwanUser user = getPeerByUsername(toUsername);
-
-            if (user != null) {
-                BluetoothSocket btSocket = connect(user);
-
-                if(btSocket != null) {
-                    ObjectOutputStream oos = user.getOos();
-                    HashMap<String, String> dataMap = new HashMap<String, String>();
-
-                    if(oos == null) {
-                        OutputStream os = btSocket.getOutputStream();
-                        oos = new ObjectOutputStream(os);
-                        user.setOos(oos);
-                    }
-
-                    // "from" is not allowed and results in InvalidDataKey, see:
-                    // http://developer.android.com/google/gcm/gcm.html
-                    dataMap.put("source", getBtAdapter().getName());
-                    dataMap.put("action", action);
-                    dataMap.put("data", data);
-                    dataMap.put("id", expressionId);
-
-                    oos.writeObject(dataMap);
-
-                    Log.d(TAG, "successfully sent push message for id: "
-                            + expressionId + ", type: " + action + ", data: " + data);
-
-                    return true;
-                }
-            } else {
-                Log.e(TAG, "user not found");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return false;
     }
 
     // blocking call; use only in a separate thread
@@ -318,12 +292,58 @@ public class BTManager implements ProximityManagerI {
             user.setConnectable(false);
             setBusy(false);
             btAdapter.startDiscovery();
-            Log.e(TAG, "can't connect to " + user.getUsername(), e);
+            Log.e(TAG, "can't connect to " + user.getUsername());
 
             return null;
         }
 
         return btSocket;
+    }
+
+    public boolean send(String toUsername, String expressionId,
+                      String action, String data) {
+        try {
+            SwanUser user = getPeerByUsername(toUsername);
+
+            if (user != null) {
+                BluetoothSocket btSocket = connect(user);
+
+                if(btSocket != null) {
+                    ObjectOutputStream oos = user.getOos();
+                    HashMap<String, String> dataMap = new HashMap<String, String>();
+
+                    if(oos == null) {
+                        OutputStream os = btSocket.getOutputStream();
+                        oos = new ObjectOutputStream(os);
+                        user.setOos(oos);
+                    }
+
+                    // "from" is not allowed and results in InvalidDataKey, see:
+                    // http://developer.android.com/google/gcm/gcm.html
+                    dataMap.put("source", getBtAdapter().getName());
+                    dataMap.put("action", action);
+                    dataMap.put("data", data);
+                    dataMap.put("id", expressionId);
+
+                    synchronized (oos) {
+                        oos.writeObject(dataMap);
+                    }
+
+                    if(action.equals(EvaluationEngineService.ACTION_NEW_RESULT_REMOTE) && data != null) {
+                        data = Converter.stringToObject(data).toString();
+                    }
+                    Log.w(TAG, "sent " + action + " message to " + toUsername + ": " + data + " (id: " + expressionId + ")");
+
+                    return true;
+                }
+            } else {
+                Log.e(TAG, "user not found");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 
     protected void manageBtSocket(final BluetoothSocket socket) {
@@ -333,46 +353,79 @@ public class BTManager implements ProximityManagerI {
                     InputStream is = socket.getInputStream();
                     ObjectInputStream ois = new ObjectInputStream(is);
 
-                    while(true) {
-                        HashMap<String, String> dataMap = (HashMap<String, String>) ois.readObject();
-                        String action = dataMap.get("action");
-
-                        if (action.equals(EvaluationEngineService.ACTION_REGISTER_REMOTE)
-                                || action.equals(EvaluationEngineService.ACTION_UNREGISTER_REMOTE)) {
+                    while (true) {
+                        try {
+                            HashMap<String, String> dataMap = (HashMap<String, String>) ois.readObject();
+                            String action = dataMap.get("action");
                             String source = dataMap.get("source");
+                            String id = dataMap.get("id");
 
-                            if (source != null) {
-                                SwanUser user = getPeerByUsername(source);
-                                if (user != null) {
-                                    user.setBtSocket(socket);
-                                    // e.g. user1 register expr1 for user2; user2 is not connectable; user2 register expr2
-                                    // for user1, so it becomes connectable, so we have to register expr1 again for user2
-                                    if(!user.isConnectable()) {
-                                        user.setConnectable(true);
-                                        registerPeer(user);
+                            if (action.equals(EvaluationEngineService.ACTION_REGISTER_REMOTE)
+                                    || action.equals(EvaluationEngineService.ACTION_UNREGISTER_REMOTE)) {
+
+                                if (source != null) {
+                                    SwanUser user = getPeerByUsername(source);
+                                    if (user != null) {
+                                        user.setBtSocket(socket);
+                                        // e.g. user1 register expr1 for user2; user2 is not connectable; user2 register expr2
+                                        // for user1, so it becomes connectable, so we have to register expr1 again for user2
+                                        if (!user.isConnectable()) {
+                                            user.setConnectable(true);
+                                            registerPeer(user);
+                                        }
+                                    }
+                                } else {
+                                    Log.w(TAG, "source field is empty");
+                                }
+
+                                Intent intent = new Intent(action);
+                                intent.setClass(context, EvaluationEngineService.class);
+                                intent.putExtra("source", source);
+                                intent.putExtra("id", dataMap.get("id"));
+                                intent.putExtra("data", dataMap.get("data"));
+                                context.startService(intent);
+
+                                Log.w(TAG, "received " + action + " from " + source + ": " + dataMap.get("data") + " (id: " + dataMap.get("id") + ")");
+                            } else if (action.equals(EvaluationEngineService.ACTION_NEW_RESULT_REMOTE)) {
+                                Intent intent = new Intent(action);
+                                intent.setClass(context, EvaluationEngineService.class);
+                                intent.putExtra("id", dataMap.get("id"));
+                                intent.putExtra("data", dataMap.get("data"));
+                                context.startService(intent);
+
+                                String data = dataMap.get("data");
+                                Result result = null;
+
+                                if (data != null) {
+                                    result = (Result) Converter.stringToObject(data);
+                                }
+
+                                // unregister the expression remotely after we get the first result, then register it again
+                                if (result != null && result.getValues().length > 0) {
+                                    if(!evalQueue.isEmpty()) {
+                                        BTRemoteExpression unregExpr = new BTRemoteExpression(id, getPeerByUsername(source),
+                                                null, EvaluationEngineService.ACTION_UNREGISTER_REMOTE);
+                                        BTRemoteExpression newExpr = new BTRemoteExpression(id, getPeerByUsername(source),
+                                                registeredExpressions.get(id), EvaluationEngineService.ACTION_REGISTER_REMOTE);
+
+                                        evalQueue.add(unregExpr);
+                                        evalQueue.add(newExpr);
+                                        setBusy(false);
+
+                                        synchronized (evalThread) {
+                                            evalThread.notify();
+                                        }
+
                                     }
                                 }
-                            } else {
-                                Log.w(TAG, "source field is empty");
+
+                                Log.w(TAG, "received " + action + " from " + source + ": " + result + " (id: " + dataMap.get("id") + ")");
                             }
-
-                            Intent intent = new Intent(action);
-                            intent.setClass(context, EvaluationEngineService.class);
-                            intent.putExtra("source", source);
-                            intent.putExtra("id", dataMap.get("id"));
-                            intent.putExtra("data", dataMap.get("data"));
-                            context.startService(intent);
-
-                            Log.d(TAG, "received " + action + " from " + source);
-                        } else {
-                            Intent intent = new Intent(action);
-                            intent.setClass(context, EvaluationEngineService.class);
-                            intent.putExtra("id", dataMap.get("id"));
-                            intent.putExtra("data", dataMap.get("data"));
-                            context.startService(intent);
+                        } catch (EOFException e) {
+                            e.printStackTrace();
                         }
                     }
-                } catch (Exception e) {
+                } catch(Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -397,7 +450,8 @@ public class BTManager implements ProximityManagerI {
         boolean addedExpr = false;
 
         for(Map.Entry<String, String> entry : registeredExpressions.entrySet()) {
-            BTRemoteExpression remoteExpr = new BTRemoteExpression(entry.getKey(), peer, entry.getValue());
+            BTRemoteExpression remoteExpr = new BTRemoteExpression(entry.getKey(), peer,
+                    entry.getValue(), EvaluationEngineService.ACTION_REGISTER_REMOTE);
             evalQueue.add(remoteExpr);
             addedExpr = true;
             Log.d(TAG, "added new expression to queue: " + entry.getValue());

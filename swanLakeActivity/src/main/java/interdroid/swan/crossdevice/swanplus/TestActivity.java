@@ -23,6 +23,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 public class TestActivity extends Activity {
@@ -47,7 +48,7 @@ public class TestActivity extends Activity {
         setContentView(R.layout.test_activity_main);
         tv = (TextView) findViewById(R.id.textView1);
 //        initialize();
-        testSensor();
+//        testSensor();
     }
 
     public void testSensor() {
@@ -71,12 +72,14 @@ public class TestActivity extends Activity {
     }
 
     public void registerExpression(View view) {
-        if (mExpression != null) {
-            if(!mRegistered) {
-                registerSWANSensor(mExpression);
-            } else {
-                Log.d(TAG, "Already registered");
-            }
+        EditText usernameEdit = (EditText) findViewById(R.id.username);
+        String connectTo = usernameEdit.getText().toString();
+        mExpression = connectTo + "@light:lux{ANY,0}";
+
+        if(!mRegistered) {
+            registerSWANSensor(mExpression);
+        } else {
+            Log.d(TAG, "Already registered");
         }
     }
 
