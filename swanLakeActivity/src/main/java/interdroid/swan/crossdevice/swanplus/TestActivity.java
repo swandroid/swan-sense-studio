@@ -74,6 +74,11 @@ public class TestActivity extends Activity {
     public void registerExpression(View view) {
         EditText usernameEdit = (EditText) findViewById(R.id.username);
         String connectTo = usernameEdit.getText().toString();
+
+        if(connectTo.trim().isEmpty()) {
+            connectTo = "NEARBY";
+        }
+
         mExpression = connectTo + "@light:lux{ANY,0}";
 
         if(!mRegistered) {

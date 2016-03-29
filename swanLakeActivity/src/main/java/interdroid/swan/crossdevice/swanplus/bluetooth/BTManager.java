@@ -7,12 +7,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.AsyncTask;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -41,6 +39,7 @@ import interdroid.swan.swansong.Result;
  * TODO do something with the device name
  * TODO handle properly the cases when BT is switched on/off during usage
  * TODO handle Broken pipe exceptions
+ * TODO create method for sending intents to the Evaluation Engine
  */
 public class BTManager implements ProximityManagerI {
 
@@ -64,11 +63,11 @@ public class BTManager implements ProximityManagerI {
     /* we schedule peer discovery to take place at regular intervals */
     Runnable nearbyPeersChecker = new Runnable() {
         public void run() {
-            if(!isBusy()) {
+//            if(!isBusy()) {
                 discoverPeers();
-            } else {
-                Log.d(TAG, "BT manager busy, postpone discovery");
-            }
+//            } else {
+//                Log.d(TAG, "BT manager busy, postpone discovery");
+//            }
             handler.postDelayed(nearbyPeersChecker, PEER_DISCOVERY_INTERVAL);
         }
     };
@@ -279,7 +278,7 @@ public class BTManager implements ProximityManagerI {
                 btSocket = user.getBtDevice().createInsecureRfcommSocketToServiceRecord(SERVICE_UUID);
                 btSocket.connect();
                 user.setBtSocket(btSocket);
-                manageBtSocket(btSocket);
+                manageConnection(btSocket);
             }
         } catch (IOException e) {
             try {
@@ -292,7 +291,7 @@ public class BTManager implements ProximityManagerI {
             user.setConnectable(false);
             setBusy(false);
             btAdapter.startDiscovery();
-            Log.e(TAG, "can't connect to " + user.getUsername());
+            Log.e(TAG, "can't connect to " + user.getUsername(), e);
 
             return null;
         }
@@ -300,10 +299,27 @@ public class BTManager implements ProximityManagerI {
         return btSocket;
     }
 
+    public void disconnect(SwanUser user) {
+        BluetoothSocket btSocket;
+
+        try {
+            btSocket = user.getBtSocket();
+
+            if(btSocket != null) {
+                btSocket.close();
+                user.setBtSocket(null);
+                user.setOos(null);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public boolean send(String toUsername, String expressionId,
                       String action, String data) {
+        SwanUser user = getPeerByUsername(toUsername);
+
         try {
-            SwanUser user = getPeerByUsername(toUsername);
 
             if (user != null) {
                 BluetoothSocket btSocket = connect(user);
@@ -340,13 +356,23 @@ public class BTManager implements ProximityManagerI {
                 Log.e(TAG, "user not found");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, "Can't connect to " + user + ": " + e.getMessage());
+
+            if(action.equals(EvaluationEngineService.ACTION_NEW_RESULT_REMOTE)) {
+                // unregister the expression
+                Intent intent = new Intent(EvaluationEngineService.ACTION_UNREGISTER_REMOTE);
+                intent.setClass(context, EvaluationEngineService.class);
+                intent.putExtra("source", user.getUsername());
+                intent.putExtra("id", expressionId);
+                intent.putExtra("data", (String) null);
+                context.startService(intent);
+            }
         }
 
         return false;
     }
 
-    protected void manageBtSocket(final BluetoothSocket socket) {
+    protected void manageConnection(final BluetoothSocket socket) {
         new Thread() {
             public void run() {
                 try {
@@ -354,18 +380,18 @@ public class BTManager implements ProximityManagerI {
                     ObjectInputStream ois = new ObjectInputStream(is);
 
                     while (true) {
-                        try {
-                            HashMap<String, String> dataMap = (HashMap<String, String>) ois.readObject();
-                            String action = dataMap.get("action");
-                            String source = dataMap.get("source");
-                            String id = dataMap.get("id");
+                        HashMap<String, String> dataMap = (HashMap<String, String>) ois.readObject();
+                        String action = dataMap.get("action");
+                        String source = dataMap.get("source");
+                        String id = dataMap.get("id");
 
-                            if (action.equals(EvaluationEngineService.ACTION_REGISTER_REMOTE)
-                                    || action.equals(EvaluationEngineService.ACTION_UNREGISTER_REMOTE)) {
+                        if (action.equals(EvaluationEngineService.ACTION_REGISTER_REMOTE)
+                                || action.equals(EvaluationEngineService.ACTION_UNREGISTER_REMOTE)) {
 
-                                if (source != null) {
-                                    SwanUser user = getPeerByUsername(source);
-                                    if (user != null) {
+                            if (source != null) {
+                                SwanUser user = getPeerByUsername(source);
+                                if (user != null) {
+                                    if(action.equals(EvaluationEngineService.ACTION_REGISTER_REMOTE)) {
                                         user.setBtSocket(socket);
                                         // e.g. user1 register expr1 for user2; user2 is not connectable; user2 register expr2
                                         // for user1, so it becomes connectable, so we have to register expr1 again for user2
@@ -373,60 +399,71 @@ public class BTManager implements ProximityManagerI {
                                             user.setConnectable(true);
                                             registerPeer(user);
                                         }
+                                    } else if(action.equals(EvaluationEngineService.ACTION_UNREGISTER_REMOTE)) {
+                                        disconnect(user);
                                     }
-                                } else {
-                                    Log.w(TAG, "source field is empty");
                                 }
+                            } else {
+                                Log.w(TAG, "source field is empty");
+                            }
 
+                            Intent intent = new Intent(action);
+                            intent.setClass(context, EvaluationEngineService.class);
+                            intent.putExtra("source", source);
+                            intent.putExtra("id", dataMap.get("id"));
+                            intent.putExtra("data", dataMap.get("data"));
+                            context.startService(intent);
+
+                            Log.w(TAG, "received " + action + " from " + source + ": " + dataMap.get("data") + " (id: " + dataMap.get("id") + ")");
+                        } else if (action.equals(EvaluationEngineService.ACTION_NEW_RESULT_REMOTE)) {
+                            String data = dataMap.get("data");
+                            Result result = null;
+
+                            if (data != null) {
+                                result = (Result) Converter.stringToObject(data);
+                            }
+
+                            if (result != null && result.getValues().length > 0) {
+                                // if result is not null, send it to the evaluation engine
                                 Intent intent = new Intent(action);
                                 intent.setClass(context, EvaluationEngineService.class);
-                                intent.putExtra("source", source);
                                 intent.putExtra("id", dataMap.get("id"));
-                                intent.putExtra("data", dataMap.get("data"));
+                                intent.putExtra("data", data);
                                 context.startService(intent);
-
-                                Log.w(TAG, "received " + action + " from " + source + ": " + dataMap.get("data") + " (id: " + dataMap.get("id") + ")");
-                            } else if (action.equals(EvaluationEngineService.ACTION_NEW_RESULT_REMOTE)) {
-                                Intent intent = new Intent(action);
-                                intent.setClass(context, EvaluationEngineService.class);
-                                intent.putExtra("id", dataMap.get("id"));
-                                intent.putExtra("data", dataMap.get("data"));
-                                context.startService(intent);
-
-                                String data = dataMap.get("data");
-                                Result result = null;
-
-                                if (data != null) {
-                                    result = (Result) Converter.stringToObject(data);
-                                }
 
                                 // unregister the expression remotely after we get the first result, then register it again
-                                if (result != null && result.getValues().length > 0) {
-                                    if(!evalQueue.isEmpty()) {
-                                        BTRemoteExpression unregExpr = new BTRemoteExpression(id, getPeerByUsername(source),
-                                                null, EvaluationEngineService.ACTION_UNREGISTER_REMOTE);
-                                        BTRemoteExpression newExpr = new BTRemoteExpression(id, getPeerByUsername(source),
-                                                registeredExpressions.get(id), EvaluationEngineService.ACTION_REGISTER_REMOTE);
+                                if(!evalQueue.isEmpty()) {
+                                    send(source, id, EvaluationEngineService.ACTION_UNREGISTER_REMOTE, null);
 
-                                        evalQueue.add(unregExpr);
-                                        evalQueue.add(newExpr);
-                                        setBusy(false);
+                                    evalQueue.add(new BTRemoteExpression(id, getPeerByUsername(source),
+                                            registeredExpressions.get(id), EvaluationEngineService.ACTION_REGISTER_REMOTE));
 
-                                        synchronized (evalThread) {
-                                            evalThread.notify();
-                                        }
+                                    setBusy(false);
 
+                                    synchronized (evalThread) {
+                                        evalThread.notify();
                                     }
-                                }
 
-                                Log.w(TAG, "received " + action + " from " + source + ": " + result + " (id: " + dataMap.get("id") + ")");
+                                }
                             }
-                        } catch (EOFException e) {
-                            e.printStackTrace();
+
+                            Log.w(TAG, "received " + action + " from " + source + ": " + result + " (id: " + dataMap.get("id") + ")");
                         }
                     }
                 } catch(Exception e) {
                     e.printStackTrace();
+
+                    SwanUser user = getPeer(socket);
+                    if(user != null) {
+                        user.setBtSocket(null);
+                        user.setOos(null);
+                        Log.w(TAG, "reset socket for user " + user);
+                    }
+                    try {
+                        socket.close();
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
                 }
             }
         }.start();
@@ -464,6 +501,12 @@ public class BTManager implements ProximityManagerI {
         }
     }
 
+    private void unregisterPeer(SwanUser peer) {
+        for(Map.Entry<String, String> entry : registeredExpressions.entrySet()) {
+
+        }
+    }
+
     public void removePeer(SwanUser peer) {
         nearbyPeers.remove(peer);
     }
@@ -475,6 +518,15 @@ public class BTManager implements ProximityManagerI {
     public SwanUser getPeerByUsername(String username) {
         for(SwanUser peer : nearbyPeers) {
             if(peer.getUsername().equals(username)) {
+                return peer;
+            }
+        }
+        return null;
+    }
+
+    public SwanUser getPeer(BluetoothSocket btSocket) {
+        for(SwanUser peer : nearbyPeers) {
+            if(peer.getBtSocket() != null && peer.getBtSocket().equals(btSocket)) {
                 return peer;
             }
         }
