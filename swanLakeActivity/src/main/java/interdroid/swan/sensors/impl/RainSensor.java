@@ -82,7 +82,9 @@ public class RainSensor extends AbstractSwanSensor {
 	}
 
 	@Override
-	public final void register(String id, String valuePath, Bundle configuration) {
+	public final void register(String id, String valuePath, Bundle configuration, final Bundle httpConfiguration) {
+		super.register(id,valuePath,configuration,httpConfiguration);
+
 		RainPoller rainPoller = new RainPoller(id, valuePath,
 				configuration);
 		activeThreads.put(id, rainPoller);

@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
-    <PreferenceCategory android:title="Value Path">
+	<PreferenceCategory android:title="Value Path">
 		<ListPreference android:title="Value Path"
 			android:summary="Select a Value Path" android:key="valuepath"
 			android:entries="@array/stepcounter_valuepaths" android:entryValues="@array/stepcounter_valuepaths" />
+	</PreferenceCategory>
+
+	<PreferenceCategory android:title="Configuration" >
+		<EditTextPreference
+			android:title="Sample Interval"
+			android:key="delay"
+			android:dialogTitle="Enter Sample Interval (microseconds)"
+			android:summary="Set Sample Interval"
+			android:defaultValue="200000"
+			android:inputType="number" />
 	</PreferenceCategory>
 </PreferenceScreen>

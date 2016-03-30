@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <PreferenceCategory android:title="Value Path">
+        <ListPreference android:title="Value Path"
+            android:summary="Select a Value Path" android:key="valuepath"
+            android:entries="@array/server_valuepaths" android:entryValues="@array/server_valuepaths" />
+    </PreferenceCategory>
+
+
+    <PreferenceCategory android:title="Configuration">
+
+        <EditTextPreference android:key="url"
+            android:title="Url" android:summary="url address"
+            android:dialogTitle="Enter the request url" />
+
+        <EditTextPreference android:key="type"
+            android:title="Type" android:summary="GET or POST"
+            android:dialogTitle="Enter String:(GET, POST)" />
+
+
+        <EditTextPreference android:key="sensor"
+            android:title="Sensor Name" android:summary="Give the sensor name"
+            android:dialogTitle="Enter sensor Name:(accelerometer, gyroscope, ov)" />
+
+        <EditTextPreference android:key="api_key"
+            android:title="API Key" android:summary="Send API key "
+            android:dialogTitle="Enter API key for this URL" />
+
+
+    </PreferenceCategory>
+
+
+</PreferenceScreen>

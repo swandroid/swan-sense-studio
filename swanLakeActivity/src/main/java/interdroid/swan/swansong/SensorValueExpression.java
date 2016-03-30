@@ -1,6 +1,7 @@
 package interdroid.swan.swansong;
 
 import android.os.Bundle;
+import android.util.Log;
 
 public class SensorValueExpression implements ValueExpression {
 
@@ -10,10 +11,11 @@ public class SensorValueExpression implements ValueExpression {
 	private Bundle mConfig;
 	private HistoryReductionMode mMode;
 	private long mHistoryLength;
+	private Bundle mHttpConfig;
 
 	public SensorValueExpression(String location, String entity,
 			String valuePath, Bundle config, HistoryReductionMode mode,
-			long historyLength) {
+			long historyLength, Bundle httpConfig) {
 		mLocation = location;
 		mEntity = entity;
 		mValuePath = valuePath;
@@ -23,6 +25,14 @@ public class SensorValueExpression implements ValueExpression {
 		}
 		mMode = mode;
 		mHistoryLength = historyLength;
+		mHttpConfig = httpConfig;
+		if (mHttpConfig == null) {
+			Log.e("Roshan","Wierd: SensorValueExpression mHttpConfig is null");
+			mHttpConfig = new Bundle();
+		}
+
+		Log.e("Roshan", "SensorValueExpression constructor called; entity " + entity + " valuePath " + valuePath);
+
 	}
 
 	@Override
@@ -44,7 +54,19 @@ public class SensorValueExpression implements ValueExpression {
 				if (mConfig.get(key) instanceof String) {
 					value = "'" + value + "'";
 				}
-				result += (first ? "?" : "&") + key + "=" + value;
+				result += (first ? "?" : "#") + key + "=" + value;
+				first = false;
+			}
+		}
+		if (mHttpConfig != null && mHttpConfig.size() > 0) {
+			boolean first = true;
+			for (String key : mHttpConfig.keySet()) {
+				String value = "" + mHttpConfig.get(key);
+				//if (mHttpConfig.get(key) instanceof String) {
+				//	value = "'" + value + "'";
+				//}
+				Log.e("Roshan-SVExpression", "key "+key +" value " +value);
+				result += (first ? "$" : "~") + key + "=" + value;
 				first = false;
 			}
 		}
@@ -73,5 +95,11 @@ public class SensorValueExpression implements ValueExpression {
 	public Bundle getConfiguration() {
 		return mConfig;
 	}
+
+	public Bundle getHttConfiguration(){
+
+		return mHttpConfig;
+	}
+
 
 }
