@@ -53,4 +53,31 @@ public class BTRemoteExpression {
         this.user = user;
     }
 
+    @Override
+    public String toString() {
+        return "RemoteExpr[" + id + ", " + user + ", " + expression + ", " + action + "]";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        BTRemoteExpression that = (BTRemoteExpression) o;
+
+        if (!id.equals(that.id)) return false;
+        if (!user.equals(that.user)) return false;
+        if (!expression.equals(that.expression)) return false;
+        return action.equals(that.action);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id.hashCode();
+        result = 31 * result + user.hashCode();
+        result = 31 * result + expression.hashCode();
+        result = 31 * result + action.hashCode();
+        return result;
+    }
 }
