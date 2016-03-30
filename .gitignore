@@ -37,3 +37,6 @@ Thumbs.db
 
 # Linux
 .directory
+
+# Swan specific: GCM constants
+swanLakeActivity/src/main/java/interdroid/swan/crossdevice/SwanGCMConstants.java
