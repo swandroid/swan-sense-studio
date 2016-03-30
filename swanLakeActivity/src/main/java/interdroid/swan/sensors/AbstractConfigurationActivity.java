@@ -81,6 +81,9 @@ public abstract class AbstractConfigurationActivity extends PreferenceActivity
 				for (String key : sensor.getConfiguration().keySet()) {
 					updatePref(key, sensor.getConfiguration().getString(key));
 				}
+				for (String key : sensor.getHttConfiguration().keySet()) {
+					updatePref(key, sensor.getHttConfiguration().getString(key));
+				}
 			} catch (ExpressionParseException e) {
 				Log.d(TAG, "supplied expression cannot be parsed.", e);
 			} catch (ClassCastException e) {
@@ -297,8 +300,32 @@ public abstract class AbstractConfigurationActivity extends PreferenceActivity
 //		Log.d(TAG, "Selected storage: " + storage);
 //		Log.d(TAG, storage);
 //		setSelectedStorage(storage);
-		String entityId = getIntent().getStringExtra("entityId");
+		Bundle httpConfiguration = new Bundle();
 
+		if (map.containsKey("server_storage")) {
+			httpConfiguration.putString("server_storage", map.remove("server_storage").toString());
+		}
+		if (map.containsKey("server_url")) {
+			httpConfiguration.putString("server_url", map.remove("server_url").toString());
+		}
+		if (map.containsKey("server_http_method")) {
+			httpConfiguration.putString("server_http_method", map.remove("server_http_method").toString());
+		}
+		if (map.containsKey("server_http_authorization")) {
+			httpConfiguration.putString("server_http_authorization", map.remove("server_http_authorization").toString());
+		}
+		if (map.containsKey("server_http_header")) {
+			httpConfiguration.putSerializable("server_http_header", map.remove("server_http_header").toString());
+		}
+		if (map.containsKey("server_http_body")) {
+			httpConfiguration.putString("server_http_body", map.remove("server_http_body").toString());
+		}
+		if (map.containsKey("server_http_body_type")) {
+			httpConfiguration.putString("server_http_body_type", map.remove("server_http_body_type").toString());
+		}
+
+		String entityId = getIntent().getStringExtra("entityId");
+		//Log.e("Roshan",entityId);
 		Bundle configuration = new Bundle();
 		for (String key : keys) {
 			if (map.containsKey(key)) {
@@ -306,8 +333,14 @@ public abstract class AbstractConfigurationActivity extends PreferenceActivity
 			}
 		}
 
+		for(String key: httpConfiguration.keySet()){
+			String value = "" + httpConfiguration.get(key);
+			Log.e("Roshan","AbstractConfigurationActivity key "+key +" value " +value);
+
+		}
+
 		SensorValueExpression sensor = new SensorValueExpression(location,
-				entityId, path, configuration, mode, timespan);
+				entityId, path, configuration, mode, timespan, httpConfiguration);
 
 		return sensor.toParseString();
 	}

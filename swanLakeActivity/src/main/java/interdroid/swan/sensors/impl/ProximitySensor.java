@@ -13,6 +13,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 public class ProximitySensor extends AbstractSwanSensor {
 	public static final String TAG = "ProximitySensor";
@@ -32,12 +33,10 @@ public class ProximitySensor extends AbstractSwanSensor {
 
 	}
 
-	/** Value of ACCURACY must be one of SensorManager.SENSOR_DELAY_* */
+	/** Value of ACCURACY must be one of SensorManager.SENSOR_STATUS_ACCURACY_* */
 	public static final String ACCURACY = "accuracy";
 
 	public static final String DISTANCE_FIELD = "distance";
-
-	protected static final int HISTORY_SIZE = 300;
 
 	private Sensor proximitySensor;
 	private SensorManager sensorManager;
@@ -50,10 +49,12 @@ public class ProximitySensor extends AbstractSwanSensor {
 		}
 
 		public void onSensorChanged(SensorEvent event) {
-			long now = System.currentTimeMillis();
 			if (event.sensor.getType() == Sensor.TYPE_PROXIMITY) {
-				putValueTrimSize(VALUE_PATHS[0], null, now,
-						(double) event.values[0]);
+				long now = acceptSensorReading();
+				if (now >= 0) {
+ 					Log.d(TAG, "onSensorChanged: " + now + " val " + event.values[0]);
+					putValueTrimSize(VALUE_PATHS[0], null, now, event.values[0]);
+				}
 			}
 		}
 	};
@@ -65,53 +66,41 @@ public class ProximitySensor extends AbstractSwanSensor {
 
 	@Override
 	public void initDefaultConfiguration(Bundle DEFAULT_CONFIGURATION) {
-		DEFAULT_CONFIGURATION.putInt(ACCURACY,
-				SensorManager.SENSOR_DELAY_NORMAL);
+		DEFAULT_CONFIGURATION.putInt(DELAY, normalizeSensorDelay(SensorManager.SENSOR_DELAY_NORMAL));
+		DEFAULT_CONFIGURATION.putInt(ACCURACY, SensorManager.SENSOR_STATUS_ACCURACY_HIGH);
 	}
 
 	@Override
 	public void onConnected() {
 		SENSOR_NAME = "Proximity Sensor";
 		sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-		List<Sensor> sensorList = sensorManager
-				.getSensorList(Sensor.TYPE_PROXIMITY);
+		List<Sensor> sensorList = sensorManager.getSensorList(Sensor.TYPE_PROXIMITY);
 		if (sensorList.size() > 0) {
 			proximitySensor = sensorList.get(0);
 		} else {
+			Toast.makeText(getApplicationContext(), "No proximitySensor found on device", Toast.LENGTH_SHORT).show();
 			Log.e(TAG, "No proximitySensor found on device!");
 		}
 	}
 
 	@Override
-	public final void register(String id, String valuePath, Bundle configuration) {
-		updateAccuracy();
+	public final void register(String id, String valuePath, Bundle configuration, final Bundle httpConfiguration) {
+		super.register(id, valuePath, configuration, httpConfiguration);
+		updateDelay();
 	}
 
-	private void updateAccuracy() {
+	private void updateDelay() {
 		sensorManager.unregisterListener(sensorEventListener);
-		if (registeredConfigurations.size() > 0) {
-
-			int highestAccuracy = mDefaultConfiguration.getInt(ACCURACY);
-			for (Bundle configuration : registeredConfigurations.values()) {
-				if (configuration == null) {
-					continue;
-				}
-				if (configuration.containsKey(ACCURACY)) {
-					highestAccuracy = Math
-							.min(highestAccuracy,configuration.getInt(ACCURACY));
-				}
-			}
-			highestAccuracy = Math.max(highestAccuracy,
-					SensorManager.SENSOR_DELAY_FASTEST);
-			sensorManager.registerListener(sensorEventListener,
-					proximitySensor, highestAccuracy);
+		int delay = getSensorDelay();
+		if (delay >= 0) {
+			sensorManager.registerListener(sensorEventListener, proximitySensor, delay);
+			Log.d(TAG, "delay set to " + delay);
 		}
-
 	}
 
 	@Override
 	public final void unregister(String id) {
-		updateAccuracy();
+		updateDelay();
 	}
 
 	@Override

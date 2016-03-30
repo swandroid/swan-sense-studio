@@ -7,6 +7,68 @@
             android:key="swan_location"
             android:title="Set Location" />
     </PreferenceCategory>
+
+    <PreferenceCategory android:title="Storage Preferences" >
+
+       <ListPreference
+            android:defaultValue="FALSE"
+            android:entries="@array/server_storage"
+            android:entryValues="@array/server_storage"
+            android:key="server_storage"
+            android:summary="Store data in a server"
+            android:title="Storing sensor data in server" />
+
+        <EditTextPreference
+            android:defaultValue="http://fs0.das5.cs.vu.nl:3000/"
+            android:dialogTitle="Server URL"
+            android:inputType="textUri"
+            android:key="server_url"
+            android:summary="The URL for storing sensor data in server"
+            android:title="Server URL" />
+
+        <ListPreference
+            android:defaultValue="null"
+            android:entries="@array/http_body_type"
+            android:entryValues="@array/http_body_type"
+            android:key="server_http_body_type"
+            android:summary="The http body type for connecting to server "
+            android:title="Http Request Body Type" />
+
+        <ListPreference
+            android:defaultValue="POST"
+            android:entries="@array/http_method"
+            android:entryValues="@array/http_method"
+            android:key="server_http_method"
+            android:summary="The http request method for connecting to server "
+            android:title="Http Request Method(GET/POST/PUT/DELETE)" />
+
+
+        <ListPreference
+            android:defaultValue="NoAuth"
+            android:entries="@array/http_authorization"
+            android:entryValues="@array/http_authorization"
+            android:key="server_http_authorization"
+            android:summary="The http request authorization for connecting to server "
+            android:title="Authorization" />
+
+        <EditTextPreference
+            android:defaultValue="null"
+            android:dialogTitle="Server HTTP Header"
+            android:inputType="textWebEditText"
+            android:key="server_http_header"
+            android:summary="The http request header for connecting to server"
+            android:title="Http Header" />
+
+        <EditTextPreference
+            android:defaultValue="null"
+            android:dialogTitle="Server HTTP Body"
+            android:inputType="textWebEditText"
+            android:key="server_http_body"
+            android:summary="The http request body for PUT, POST method to server"
+            android:title="Http Body(for POST/PUT)" />
+
+    </PreferenceCategory>
+
     <PreferenceCategory android:title="History Preferences" >
         <EditTextPreference
             android:defaultValue="0"
@@ -32,4 +94,5 @@
             android:summary="Select a History Reduction Mode"
             android:title="History Reduction Mode" />
     </PreferenceCategory>
+
 </PreferenceScreen>

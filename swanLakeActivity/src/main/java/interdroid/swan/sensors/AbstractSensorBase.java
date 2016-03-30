@@ -59,6 +59,11 @@ public abstract class AbstractSensorBase extends Service implements
 	 */
 	protected final Map<String, String> registeredValuePaths = new HashMap<String, String>();
 
+
+
+	protected final Map<String, Bundle> registeredHttpConfigurations = new HashMap<String, Bundle>();
+
+
 	/**
 	 * The expression ids for each value path.
 	 */
@@ -101,7 +106,7 @@ public abstract class AbstractSensorBase extends Service implements
 
 		@Override
 		public void register(final String id, final String valuePath,
-				final Bundle configuration) throws RemoteException {
+				final Bundle configuration, final Bundle httpConfiguration) throws RemoteException {
 			// value path exists and id is unique (enforced by evaluation
 			// engine)
 			synchronized (mSensorInterface) {
@@ -110,6 +115,7 @@ public abstract class AbstractSensorBase extends Service implements
 							+ valuePath);
 					registeredConfigurations.put(id, configuration);
 					registeredValuePaths.put(id, valuePath);
+					registeredHttpConfigurations.put(id,httpConfiguration);
 					List<String> ids = expressionIdsPerValuePath.get(valuePath);
 					if (ids == null) {
 						ids = new ArrayList<String>();
@@ -119,7 +125,7 @@ public abstract class AbstractSensorBase extends Service implements
 					printState();
 					Log.d(TAG, "Registering with implementation.");
 					
-					mSensorInterface.register(id, valuePath, configuration);
+					mSensorInterface.register(id, valuePath, configuration, httpConfiguration);
 				} catch (Exception e) {
 					Log.e(TAG, "Caught exception while registering.", e);
 					throw new RemoteException();

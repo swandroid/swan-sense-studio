@@ -56,7 +56,7 @@ public abstract class AbstractCuckooSensor extends AbstractSwanSensor {
 
 	@Override
 	public final synchronized void register(final String id,
-			final String valuePath, Bundle configuration) throws IOException {
+			final String valuePath, Bundle configuration, Bundle httpConfiguration){ //throws IOException {
 		final Map<String, Object> configAsMap = new HashMap<String, Object>();
 		for (String key : configuration.keySet()) {
 			// TODO: maybe short circuit if a value is not serializable

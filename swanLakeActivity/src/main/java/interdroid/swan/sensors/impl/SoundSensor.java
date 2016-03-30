@@ -74,7 +74,8 @@ public class SoundSensor extends AbstractSwanSensor {
 	}
 
 	@Override
-	public final void register(String id, String valuePath, Bundle configuration) {
+	public final void register(String id, String valuePath, Bundle configuration, final Bundle httpConfiguration) {
+		super.register(id,valuePath,configuration,httpConfiguration);
 		SoundPoller soundPoller = new SoundPoller(id, valuePath, configuration);
 		activeThreads.put(id, soundPoller);
 		soundPoller.start();

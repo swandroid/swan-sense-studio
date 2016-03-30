@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="Value Path">
+        <ListPreference android:title="Value Path"
+            android:summary="Select a Value Path" android:key="valuepath"
+            android:entries="@array/ov_valuepaths" android:entryValues="@array/ov_valuepaths" />
+    </PreferenceCategory>
+
+
+    <PreferenceCategory android:title="Configuration">
+        <interdroid.swan.util.SeekBarPreference
+            android:text="seconds" android:max="3600" android:defaultValue="10"
+            android:title="Sample Interval" android:key="sample_interval" />
+        <EditTextPreference android:key="value"
+            android:title="Value" android:summary="The value to be put after the url"
+            android:dialogTitle="Enter value:(line number, stop area code)" />
+
+
+    </PreferenceCategory>
+</PreferenceScreen>

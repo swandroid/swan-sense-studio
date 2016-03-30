@@ -1,7 +1,9 @@
 package interdroid.swan.sensors;
 
+import interdroid.swan.sensors.impl.ServerConnection;
 import interdroid.swan.swansong.TimestampedValue;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -15,27 +17,54 @@ import nl.sense_os.service.constants.SenseDataTypes;
 import nl.sense_os.service.constants.SensePrefs;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 import nl.sense_os.service.storage.LocalStorage;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+
+import android.hardware.SensorManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Bundle;
 import android.util.Log;
 
 public abstract class AbstractSwanSensor extends AbstractSensorBase{
 	public static String TAG = "Abstract Sensor";
 	
+	public static final String DELAY = "delay";
+
+	/**
+	 * State for sensor update rate
+	 */
+        private long lastUpdate = 0;
+        private int currentDelay = 0;
+
 	/**
 	 * The map of values for this sensor.
 	 */
 	private final Map<String, List<TimestampedValue>> values = new HashMap<String, List<TimestampedValue>>();
-	
+
 	/**
 	 * Sensor specific name, as it will appear on Sense. 
 	 * Each sensor implementation should set this field 
 	 */
 	protected static String SENSOR_NAME;
-	
+	protected ServerConnection serverConnection;
+	protected String registeredValuepath;
+	// protected HashMap<String,Object> serverData = new HashMap<String,Object>();
+	protected Callback<Object> cb = new Callback<Object>() {
+		@Override
+		public void success(Object o, Response response) {
+
+		}
+
+		@Override
+		public void failure(RetrofitError error) {
+
+		}
+	};
 	/**
 	 * Timestamp indicating when the last flush occurred
 	 */
@@ -72,6 +101,103 @@ public abstract class AbstractSwanSensor extends AbstractSensorBase{
 		}.start();		
 	}
 
+
+	@Override
+	public void register(String id, String valuePath, Bundle configuration, Bundle httpConfiguration) {
+
+		for(String key : httpConfiguration.keySet()){
+			Object obj = httpConfiguration.get(key);   //later parse it as per your required type
+			Log.e("Roshan","bundle data in register "+obj.toString());
+
+		}
+
+		registeredValuepath = valuePath;
+
+		String server_storage = httpConfiguration.getString("server_storage","BLAH");
+
+		Log.e("Roshan", "Server Storage is " + server_storage);
+		if (server_storage.equals("TRUE")) {
+			Log.e("Roshan","Server Storage is true");
+			serverConnection = new ServerConnection(httpConfiguration);
+		}
+	}
+
+	/**
+	 * Normalize SENSOR_DELAY_ values into regular microseconds
+	 * for backward compatibility
+	 *
+	 * @param delay
+	 *	the delay, either SENSOR_DELAY_* (i.e., 0..4) or number of microseconds
+	 */
+	protected int normalizeSensorDelay(int delay) {
+                if (delay <= SensorManager.SENSOR_DELAY_NORMAL) {
+                        if (delay == SensorManager.SENSOR_DELAY_FASTEST) {
+                                return 0;
+                        } else if (delay == SensorManager.SENSOR_DELAY_GAME) {
+                                return 20000;
+                        } else if (delay == SensorManager.SENSOR_DELAY_UI) {
+                                return 60000;
+                        } else if (delay == SensorManager.SENSOR_DELAY_NORMAL) {
+                                return 200000;
+                        }
+                }
+                return delay;
+        }
+
+        protected int getSensorDelay() {
+                // sensorManager.unregisterListener(sensorEventListener);
+
+                Log.d(TAG, "confs: " + registeredConfigurations.size());
+
+                if (registeredConfigurations.size() > 0) {
+                        // if multiple delays are set, use lowest one:
+                        int lowestDelay = Integer.MAX_VALUE;
+                        for (Bundle configuration : registeredConfigurations.values()) {
+                                if (configuration == null) {
+                                        continue;
+                                }
+                                if (configuration.containsKey(DELAY)) {
+                                        int delay = normalizeSensorDelay(configuration.getInt(DELAY));
+                                        lowestDelay = Math.min(lowestDelay, delay);
+                                        Log.d(TAG, "delay now " + lowestDelay);
+                                }
+                        }
+                        // if no value was set, use the default one
+                        if (lowestDelay == Integer.MAX_VALUE) {
+                                lowestDelay = normalizeSensorDelay(mDefaultConfiguration.getInt(DELAY));
+                                Log.d(TAG, "delay default " + lowestDelay);
+                        }
+                        // sensorManager.registerListener(sensorEventListener, lightSensor,
+                        //                lowestDelay);
+                        // Log.d(TAG, "delay set to " + lowestDelay);
+
+			currentDelay = lowestDelay;
+
+			return lowestDelay;
+                } else {
+			return -1;
+		}
+        }
+
+	protected long acceptSensorReading() {
+		long now = System.currentTimeMillis();
+
+		/* Ignore sensor updates that are too early; use 1050 instead of
+		 * 1000 to avoid missing an update just at the boundary
+		 */
+		if ((now - lastUpdate) >= (currentDelay / 1050)) {
+			Log.d(TAG, "acceptSensorReading: " + (now - lastUpdate) +
+				" usec since last reading; within " + currentDelay + " msec delay");
+			lastUpdate = now;
+			return now;
+		} else {
+			Log.d(TAG, "acceptSensorReading: skip; " +
+				" last reported " + (now - lastUpdate)  +
+                                                " usec ago, delay is " + currentDelay + " usec");
+			return -1;
+		}
+	}
+
 	/**
 	 * Adds a value for the given value path to the history.
 	 * 
@@ -87,8 +213,27 @@ public abstract class AbstractSwanSensor extends AbstractSensorBase{
 	protected final void putValueTrimSize(final String valuePath,
 			final String id, final long now, final Object value /*, final int historySize*/) {
 		updateReadings(now);
-		try {		
-		    getValues().get(valuePath).add(new TimestampedValue(value, now));
+
+		if(registeredValuepath.contains(valuePath)) {
+			if (serverConnection != null) {
+				HashMap<String,Object> serverData = new HashMap<String,Object>();
+
+				Log.e("Roshan", "server connection is not null; set id " +
+					id + "valuePath " + valuePath + " to " + value);
+				serverData.clear();
+				serverData.put("id", id);
+				//serverData.put("channel",valuePath);
+				serverData.put("field1", value);
+				serverData.put("time", now);
+				serverConnection.useHttpMethod(serverData, cb);
+			}
+		} else {
+			Log.e("Roshan", "registeredValuepath does not contain " + valuePath +
+					 "; id " + id + " value " + value);
+		}
+
+		try {
+			getValues().get(valuePath).add(new TimestampedValue(value, now));
 		}
 		catch(OutOfMemoryError e){
 			Log.d(TAG, "OutOfMemoryError");

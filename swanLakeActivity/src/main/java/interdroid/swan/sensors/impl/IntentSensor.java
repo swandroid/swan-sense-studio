@@ -64,13 +64,13 @@ public class IntentSensor extends AbstractSwanSensor {
 
 	@Override
 	public void register(final String id, final String valuePath,
-			final Bundle configuration) {
+			final Bundle configuration, final Bundle httpConfiguration) {
 		configuration.putString("logcat_parameters", "'ActivityManager:I'");
 		try {
 			ExpressionManager.registerValueExpression(this, id + "."
 					+ MAGIC_RELAY, new SensorValueExpression(
 					Expression.LOCATION_SELF, "logcat", "log", configuration,
-					HistoryReductionMode.ANY, 0),
+					HistoryReductionMode.ANY, 0, httpConfiguration),
 					new ValueExpressionListener() {
 
 						@Override

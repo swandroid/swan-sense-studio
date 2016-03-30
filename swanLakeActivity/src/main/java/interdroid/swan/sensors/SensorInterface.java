@@ -30,7 +30,7 @@ public interface SensorInterface {
 	 * @throws IOException
 	 *             if there is a problem with the sensor
 	 */
-	void register(String id, String valuePath, Bundle configuration)
+	void register(String id, String valuePath, Bundle configuration, Bundle httpConfiguration)
 			throws IOException;
 
 	/**

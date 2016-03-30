@@ -33,7 +33,7 @@ public class PressureSensor extends AbstractSwanSensor {
 
 	}
 
-	/** Value of ACCURACY must be one of SensorManager.SENSOR_DELAY_* */
+	/** Value of ACCURACY must be one of SensorManager.SENSOR_STATUS_ACCURACY_* */
 	public static final String ACCURACY = "accuracy";
 
 	public static final String PRESSURE_FIELD = "pressure";
@@ -49,10 +49,12 @@ public class PressureSensor extends AbstractSwanSensor {
 		}
 
 		public void onSensorChanged(SensorEvent event) {
-			long now = System.currentTimeMillis();
 			if (event.sensor.getType() == Sensor.TYPE_PRESSURE) {
-
-				putValueTrimSize(PRESSURE_FIELD, null, now, event.values[0]);
+				long now = acceptSensorReading();
+				if (now >= 0) {
+ 					Log.d(TAG, "onSensorChanged: " + now + " val " + event.values[0]);
+					putValueTrimSize(PRESSURE_FIELD, null, now, event.values[0]);
+				}
 			}
 		}
 	};
@@ -64,59 +66,42 @@ public class PressureSensor extends AbstractSwanSensor {
 
 	@Override
 	public void initDefaultConfiguration(Bundle DEFAULT_CONFIGURATION) {
-		DEFAULT_CONFIGURATION.putInt(ACCURACY,
-				SensorManager.SENSOR_DELAY_NORMAL);
+		DEFAULT_CONFIGURATION.putInt(DELAY, normalizeSensorDelay(SensorManager.SENSOR_DELAY_NORMAL));
+		DEFAULT_CONFIGURATION.putInt(ACCURACY, SensorManager.SENSOR_STATUS_ACCURACY_HIGH);
 	}
-
 
 	@Override
 	public void onConnected() {
 		SENSOR_NAME = "Pressure Sensor";
 		sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-		List<Sensor> sensorList = sensorManager
-				.getSensorList(Sensor.TYPE_PRESSURE);
+		List<Sensor> sensorList = sensorManager.getSensorList(Sensor.TYPE_PRESSURE);
 		if (sensorList.size() > 0) {
 			pressureSensor = sensorList.get(0);
 		} else {
-			Toast.makeText(getApplicationContext(),
-					"No pressureSensor found on device!", Toast.LENGTH_SHORT)
-					.show();
+			Toast.makeText(getApplicationContext(), "No pressureSensor found on device!", Toast.LENGTH_SHORT).show();
 			Log.e(TAG, "No pressureSensor found on device!");
 		}
 	}
 
 	@Override
-	public final void register(String id, String valuePath, Bundle configuration) {
-		updateAccuracy();
+	public final void register(String id, String valuePath, Bundle configuration, final Bundle httpConfiguration) {
+		super.register(id, valuePath, configuration, httpConfiguration);
+		updateDelay();
 	}
 
-	private void updateAccuracy() {
+	private void updateDelay() {
 		sensorManager.unregisterListener(sensorEventListener);
-		if (registeredConfigurations.size() > 0) {
-
-			int highestAccuracy = mDefaultConfiguration.getInt(ACCURACY);
-			for (Bundle configuration : registeredConfigurations.values()) {
-				if (configuration == null) {
-					continue;
-				}
-				if (configuration.containsKey(ACCURACY)) {
-					highestAccuracy = Math
-							.min(highestAccuracy,
-									Integer.parseInt(configuration
-											.getString(ACCURACY)));
-				}
-			}
-			highestAccuracy = Math.max(highestAccuracy,
-					SensorManager.SENSOR_DELAY_FASTEST);
-			sensorManager.registerListener(sensorEventListener, pressureSensor,
-					highestAccuracy);
+		int delay = getSensorDelay();
+		if (delay >= 0) {
+			sensorManager.registerListener(sensorEventListener, pressureSensor, delay);
+			Log.d(TAG, "delay set to " + delay);
 		}
 
 	}
 
 	@Override
 	public final void unregister(String id) {
-		updateAccuracy();
+		updateDelay();
 	}
 
 	@Override

@@ -11,4 +11,14 @@
             android:title="Value Path" />
     </PreferenceCategory>
 
+    <PreferenceCategory android:title="Configuration" >
+        <EditTextPreference
+            android:title="Sample Interval"
+            android:key="delay"
+            android:dialogTitle="Enter Sample Interval (microseconds)"
+            android:summary="Set Sample Interval"
+            android:defaultValue="200000"
+            android:inputType="number" />
+    </PreferenceCategory>
+
 </PreferenceScreen>
