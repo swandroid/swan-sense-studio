@@ -6,6 +6,7 @@ import interdroid.swan.SensorInfo;
 import interdroid.swan.SwanException;
 import interdroid.swan.crossdevice.Pusher;
 import interdroid.swan.crossdevice.Registry;
+import interdroid.swan.crossdevice.swanplus.ProximityManagerI;
 import interdroid.swan.sensors.Sensor;
 import interdroid.swan.sensors.TimeSensor;
 import interdroid.swan.swansong.BinaryLogicOperator;
@@ -62,8 +63,12 @@ public class EvaluationManager {
 
 	private final Map<String, Result> mCachedResults = new HashMap<String, Result>();
 
-	public EvaluationManager(Context context) {
+	/** proximity manager for connecting to nearby devices */
+	ProximityManagerI mProximityManager;
+
+	public EvaluationManager(Context context, ProximityManagerI proximityManager) {
 		mContext = context;
+		this.mProximityManager = proximityManager;
 	}
 
 	public void newRemoteResult(String id, Result result) {
@@ -237,34 +242,50 @@ public class EvaluationManager {
 
 	private void initializeRemote(String id, Expression expression,
 			String resolvedLocation) throws SensorSetupFailedException {
-		// send a push message with 'register' instead of 'initialize',
-		// disadvantage is that we will only later on get exceptions
-		String fromRegistrationId = Registry.get(mContext,
-				Expression.LOCATION_SELF);
-		if (fromRegistrationId == null) {
-			throw new SensorSetupFailedException(
-					"Device not registered with Google Cloud Messaging, unable to use remote sensors.");
+		if(resolvedLocation.equals(Expression.LOCATION_NEARBY)) {
+			// get sensor info from nearby devices
+			mProximityManager.registerExpression(id, toCrossDeviceString(expression, resolvedLocation),
+					resolvedLocation, EvaluationEngineService.ACTION_REGISTER_REMOTE);
+		} else if(mProximityManager.hasPeer(resolvedLocation)) {
+			// temporary solution
+			mProximityManager.send(resolvedLocation, id, EvaluationEngineService.ACTION_REGISTER_REMOTE,
+					toCrossDeviceString(expression, resolvedLocation));
+		} else {
+			// send a push message with 'register' instead of 'initialize',
+			// disadvantage is that we will only later on get exceptions
+			String fromRegistrationId = Registry.get(mContext,
+					Expression.LOCATION_SELF);
+			if (fromRegistrationId == null) {
+				throw new SensorSetupFailedException(
+						"Device not registered with Google Cloud Messaging, unable to use remote sensors.");
+			}
+			String toRegistrationId = Registry.get(mContext, resolvedLocation);
+			if (toRegistrationId == null) {
+				throw new SensorSetupFailedException(
+						"No registration id known for location: "
+								+ resolvedLocation);
+			}
+			// resolve all remote locations in the expression with respect to the
+			// new location.
+			Pusher.push(fromRegistrationId, toRegistrationId, id,
+					EvaluationEngineService.ACTION_REGISTER_REMOTE,
+					toCrossDeviceString(expression, toRegistrationId));
+			// expression.toCrossDeviceString(mContext,
+			// expression.getLocation()));
 		}
-		String toRegistrationId = Registry.get(mContext, resolvedLocation);
-		if (toRegistrationId == null) {
-			throw new SensorSetupFailedException(
-					"No registration id known for location: "
-							+ resolvedLocation);
-		}
-		// resolve all remote locations in the expression with respect to the
-		// new location.
-		Pusher.push(fromRegistrationId, toRegistrationId, id,
-				EvaluationEngineService.ACTION_REGISTER_REMOTE,
-				toCrossDeviceString(expression, toRegistrationId));
-		// expression.toCrossDeviceString(mContext,
-		// expression.getLocation()));
-
 	}
 
 	private String toCrossDeviceString(Expression expression,
 			String toRegistrationId) {
-		String registrationId = Registry
-				.get(mContext, expression.getLocation());
+		String registrationId = Registry.get(mContext, expression.getLocation());
+
+		// we check if we have a wildcard as location or if the remote device is in proximity
+		if(registrationId == null) {
+			if(mProximityManager.hasPeer(toRegistrationId) || toRegistrationId.equals(Expression.LOCATION_NEARBY)) {
+				registrationId = toRegistrationId;
+			}
+		}
+
 		if (expression instanceof SensorValueExpression) {
 			String result = ((registrationId.equals(toRegistrationId)) ? Expression.LOCATION_SELF
 					: registrationId)
@@ -335,21 +356,42 @@ public class EvaluationManager {
 		throw new RuntimeException("Unknown expression type: " + expression);
 	}
 
+	// send a push message with 'unregister'
 	private void stopRemote(String id, Expression expression) {
-		// send a push message with 'unregister'
-		String toRegistrationId = Registry.get(mContext,
-				expression.getLocation());
-		if (toRegistrationId == null) {
-			// this should not happen, kill swan
-			throw new RuntimeException(
-					"No registration id known for location: "
-							+ expression.getLocation());
+		String resolvedLocation = expression.getLocation();
+
+		if(resolvedLocation.equals(Expression.LOCATION_NEARBY)) {
+			// get sensor info from nearby devices
+			mProximityManager.registerExpression(id, toCrossDeviceString(expression, resolvedLocation),
+					resolvedLocation, EvaluationEngineService.ACTION_UNREGISTER_REMOTE);
+		} else if(mProximityManager.hasPeer(resolvedLocation)) {
+			// temporary solution
+			mProximityManager.send(resolvedLocation, id, EvaluationEngineService.ACTION_UNREGISTER_REMOTE,
+					toCrossDeviceString(expression, resolvedLocation));
+		} else {
+			// for some reason this was set to null in the original version of swan, which made it impossible
+			// to unregister remotely
+			String fromRegistrationId = Registry.get(mContext,
+					Expression.LOCATION_SELF);
+			if (fromRegistrationId == null) {
+				throw new RuntimeException(
+						"Device not registered with Google Cloud Messaging, unable to use remote sensors.");
+			}
+
+			String toRegistrationId = Registry.get(mContext,
+					expression.getLocation());
+			if (toRegistrationId == null) {
+				// this should not happen, kill swan
+				throw new RuntimeException(
+						"No registration id known for location: "
+								+ expression.getLocation());
+			}
+			// resolve all remote locations in the expression with respect to the
+			// new location.
+			Pusher.push(fromRegistrationId, toRegistrationId, id,
+					EvaluationEngineService.ACTION_UNREGISTER_REMOTE,
+					toCrossDeviceString(expression, toRegistrationId));
 		}
-		// resolve all remote locations in the expression with respect to the
-		// new location.
-		Pusher.push(null, toRegistrationId, id,
-				EvaluationEngineService.ACTION_UNREGISTER_REMOTE,
-				toCrossDeviceString(expression, toRegistrationId));
 	}
 
 	private boolean bindToSensor(final String id,
@@ -432,7 +474,7 @@ public class EvaluationManager {
 						+ ", this should not happen!", e);
 			}
 		} else {
-			Log.d(TAG, "Cannot unregister for id: " + id
+			Log.e(TAG, "Cannot unregister for id: " + id
 					+ ", sensor is null, this should not happen!");
 		}
 		if (conn != null) {
@@ -723,6 +765,7 @@ public class EvaluationManager {
 				// TODO make this a constant (configurable?)
 				result.setDeferUntil(now + 1000);
 				result.setDeferUntilGuaranteed(false);
+				Log.d(TAG, "Deferred until: " + (now + 1000));
 				return result;
 			}
 
@@ -737,6 +780,7 @@ public class EvaluationManager {
 				// when they arrive
 				result.setDeferUntil(Long.MAX_VALUE);
 				result.setDeferUntilGuaranteed(false);
+				Log.d(TAG, "Cannot defer based on values");
 			} else {
 				result.setDeferUntil(values.get(values.size() - 1)
 						.getTimestamp() + expression.getHistoryLength());

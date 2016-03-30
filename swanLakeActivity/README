@@ -1,0 +1,20 @@
+
+* Tool for generating your own sensors --> interdroid/interdroid-swan-tools (GitHub)
+
+* Steps to create a custom sensor:
+    1. change AndroidManifest.xml accordingly (look for rainsensor to see how it's done); don't forget to add the corresponding service
+    2. add the valuepaths in res/values/arrays.xml
+    3. add sensor preferences in res/xml/[sensorname]_preferences.xml
+    4. create sensor class in interdroid/swan/sensors/impl/[sensorname].java that extends AbstractSwanSensor
+
+* Which classes/methods do what:
+
+    EvaluationManager.bindToSensor() --> binds to a sensor when registering an expression
+    EvaluationManager.initializeRemote() --> send expression registration request to remote device
+
+* Compile sources into jar:
+
+    jar -cf [swan.jar] [classes_dir]
+
+!!! When creating a service, don't forget to add it to Manifest !!!
+

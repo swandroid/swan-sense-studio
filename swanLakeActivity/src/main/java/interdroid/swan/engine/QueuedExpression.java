@@ -38,7 +38,12 @@ public class QueuedExpression implements Comparable<QueuedExpression> {
 	}
 
 	public int compareTo(QueuedExpression another) {
-		return mCurrentResult.compareTo(another.mCurrentResult);
+		// mCurrentResult can be null if, for example, a NEARBY expression is registered,
+		// but there are no deviced nearby
+		if(mCurrentResult == null) {
+			return -1;
+		}
+ 		return mCurrentResult.compareTo(another.mCurrentResult);
 	};
 
 	public Expression getExpression() {
@@ -91,6 +96,15 @@ public class QueuedExpression implements Comparable<QueuedExpression> {
 		} else {
 			// we don't have a current result yet, so we can't defer
 			return 0;
+		}
+	}
+
+	/**
+	 * added as patch by Vladimir to get distributed sensing working (see where it's called)
+	 */
+	public void setDeferUntil(long deferUntil) {
+		if(mCurrentResult != null) {
+			mCurrentResult.setDeferUntil(deferUntil);
 		}
 	}
 

@@ -9,6 +9,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_share">Share</string>
     <string name="action_delete">Delete</string>
+    <string name="action_save">Save</string>
     <string name="action_set_name">Set Name</string>
     <string name="action_enable">Enable</string>
     <string name="action_refresh">Refresh</string>
@@ -45,4 +46,7 @@
     <string name="sense_logout">Logout from Sense</string>
     <string name="sense_signup">Sign up to Sense</string>
     <string name="sense_settings">Sense Settings</string>
+
+    <!-- tmp stuff -->
+    <string name="title_activity_nearby_runners">NearbyRunnersActivity</string>
 </resources>

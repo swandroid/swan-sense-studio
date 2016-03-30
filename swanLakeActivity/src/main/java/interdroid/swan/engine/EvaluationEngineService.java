@@ -1,22 +1,5 @@
 package interdroid.swan.engine;
 
-import interdroid.swan.ExpressionManager;
-import interdroid.swan.R;
-import interdroid.swan.SensorConfigurationException;
-import interdroid.swan.SwanException;
-import interdroid.swan.crossdevice.Converter;
-import interdroid.swan.crossdevice.Pusher;
-import interdroid.swan.sensors.SensorInterface;
-import interdroid.swan.swansong.Expression;
-import interdroid.swan.swansong.ExpressionFactory;
-import interdroid.swan.swansong.Result;
-import interdroid.swan.swansong.ValueExpression;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.PriorityQueue;
-
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -31,6 +14,25 @@ import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.PriorityQueue;
+
+import interdroid.swan.ExpressionManager;
+import interdroid.swan.R;
+import interdroid.swan.SensorConfigurationException;
+import interdroid.swan.SwanException;
+import interdroid.swan.crossdevice.Converter;
+import interdroid.swan.crossdevice.Pusher;
+import interdroid.swan.crossdevice.swanplus.ProximityManagerI;
+import interdroid.swan.crossdevice.swanplus.bluetooth.BTManager;
+import interdroid.swan.sensors.SensorInterface;
+import interdroid.swan.swansong.Expression;
+import interdroid.swan.swansong.ExpressionFactory;
+import interdroid.swan.swansong.Result;
+import interdroid.swan.swansong.ValueExpression;
 
 public class EvaluationEngineService extends Service {
 
@@ -91,7 +93,9 @@ public class EvaluationEngineService extends Service {
 						}
 					}
 				} else {
-					long deferUntil = head.getDeferUntil();
+ 					long deferUntil = head.getDeferUntil();
+					Log.d(TAG, "Defer until: " + deferUntil);
+
 					if (deferUntil <= System.currentTimeMillis()) {
 						// evaluate now
 						try {
@@ -128,7 +132,7 @@ public class EvaluationEngineService extends Service {
 							head.evaluated((end - start), evaluationDelay);
 
 							if (head.update(result)) {
-								Log.d(TAG, "Result: " + result);
+								Log.d(TAG, "Result updated: " + result);
 								sendUpdate(head, result);
 							}
 							// re add the expression to the queue
@@ -148,6 +152,7 @@ public class EvaluationEngineService extends Service {
 												- System.currentTimeMillis());
 								// Log.d(TAG, "Waiting for " + waitTime +
 								// " ms.");
+								Log.d(TAG, "Putting evaluation thread on wait for " + waitTime);
 								mEvaluationThread.wait(waitTime);
 								// Log.d(TAG, "Done waiting for " + waitTime
 								// + " ms.");
@@ -164,6 +169,7 @@ public class EvaluationEngineService extends Service {
 	NotificationManager mNotificationManager;
 	Notification mNotification;
 	EvaluationManager mEvaluationManager;
+	ProximityManagerI mProximityManager; //TODO consider moving this to EvaluationManager class
 
 	/**
 	 * @return all expressions saved in the database.
@@ -375,7 +381,7 @@ public class EvaluationEngineService extends Service {
 				throw new RuntimeException("Should not happen. Please debug!");
 			}
 			mEvaluationManager.newRemoteResult(id, result);
-			doNotify(new String[] { id });
+			doNotify(new String[]{id});
 			return START_STICKY;
 		} else if (SensorInterface.ACTION_NOTIFY.equals(action)) {
 			String[] ids = intent.getStringArrayExtra("expressionIds");
@@ -466,6 +472,7 @@ public class EvaluationEngineService extends Service {
 			Log.d(TAG, "Got spurious unregister for id: " + id);
 			return;
 		}
+		Log.d(TAG, "unregistering id: " + id + ", expression: " + expression);
 		// first stop evaluating
 		synchronized (mEvaluationThread) {
 			mRegisteredExpressions.remove(id);
@@ -503,7 +510,16 @@ public class EvaluationEngineService extends Service {
 					// get it out the queue, update defer until, and put it
 					// back, then notify the evaluation thread.
 					mEvaluationQueue.remove(queued);
-					mEvaluationManager.clearCacheFor(id);
+
+					// the line below will set deferUntil to 0 for the new result that just came
+					// from a remote device, not for the queued, which prevents the evaluation engine
+					// to handle the new result properly in the evaluation thread
+//					mEvaluationManager.clearCacheFor(id);
+
+					// added this as patch; might not work for all cases, as clearCacheFor() does some
+					// extra stuff in addition to setting deferUntil to 0
+					queued.setDeferUntil(0);
+
 					mEvaluationQueue.add(queued);
 					mEvaluationThread.notifyAll();
 				}
@@ -520,8 +536,11 @@ public class EvaluationEngineService extends Service {
 	@Override
 	public final void onCreate() {
 		super.onCreate();
+		// initialize the proximity manager
+		mProximityManager = new BTManager(this);
+		mProximityManager.init();
 		// construct the sensor manager
-		mEvaluationManager = new EvaluationManager(this);
+		mEvaluationManager = new EvaluationManager(this, mProximityManager);
 		// kick off the evaluation thread
 		mEvaluationThread.start();
 		// init the notification stuff
@@ -530,6 +549,7 @@ public class EvaluationEngineService extends Service {
 
 	@Override
 	public void onDestroy() {
+		mProximityManager.clean();
 		mEvaluationManager.destroyAll();
 		mEvaluationThread.interrupt();
 		super.onDestroy();
@@ -611,8 +631,13 @@ public class EvaluationEngineService extends Service {
 			final String expressionId, final Result result) {
 		// pusher is async
 		try {
-			Pusher.push(registrationId, expressionId, ACTION_NEW_RESULT_REMOTE,
-					Converter.objectToString(result));
+			if(mProximityManager.hasPeer(registrationId)) {
+				mProximityManager.send(registrationId, expressionId, ACTION_NEW_RESULT_REMOTE,
+						Converter.objectToString(result));
+			} else {
+				Pusher.push(registrationId, expressionId, ACTION_NEW_RESULT_REMOTE,
+						Converter.objectToString(result));
+			}
 		} catch (IOException e) {
 			Log.d(TAG, "Exception in converting result to string", e);
 		}

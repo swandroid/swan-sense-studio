@@ -255,6 +255,11 @@
         <item>expected_mm</item>
     </string-array>
 
+    <!-- fitness sensor -->
+    <string-array name="fitness_valuepaths">
+        <item>avg_speed</item>
+    </string-array>
+
     <!-- screen sensor -->
     <string-array name="screen_valuepaths">
         <item>is_screen_on</item>
@@ -309,6 +314,20 @@
         <item>x</item>
         <item>y</item>
         <item>z</item>
+    <string-array name="run_levels_array">
+        <item>Beginner</item>
+        <item>Intermediate</item>
+        <item>Advanced</item>
+    </string-array>
+
+    <string-array name="run_styles_array">
+        <item>Recovery</item>
+        <item>Base run</item>
+        <item>Long run</item>
+        <item>Progression</item>
+        <item>Hill repeats</item>
+        <item>Tempo run</item>
+        <item>Intervals</item>
     </string-array>
 
 </resources>
