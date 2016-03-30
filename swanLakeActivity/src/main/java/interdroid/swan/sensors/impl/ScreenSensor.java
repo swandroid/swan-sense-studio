@@ -73,7 +73,8 @@ public class ScreenSensor extends AbstractSwanSensor {
 
 	@Override
 	public final void register(final String id, final String valuePath,
-			final Bundle configuration) {
+			final Bundle configuration, final Bundle httpConfiguration) {
+		super.register(id,valuePath,configuration,httpConfiguration);
 		if (registeredConfigurations.size() == 1) {
 			PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
 			putValueTrimSize(IS_SCREEN_ON_FIELD, null, System.currentTimeMillis(), pm.isScreenOn());

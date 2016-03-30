@@ -155,7 +155,10 @@ public class LocationSensor extends AbstractSwanSensor {
 
 	@Override
 	public final void register(final String id, final String valuePath,
-			final Bundle configuration) {
+			final Bundle configuration, final Bundle httpConfiguration) {
+
+		super.register(id,valuePath,configuration,httpConfiguration);
+
 		if (registeredConfigurations.size() == 1) {
 			updateListener();
 		}

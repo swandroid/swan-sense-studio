@@ -252,7 +252,8 @@ public class SmartLocationSensor extends AbstractSwanSensor {
 
 	@Override
 	public final void register(final String id, final String valuePath,
-			final Bundle configuration) {
+			final Bundle configuration, final Bundle httpConfiguration) {
+		super.register(id,valuePath,configuration,httpConfiguration);
 		if (valuePath.equals(WITHIN)) {
 			mWithinLatitudes.add(Double.valueOf(configuration
 					.getDouble(LATITUDE)));

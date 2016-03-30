@@ -9,13 +9,15 @@
             android:summary="Select a Value Path"
             android:title="Value Path" />
     </PreferenceCategory>
+
     <PreferenceCategory android:title="Configuration" >
-        <ListPreference
-            android:entries="@array/accuracy"
-            android:entryValues="@array/accuracy_values"
-            android:key="accuracy"
-            android:summary="Select accuracy"
-            android:title="Accuracy" />
+        <EditTextPreference
+            android:title="Sample Interval"
+            android:key="delay"
+            android:dialogTitle="Enter Sample Interval (microseconds)"
+            android:summary="Set Sample Interval"
+            android:defaultValue="200000"
+            android:inputType="number" />
     </PreferenceCategory>
 
 </PreferenceScreen>

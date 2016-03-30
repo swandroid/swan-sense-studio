@@ -384,7 +384,7 @@ public class EvaluationManager {
 								try {
 									sensor.register(id,
 											expression.getValuePath(),
-											expression.getConfiguration());
+											expression.getConfiguration(), expression.getHttConfiguration());
 								} catch (RemoteException e) {
 									Log.e(TAG, "Registration failed!", e);
 								}

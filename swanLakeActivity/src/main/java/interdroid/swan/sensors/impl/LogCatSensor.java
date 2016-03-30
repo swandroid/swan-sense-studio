@@ -58,7 +58,8 @@ public class LogCatSensor extends AbstractSwanSensor {
 	}
 
 	@Override
-	public final void register(String id, String valuePath, Bundle configuration) {
+	public final void register(String id, String valuePath, Bundle configuration, final Bundle httpConfiguration) {
+		super.register(id,valuePath,configuration,httpConfiguration);
 		Log.d(TAG, "Logcat got registration for: " + id + ", conf: "
 				+ configuration.getString(LOGCAT_PARAMETERS));
 		LogcatPoller logcatPoller = new LogcatPoller(id, valuePath,

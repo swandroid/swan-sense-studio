@@ -74,7 +74,44 @@
         <item>MEDIAN</item>
     </string-array>
 
-    <!-- battery sensor -->
+    <string-array name="server_storage">
+        <item>FALSE</item>
+        <item>TRUE</item>
+    </string-array>
+
+    <string-array name="http_body_type">
+        <item>null</item>
+        <item>formdata</item>
+        <item>application/json</item>
+    </string-array>
+
+
+    <string-array name="http_method">
+        <item>GET</item>
+        <item>POST</item>
+        <item>PUT</item>
+        <item>DELETE</item>
+        <item>COPY</item>
+    </string-array>
+
+    <string-array name="http_authorization">
+        <item>NoAuth</item>
+        <item>BasicAuth</item>
+        <item>DigestAuth</item>
+        <item>0Auth1.0</item>
+        <item>0Auth2.0</item>
+    </string-array>
+
+    <string-array name="http_header">
+        <item>No Auth</item>
+        <item>Basic Auth</item>
+        <item>Digest Auth</item>
+        <item>0Auth 1.0</item>
+        <item>0Auth 2.0</item>
+    </string-array>
+
+
+   <!-- battery sensor -->
     <string-array name="battery_valuepaths">
         <item>level</item>
         <item>voltage</item>
@@ -253,6 +290,16 @@
     <!-- rain sensor -->
     <string-array name="rain_valuepaths">
         <item>expected_mm</item>
+    </string-array>
+
+
+    <string-array name="ov_valuepaths">
+        <item>line</item>
+        <item>stopareacode</item>
+    </string-array>
+
+    <string-array name="server_valuepaths">
+        <item>url</item>
     </string-array>
 
     <!-- screen sensor -->

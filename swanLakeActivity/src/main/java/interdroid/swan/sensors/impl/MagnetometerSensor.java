@@ -13,6 +13,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 public class MagnetometerSensor extends AbstractSwanSensor {
 	public static final String TAG = "MagnetometerSensor";
@@ -32,7 +33,7 @@ public class MagnetometerSensor extends AbstractSwanSensor {
 
 	}
 
-	/** Value of ACCURACY must be one of SensorManager.SENSOR_DELAY_* */
+	/** Value of ACCURACY must be one of SensorManager.SENSOR_STATUS_ACCURACY_* */
 	public static final String ACCURACY = "accuracy";
 
 	public static final String X_FIELD = "x";
@@ -51,16 +52,20 @@ public class MagnetometerSensor extends AbstractSwanSensor {
 		}
 
 		public void onSensorChanged(SensorEvent event) {
-			long now = System.currentTimeMillis();
 			if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
-				for (int i = 0; i < 3; i++) {
-					putValueTrimSize(VALUE_PATHS[i], null, now,
+				long now = acceptSensorReading();
+				if (now >= 0) {
+					Log.d(TAG, "onSensorChanged: " + now + " val x " + event.values[0] +
+						" y " + event.values[1] + " z " + event.values[2]);
+					for (int i = 0; i < 3; i++) {
+						putValueTrimSize(VALUE_PATHS[i], null, now,
 							event.values[i]);
-				}
-				float total = (float) Math.sqrt(event.values[0]
+					}
+					float total = (float) Math.sqrt(event.values[0]
 						* event.values[0] + event.values[1] * event.values[1]
 						+ event.values[2] * event.values[2]);
-				putValueTrimSize(TOTAL_FIELD, null, now, total);
+					putValueTrimSize(TOTAL_FIELD, null, now, total);
+				} 
 			}
 		}
 	};
@@ -72,8 +77,8 @@ public class MagnetometerSensor extends AbstractSwanSensor {
 
 	@Override
 	public void initDefaultConfiguration(Bundle DEFAULT_CONFIGURATION) {
-		DEFAULT_CONFIGURATION.putInt(ACCURACY,
-				SensorManager.SENSOR_DELAY_NORMAL);
+		DEFAULT_CONFIGURATION.putInt(DELAY, normalizeSensorDelay(SensorManager.SENSOR_DELAY_NORMAL));
+		DEFAULT_CONFIGURATION.putInt(ACCURACY, SensorManager.SENSOR_STATUS_ACCURACY_HIGH);
 	}
 
 
@@ -81,47 +86,35 @@ public class MagnetometerSensor extends AbstractSwanSensor {
 	public void onConnected() {
 		SENSOR_NAME = "Magnetometer Sensor";
 		sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-		List<Sensor> sensorList = sensorManager
-				.getSensorList(Sensor.TYPE_MAGNETIC_FIELD);
+		List<Sensor> sensorList = sensorManager.getSensorList(Sensor.TYPE_MAGNETIC_FIELD);
 		if (sensorList.size() > 0) {
 			magnetometer = sensorList.get(0);
 		} else {
+			Toast.makeText(getApplicationContext(), "No magnetometer found on device", Toast.LENGTH_SHORT).show();
 			Log.e(TAG, "No magnetometer found on device!");
 		}
 	}
 
 	@Override
-	public final void register(String id, String valuePath, Bundle configuration) {
-		updateAccuracy();
+	public final void register(String id, String valuePath, Bundle configuration, final Bundle httpConfiguration) {
+		super.register(id, valuePath, configuration, httpConfiguration);
+		updateDelay();
 	}
 
-	private void updateAccuracy() {
+	private void updateDelay() {
 		sensorManager.unregisterListener(sensorEventListener);
-		if (registeredConfigurations.size() > 0) {
 
-			int highestAccuracy = mDefaultConfiguration.getInt(ACCURACY);
-			for (Bundle configuration : registeredConfigurations.values()) {
-				if (configuration == null) {
-					continue;
-				}
-				if (configuration.containsKey(ACCURACY)) {
-					highestAccuracy = Math
-							.min(highestAccuracy,
-									Integer.parseInt(configuration
-											.getString(ACCURACY)));
-				}
-			}
-			highestAccuracy = Math.max(highestAccuracy,
-					SensorManager.SENSOR_DELAY_FASTEST);
-			sensorManager.registerListener(sensorEventListener, magnetometer,
-					highestAccuracy);
+		int delay = getSensorDelay();
+		if (delay >= 0) {
+			sensorManager.registerListener(sensorEventListener, magnetometer, delay);
+			Log.d(TAG, "delay set to " + delay);
 		}
 
 	}
 
 	@Override
 	public final void unregister(String id) {
-		updateAccuracy();
+		updateDelay();
 	}
 
 	@Override

@@ -289,6 +289,9 @@
                 android:name="accuracy"
                 android:value="3" />
             <meta-data
+                android:name="delay"
+                android:value="200000" />
+            <meta-data
                 android:name="units"
                 android:value="Degrees,Degrees,Degrees" />
         </activity>
@@ -309,6 +312,9 @@
             <meta-data
                 android:name="accuracy"
                 android:value="3" />
+            <meta-data
+                android:name="delay"
+                android:value="200000" />
             <meta-data
                 android:name="units"
                 android:value="lux" />
@@ -331,6 +337,9 @@
                 android:name="accuracy"
                 android:value="3" />
             <meta-data
+                android:name="delay"
+                android:value="200000" />
+            <meta-data
                 android:name="units"
                 android:value="Gi,Gi,Gi,Gi" />
         </activity>
@@ -351,6 +360,9 @@
             <meta-data
                 android:name="accuracy"
                 android:value="3" />
+            <meta-data
+                android:name="delay"
+                android:value="200000" />
             <meta-data
                 android:name="units"
                 android:value="Millibar" />
@@ -373,6 +385,9 @@
                 android:name="accuracy"
                 android:value="3" />
             <meta-data
+                android:name="delay"
+                android:value="200000" />
+            <meta-data
                 android:name="units"
                 android:value="cm" />
         </activity>
@@ -393,6 +408,9 @@
             <meta-data
                 android:name="accuracy"
                 android:value="3" />
+            <meta-data
+                android:name="delay"
+                android:value="200000" />
             <meta-data
                 android:name="units"
                 android:value="C" />
@@ -603,6 +621,9 @@
                 android:name="accuracy"
                 android:value="3" />
             <meta-data
+                android:name="delay"
+                android:value="200000" />
+            <meta-data
                 android:name="units"
                 android:value="m/s2,m/s2,m/s2,m/s2" />
         </activity>
@@ -628,6 +649,58 @@
                	<meta-data
                 android:name="units"
                 android:value="mm/Hr" />               
+        </activity>
+        <activity
+            android:name="interdroid.swan.sensors.impl.OVSensor$ConfigurationActivity"
+            android:exported="true"
+            android:icon="@drawable/ov_icon">
+            <intent-filter>
+                <action android:name="interdroid.swan.sensor.DISCOVER" />
+            </intent-filter>
+            <meta-data
+                android:name="entityId"
+                android:value="ov" />
+            <meta-data
+                android:name="valuePaths"
+                android:value="line,stopareacode" />
+            <meta-data
+                android:name="value"
+                android:value="null" />
+            <meta-data
+                android:name="sample_interval"
+                android:value="10000" />
+            <meta-data
+                android:name="units"
+                android:value="" />
+        </activity>
+        <activity
+            android:name="interdroid.swan.sensors.impl.ServerSensor$ConfigurationActivity"
+            android:exported="true"
+            android:icon="@drawable/ov_icon">
+            <intent-filter>
+                <action android:name="interdroid.swan.sensor.DISCOVER" />
+            </intent-filter>
+            <meta-data
+                android:name="entityId"
+                android:value="server" />
+            <meta-data
+                android:name="valuePaths"
+                android:value="url" />
+            <meta-data
+                android:name="url"
+                android:value="http://fs0.das5.cs.vu.nl:3000/update" />
+            <meta-data
+                android:name="sensor"
+                android:value="null" />
+            <meta-data
+                android:name="type"
+                android:value="POST" />
+            <meta-data
+                android:name="api_key"
+                android:value="null" />
+            <meta-data
+                android:name="units"
+                android:value="" />
         </activity>
         <activity
             android:name="interdroid.swan.sensors.impl.ScreenSensor$ConfigurationActivity"
@@ -782,6 +855,9 @@
                 android:name="valuePaths"
                 android:value="is_step_detected" />
             <meta-data
+                android:name="delay"
+                android:value="200000" />
+            <meta-data
                 android:name="authority"
                 android:value="interdroid.context.sensor.step_detector" />
             <meta-data
@@ -809,6 +885,9 @@
             <meta-data
                 android:name="valuePaths"
                 android:value="step_counter" />
+            <meta-data
+                android:name="delay"
+                android:value="200000" />
             <meta-data
                 android:name="authority"
                 android:value="interdroid.context.sensor.step_counter" />
@@ -962,7 +1041,17 @@
             android:exported="true"
             android:process=":rainsensor" >
         </service>
-        
+        <service
+            android:name="interdroid.swan.sensors.impl.OVSensor"
+            android:exported="true"
+            android:process=":ovsensor" >
+        </service>
+        <service
+            android:name="interdroid.swan.sensors.impl.ServerSensor"
+            android:exported="true"
+            android:process=":serversensor" >
+        </service>
+
       <!--   <provider
             android:name="interdroid.swan.sensors.impl.WifiSensor$Provider"
             android:authorities="interdroid.context.sensor.wifi" /> -->

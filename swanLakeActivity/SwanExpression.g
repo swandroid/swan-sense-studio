@@ -57,8 +57,10 @@ http_configuration_options returns [Bundle http_configuration]
 	:	
 	(hid=ID hval=CONFIG_VAL) 
 		{http_config.putString($hid.getText(), $hval.getText().substring(1));}
-	(CONFIG_TILT more_hid=ID more_hval=CONFIG_VAL)*
-		{http_config.putString($more_hid.getText(), $more_hval.getText().substring(1));}
+	(CONFIG_TILT more_hid=ID more_hval=CONFIG_VAL
+		{System.out.println($more_hval.getText().substring(1));
+		http_config.putString($more_hid.getText(), $more_hval.getText().substring(1));}
+	)*	
 		{$http_configuration = http_config;}
 	;
 
@@ -430,7 +432,7 @@ CONFIG_VAL
             /* String uses setText which drops the '='. Put it back so it is the same as the other branch. */ 
             setText("=" + getText());
             }
-        | ('a'..'z'|'A'..'Z'|'0'..'9'|'.'|'/'|':'|'='|'&')*)
+        | ('a'..'z'|'A'..'Z'|'0'..'9'|'.'|'/'|':'|'='|'&'|'_'|'"')*)
     ;
 
 
