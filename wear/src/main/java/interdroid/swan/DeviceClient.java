@@ -19,7 +19,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class DeviceClient {
-    private static final String TAG = "SensorDashboard/DeviceClient";
+    private static final String TAG = "Wear/DeviceClient";
     private static final int CLIENT_CONNECTION_TIMEOUT = 15000;
 
     public static DeviceClient instance;
