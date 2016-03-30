@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "interdroid.swan"
-        minSdkVersion 12
+        minSdkVersion 16
         targetSdkVersion 23
         multiDexEnabled true
     }

@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<<<<<<< HEAD
 <module external.linked.project.id=":swanLakeActivity" external.linked.project.path="$MODULE_DIR$" external.root.project.path="$MODULE_DIR$/.." external.system.id="GRADLE" external.system.module.group="swanplus" external.system.module.version="unspecified" type="JAVA_MODULE" version="4">
+=======
+<module external.linked.project.id=":swanLakeActivity" external.linked.project.path="$MODULE_DIR$" external.root.project.path="$MODULE_DIR$/.." external.system.id="GRADLE" external.system.module.group="swan-sense-studio" external.system.module.version="unspecified" type="JAVA_MODULE" version="4">
+>>>>>>> swanplus
   <component name="FacetManager">
     <facet type="android-gradle" name="Android-Gradle">
       <configuration>
@@ -65,6 +69,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/androidTest/jni" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/androidTest/rs" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/assets" />
+<<<<<<< HEAD
 <<<<<<< a1b9f301702027c386e5de9f16e6f8eea5b83a91
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/blame" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/classes" />
@@ -72,12 +77,17 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/classes" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/debug" />
 >>>>>>> halfway with WD implementation
+=======
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/classes" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/debug" />
+>>>>>>> swanplus
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/dependency-cache" />
 <<<<<<< 92ce66b8a03d9903a26a161ba42174a072da4d93
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/multidex-instrumentation/1.0.1/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/multidex/1.0.1/jars" />
 =======
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/dex" />
+<<<<<<< HEAD
 <<<<<<< a1b9f301702027c386e5de9f16e6f8eea5b83a91
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/dex-cache" />
 <<<<<<< cb0504abbb43003cfd00c2e62831546a8cb89f57
@@ -167,6 +177,11 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.google.android.gms/play-services/8.1.0/jars" />
 >>>>>>> finished basic wifi direct discovery
 =======
+=======
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.0/jars" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/mediarouter-v7/22.2.0/jars" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/support-v4/22.2.1/jars" />
+>>>>>>> swanplus
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.google.android.gms/play-services-ads/8.3.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.google.android.gms/play-services-analytics/8.3.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.google.android.gms/play-services-appindexing/8.3.0/jars" />
@@ -192,6 +207,7 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.google.android.gms/play-services-wallet/8.3.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.google.android.gms/play-services-wearable/8.3.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.google.android.gms/play-services/8.3.0/jars" />
+<<<<<<< HEAD
 >>>>>>> added TestActivity
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental" />
 <<<<<<< a1b9f301702027c386e5de9f16e6f8eea5b83a91
@@ -201,10 +217,15 @@
 =======
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/manifests" />
 >>>>>>> halfway with WD implementation
+=======
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/manifests" />
+>>>>>>> swanplus
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/pre-dexed" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/res" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/rs" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/symbols" />
+<<<<<<< HEAD
 <<<<<<< a1b9f301702027c386e5de9f16e6f8eea5b83a91
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/transforms" />
 =======
@@ -291,10 +312,40 @@
     <orderEntry type="library" exported="" name="play-services-cast-8.3.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-ads-8.3.0" level="project" />
     <orderEntry type="library" exported="" name="gcm-server" level="project" />
+=======
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/tmp" />
+      <excludeFolder url="file://$MODULE_DIR$/build/outputs" />
+      <excludeFolder url="file://$MODULE_DIR$/build/tmp" />
+    </content>
+    <orderEntry type="jdk" jdkName="Android API 22 Platform" jdkType="Android SDK" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" exported="" name="mediarouter-v7-22.2.0" level="project" />
+    <orderEntry type="library" exported="" name="play-services-location-8.3.0" level="project" />
+    <orderEntry type="library" exported="" name="play-services-plus-8.3.0" level="project" />
+    <orderEntry type="library" exported="" name="play-services-appindexing-8.3.0" level="project" />
+    <orderEntry type="library" exported="" name="play-services-auth-8.3.0" level="project" />
+    <orderEntry type="library" exported="" name="play-services-wearable-8.3.0" level="project" />
+    <orderEntry type="library" exported="" name="play-services-base-8.3.0" level="project" />
+    <orderEntry type="library" exported="" name="support-annotations-22.2.1" level="project" />
+    <orderEntry type="library" exported="" name="play-services-measurement-8.3.0" level="project" />
+    <orderEntry type="library" exported="" name="play-services-identity-8.3.0" level="project" />
+    <orderEntry type="library" exported="" name="appcompat-v7-22.2.0" level="project" />
+    <orderEntry type="library" exported="" name="play-services-vision-8.3.0" level="project" />
+    <orderEntry type="library" exported="" name="play-services-wallet-8.3.0" level="project" />
+    <orderEntry type="library" exported="" name="play-services-analytics-8.3.0" level="project" />
+    <orderEntry type="library" exported="" name="play-services-8.3.0" level="project" />
+    <orderEntry type="library" exported="" name="play-services-drive-8.3.0" level="project" />
+    <orderEntry type="library" exported="" name="slf4j-api-1.6.2" level="project" />
+    <orderEntry type="library" exported="" name="slf4j-on-android-1.6.2" level="project" />
+    <orderEntry type="library" exported="" name="play-services-cast-8.3.0" level="project" />
+    <orderEntry type="library" exported="" name="play-services-ads-8.3.0" level="project" />
+    <orderEntry type="library" exported="" name="gcm-server" level="project" />
+>>>>>>> swanplus
     <orderEntry type="library" exported="" name="play-services-appinvite-8.3.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-appstate-8.3.0" level="project" />
     <orderEntry type="library" exported="" name="support-v4-22.2.1" level="project" />
     <orderEntry type="library" exported="" name="cuckoo-client" level="project" />
+<<<<<<< HEAD
 <<<<<<< 0109b6738046d83af12542c10c5683d8ab5adabc
 <<<<<<< cb0504abbb43003cfd00c2e62831546a8cb89f57
 <<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
@@ -309,10 +360,14 @@
 =======
     <orderEntry type="library" exported="" name="play-services-games-8.3.0" level="project" />
 >>>>>>> added TestActivity
+=======
+    <orderEntry type="library" exported="" name="play-services-games-8.3.0" level="project" />
+>>>>>>> swanplus
     <orderEntry type="library" exported="" name="scribe-1.2.0" level="project" />
     <orderEntry type="library" exported="" name="cuckoo-client" level="project" />
     <orderEntry type="library" exported="" name="play-services-maps-8.4.0" level="project" />
     <orderEntry type="library" exported="" name="antlr-3.4-complete-no-antlrv2" level="project" />
+<<<<<<< HEAD
 <<<<<<< 0109b6738046d83af12542c10c5683d8ab5adabc
 <<<<<<< cb0504abbb43003cfd00c2e62831546a8cb89f57
 <<<<<<< 9b80db448cc440a165610c96a5be90b80cf42e36
@@ -368,6 +423,8 @@
     <orderEntry type="library" exported="" name="play-services-plus-8.1.0" level="project" />
 >>>>>>> finished basic wifi direct discovery
 =======
+=======
+>>>>>>> swanplus
     <orderEntry type="library" exported="" name="play-services-gcm-8.3.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-safetynet-8.3.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-basement-8.3.0" level="project" />
@@ -375,7 +432,10 @@
     <orderEntry type="library" exported="" name="play-services-nearby-8.3.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-fitness-8.3.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-panorama-8.3.0" level="project" />
+<<<<<<< HEAD
 >>>>>>> added TestActivity
+=======
+>>>>>>> swanplus
     <orderEntry type="module" module-name="senseandroidlibrary" exported="" />
     <orderEntry type="library" exported="" name="org.apache.http.legacy-android-23" level="project" />
   </component>

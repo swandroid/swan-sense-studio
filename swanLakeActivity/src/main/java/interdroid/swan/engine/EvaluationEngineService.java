@@ -472,6 +472,7 @@ public class EvaluationEngineService extends Service {
 			Log.d(TAG, "Got spurious unregister for id: " + id);
 			return;
 		}
+		Log.d(TAG, "unregistering id: " + id + ", expression: " + expression);
 		// first stop evaluating
 		synchronized (mEvaluationThread) {
 			mRegisteredExpressions.remove(id);
