@@ -314,6 +314,8 @@
         <item>x</item>
         <item>y</item>
         <item>z</item>
+    </string-array>
+
     <string-array name="run_levels_array">
         <item>Beginner</item>
         <item>Intermediate</item>
