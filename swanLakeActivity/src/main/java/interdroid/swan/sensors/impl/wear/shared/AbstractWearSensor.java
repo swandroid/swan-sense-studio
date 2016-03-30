@@ -70,7 +70,7 @@ public abstract class AbstractWearSensor  extends AbstractSwanSensor{
     }
 
     @Override
-    public void register(String id, String valuePath, Bundle configuration) throws IOException {
+    public void register(String id, String valuePath, Bundle configuration, final Bundle httpConfiguration) {
 
 
         if(valuePathMappings.isEmpty()) {

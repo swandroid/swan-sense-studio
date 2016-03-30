@@ -29,11 +29,11 @@ public class WearStepCounterSensor extends AbstractWearSensor{
     }
 
     @Override
-    public void register(String id, String valuePath, Bundle configuration) throws IOException {
+    public void register(String id, String valuePath, Bundle configuration, final Bundle httpConfiguration) {
         SENSOR_NAME = "Wear Step Counter Sensor";
         sensorId = Sensor.TYPE_STEP_COUNTER;
         valuePathMappings.put(STEP_COUNTER, 0);
-        super.register(id, valuePath, configuration);
+        super.register(id, valuePath, configuration, httpConfiguration);
     }
     @Override
     public String[] getValuePaths() {

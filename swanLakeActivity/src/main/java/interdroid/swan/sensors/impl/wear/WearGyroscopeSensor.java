@@ -33,7 +33,7 @@ public class WearGyroscopeSensor extends AbstractWearSensor{
 
 
     @Override
-    public final void register(String id, String valuePath, Bundle configuration) throws IOException{
+    public final void register(String id, String valuePath, Bundle configuration, final Bundle httpConfiguration) {
 
         SENSOR_NAME = "Wear Gyroscope Sensor";
         sensorId = Sensor.TYPE_GYROSCOPE;
@@ -41,7 +41,7 @@ public class WearGyroscopeSensor extends AbstractWearSensor{
         valuePathMappings.put(Y_FIELD, 1);
         valuePathMappings.put(Z_FIELD, 2);
 
-        super.register(id, valuePath,configuration);
+        super.register(id, valuePath,configuration, httpConfiguration);
     }
     @Override
     public String[] getValuePaths() {

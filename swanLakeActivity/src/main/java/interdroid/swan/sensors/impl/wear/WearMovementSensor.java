@@ -46,13 +46,13 @@ public class WearMovementSensor extends AbstractWearSensor {
     }
 
     @Override
-    public void register(String id, String valuePath, Bundle configuration) throws IOException {
+    public void register(String id, String valuePath, Bundle configuration, final Bundle httpConfiguration) {
         sensorId = Sensor.TYPE_ACCELEROMETER;
         valuePathMappings.put(X_FIELD, 0);
         valuePathMappings.put(Y_FIELD, 1);
         valuePathMappings.put(Z_FIELD, 2);
 
-        super.register(id, valuePath, configuration);
+        super.register(id, valuePath, configuration, httpConfiguration);
     }
 
     @Override

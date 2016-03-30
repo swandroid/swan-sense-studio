@@ -44,7 +44,7 @@ public class WearGameRotationSensor extends AbstractWearSensor {
     }
 
     @Override
-    public void register(String id, String valuePath, Bundle configuration) throws IOException {
+    public void register(String id, String valuePath, Bundle configuration, final Bundle httpConfiguration) {
         SENSOR_NAME = "Wear Game Rotation Sensor";
         sensor_name = "Game Rotation Vector";
 
@@ -53,7 +53,7 @@ public class WearGameRotationSensor extends AbstractWearSensor {
         valuePathMappings.put(Y_FIELD, 1);
         valuePathMappings.put(Z_FIELD, 2);
 
-        super.register(id, valuePath, configuration);
+        super.register(id, valuePath, configuration, httpConfiguration);
     }
     @Override
     public String[] getValuePaths() {

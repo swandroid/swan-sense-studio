@@ -45,14 +45,14 @@ public class WearLinearAcceleration extends AbstractWearSensor{
     }
 
     @Override
-    public void register(String id, String valuePath, Bundle configuration) throws IOException {
+    public void register(String id, String valuePath, Bundle configuration, final Bundle httpConfiguration) {
         SENSOR_NAME = "Wear Movement Sensor";
         sensorId = Sensor.TYPE_LINEAR_ACCELERATION;
         valuePathMappings.put(X_FIELD, 0);
         valuePathMappings.put(Y_FIELD, 1);
         valuePathMappings.put(Z_FIELD, 2);
 
-        super.register(id, valuePath, configuration);
+        super.register(id, valuePath, configuration, httpConfiguration);
     }
 
     @Override

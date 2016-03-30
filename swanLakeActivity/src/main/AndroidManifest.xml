@@ -1100,7 +1100,6 @@
         <service
             android:name=".sensors.impl.FitnessSensor$MessengerService"
             android:exported="false"></service>
-        </service>
         <service
             android:name="interdroid.swan.sensors.impl.OVSensor"
             android:exported="true"

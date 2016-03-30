@@ -83,7 +83,7 @@ public class FitnessSensor extends AbstractSwanSensor {
     }
 
     @Override
-    public void register(final String id, final String valuePath, Bundle configuration) throws IOException {
+    public void register(final String id, final String valuePath, Bundle configuration, final Bundle httpConfiguration) {
         FitnessDataPoller fdp = new FitnessDataPoller(id, valuePath, configuration);
         activeThreads.put(id, fdp);
         fdp.start();

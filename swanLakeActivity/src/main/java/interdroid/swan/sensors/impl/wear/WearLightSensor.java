@@ -43,12 +43,12 @@ public class WearLightSensor extends AbstractWearSensor {
 
 
     @Override
-    public void register(String id, String valuePath, Bundle configuration) throws IOException {
+    public void register(String id, String valuePath, Bundle configuration, final Bundle httpConfiguration) {
         SENSOR_NAME = "Wear Light Sensor";
         sensorId = Sensor.TYPE_LIGHT;
         valuePathMappings.put(LUX_FIELD, 0);
 
-        super.register(id, valuePath, configuration);
+        super.register(id, valuePath, configuration, httpConfiguration);
     }
 
 }
