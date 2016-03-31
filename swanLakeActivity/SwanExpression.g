@@ -156,6 +156,12 @@ sensor_value_expression returns [SensorValueExpression value_expression]
 			{$value_expression = new SensorValueExpression(location.getText(), entity.getText(), path /*.value_path */, null, HistoryReductionMode.ANY, 0,null);}
 	|	location=ID '@' entity=ID ':' path=value_path '?' config=configuration_options
 			{$value_expression = new SensorValueExpression(location.getText(), entity.getText(), path /*.value_path */, config /*.configuration */, HistoryReductionMode.ANY, 0,null);}
+	|	location=ID '@' entity=ID ':' path=value_path '{' ((mode=history_mode ',' time=time_value) | mode=history_mode | time=time_value) '}'
+			{if (time == null) {
+				$value_expression = new SensorValueExpression(location.getText(), entity.getText(), path /* .value_path */, null, mode /*.history_mode */, 0,null);
+			} else {
+				$value_expression = new SensorValueExpression(location.getText(), entity.getText(), path /* .value_path */, null, mode /*.history_mode */, time,null);
+			}}	
 	|	location=ID '@' entity=ID ':' path=value_path '$' http_config=http_configuration_options '{' ((mode=history_mode ',' time=time_value) | mode=history_mode | time=time_value) '}'
 			{if (time == null) {
 				$value_expression = new SensorValueExpression(location.getText(), entity.getText(), path /* .value_path */, null, mode /*.history_mode */, 0,http_config);

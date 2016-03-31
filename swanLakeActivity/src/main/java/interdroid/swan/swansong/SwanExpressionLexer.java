@@ -1,4 +1,4 @@
-// $ANTLR 3.5.2 SwanExpression.g 2015-12-24 10:51:10
+// $ANTLR 3.5.2 SwanExpression.g 2016-03-31 18:26:44
 
 package interdroid.swan.swansong;
 
@@ -278,7 +278,7 @@ public class SwanExpressionLexer extends Lexer {
 		try {
 			int _type = TIME_UNIT;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// SwanExpression.g:336:5: ( 'h' | 'H' | 'm' | 'M' | 's' | 'S' | 'ms' )
+			// SwanExpression.g:342:5: ( 'h' | 'H' | 'm' | 'M' | 's' | 'S' | 'ms' )
 			int alt1=7;
 			switch ( input.LA(1) ) {
 			case 'h':
@@ -326,43 +326,43 @@ public class SwanExpressionLexer extends Lexer {
 			}
 			switch (alt1) {
 				case 1 :
-					// SwanExpression.g:336:9: 'h'
+					// SwanExpression.g:342:9: 'h'
 					{
 					match('h'); 
 					}
 					break;
 				case 2 :
-					// SwanExpression.g:336:13: 'H'
+					// SwanExpression.g:342:13: 'H'
 					{
 					match('H'); 
 					}
 					break;
 				case 3 :
-					// SwanExpression.g:336:17: 'm'
+					// SwanExpression.g:342:17: 'm'
 					{
 					match('m'); 
 					}
 					break;
 				case 4 :
-					// SwanExpression.g:336:21: 'M'
+					// SwanExpression.g:342:21: 'M'
 					{
 					match('M'); 
 					}
 					break;
 				case 5 :
-					// SwanExpression.g:336:25: 's'
+					// SwanExpression.g:342:25: 's'
 					{
 					match('s'); 
 					}
 					break;
 				case 6 :
-					// SwanExpression.g:336:29: 'S'
+					// SwanExpression.g:342:29: 'S'
 					{
 					match('S'); 
 					}
 					break;
 				case 7 :
-					// SwanExpression.g:336:33: 'ms'
+					// SwanExpression.g:342:33: 'ms'
 					{
 					match("ms"); 
 
@@ -384,7 +384,7 @@ public class SwanExpressionLexer extends Lexer {
 		try {
 			int _type = OR;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// SwanExpression.g:339:7: ( '||' | 'or' | 'OR' )
+			// SwanExpression.g:345:7: ( '||' | 'or' | 'OR' )
 			int alt2=3;
 			switch ( input.LA(1) ) {
 			case '|':
@@ -409,21 +409,21 @@ public class SwanExpressionLexer extends Lexer {
 			}
 			switch (alt2) {
 				case 1 :
-					// SwanExpression.g:339:13: '||'
+					// SwanExpression.g:345:13: '||'
 					{
 					match("||"); 
 
 					}
 					break;
 				case 2 :
-					// SwanExpression.g:339:20: 'or'
+					// SwanExpression.g:345:20: 'or'
 					{
 					match("or"); 
 
 					}
 					break;
 				case 3 :
-					// SwanExpression.g:339:27: 'OR'
+					// SwanExpression.g:345:27: 'OR'
 					{
 					match("OR"); 
 
@@ -445,7 +445,7 @@ public class SwanExpressionLexer extends Lexer {
 		try {
 			int _type = AND;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// SwanExpression.g:340:7: ( '&&' | 'and' | 'AND' )
+			// SwanExpression.g:346:7: ( '&&' | 'and' | 'AND' )
 			int alt3=3;
 			switch ( input.LA(1) ) {
 			case '&':
@@ -470,21 +470,21 @@ public class SwanExpressionLexer extends Lexer {
 			}
 			switch (alt3) {
 				case 1 :
-					// SwanExpression.g:340:13: '&&'
+					// SwanExpression.g:346:13: '&&'
 					{
 					match("&&"); 
 
 					}
 					break;
 				case 2 :
-					// SwanExpression.g:340:20: 'and'
+					// SwanExpression.g:346:20: 'and'
 					{
 					match("and"); 
 
 					}
 					break;
 				case 3 :
-					// SwanExpression.g:340:28: 'AND'
+					// SwanExpression.g:346:28: 'AND'
 					{
 					match("AND"); 
 
@@ -506,7 +506,7 @@ public class SwanExpressionLexer extends Lexer {
 		try {
 			int _type = NOT;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// SwanExpression.g:342:7: ( '!' | 'not' | 'NOT' )
+			// SwanExpression.g:348:7: ( '!' | 'not' | 'NOT' )
 			int alt4=3;
 			switch ( input.LA(1) ) {
 			case '!':
@@ -531,20 +531,20 @@ public class SwanExpressionLexer extends Lexer {
 			}
 			switch (alt4) {
 				case 1 :
-					// SwanExpression.g:342:12: '!'
+					// SwanExpression.g:348:12: '!'
 					{
 					match('!'); 
 					}
 					break;
 				case 2 :
-					// SwanExpression.g:342:18: 'not'
+					// SwanExpression.g:348:18: 'not'
 					{
 					match("not"); 
 
 					}
 					break;
 				case 3 :
-					// SwanExpression.g:342:26: 'NOT'
+					// SwanExpression.g:348:26: 'NOT'
 					{
 					match("NOT"); 
 
@@ -566,8 +566,8 @@ public class SwanExpressionLexer extends Lexer {
 		try {
 			int _type = CONFIG_IS;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// SwanExpression.g:346:5: ( '=' )
-			// SwanExpression.g:346:9: '='
+			// SwanExpression.g:352:5: ( '=' )
+			// SwanExpression.g:352:9: '='
 			{
 			match('='); 
 			}
@@ -586,8 +586,8 @@ public class SwanExpressionLexer extends Lexer {
 		try {
 			int _type = CONFIG_HASH;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// SwanExpression.g:348:5: ( '#' )
-			// SwanExpression.g:348:9: '#'
+			// SwanExpression.g:354:5: ( '#' )
+			// SwanExpression.g:354:9: '#'
 			{
 			match('#'); 
 			}
@@ -606,8 +606,8 @@ public class SwanExpressionLexer extends Lexer {
 		try {
 			int _type = CONFIG_TILT;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// SwanExpression.g:350:5: ( '~' )
-			// SwanExpression.g:350:7: '~'
+			// SwanExpression.g:356:5: ( '~' )
+			// SwanExpression.g:356:7: '~'
 			{
 			match('~'); 
 			}
@@ -626,7 +626,7 @@ public class SwanExpressionLexer extends Lexer {
 		try {
 			int _type = EQUALS;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// SwanExpression.g:353:7: ( '==' | '=' )
+			// SwanExpression.g:359:7: ( '==' | '=' )
 			int alt5=2;
 			int LA5_0 = input.LA(1);
 			if ( (LA5_0=='=') ) {
@@ -649,14 +649,14 @@ public class SwanExpressionLexer extends Lexer {
 
 			switch (alt5) {
 				case 1 :
-					// SwanExpression.g:353:12: '=='
+					// SwanExpression.g:359:12: '=='
 					{
 					match("=="); 
 
 					}
 					break;
 				case 2 :
-					// SwanExpression.g:353:19: '='
+					// SwanExpression.g:359:19: '='
 					{
 					match('='); 
 					}
@@ -677,7 +677,7 @@ public class SwanExpressionLexer extends Lexer {
 		try {
 			int _type = NOTEQUALS;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// SwanExpression.g:355:7: ( '!=' | '<>' )
+			// SwanExpression.g:361:7: ( '!=' | '<>' )
 			int alt6=2;
 			int LA6_0 = input.LA(1);
 			if ( (LA6_0=='!') ) {
@@ -695,14 +695,14 @@ public class SwanExpressionLexer extends Lexer {
 
 			switch (alt6) {
 				case 1 :
-					// SwanExpression.g:355:12: '!='
+					// SwanExpression.g:361:12: '!='
 					{
 					match("!="); 
 
 					}
 					break;
 				case 2 :
-					// SwanExpression.g:355:19: '<>'
+					// SwanExpression.g:361:19: '<>'
 					{
 					match("<>"); 
 
@@ -724,8 +724,8 @@ public class SwanExpressionLexer extends Lexer {
 		try {
 			int _type = LT;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// SwanExpression.g:356:7: ( '<' )
-			// SwanExpression.g:356:12: '<'
+			// SwanExpression.g:362:7: ( '<' )
+			// SwanExpression.g:362:12: '<'
 			{
 			match('<'); 
 			}
@@ -744,8 +744,8 @@ public class SwanExpressionLexer extends Lexer {
 		try {
 			int _type = LTEQ;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// SwanExpression.g:357:7: ( '<=' )
-			// SwanExpression.g:357:12: '<='
+			// SwanExpression.g:363:7: ( '<=' )
+			// SwanExpression.g:363:12: '<='
 			{
 			match("<="); 
 
@@ -765,8 +765,8 @@ public class SwanExpressionLexer extends Lexer {
 		try {
 			int _type = GT;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// SwanExpression.g:358:7: ( '>' )
-			// SwanExpression.g:358:12: '>'
+			// SwanExpression.g:364:7: ( '>' )
+			// SwanExpression.g:364:12: '>'
 			{
 			match('>'); 
 			}
@@ -785,8 +785,8 @@ public class SwanExpressionLexer extends Lexer {
 		try {
 			int _type = GTEQ;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// SwanExpression.g:359:7: ( '>=' )
-			// SwanExpression.g:359:12: '>='
+			// SwanExpression.g:365:7: ( '>=' )
+			// SwanExpression.g:365:12: '>='
 			{
 			match(">="); 
 
@@ -806,8 +806,8 @@ public class SwanExpressionLexer extends Lexer {
 		try {
 			int _type = PLUS;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// SwanExpression.g:360:7: ( '+' )
-			// SwanExpression.g:360:12: '+'
+			// SwanExpression.g:366:7: ( '+' )
+			// SwanExpression.g:366:12: '+'
 			{
 			match('+'); 
 			}
@@ -826,8 +826,8 @@ public class SwanExpressionLexer extends Lexer {
 		try {
 			int _type = MINUS;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// SwanExpression.g:361:7: ( '-' )
-			// SwanExpression.g:361:12: '-'
+			// SwanExpression.g:367:7: ( '-' )
+			// SwanExpression.g:367:12: '-'
 			{
 			match('-'); 
 			}
@@ -846,8 +846,8 @@ public class SwanExpressionLexer extends Lexer {
 		try {
 			int _type = MULT;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// SwanExpression.g:362:7: ( '*' )
-			// SwanExpression.g:362:12: '*'
+			// SwanExpression.g:368:7: ( '*' )
+			// SwanExpression.g:368:12: '*'
 			{
 			match('*'); 
 			}
@@ -866,8 +866,8 @@ public class SwanExpressionLexer extends Lexer {
 		try {
 			int _type = DIV;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// SwanExpression.g:363:7: ( '/' )
-			// SwanExpression.g:363:12: '/'
+			// SwanExpression.g:369:7: ( '/' )
+			// SwanExpression.g:369:12: '/'
 			{
 			match('/'); 
 			}
@@ -886,8 +886,8 @@ public class SwanExpressionLexer extends Lexer {
 		try {
 			int _type = MOD;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// SwanExpression.g:364:7: ( '%' )
-			// SwanExpression.g:364:12: '%'
+			// SwanExpression.g:370:7: ( '%' )
+			// SwanExpression.g:370:12: '%'
 			{
 			match('%'); 
 			}
@@ -906,7 +906,7 @@ public class SwanExpressionLexer extends Lexer {
 		try {
 			int _type = REGEX;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// SwanExpression.g:365:7: ( 'regex' | 'REGEX' )
+			// SwanExpression.g:371:7: ( 'regex' | 'REGEX' )
 			int alt7=2;
 			int LA7_0 = input.LA(1);
 			if ( (LA7_0=='r') ) {
@@ -924,14 +924,14 @@ public class SwanExpressionLexer extends Lexer {
 
 			switch (alt7) {
 				case 1 :
-					// SwanExpression.g:366:9: 'regex'
+					// SwanExpression.g:372:9: 'regex'
 					{
 					match("regex"); 
 
 					}
 					break;
 				case 2 :
-					// SwanExpression.g:366:19: 'REGEX'
+					// SwanExpression.g:372:19: 'REGEX'
 					{
 					match("REGEX"); 
 
@@ -953,7 +953,7 @@ public class SwanExpressionLexer extends Lexer {
 		try {
 			int _type = CONTAINS;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// SwanExpression.g:368:5: ( 'contains' | 'CONTAINS' )
+			// SwanExpression.g:374:5: ( 'contains' | 'CONTAINS' )
 			int alt8=2;
 			int LA8_0 = input.LA(1);
 			if ( (LA8_0=='c') ) {
@@ -971,14 +971,14 @@ public class SwanExpressionLexer extends Lexer {
 
 			switch (alt8) {
 				case 1 :
-					// SwanExpression.g:368:10: 'contains'
+					// SwanExpression.g:374:10: 'contains'
 					{
 					match("contains"); 
 
 					}
 					break;
 				case 2 :
-					// SwanExpression.g:368:23: 'CONTAINS'
+					// SwanExpression.g:374:23: 'CONTAINS'
 					{
 					match("CONTAINS"); 
 
@@ -1000,10 +1000,10 @@ public class SwanExpressionLexer extends Lexer {
 		try {
 			int _type = ALL;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// SwanExpression.g:371:9: ( ( 'ALL' | 'all' ) )
-			// SwanExpression.g:371:13: ( 'ALL' | 'all' )
+			// SwanExpression.g:377:9: ( ( 'ALL' | 'all' ) )
+			// SwanExpression.g:377:13: ( 'ALL' | 'all' )
 			{
-			// SwanExpression.g:371:13: ( 'ALL' | 'all' )
+			// SwanExpression.g:377:13: ( 'ALL' | 'all' )
 			int alt9=2;
 			int LA9_0 = input.LA(1);
 			if ( (LA9_0=='A') ) {
@@ -1021,14 +1021,14 @@ public class SwanExpressionLexer extends Lexer {
 
 			switch (alt9) {
 				case 1 :
-					// SwanExpression.g:371:14: 'ALL'
+					// SwanExpression.g:377:14: 'ALL'
 					{
 					match("ALL"); 
 
 					}
 					break;
 				case 2 :
-					// SwanExpression.g:371:20: 'all'
+					// SwanExpression.g:377:20: 'all'
 					{
 					match("all"); 
 
@@ -1053,10 +1053,10 @@ public class SwanExpressionLexer extends Lexer {
 		try {
 			int _type = ANY;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// SwanExpression.g:372:5: ( ( 'ANY' | 'any' ) )
-			// SwanExpression.g:372:9: ( 'ANY' | 'any' )
+			// SwanExpression.g:378:5: ( ( 'ANY' | 'any' ) )
+			// SwanExpression.g:378:9: ( 'ANY' | 'any' )
 			{
-			// SwanExpression.g:372:9: ( 'ANY' | 'any' )
+			// SwanExpression.g:378:9: ( 'ANY' | 'any' )
 			int alt10=2;
 			int LA10_0 = input.LA(1);
 			if ( (LA10_0=='A') ) {
@@ -1074,14 +1074,14 @@ public class SwanExpressionLexer extends Lexer {
 
 			switch (alt10) {
 				case 1 :
-					// SwanExpression.g:372:10: 'ANY'
+					// SwanExpression.g:378:10: 'ANY'
 					{
 					match("ANY"); 
 
 					}
 					break;
 				case 2 :
-					// SwanExpression.g:372:16: 'any'
+					// SwanExpression.g:378:16: 'any'
 					{
 					match("any"); 
 
@@ -1106,10 +1106,10 @@ public class SwanExpressionLexer extends Lexer {
 		try {
 			int _type = NONE;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// SwanExpression.g:375:9: ( ( 'NONE' | 'none' ) )
-			// SwanExpression.g:375:13: ( 'NONE' | 'none' )
+			// SwanExpression.g:381:9: ( ( 'NONE' | 'none' ) )
+			// SwanExpression.g:381:13: ( 'NONE' | 'none' )
 			{
-			// SwanExpression.g:375:13: ( 'NONE' | 'none' )
+			// SwanExpression.g:381:13: ( 'NONE' | 'none' )
 			int alt11=2;
 			int LA11_0 = input.LA(1);
 			if ( (LA11_0=='N') ) {
@@ -1127,14 +1127,14 @@ public class SwanExpressionLexer extends Lexer {
 
 			switch (alt11) {
 				case 1 :
-					// SwanExpression.g:375:14: 'NONE'
+					// SwanExpression.g:381:14: 'NONE'
 					{
 					match("NONE"); 
 
 					}
 					break;
 				case 2 :
-					// SwanExpression.g:375:21: 'none'
+					// SwanExpression.g:381:21: 'none'
 					{
 					match("none"); 
 
@@ -1159,10 +1159,10 @@ public class SwanExpressionLexer extends Lexer {
 		try {
 			int _type = MAX;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// SwanExpression.g:376:5: ( ( 'MAX' | 'max' ) )
-			// SwanExpression.g:376:9: ( 'MAX' | 'max' )
+			// SwanExpression.g:382:5: ( ( 'MAX' | 'max' ) )
+			// SwanExpression.g:382:9: ( 'MAX' | 'max' )
 			{
-			// SwanExpression.g:376:9: ( 'MAX' | 'max' )
+			// SwanExpression.g:382:9: ( 'MAX' | 'max' )
 			int alt12=2;
 			int LA12_0 = input.LA(1);
 			if ( (LA12_0=='M') ) {
@@ -1180,14 +1180,14 @@ public class SwanExpressionLexer extends Lexer {
 
 			switch (alt12) {
 				case 1 :
-					// SwanExpression.g:376:10: 'MAX'
+					// SwanExpression.g:382:10: 'MAX'
 					{
 					match("MAX"); 
 
 					}
 					break;
 				case 2 :
-					// SwanExpression.g:376:16: 'max'
+					// SwanExpression.g:382:16: 'max'
 					{
 					match("max"); 
 
@@ -1212,10 +1212,10 @@ public class SwanExpressionLexer extends Lexer {
 		try {
 			int _type = MIN;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// SwanExpression.g:377:5: ( ( 'MIN' | 'min' ) )
-			// SwanExpression.g:377:9: ( 'MIN' | 'min' )
+			// SwanExpression.g:383:5: ( ( 'MIN' | 'min' ) )
+			// SwanExpression.g:383:9: ( 'MIN' | 'min' )
 			{
-			// SwanExpression.g:377:9: ( 'MIN' | 'min' )
+			// SwanExpression.g:383:9: ( 'MIN' | 'min' )
 			int alt13=2;
 			int LA13_0 = input.LA(1);
 			if ( (LA13_0=='M') ) {
@@ -1233,14 +1233,14 @@ public class SwanExpressionLexer extends Lexer {
 
 			switch (alt13) {
 				case 1 :
-					// SwanExpression.g:377:10: 'MIN'
+					// SwanExpression.g:383:10: 'MIN'
 					{
 					match("MIN"); 
 
 					}
 					break;
 				case 2 :
-					// SwanExpression.g:377:16: 'min'
+					// SwanExpression.g:383:16: 'min'
 					{
 					match("min"); 
 
@@ -1265,10 +1265,10 @@ public class SwanExpressionLexer extends Lexer {
 		try {
 			int _type = MEAN;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// SwanExpression.g:378:9: ( ( 'MEAN' | 'mean' ) )
-			// SwanExpression.g:378:13: ( 'MEAN' | 'mean' )
+			// SwanExpression.g:384:9: ( ( 'MEAN' | 'mean' ) )
+			// SwanExpression.g:384:13: ( 'MEAN' | 'mean' )
 			{
-			// SwanExpression.g:378:13: ( 'MEAN' | 'mean' )
+			// SwanExpression.g:384:13: ( 'MEAN' | 'mean' )
 			int alt14=2;
 			int LA14_0 = input.LA(1);
 			if ( (LA14_0=='M') ) {
@@ -1286,14 +1286,14 @@ public class SwanExpressionLexer extends Lexer {
 
 			switch (alt14) {
 				case 1 :
-					// SwanExpression.g:378:14: 'MEAN'
+					// SwanExpression.g:384:14: 'MEAN'
 					{
 					match("MEAN"); 
 
 					}
 					break;
 				case 2 :
-					// SwanExpression.g:378:21: 'mean'
+					// SwanExpression.g:384:21: 'mean'
 					{
 					match("mean"); 
 
@@ -1318,10 +1318,10 @@ public class SwanExpressionLexer extends Lexer {
 		try {
 			int _type = MEDIAN;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// SwanExpression.g:379:9: ( ( 'MEDIAN' | 'median' ) )
-			// SwanExpression.g:379:13: ( 'MEDIAN' | 'median' )
+			// SwanExpression.g:385:9: ( ( 'MEDIAN' | 'median' ) )
+			// SwanExpression.g:385:13: ( 'MEDIAN' | 'median' )
 			{
-			// SwanExpression.g:379:13: ( 'MEDIAN' | 'median' )
+			// SwanExpression.g:385:13: ( 'MEDIAN' | 'median' )
 			int alt15=2;
 			int LA15_0 = input.LA(1);
 			if ( (LA15_0=='M') ) {
@@ -1339,14 +1339,14 @@ public class SwanExpressionLexer extends Lexer {
 
 			switch (alt15) {
 				case 1 :
-					// SwanExpression.g:379:14: 'MEDIAN'
+					// SwanExpression.g:385:14: 'MEDIAN'
 					{
 					match("MEDIAN"); 
 
 					}
 					break;
 				case 2 :
-					// SwanExpression.g:379:23: 'median'
+					// SwanExpression.g:385:23: 'median'
 					{
 					match("median"); 
 
@@ -1371,8 +1371,8 @@ public class SwanExpressionLexer extends Lexer {
 		try {
 			int _type = ID;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// SwanExpression.g:381:5: ( ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' )* )
-			// SwanExpression.g:381:9: ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' )*
+			// SwanExpression.g:387:5: ( ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' )* )
+			// SwanExpression.g:387:9: ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' )*
 			{
 			if ( (input.LA(1) >= 'A' && input.LA(1) <= 'Z')||input.LA(1)=='_'||(input.LA(1) >= 'a' && input.LA(1) <= 'z') ) {
 				input.consume();
@@ -1382,7 +1382,7 @@ public class SwanExpressionLexer extends Lexer {
 				recover(mse);
 				throw mse;
 			}
-			// SwanExpression.g:381:33: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' )*
+			// SwanExpression.g:387:33: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' )*
 			loop16:
 			while (true) {
 				int alt16=2;
@@ -1427,10 +1427,10 @@ public class SwanExpressionLexer extends Lexer {
 		try {
 			int _type = INT;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// SwanExpression.g:384:5: ( ( '-' )? ( '0' .. '9' )+ )
-			// SwanExpression.g:384:9: ( '-' )? ( '0' .. '9' )+
+			// SwanExpression.g:390:5: ( ( '-' )? ( '0' .. '9' )+ )
+			// SwanExpression.g:390:9: ( '-' )? ( '0' .. '9' )+
 			{
-			// SwanExpression.g:384:9: ( '-' )?
+			// SwanExpression.g:390:9: ( '-' )?
 			int alt17=2;
 			int LA17_0 = input.LA(1);
 			if ( (LA17_0=='-') ) {
@@ -1438,7 +1438,7 @@ public class SwanExpressionLexer extends Lexer {
 			}
 			switch (alt17) {
 				case 1 :
-					// SwanExpression.g:384:10: '-'
+					// SwanExpression.g:390:10: '-'
 					{
 					match('-'); 
 					}
@@ -1446,7 +1446,7 @@ public class SwanExpressionLexer extends Lexer {
 
 			}
 
-			// SwanExpression.g:384:16: ( '0' .. '9' )+
+			// SwanExpression.g:390:16: ( '0' .. '9' )+
 			int cnt18=0;
 			loop18:
 			while (true) {
@@ -1495,14 +1495,14 @@ public class SwanExpressionLexer extends Lexer {
 		try {
 			int _type = FLOAT;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// SwanExpression.g:388:5: ( ( '-' )? ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( EXPONENT )? | ( '-' )? '.' ( '0' .. '9' )+ ( EXPONENT )? | ( '-' )? ( '0' .. '9' )+ EXPONENT )
+			// SwanExpression.g:394:5: ( ( '-' )? ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( EXPONENT )? | ( '-' )? '.' ( '0' .. '9' )+ ( EXPONENT )? | ( '-' )? ( '0' .. '9' )+ EXPONENT )
 			int alt28=3;
 			alt28 = dfa28.predict(input);
 			switch (alt28) {
 				case 1 :
-					// SwanExpression.g:388:9: ( '-' )? ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( EXPONENT )?
+					// SwanExpression.g:394:9: ( '-' )? ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( EXPONENT )?
 					{
-					// SwanExpression.g:388:9: ( '-' )?
+					// SwanExpression.g:394:9: ( '-' )?
 					int alt19=2;
 					int LA19_0 = input.LA(1);
 					if ( (LA19_0=='-') ) {
@@ -1510,7 +1510,7 @@ public class SwanExpressionLexer extends Lexer {
 					}
 					switch (alt19) {
 						case 1 :
-							// SwanExpression.g:388:10: '-'
+							// SwanExpression.g:394:10: '-'
 							{
 							match('-'); 
 							}
@@ -1518,7 +1518,7 @@ public class SwanExpressionLexer extends Lexer {
 
 					}
 
-					// SwanExpression.g:388:16: ( '0' .. '9' )+
+					// SwanExpression.g:394:16: ( '0' .. '9' )+
 					int cnt20=0;
 					loop20:
 					while (true) {
@@ -1552,7 +1552,7 @@ public class SwanExpressionLexer extends Lexer {
 					}
 
 					match('.'); 
-					// SwanExpression.g:388:32: ( '0' .. '9' )*
+					// SwanExpression.g:394:32: ( '0' .. '9' )*
 					loop21:
 					while (true) {
 						int alt21=2;
@@ -1581,7 +1581,7 @@ public class SwanExpressionLexer extends Lexer {
 						}
 					}
 
-					// SwanExpression.g:388:44: ( EXPONENT )?
+					// SwanExpression.g:394:44: ( EXPONENT )?
 					int alt22=2;
 					int LA22_0 = input.LA(1);
 					if ( (LA22_0=='E'||LA22_0=='e') ) {
@@ -1589,7 +1589,7 @@ public class SwanExpressionLexer extends Lexer {
 					}
 					switch (alt22) {
 						case 1 :
-							// SwanExpression.g:388:44: EXPONENT
+							// SwanExpression.g:394:44: EXPONENT
 							{
 							mEXPONENT(); 
 
@@ -1601,9 +1601,9 @@ public class SwanExpressionLexer extends Lexer {
 					}
 					break;
 				case 2 :
-					// SwanExpression.g:389:9: ( '-' )? '.' ( '0' .. '9' )+ ( EXPONENT )?
+					// SwanExpression.g:395:9: ( '-' )? '.' ( '0' .. '9' )+ ( EXPONENT )?
 					{
-					// SwanExpression.g:389:9: ( '-' )?
+					// SwanExpression.g:395:9: ( '-' )?
 					int alt23=2;
 					int LA23_0 = input.LA(1);
 					if ( (LA23_0=='-') ) {
@@ -1611,7 +1611,7 @@ public class SwanExpressionLexer extends Lexer {
 					}
 					switch (alt23) {
 						case 1 :
-							// SwanExpression.g:389:10: '-'
+							// SwanExpression.g:395:10: '-'
 							{
 							match('-'); 
 							}
@@ -1620,7 +1620,7 @@ public class SwanExpressionLexer extends Lexer {
 					}
 
 					match('.'); 
-					// SwanExpression.g:389:20: ( '0' .. '9' )+
+					// SwanExpression.g:395:20: ( '0' .. '9' )+
 					int cnt24=0;
 					loop24:
 					while (true) {
@@ -1653,7 +1653,7 @@ public class SwanExpressionLexer extends Lexer {
 						cnt24++;
 					}
 
-					// SwanExpression.g:389:32: ( EXPONENT )?
+					// SwanExpression.g:395:32: ( EXPONENT )?
 					int alt25=2;
 					int LA25_0 = input.LA(1);
 					if ( (LA25_0=='E'||LA25_0=='e') ) {
@@ -1661,7 +1661,7 @@ public class SwanExpressionLexer extends Lexer {
 					}
 					switch (alt25) {
 						case 1 :
-							// SwanExpression.g:389:32: EXPONENT
+							// SwanExpression.g:395:32: EXPONENT
 							{
 							mEXPONENT(); 
 
@@ -1673,9 +1673,9 @@ public class SwanExpressionLexer extends Lexer {
 					}
 					break;
 				case 3 :
-					// SwanExpression.g:390:9: ( '-' )? ( '0' .. '9' )+ EXPONENT
+					// SwanExpression.g:396:9: ( '-' )? ( '0' .. '9' )+ EXPONENT
 					{
-					// SwanExpression.g:390:9: ( '-' )?
+					// SwanExpression.g:396:9: ( '-' )?
 					int alt26=2;
 					int LA26_0 = input.LA(1);
 					if ( (LA26_0=='-') ) {
@@ -1683,7 +1683,7 @@ public class SwanExpressionLexer extends Lexer {
 					}
 					switch (alt26) {
 						case 1 :
-							// SwanExpression.g:390:10: '-'
+							// SwanExpression.g:396:10: '-'
 							{
 							match('-'); 
 							}
@@ -1691,7 +1691,7 @@ public class SwanExpressionLexer extends Lexer {
 
 					}
 
-					// SwanExpression.g:390:16: ( '0' .. '9' )+
+					// SwanExpression.g:396:16: ( '0' .. '9' )+
 					int cnt27=0;
 					loop27:
 					while (true) {
@@ -1744,8 +1744,8 @@ public class SwanExpressionLexer extends Lexer {
 		try {
 			int _type = WS;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// SwanExpression.g:393:5: ( ( ' ' | '\\t' | '\\r' | '\\n' ) )
-			// SwanExpression.g:393:9: ( ' ' | '\\t' | '\\r' | '\\n' )
+			// SwanExpression.g:399:5: ( ( ' ' | '\\t' | '\\r' | '\\n' ) )
+			// SwanExpression.g:399:9: ( ' ' | '\\t' | '\\r' | '\\n' )
 			{
 			if ( (input.LA(1) >= '\t' && input.LA(1) <= '\n')||input.LA(1)=='\r'||input.LA(1)==' ' ) {
 				input.consume();
@@ -1775,11 +1775,11 @@ public class SwanExpressionLexer extends Lexer {
 			int normal;
 
 			StringBuilder lBuf = new StringBuilder();
-			// SwanExpression.g:406:5: ( '\\'' ( ESC_SEQ |normal=~ ( '\\'' | '\\\\' ) )* '\\'' )
-			// SwanExpression.g:407:5: '\\'' ( ESC_SEQ |normal=~ ( '\\'' | '\\\\' ) )* '\\''
+			// SwanExpression.g:408:5: ( '\\'' ( ESC_SEQ |normal=~ ( '\\'' | '\\\\' ) )* '\\'' )
+			// SwanExpression.g:409:5: '\\'' ( ESC_SEQ |normal=~ ( '\\'' | '\\\\' ) )* '\\''
 			{
 			match('\''); 
-			// SwanExpression.g:408:5: ( ESC_SEQ |normal=~ ( '\\'' | '\\\\' ) )*
+			// SwanExpression.g:410:5: ( ESC_SEQ |normal=~ ( '\\'' | '\\\\' ) )*
 			loop29:
 			while (true) {
 				int alt29=3;
@@ -1793,7 +1793,7 @@ public class SwanExpressionLexer extends Lexer {
 
 				switch (alt29) {
 				case 1 :
-					// SwanExpression.g:408:7: ESC_SEQ
+					// SwanExpression.g:410:7: ESC_SEQ
 					{
 					mESC_SEQ(); 
 
@@ -1801,7 +1801,7 @@ public class SwanExpressionLexer extends Lexer {
 					}
 					break;
 				case 2 :
-					// SwanExpression.g:410:7: normal=~ ( '\\'' | '\\\\' )
+					// SwanExpression.g:412:7: normal=~ ( '\\'' | '\\\\' )
 					{
 					normal= input.LA(1);
 					if ( (input.LA(1) >= '\u0000' && input.LA(1) <= '&')||(input.LA(1) >= '(' && input.LA(1) <= '[')||(input.LA(1) >= ']' && input.LA(1) <= '\uFFFF') ) {
@@ -1842,11 +1842,11 @@ public class SwanExpressionLexer extends Lexer {
 			CommonToken k=null;
 			CommonToken l=null;
 
-			// SwanExpression.g:420:5: ( '\\\\' ( 'n' | 'r' | 't' | 'b' | 'f' | '\"' | '\\'' | '/' | '\\\\' | ( 'u' )+ i= HEX_DIGIT j= HEX_DIGIT k= HEX_DIGIT l= HEX_DIGIT ) )
-			// SwanExpression.g:420:9: '\\\\' ( 'n' | 'r' | 't' | 'b' | 'f' | '\"' | '\\'' | '/' | '\\\\' | ( 'u' )+ i= HEX_DIGIT j= HEX_DIGIT k= HEX_DIGIT l= HEX_DIGIT )
+			// SwanExpression.g:422:5: ( '\\\\' ( 'n' | 'r' | 't' | 'b' | 'f' | '\"' | '\\'' | '/' | '\\\\' | ( 'u' )+ i= HEX_DIGIT j= HEX_DIGIT k= HEX_DIGIT l= HEX_DIGIT ) )
+			// SwanExpression.g:422:9: '\\\\' ( 'n' | 'r' | 't' | 'b' | 'f' | '\"' | '\\'' | '/' | '\\\\' | ( 'u' )+ i= HEX_DIGIT j= HEX_DIGIT k= HEX_DIGIT l= HEX_DIGIT )
 			{
 			match('\\'); 
-			// SwanExpression.g:421:9: ( 'n' | 'r' | 't' | 'b' | 'f' | '\"' | '\\'' | '/' | '\\\\' | ( 'u' )+ i= HEX_DIGIT j= HEX_DIGIT k= HEX_DIGIT l= HEX_DIGIT )
+			// SwanExpression.g:423:9: ( 'n' | 'r' | 't' | 'b' | 'f' | '\"' | '\\'' | '/' | '\\\\' | ( 'u' )+ i= HEX_DIGIT j= HEX_DIGIT k= HEX_DIGIT l= HEX_DIGIT )
 			int alt31=10;
 			switch ( input.LA(1) ) {
 			case 'n':
@@ -1906,72 +1906,72 @@ public class SwanExpressionLexer extends Lexer {
 			}
 			switch (alt31) {
 				case 1 :
-					// SwanExpression.g:421:17: 'n'
+					// SwanExpression.g:423:17: 'n'
 					{
 					match('n'); 
 					setText("\n");
 					}
 					break;
 				case 2 :
-					// SwanExpression.g:422:17: 'r'
+					// SwanExpression.g:424:17: 'r'
 					{
 					match('r'); 
 					setText("\r");
 					}
 					break;
 				case 3 :
-					// SwanExpression.g:423:17: 't'
+					// SwanExpression.g:425:17: 't'
 					{
 					match('t'); 
 					setText("\t");
 					}
 					break;
 				case 4 :
-					// SwanExpression.g:424:17: 'b'
+					// SwanExpression.g:426:17: 'b'
 					{
 					match('b'); 
 					setText("\b");
 					}
 					break;
 				case 5 :
-					// SwanExpression.g:425:17: 'f'
+					// SwanExpression.g:427:17: 'f'
 					{
 					match('f'); 
 					setText("\f");
 					}
 					break;
 				case 6 :
-					// SwanExpression.g:426:17: '\"'
+					// SwanExpression.g:428:17: '\"'
 					{
 					match('\"'); 
 					setText("\"");
 					}
 					break;
 				case 7 :
-					// SwanExpression.g:427:17: '\\''
+					// SwanExpression.g:429:17: '\\''
 					{
 					match('\''); 
 					setText("\'");
 					}
 					break;
 				case 8 :
-					// SwanExpression.g:428:17: '/'
+					// SwanExpression.g:430:17: '/'
 					{
 					match('/'); 
 					setText("/");
 					}
 					break;
 				case 9 :
-					// SwanExpression.g:429:17: '\\\\'
+					// SwanExpression.g:431:17: '\\\\'
 					{
 					match('\\'); 
 					setText("\\");
 					}
 					break;
 				case 10 :
-					// SwanExpression.g:430:17: ( 'u' )+ i= HEX_DIGIT j= HEX_DIGIT k= HEX_DIGIT l= HEX_DIGIT
+					// SwanExpression.g:432:17: ( 'u' )+ i= HEX_DIGIT j= HEX_DIGIT k= HEX_DIGIT l= HEX_DIGIT
 					{
-					// SwanExpression.g:430:17: ( 'u' )+
+					// SwanExpression.g:432:17: ( 'u' )+
 					int cnt30=0;
 					loop30:
 					while (true) {
@@ -1983,7 +1983,7 @@ public class SwanExpressionLexer extends Lexer {
 
 						switch (alt30) {
 						case 1 :
-							// SwanExpression.g:430:18: 'u'
+							// SwanExpression.g:432:18: 'u'
 							{
 							match('u'); 
 							}
@@ -1997,37 +1997,37 @@ public class SwanExpressionLexer extends Lexer {
 						cnt30++;
 					}
 
-					int iStart1087 = getCharIndex();
-					int iStartLine1087 = getLine();
-					int iStartCharPos1087 = getCharPositionInLine();
+					int iStart1083 = getCharIndex();
+					int iStartLine1083 = getLine();
+					int iStartCharPos1083 = getCharPositionInLine();
 					mHEX_DIGIT(); 
-					i = new CommonToken(input, Token.INVALID_TOKEN_TYPE, Token.DEFAULT_CHANNEL, iStart1087, getCharIndex()-1);
-					i.setLine(iStartLine1087);
-					i.setCharPositionInLine(iStartCharPos1087);
+					i = new CommonToken(input, Token.INVALID_TOKEN_TYPE, Token.DEFAULT_CHANNEL, iStart1083, getCharIndex()-1);
+					i.setLine(iStartLine1083);
+					i.setCharPositionInLine(iStartCharPos1083);
 
-					int jStart1091 = getCharIndex();
-					int jStartLine1091 = getLine();
-					int jStartCharPos1091 = getCharPositionInLine();
+					int jStart1087 = getCharIndex();
+					int jStartLine1087 = getLine();
+					int jStartCharPos1087 = getCharPositionInLine();
 					mHEX_DIGIT(); 
-					j = new CommonToken(input, Token.INVALID_TOKEN_TYPE, Token.DEFAULT_CHANNEL, jStart1091, getCharIndex()-1);
-					j.setLine(jStartLine1091);
-					j.setCharPositionInLine(jStartCharPos1091);
+					j = new CommonToken(input, Token.INVALID_TOKEN_TYPE, Token.DEFAULT_CHANNEL, jStart1087, getCharIndex()-1);
+					j.setLine(jStartLine1087);
+					j.setCharPositionInLine(jStartCharPos1087);
 
-					int kStart1095 = getCharIndex();
-					int kStartLine1095 = getLine();
-					int kStartCharPos1095 = getCharPositionInLine();
+					int kStart1091 = getCharIndex();
+					int kStartLine1091 = getLine();
+					int kStartCharPos1091 = getCharPositionInLine();
 					mHEX_DIGIT(); 
-					k = new CommonToken(input, Token.INVALID_TOKEN_TYPE, Token.DEFAULT_CHANNEL, kStart1095, getCharIndex()-1);
-					k.setLine(kStartLine1095);
-					k.setCharPositionInLine(kStartCharPos1095);
+					k = new CommonToken(input, Token.INVALID_TOKEN_TYPE, Token.DEFAULT_CHANNEL, kStart1091, getCharIndex()-1);
+					k.setLine(kStartLine1091);
+					k.setCharPositionInLine(kStartCharPos1091);
 
-					int lStart1099 = getCharIndex();
-					int lStartLine1099 = getLine();
-					int lStartCharPos1099 = getCharPositionInLine();
+					int lStart1095 = getCharIndex();
+					int lStartLine1095 = getLine();
+					int lStartCharPos1095 = getCharPositionInLine();
 					mHEX_DIGIT(); 
-					l = new CommonToken(input, Token.INVALID_TOKEN_TYPE, Token.DEFAULT_CHANNEL, lStart1099, getCharIndex()-1);
-					l.setLine(lStartLine1099);
-					l.setCharPositionInLine(lStartCharPos1099);
+					l = new CommonToken(input, Token.INVALID_TOKEN_TYPE, Token.DEFAULT_CHANNEL, lStart1095, getCharIndex()-1);
+					l.setLine(lStartLine1095);
+					l.setCharPositionInLine(lStartCharPos1095);
 
 					setText(String.valueOf((char) Integer.parseInt(i.getText() + j.getText() + k.getText() + l.getText(), 16)));
 					}
@@ -2049,11 +2049,11 @@ public class SwanExpressionLexer extends Lexer {
 		try {
 			int _type = CONFIG_VAL;
 			int _channel = DEFAULT_TOKEN_CHANNEL;
-			// SwanExpression.g:435:5: ( '=' ( STRING | ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '/' | ':' | '=' | '&' | '_' | '\"' )* ) )
-			// SwanExpression.g:435:9: '=' ( STRING | ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '/' | ':' | '=' | '&' | '_' | '\"' )* )
+			// SwanExpression.g:436:5: ( '=' ( STRING | ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '/' | ':' | '=' | '&' | '_' | '\"' )* ) )
+			// SwanExpression.g:436:9: '=' ( STRING | ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '/' | ':' | '=' | '&' | '_' | '\"' )* )
 			{
 			match('='); 
-			// SwanExpression.g:435:13: ( STRING | ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '/' | ':' | '=' | '&' | '_' | '\"' )* )
+			// SwanExpression.g:436:13: ( STRING | ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '/' | ':' | '=' | '&' | '_' | '\"' )* )
 			int alt33=2;
 			int LA33_0 = input.LA(1);
 			if ( (LA33_0=='\'') ) {
@@ -2066,7 +2066,7 @@ public class SwanExpressionLexer extends Lexer {
 
 			switch (alt33) {
 				case 1 :
-					// SwanExpression.g:435:14: STRING
+					// SwanExpression.g:436:14: STRING
 					{
 					mSTRING(); 
 
@@ -2077,9 +2077,9 @@ public class SwanExpressionLexer extends Lexer {
 					}
 					break;
 				case 2 :
-					// SwanExpression.g:440:11: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '/' | ':' | '=' | '&' | '_' | '\"' )*
+					// SwanExpression.g:441:11: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '/' | ':' | '=' | '&' | '_' | '\"' )*
 					{
-					// SwanExpression.g:440:11: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '/' | ':' | '=' | '&' | '_' | '\"' )*
+					// SwanExpression.g:441:11: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '/' | ':' | '=' | '&' | '_' | '\"' )*
 					loop32:
 					while (true) {
 						int alt32=2;
@@ -2127,8 +2127,8 @@ public class SwanExpressionLexer extends Lexer {
 	// $ANTLR start "EXPONENT"
 	public final void mEXPONENT() throws RecognitionException {
 		try {
-			// SwanExpression.g:448:10: ( ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+ )
-			// SwanExpression.g:448:12: ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+
+			// SwanExpression.g:447:10: ( ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+ )
+			// SwanExpression.g:447:12: ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+
 			{
 			if ( input.LA(1)=='E'||input.LA(1)=='e' ) {
 				input.consume();
@@ -2138,7 +2138,7 @@ public class SwanExpressionLexer extends Lexer {
 				recover(mse);
 				throw mse;
 			}
-			// SwanExpression.g:448:22: ( '+' | '-' )?
+			// SwanExpression.g:447:22: ( '+' | '-' )?
 			int alt34=2;
 			int LA34_0 = input.LA(1);
 			if ( (LA34_0=='+'||LA34_0=='-') ) {
@@ -2161,7 +2161,7 @@ public class SwanExpressionLexer extends Lexer {
 
 			}
 
-			// SwanExpression.g:448:33: ( '0' .. '9' )+
+			// SwanExpression.g:447:33: ( '0' .. '9' )+
 			int cnt35=0;
 			loop35:
 			while (true) {
@@ -2206,7 +2206,7 @@ public class SwanExpressionLexer extends Lexer {
 	// $ANTLR start "HEX_DIGIT"
 	public final void mHEX_DIGIT() throws RecognitionException {
 		try {
-			// SwanExpression.g:451:11: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )
+			// SwanExpression.g:450:11: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )
 			// SwanExpression.g:
 			{
 			if ( (input.LA(1) >= '0' && input.LA(1) <= '9')||(input.LA(1) >= 'A' && input.LA(1) <= 'F')||(input.LA(1) >= 'a' && input.LA(1) <= 'f') ) {
@@ -2592,7 +2592,7 @@ public class SwanExpressionLexer extends Lexer {
 		}
 		@Override
 		public String getDescription() {
-			return "387:1: FLOAT : ( ( '-' )? ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( EXPONENT )? | ( '-' )? '.' ( '0' .. '9' )+ ( EXPONENT )? | ( '-' )? ( '0' .. '9' )+ EXPONENT );";
+			return "393:1: FLOAT : ( ( '-' )? ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( EXPONENT )? | ( '-' )? '.' ( '0' .. '9' )+ ( EXPONENT )? | ( '-' )? ( '0' .. '9' )+ EXPONENT );";
 		}
 	}
 

@@ -1,4 +1,4 @@
-// $ANTLR 3.5.2 SwanExpression.g 2015-12-24 10:51:10
+// $ANTLR 3.5.2 SwanExpression.g 2016-03-31 18:26:44
 
 package interdroid.swan.swansong;
 
@@ -943,7 +943,7 @@ public class SwanExpressionParser extends Parser {
 
 
 	// $ANTLR start "sensor_value_expression"
-	// SwanExpression.g:154:1: sensor_value_expression returns [SensorValueExpression value_expression] : (location= ID '@' entity= ID ':' path= value_path |location= ID '@' entity= ID ':' path= value_path '?' config= configuration_options |location= ID '@' entity= ID ':' path= value_path '$' http_config= http_configuration_options '{' ( (mode= history_mode ',' time= time_value ) |mode= history_mode |time= time_value ) '}' |location= ID '@' entity= ID ':' path= value_path '?' config= configuration_options '$' http_config= http_configuration_options '{' ( (mode= history_mode ',' time= time_value ) |mode= history_mode |time= time_value ) '}' );
+	// SwanExpression.g:154:1: sensor_value_expression returns [SensorValueExpression value_expression] : (location= ID '@' entity= ID ':' path= value_path |location= ID '@' entity= ID ':' path= value_path '?' config= configuration_options |location= ID '@' entity= ID ':' path= value_path '{' ( (mode= history_mode ',' time= time_value ) |mode= history_mode |time= time_value ) '}' |location= ID '@' entity= ID ':' path= value_path '$' http_config= http_configuration_options '{' ( (mode= history_mode ',' time= time_value ) |mode= history_mode |time= time_value ) '}' |location= ID '@' entity= ID ':' path= value_path '?' config= configuration_options '$' http_config= http_configuration_options '{' ( (mode= history_mode ',' time= time_value ) |mode= history_mode |time= time_value ) '}' );
 	public final SensorValueExpression sensor_value_expression() throws RecognitionException {
 		SensorValueExpression value_expression = null;
 
@@ -952,15 +952,15 @@ public class SwanExpressionParser extends Parser {
 		Token entity=null;
 		String path =null;
 		Bundle config =null;
-		Bundle http_config =null;
 		HistoryReductionMode mode =null;
 		Long time =null;
+		Bundle http_config =null;
 
 		try {
-			// SwanExpression.g:155:2: (location= ID '@' entity= ID ':' path= value_path |location= ID '@' entity= ID ':' path= value_path '?' config= configuration_options |location= ID '@' entity= ID ':' path= value_path '$' http_config= http_configuration_options '{' ( (mode= history_mode ',' time= time_value ) |mode= history_mode |time= time_value ) '}' |location= ID '@' entity= ID ':' path= value_path '?' config= configuration_options '$' http_config= http_configuration_options '{' ( (mode= history_mode ',' time= time_value ) |mode= history_mode |time= time_value ) '}' )
-			int alt14=4;
-			alt14 = dfa14.predict(input);
-			switch (alt14) {
+			// SwanExpression.g:155:2: (location= ID '@' entity= ID ':' path= value_path |location= ID '@' entity= ID ':' path= value_path '?' config= configuration_options |location= ID '@' entity= ID ':' path= value_path '{' ( (mode= history_mode ',' time= time_value ) |mode= history_mode |time= time_value ) '}' |location= ID '@' entity= ID ':' path= value_path '$' http_config= http_configuration_options '{' ( (mode= history_mode ',' time= time_value ) |mode= history_mode |time= time_value ) '}' |location= ID '@' entity= ID ':' path= value_path '?' config= configuration_options '$' http_config= http_configuration_options '{' ( (mode= history_mode ',' time= time_value ) |mode= history_mode |time= time_value ) '}' )
+			int alt15=5;
+			alt15 = dfa15.predict(input);
+			switch (alt15) {
 				case 1 :
 					// SwanExpression.g:155:4: location= ID '@' entity= ID ':' path= value_path
 					{
@@ -995,7 +995,7 @@ public class SwanExpressionParser extends Parser {
 					}
 					break;
 				case 3 :
-					// SwanExpression.g:159:4: location= ID '@' entity= ID ':' path= value_path '$' http_config= http_configuration_options '{' ( (mode= history_mode ',' time= time_value ) |mode= history_mode |time= time_value ) '}'
+					// SwanExpression.g:159:4: location= ID '@' entity= ID ':' path= value_path '{' ( (mode= history_mode ',' time= time_value ) |mode= history_mode |time= time_value ) '}'
 					{
 					location=(Token)match(input,ID,FOLLOW_ID_in_sensor_value_expression592); 
 					match(input,47,FOLLOW_47_in_sensor_value_expression594); 
@@ -1005,13 +1005,8 @@ public class SwanExpressionParser extends Parser {
 					path=value_path();
 					state._fsp--;
 
-					match(input,40,FOLLOW_40_in_sensor_value_expression606); 
-					pushFollow(FOLLOW_http_configuration_options_in_sensor_value_expression610);
-					http_config=http_configuration_options();
-					state._fsp--;
-
-					match(input,48,FOLLOW_48_in_sensor_value_expression612); 
-					// SwanExpression.g:159:97: ( (mode= history_mode ',' time= time_value ) |mode= history_mode |time= time_value )
+					match(input,48,FOLLOW_48_in_sensor_value_expression606); 
+					// SwanExpression.g:159:54: ( (mode= history_mode ',' time= time_value ) |mode= history_mode |time= time_value )
 					int alt12=3;
 					switch ( input.LA(1) ) {
 					case ALL:
@@ -1170,17 +1165,17 @@ public class SwanExpressionParser extends Parser {
 					}
 					switch (alt12) {
 						case 1 :
-							// SwanExpression.g:159:98: (mode= history_mode ',' time= time_value )
+							// SwanExpression.g:159:55: (mode= history_mode ',' time= time_value )
 							{
-							// SwanExpression.g:159:98: (mode= history_mode ',' time= time_value )
-							// SwanExpression.g:159:99: mode= history_mode ',' time= time_value
+							// SwanExpression.g:159:55: (mode= history_mode ',' time= time_value )
+							// SwanExpression.g:159:56: mode= history_mode ',' time= time_value
 							{
-							pushFollow(FOLLOW_history_mode_in_sensor_value_expression618);
+							pushFollow(FOLLOW_history_mode_in_sensor_value_expression612);
 							mode=history_mode();
 							state._fsp--;
 
-							match(input,43,FOLLOW_43_in_sensor_value_expression620); 
-							pushFollow(FOLLOW_time_value_in_sensor_value_expression624);
+							match(input,43,FOLLOW_43_in_sensor_value_expression614); 
+							pushFollow(FOLLOW_time_value_in_sensor_value_expression618);
 							time=time_value();
 							state._fsp--;
 
@@ -1189,18 +1184,18 @@ public class SwanExpressionParser extends Parser {
 							}
 							break;
 						case 2 :
-							// SwanExpression.g:159:140: mode= history_mode
+							// SwanExpression.g:159:97: mode= history_mode
 							{
-							pushFollow(FOLLOW_history_mode_in_sensor_value_expression631);
+							pushFollow(FOLLOW_history_mode_in_sensor_value_expression625);
 							mode=history_mode();
 							state._fsp--;
 
 							}
 							break;
 						case 3 :
-							// SwanExpression.g:159:160: time= time_value
+							// SwanExpression.g:159:117: time= time_value
 							{
-							pushFollow(FOLLOW_time_value_in_sensor_value_expression637);
+							pushFollow(FOLLOW_time_value_in_sensor_value_expression631);
 							time=time_value();
 							state._fsp--;
 
@@ -1209,37 +1204,32 @@ public class SwanExpressionParser extends Parser {
 
 					}
 
-					match(input,49,FOLLOW_49_in_sensor_value_expression640); 
+					match(input,49,FOLLOW_49_in_sensor_value_expression634); 
 					if (time == null) {
-									value_expression = new SensorValueExpression(location.getText(), entity.getText(), path /* .value_path */, null, mode /*.history_mode */, 0,http_config);
+									value_expression = new SensorValueExpression(location.getText(), entity.getText(), path /* .value_path */, null, mode /*.history_mode */, 0,null);
 								} else {
-									value_expression = new SensorValueExpression(location.getText(), entity.getText(), path /* .value_path */, null, mode /*.history_mode */, time,http_config);
+									value_expression = new SensorValueExpression(location.getText(), entity.getText(), path /* .value_path */, null, mode /*.history_mode */, time,null);
 								}
 					}
 					break;
 				case 4 :
-					// SwanExpression.g:165:4: location= ID '@' entity= ID ':' path= value_path '?' config= configuration_options '$' http_config= http_configuration_options '{' ( (mode= history_mode ',' time= time_value ) |mode= history_mode |time= time_value ) '}'
+					// SwanExpression.g:165:4: location= ID '@' entity= ID ':' path= value_path '$' http_config= http_configuration_options '{' ( (mode= history_mode ',' time= time_value ) |mode= history_mode |time= time_value ) '}'
 					{
-					location=(Token)match(input,ID,FOLLOW_ID_in_sensor_value_expression652); 
-					match(input,47,FOLLOW_47_in_sensor_value_expression654); 
-					entity=(Token)match(input,ID,FOLLOW_ID_in_sensor_value_expression658); 
-					match(input,45,FOLLOW_45_in_sensor_value_expression660); 
-					pushFollow(FOLLOW_value_path_in_sensor_value_expression664);
+					location=(Token)match(input,ID,FOLLOW_ID_in_sensor_value_expression647); 
+					match(input,47,FOLLOW_47_in_sensor_value_expression649); 
+					entity=(Token)match(input,ID,FOLLOW_ID_in_sensor_value_expression653); 
+					match(input,45,FOLLOW_45_in_sensor_value_expression655); 
+					pushFollow(FOLLOW_value_path_in_sensor_value_expression659);
 					path=value_path();
 					state._fsp--;
 
-					match(input,46,FOLLOW_46_in_sensor_value_expression666); 
-					pushFollow(FOLLOW_configuration_options_in_sensor_value_expression670);
-					config=configuration_options();
-					state._fsp--;
-
-					match(input,40,FOLLOW_40_in_sensor_value_expression672); 
-					pushFollow(FOLLOW_http_configuration_options_in_sensor_value_expression676);
+					match(input,40,FOLLOW_40_in_sensor_value_expression661); 
+					pushFollow(FOLLOW_http_configuration_options_in_sensor_value_expression665);
 					http_config=http_configuration_options();
 					state._fsp--;
 
-					match(input,48,FOLLOW_48_in_sensor_value_expression678); 
-					// SwanExpression.g:165:130: ( (mode= history_mode ',' time= time_value ) |mode= history_mode |time= time_value )
+					match(input,48,FOLLOW_48_in_sensor_value_expression667); 
+					// SwanExpression.g:165:97: ( (mode= history_mode ',' time= time_value ) |mode= history_mode |time= time_value )
 					int alt13=3;
 					switch ( input.LA(1) ) {
 					case ALL:
@@ -1398,17 +1388,17 @@ public class SwanExpressionParser extends Parser {
 					}
 					switch (alt13) {
 						case 1 :
-							// SwanExpression.g:165:131: (mode= history_mode ',' time= time_value )
+							// SwanExpression.g:165:98: (mode= history_mode ',' time= time_value )
 							{
-							// SwanExpression.g:165:131: (mode= history_mode ',' time= time_value )
-							// SwanExpression.g:165:132: mode= history_mode ',' time= time_value
+							// SwanExpression.g:165:98: (mode= history_mode ',' time= time_value )
+							// SwanExpression.g:165:99: mode= history_mode ',' time= time_value
 							{
-							pushFollow(FOLLOW_history_mode_in_sensor_value_expression684);
+							pushFollow(FOLLOW_history_mode_in_sensor_value_expression673);
 							mode=history_mode();
 							state._fsp--;
 
-							match(input,43,FOLLOW_43_in_sensor_value_expression686); 
-							pushFollow(FOLLOW_time_value_in_sensor_value_expression690);
+							match(input,43,FOLLOW_43_in_sensor_value_expression675); 
+							pushFollow(FOLLOW_time_value_in_sensor_value_expression679);
 							time=time_value();
 							state._fsp--;
 
@@ -1417,18 +1407,18 @@ public class SwanExpressionParser extends Parser {
 							}
 							break;
 						case 2 :
-							// SwanExpression.g:165:173: mode= history_mode
+							// SwanExpression.g:165:140: mode= history_mode
 							{
-							pushFollow(FOLLOW_history_mode_in_sensor_value_expression697);
+							pushFollow(FOLLOW_history_mode_in_sensor_value_expression686);
 							mode=history_mode();
 							state._fsp--;
 
 							}
 							break;
 						case 3 :
-							// SwanExpression.g:165:193: time= time_value
+							// SwanExpression.g:165:160: time= time_value
 							{
-							pushFollow(FOLLOW_time_value_in_sensor_value_expression703);
+							pushFollow(FOLLOW_time_value_in_sensor_value_expression692);
 							time=time_value();
 							state._fsp--;
 
@@ -1437,7 +1427,235 @@ public class SwanExpressionParser extends Parser {
 
 					}
 
-					match(input,49,FOLLOW_49_in_sensor_value_expression706); 
+					match(input,49,FOLLOW_49_in_sensor_value_expression695); 
+					if (time == null) {
+									value_expression = new SensorValueExpression(location.getText(), entity.getText(), path /* .value_path */, null, mode /*.history_mode */, 0,http_config);
+								} else {
+									value_expression = new SensorValueExpression(location.getText(), entity.getText(), path /* .value_path */, null, mode /*.history_mode */, time,http_config);
+								}
+					}
+					break;
+				case 5 :
+					// SwanExpression.g:171:4: location= ID '@' entity= ID ':' path= value_path '?' config= configuration_options '$' http_config= http_configuration_options '{' ( (mode= history_mode ',' time= time_value ) |mode= history_mode |time= time_value ) '}'
+					{
+					location=(Token)match(input,ID,FOLLOW_ID_in_sensor_value_expression707); 
+					match(input,47,FOLLOW_47_in_sensor_value_expression709); 
+					entity=(Token)match(input,ID,FOLLOW_ID_in_sensor_value_expression713); 
+					match(input,45,FOLLOW_45_in_sensor_value_expression715); 
+					pushFollow(FOLLOW_value_path_in_sensor_value_expression719);
+					path=value_path();
+					state._fsp--;
+
+					match(input,46,FOLLOW_46_in_sensor_value_expression721); 
+					pushFollow(FOLLOW_configuration_options_in_sensor_value_expression725);
+					config=configuration_options();
+					state._fsp--;
+
+					match(input,40,FOLLOW_40_in_sensor_value_expression727); 
+					pushFollow(FOLLOW_http_configuration_options_in_sensor_value_expression731);
+					http_config=http_configuration_options();
+					state._fsp--;
+
+					match(input,48,FOLLOW_48_in_sensor_value_expression733); 
+					// SwanExpression.g:171:130: ( (mode= history_mode ',' time= time_value ) |mode= history_mode |time= time_value )
+					int alt14=3;
+					switch ( input.LA(1) ) {
+					case ALL:
+						{
+						int LA14_1 = input.LA(2);
+						if ( (LA14_1==43) ) {
+							alt14=1;
+						}
+						else if ( (LA14_1==49) ) {
+							alt14=2;
+						}
+
+						else {
+							int nvaeMark = input.mark();
+							try {
+								input.consume();
+								NoViableAltException nvae =
+									new NoViableAltException("", 14, 1, input);
+								throw nvae;
+							} finally {
+								input.rewind(nvaeMark);
+							}
+						}
+
+						}
+						break;
+					case MAX:
+						{
+						int LA14_2 = input.LA(2);
+						if ( (LA14_2==43) ) {
+							alt14=1;
+						}
+						else if ( (LA14_2==49) ) {
+							alt14=2;
+						}
+
+						else {
+							int nvaeMark = input.mark();
+							try {
+								input.consume();
+								NoViableAltException nvae =
+									new NoViableAltException("", 14, 2, input);
+								throw nvae;
+							} finally {
+								input.rewind(nvaeMark);
+							}
+						}
+
+						}
+						break;
+					case MIN:
+						{
+						int LA14_3 = input.LA(2);
+						if ( (LA14_3==43) ) {
+							alt14=1;
+						}
+						else if ( (LA14_3==49) ) {
+							alt14=2;
+						}
+
+						else {
+							int nvaeMark = input.mark();
+							try {
+								input.consume();
+								NoViableAltException nvae =
+									new NoViableAltException("", 14, 3, input);
+								throw nvae;
+							} finally {
+								input.rewind(nvaeMark);
+							}
+						}
+
+						}
+						break;
+					case MEAN:
+						{
+						int LA14_4 = input.LA(2);
+						if ( (LA14_4==43) ) {
+							alt14=1;
+						}
+						else if ( (LA14_4==49) ) {
+							alt14=2;
+						}
+
+						else {
+							int nvaeMark = input.mark();
+							try {
+								input.consume();
+								NoViableAltException nvae =
+									new NoViableAltException("", 14, 4, input);
+								throw nvae;
+							} finally {
+								input.rewind(nvaeMark);
+							}
+						}
+
+						}
+						break;
+					case MEDIAN:
+						{
+						int LA14_5 = input.LA(2);
+						if ( (LA14_5==43) ) {
+							alt14=1;
+						}
+						else if ( (LA14_5==49) ) {
+							alt14=2;
+						}
+
+						else {
+							int nvaeMark = input.mark();
+							try {
+								input.consume();
+								NoViableAltException nvae =
+									new NoViableAltException("", 14, 5, input);
+								throw nvae;
+							} finally {
+								input.rewind(nvaeMark);
+							}
+						}
+
+						}
+						break;
+					case ANY:
+						{
+						int LA14_6 = input.LA(2);
+						if ( (LA14_6==43) ) {
+							alt14=1;
+						}
+						else if ( (LA14_6==49) ) {
+							alt14=2;
+						}
+
+						else {
+							int nvaeMark = input.mark();
+							try {
+								input.consume();
+								NoViableAltException nvae =
+									new NoViableAltException("", 14, 6, input);
+								throw nvae;
+							} finally {
+								input.rewind(nvaeMark);
+							}
+						}
+
+						}
+						break;
+					case INT:
+						{
+						alt14=3;
+						}
+						break;
+					default:
+						NoViableAltException nvae =
+							new NoViableAltException("", 14, 0, input);
+						throw nvae;
+					}
+					switch (alt14) {
+						case 1 :
+							// SwanExpression.g:171:131: (mode= history_mode ',' time= time_value )
+							{
+							// SwanExpression.g:171:131: (mode= history_mode ',' time= time_value )
+							// SwanExpression.g:171:132: mode= history_mode ',' time= time_value
+							{
+							pushFollow(FOLLOW_history_mode_in_sensor_value_expression739);
+							mode=history_mode();
+							state._fsp--;
+
+							match(input,43,FOLLOW_43_in_sensor_value_expression741); 
+							pushFollow(FOLLOW_time_value_in_sensor_value_expression745);
+							time=time_value();
+							state._fsp--;
+
+							}
+
+							}
+							break;
+						case 2 :
+							// SwanExpression.g:171:173: mode= history_mode
+							{
+							pushFollow(FOLLOW_history_mode_in_sensor_value_expression752);
+							mode=history_mode();
+							state._fsp--;
+
+							}
+							break;
+						case 3 :
+							// SwanExpression.g:171:193: time= time_value
+							{
+							pushFollow(FOLLOW_time_value_in_sensor_value_expression758);
+							time=time_value();
+							state._fsp--;
+
+							}
+							break;
+
+					}
+
+					match(input,49,FOLLOW_49_in_sensor_value_expression761); 
 					if (time == null) {
 									value_expression = new SensorValueExpression(location.getText(), entity.getText(), path /* .value_path */ , config /*.configuration */ , mode /* .history_mode */, 0,http_config);
 								} else {
@@ -1462,7 +1680,7 @@ public class SwanExpressionParser extends Parser {
 
 
 	// $ANTLR start "constant_value_expression"
-	// SwanExpression.g:173:1: constant_value_expression returns [ConstantValueExpression value_expression] : (i= INT |f= FLOAT |raw= STRING );
+	// SwanExpression.g:179:1: constant_value_expression returns [ConstantValueExpression value_expression] : (i= INT |f= FLOAT |raw= STRING );
 	public final ConstantValueExpression constant_value_expression() throws RecognitionException {
 		ConstantValueExpression value_expression = null;
 
@@ -1472,48 +1690,48 @@ public class SwanExpressionParser extends Parser {
 		Token raw=null;
 
 		try {
-			// SwanExpression.g:174:2: (i= INT |f= FLOAT |raw= STRING )
-			int alt15=3;
+			// SwanExpression.g:180:2: (i= INT |f= FLOAT |raw= STRING )
+			int alt16=3;
 			switch ( input.LA(1) ) {
 			case INT:
 				{
-				alt15=1;
+				alt16=1;
 				}
 				break;
 			case FLOAT:
 				{
-				alt15=2;
+				alt16=2;
 				}
 				break;
 			case STRING:
 				{
-				alt15=3;
+				alt16=3;
 				}
 				break;
 			default:
 				NoViableAltException nvae =
-					new NoViableAltException("", 15, 0, input);
+					new NoViableAltException("", 16, 0, input);
 				throw nvae;
 			}
-			switch (alt15) {
+			switch (alt16) {
 				case 1 :
-					// SwanExpression.g:174:4: i= INT
+					// SwanExpression.g:180:4: i= INT
 					{
-					i=(Token)match(input,INT,FOLLOW_INT_in_constant_value_expression728); 
+					i=(Token)match(input,INT,FOLLOW_INT_in_constant_value_expression783); 
 					value_expression = new ConstantValueExpression(Long.parseLong(i.getText()));
 					}
 					break;
 				case 2 :
-					// SwanExpression.g:176:4: f= FLOAT
+					// SwanExpression.g:182:4: f= FLOAT
 					{
-					f=(Token)match(input,FLOAT,FOLLOW_FLOAT_in_constant_value_expression741); 
+					f=(Token)match(input,FLOAT,FOLLOW_FLOAT_in_constant_value_expression796); 
 					value_expression = new ConstantValueExpression(Double.parseDouble(f.getText()));
 					}
 					break;
 				case 3 :
-					// SwanExpression.g:178:5: raw= STRING
+					// SwanExpression.g:184:5: raw= STRING
 					{
-					raw=(Token)match(input,STRING,FOLLOW_STRING_in_constant_value_expression755); 
+					raw=(Token)match(input,STRING,FOLLOW_STRING_in_constant_value_expression810); 
 					value_expression = new ConstantValueExpression(raw.getText());
 					}
 					break;
@@ -1534,7 +1752,7 @@ public class SwanExpressionParser extends Parser {
 
 
 	// $ANTLR start "value_expression"
-	// SwanExpression.g:182:1: value_expression returns [ValueExpression value_expression] : (constant= constant_value_expression |sensor= sensor_value_expression );
+	// SwanExpression.g:188:1: value_expression returns [ValueExpression value_expression] : (constant= constant_value_expression |sensor= sensor_value_expression );
 	public final ValueExpression value_expression() throws RecognitionException {
 		ValueExpression value_expression = null;
 
@@ -1543,27 +1761,27 @@ public class SwanExpressionParser extends Parser {
 		SensorValueExpression sensor =null;
 
 		try {
-			// SwanExpression.g:183:2: (constant= constant_value_expression |sensor= sensor_value_expression )
-			int alt16=2;
-			int LA16_0 = input.LA(1);
-			if ( (LA16_0==FLOAT||LA16_0==INT||LA16_0==STRING) ) {
-				alt16=1;
+			// SwanExpression.g:189:2: (constant= constant_value_expression |sensor= sensor_value_expression )
+			int alt17=2;
+			int LA17_0 = input.LA(1);
+			if ( (LA17_0==FLOAT||LA17_0==INT||LA17_0==STRING) ) {
+				alt17=1;
 			}
-			else if ( (LA16_0==ID) ) {
-				alt16=2;
+			else if ( (LA17_0==ID) ) {
+				alt17=2;
 			}
 
 			else {
 				NoViableAltException nvae =
-					new NoViableAltException("", 16, 0, input);
+					new NoViableAltException("", 17, 0, input);
 				throw nvae;
 			}
 
-			switch (alt16) {
+			switch (alt17) {
 				case 1 :
-					// SwanExpression.g:183:4: constant= constant_value_expression
+					// SwanExpression.g:189:4: constant= constant_value_expression
 					{
-					pushFollow(FOLLOW_constant_value_expression_in_value_expression778);
+					pushFollow(FOLLOW_constant_value_expression_in_value_expression833);
 					constant=constant_value_expression();
 					state._fsp--;
 
@@ -1571,9 +1789,9 @@ public class SwanExpressionParser extends Parser {
 					}
 					break;
 				case 2 :
-					// SwanExpression.g:185:5: sensor= sensor_value_expression
+					// SwanExpression.g:191:5: sensor= sensor_value_expression
 					{
-					pushFollow(FOLLOW_sensor_value_expression_in_value_expression792);
+					pushFollow(FOLLOW_sensor_value_expression_in_value_expression847);
 					sensor=sensor_value_expression();
 					state._fsp--;
 
@@ -1597,7 +1815,7 @@ public class SwanExpressionParser extends Parser {
 
 
 	// $ANTLR start "parentheticalExpression"
-	// SwanExpression.g:189:1: parentheticalExpression returns [Expression expression] : (val= value_expression | '(' ( WS )* exp= orExpression ( WS )* ')' );
+	// SwanExpression.g:195:1: parentheticalExpression returns [Expression expression] : (val= value_expression | '(' ( WS )* exp= orExpression ( WS )* ')' );
 	public final Expression parentheticalExpression() throws RecognitionException {
 		Expression expression = null;
 
@@ -1606,27 +1824,27 @@ public class SwanExpressionParser extends Parser {
 		Expression exp =null;
 
 		try {
-			// SwanExpression.g:190:5: (val= value_expression | '(' ( WS )* exp= orExpression ( WS )* ')' )
-			int alt19=2;
-			int LA19_0 = input.LA(1);
-			if ( (LA19_0==FLOAT||(LA19_0 >= ID && LA19_0 <= INT)||LA19_0==STRING) ) {
-				alt19=1;
+			// SwanExpression.g:196:5: (val= value_expression | '(' ( WS )* exp= orExpression ( WS )* ')' )
+			int alt20=2;
+			int LA20_0 = input.LA(1);
+			if ( (LA20_0==FLOAT||(LA20_0 >= ID && LA20_0 <= INT)||LA20_0==STRING) ) {
+				alt20=1;
 			}
-			else if ( (LA19_0==41) ) {
-				alt19=2;
+			else if ( (LA20_0==41) ) {
+				alt20=2;
 			}
 
 			else {
 				NoViableAltException nvae =
-					new NoViableAltException("", 19, 0, input);
+					new NoViableAltException("", 20, 0, input);
 				throw nvae;
 			}
 
-			switch (alt19) {
+			switch (alt20) {
 				case 1 :
-					// SwanExpression.g:190:9: val= value_expression
+					// SwanExpression.g:196:9: val= value_expression
 					{
-					pushFollow(FOLLOW_value_expression_in_parentheticalExpression821);
+					pushFollow(FOLLOW_value_expression_in_parentheticalExpression876);
 					val=value_expression();
 					state._fsp--;
 
@@ -1634,36 +1852,10 @@ public class SwanExpressionParser extends Parser {
 					}
 					break;
 				case 2 :
-					// SwanExpression.g:192:9: '(' ( WS )* exp= orExpression ( WS )* ')'
+					// SwanExpression.g:198:9: '(' ( WS )* exp= orExpression ( WS )* ')'
 					{
-					match(input,41,FOLLOW_41_in_parentheticalExpression846); 
-					// SwanExpression.g:192:13: ( WS )*
-					loop17:
-					while (true) {
-						int alt17=2;
-						int LA17_0 = input.LA(1);
-						if ( (LA17_0==WS) ) {
-							alt17=1;
-						}
-
-						switch (alt17) {
-						case 1 :
-							// SwanExpression.g:192:13: WS
-							{
-							match(input,WS,FOLLOW_WS_in_parentheticalExpression848); 
-							}
-							break;
-
-						default :
-							break loop17;
-						}
-					}
-
-					pushFollow(FOLLOW_orExpression_in_parentheticalExpression853);
-					exp=orExpression();
-					state._fsp--;
-
-					// SwanExpression.g:192:34: ( WS )*
+					match(input,41,FOLLOW_41_in_parentheticalExpression901); 
+					// SwanExpression.g:198:13: ( WS )*
 					loop18:
 					while (true) {
 						int alt18=2;
@@ -1674,9 +1866,9 @@ public class SwanExpressionParser extends Parser {
 
 						switch (alt18) {
 						case 1 :
-							// SwanExpression.g:192:34: WS
+							// SwanExpression.g:198:13: WS
 							{
-							match(input,WS,FOLLOW_WS_in_parentheticalExpression855); 
+							match(input,WS,FOLLOW_WS_in_parentheticalExpression903); 
 							}
 							break;
 
@@ -1685,7 +1877,33 @@ public class SwanExpressionParser extends Parser {
 						}
 					}
 
-					match(input,42,FOLLOW_42_in_parentheticalExpression858); 
+					pushFollow(FOLLOW_orExpression_in_parentheticalExpression908);
+					exp=orExpression();
+					state._fsp--;
+
+					// SwanExpression.g:198:34: ( WS )*
+					loop19:
+					while (true) {
+						int alt19=2;
+						int LA19_0 = input.LA(1);
+						if ( (LA19_0==WS) ) {
+							alt19=1;
+						}
+
+						switch (alt19) {
+						case 1 :
+							// SwanExpression.g:198:34: WS
+							{
+							match(input,WS,FOLLOW_WS_in_parentheticalExpression910); 
+							}
+							break;
+
+						default :
+							break loop19;
+						}
+					}
+
+					match(input,42,FOLLOW_42_in_parentheticalExpression913); 
 					expression = exp /* .expression */ ;
 					}
 					break;
@@ -1706,7 +1924,7 @@ public class SwanExpressionParser extends Parser {
 
 
 	// $ANTLR start "multiplicativeExpression"
-	// SwanExpression.g:196:1: multiplicativeExpression returns [Expression expression] : left= parentheticalExpression ( ( WS )* (location= ID '@' )? op= multiplicative_math_operator ( WS )* right= parentheticalExpression )* ;
+	// SwanExpression.g:202:1: multiplicativeExpression returns [Expression expression] : left= parentheticalExpression ( ( WS )* (location= ID '@' )? op= multiplicative_math_operator ( WS )* right= parentheticalExpression )* ;
 	public final Expression multiplicativeExpression() throws RecognitionException {
 		Expression expression = null;
 
@@ -1722,88 +1940,88 @@ public class SwanExpressionParser extends Parser {
 		    Stack<String> locationStack = new Stack<String>();
 
 		try {
-			// SwanExpression.g:202:5: (left= parentheticalExpression ( ( WS )* (location= ID '@' )? op= multiplicative_math_operator ( WS )* right= parentheticalExpression )* )
-			// SwanExpression.g:202:7: left= parentheticalExpression ( ( WS )* (location= ID '@' )? op= multiplicative_math_operator ( WS )* right= parentheticalExpression )*
+			// SwanExpression.g:208:5: (left= parentheticalExpression ( ( WS )* (location= ID '@' )? op= multiplicative_math_operator ( WS )* right= parentheticalExpression )* )
+			// SwanExpression.g:208:7: left= parentheticalExpression ( ( WS )* (location= ID '@' )? op= multiplicative_math_operator ( WS )* right= parentheticalExpression )*
 			{
-			pushFollow(FOLLOW_parentheticalExpression_in_multiplicativeExpression905);
+			pushFollow(FOLLOW_parentheticalExpression_in_multiplicativeExpression960);
 			left=parentheticalExpression();
 			state._fsp--;
 
-			// SwanExpression.g:203:5: ( ( WS )* (location= ID '@' )? op= multiplicative_math_operator ( WS )* right= parentheticalExpression )*
-			loop23:
+			// SwanExpression.g:209:5: ( ( WS )* (location= ID '@' )? op= multiplicative_math_operator ( WS )* right= parentheticalExpression )*
+			loop24:
 			while (true) {
-				int alt23=2;
-				alt23 = dfa23.predict(input);
-				switch (alt23) {
+				int alt24=2;
+				alt24 = dfa24.predict(input);
+				switch (alt24) {
 				case 1 :
-					// SwanExpression.g:203:6: ( WS )* (location= ID '@' )? op= multiplicative_math_operator ( WS )* right= parentheticalExpression
+					// SwanExpression.g:209:6: ( WS )* (location= ID '@' )? op= multiplicative_math_operator ( WS )* right= parentheticalExpression
 					{
-					// SwanExpression.g:203:6: ( WS )*
-					loop20:
+					// SwanExpression.g:209:6: ( WS )*
+					loop21:
 					while (true) {
-						int alt20=2;
-						int LA20_0 = input.LA(1);
-						if ( (LA20_0==WS) ) {
-							alt20=1;
+						int alt21=2;
+						int LA21_0 = input.LA(1);
+						if ( (LA21_0==WS) ) {
+							alt21=1;
 						}
 
-						switch (alt20) {
+						switch (alt21) {
 						case 1 :
-							// SwanExpression.g:203:6: WS
+							// SwanExpression.g:209:6: WS
 							{
-							match(input,WS,FOLLOW_WS_in_multiplicativeExpression912); 
+							match(input,WS,FOLLOW_WS_in_multiplicativeExpression967); 
 							}
 							break;
 
 						default :
-							break loop20;
+							break loop21;
 						}
 					}
 
-					// SwanExpression.g:203:10: (location= ID '@' )?
-					int alt21=2;
-					int LA21_0 = input.LA(1);
-					if ( (LA21_0==ID) ) {
-						alt21=1;
+					// SwanExpression.g:209:10: (location= ID '@' )?
+					int alt22=2;
+					int LA22_0 = input.LA(1);
+					if ( (LA22_0==ID) ) {
+						alt22=1;
 					}
-					switch (alt21) {
+					switch (alt22) {
 						case 1 :
-							// SwanExpression.g:203:11: location= ID '@'
+							// SwanExpression.g:209:11: location= ID '@'
 							{
-							location=(Token)match(input,ID,FOLLOW_ID_in_multiplicativeExpression918); 
-							match(input,47,FOLLOW_47_in_multiplicativeExpression920); 
+							location=(Token)match(input,ID,FOLLOW_ID_in_multiplicativeExpression973); 
+							match(input,47,FOLLOW_47_in_multiplicativeExpression975); 
 							}
 							break;
 
 					}
 
-					pushFollow(FOLLOW_multiplicative_math_operator_in_multiplicativeExpression926);
+					pushFollow(FOLLOW_multiplicative_math_operator_in_multiplicativeExpression981);
 					op=multiplicative_math_operator();
 					state._fsp--;
 
-					// SwanExpression.g:203:61: ( WS )*
-					loop22:
+					// SwanExpression.g:209:61: ( WS )*
+					loop23:
 					while (true) {
-						int alt22=2;
-						int LA22_0 = input.LA(1);
-						if ( (LA22_0==WS) ) {
-							alt22=1;
+						int alt23=2;
+						int LA23_0 = input.LA(1);
+						if ( (LA23_0==WS) ) {
+							alt23=1;
 						}
 
-						switch (alt22) {
+						switch (alt23) {
 						case 1 :
-							// SwanExpression.g:203:61: WS
+							// SwanExpression.g:209:61: WS
 							{
-							match(input,WS,FOLLOW_WS_in_multiplicativeExpression928); 
+							match(input,WS,FOLLOW_WS_in_multiplicativeExpression983); 
 							}
 							break;
 
 						default :
-							break loop22;
+							break loop23;
 						}
 					}
 
-					pushFollow(FOLLOW_parentheticalExpression_in_multiplicativeExpression933);
+					pushFollow(FOLLOW_parentheticalExpression_in_multiplicativeExpression988);
 					right=parentheticalExpression();
 					state._fsp--;
 
@@ -1812,7 +2030,7 @@ public class SwanExpressionParser extends Parser {
 					break;
 
 				default :
-					break loop23;
+					break loop24;
 				}
 			}
 
@@ -1844,7 +2062,7 @@ public class SwanExpressionParser extends Parser {
 
 
 	// $ANTLR start "additiveExpression"
-	// SwanExpression.g:219:1: additiveExpression returns [Expression expression] : left= multiplicativeExpression ( (location= ID '@' )? op= additive_math_operator right= multiplicativeExpression )* ;
+	// SwanExpression.g:225:1: additiveExpression returns [Expression expression] : left= multiplicativeExpression ( (location= ID '@' )? op= additive_math_operator right= multiplicativeExpression )* ;
 	public final Expression additiveExpression() throws RecognitionException {
 		Expression expression = null;
 
@@ -1860,59 +2078,59 @@ public class SwanExpressionParser extends Parser {
 		    Stack<String> locationStack = new Stack<String>();
 
 		try {
-			// SwanExpression.g:225:5: (left= multiplicativeExpression ( (location= ID '@' )? op= additive_math_operator right= multiplicativeExpression )* )
-			// SwanExpression.g:225:7: left= multiplicativeExpression ( (location= ID '@' )? op= additive_math_operator right= multiplicativeExpression )*
+			// SwanExpression.g:231:5: (left= multiplicativeExpression ( (location= ID '@' )? op= additive_math_operator right= multiplicativeExpression )* )
+			// SwanExpression.g:231:7: left= multiplicativeExpression ( (location= ID '@' )? op= additive_math_operator right= multiplicativeExpression )*
 			{
-			pushFollow(FOLLOW_multiplicativeExpression_in_additiveExpression981);
+			pushFollow(FOLLOW_multiplicativeExpression_in_additiveExpression1036);
 			left=multiplicativeExpression();
 			state._fsp--;
 
-			// SwanExpression.g:226:5: ( (location= ID '@' )? op= additive_math_operator right= multiplicativeExpression )*
-			loop25:
+			// SwanExpression.g:232:5: ( (location= ID '@' )? op= additive_math_operator right= multiplicativeExpression )*
+			loop26:
 			while (true) {
-				int alt25=2;
-				int LA25_0 = input.LA(1);
-				if ( (LA25_0==ID) ) {
-					int LA25_2 = input.LA(2);
-					if ( (LA25_2==47) ) {
-						int LA25_4 = input.LA(3);
-						if ( (LA25_4==MINUS||LA25_4==PLUS) ) {
-							alt25=1;
+				int alt26=2;
+				int LA26_0 = input.LA(1);
+				if ( (LA26_0==ID) ) {
+					int LA26_2 = input.LA(2);
+					if ( (LA26_2==47) ) {
+						int LA26_4 = input.LA(3);
+						if ( (LA26_4==MINUS||LA26_4==PLUS) ) {
+							alt26=1;
 						}
 
 					}
 
 				}
-				else if ( (LA25_0==MINUS||LA25_0==PLUS) ) {
-					alt25=1;
+				else if ( (LA26_0==MINUS||LA26_0==PLUS) ) {
+					alt26=1;
 				}
 
-				switch (alt25) {
+				switch (alt26) {
 				case 1 :
-					// SwanExpression.g:226:6: (location= ID '@' )? op= additive_math_operator right= multiplicativeExpression
+					// SwanExpression.g:232:6: (location= ID '@' )? op= additive_math_operator right= multiplicativeExpression
 					{
-					// SwanExpression.g:226:6: (location= ID '@' )?
-					int alt24=2;
-					int LA24_0 = input.LA(1);
-					if ( (LA24_0==ID) ) {
-						alt24=1;
+					// SwanExpression.g:232:6: (location= ID '@' )?
+					int alt25=2;
+					int LA25_0 = input.LA(1);
+					if ( (LA25_0==ID) ) {
+						alt25=1;
 					}
-					switch (alt24) {
+					switch (alt25) {
 						case 1 :
-							// SwanExpression.g:226:7: location= ID '@'
+							// SwanExpression.g:232:7: location= ID '@'
 							{
-							location=(Token)match(input,ID,FOLLOW_ID_in_additiveExpression991); 
-							match(input,47,FOLLOW_47_in_additiveExpression993); 
+							location=(Token)match(input,ID,FOLLOW_ID_in_additiveExpression1046); 
+							match(input,47,FOLLOW_47_in_additiveExpression1048); 
 							}
 							break;
 
 					}
 
-					pushFollow(FOLLOW_additive_math_operator_in_additiveExpression999);
+					pushFollow(FOLLOW_additive_math_operator_in_additiveExpression1054);
 					op=additive_math_operator();
 					state._fsp--;
 
-					pushFollow(FOLLOW_multiplicativeExpression_in_additiveExpression1003);
+					pushFollow(FOLLOW_multiplicativeExpression_in_additiveExpression1058);
 					right=multiplicativeExpression();
 					state._fsp--;
 
@@ -1921,7 +2139,7 @@ public class SwanExpressionParser extends Parser {
 					break;
 
 				default :
-					break loop25;
+					break loop26;
 				}
 			}
 
@@ -1953,7 +2171,7 @@ public class SwanExpressionParser extends Parser {
 
 
 	// $ANTLR start "comparativeExpression"
-	// SwanExpression.g:242:1: comparativeExpression returns [Expression expression] : left= additiveExpression ( ( WS )* ( (location= ID )? c= comparator ) ( WS )* right= additiveExpression )? ;
+	// SwanExpression.g:248:1: comparativeExpression returns [Expression expression] : left= additiveExpression ( ( WS )* ( (location= ID )? c= comparator ) ( WS )* right= additiveExpression )? ;
 	public final Expression comparativeExpression() throws RecognitionException {
 		Expression expression = null;
 
@@ -1969,90 +2187,90 @@ public class SwanExpressionParser extends Parser {
 		    Stack<String> locationStack = new Stack<String>();
 
 		try {
-			// SwanExpression.g:248:5: (left= additiveExpression ( ( WS )* ( (location= ID )? c= comparator ) ( WS )* right= additiveExpression )? )
-			// SwanExpression.g:248:7: left= additiveExpression ( ( WS )* ( (location= ID )? c= comparator ) ( WS )* right= additiveExpression )?
+			// SwanExpression.g:254:5: (left= additiveExpression ( ( WS )* ( (location= ID )? c= comparator ) ( WS )* right= additiveExpression )? )
+			// SwanExpression.g:254:7: left= additiveExpression ( ( WS )* ( (location= ID )? c= comparator ) ( WS )* right= additiveExpression )?
 			{
-			pushFollow(FOLLOW_additiveExpression_in_comparativeExpression1051);
+			pushFollow(FOLLOW_additiveExpression_in_comparativeExpression1106);
 			left=additiveExpression();
 			state._fsp--;
 
-			// SwanExpression.g:249:5: ( ( WS )* ( (location= ID )? c= comparator ) ( WS )* right= additiveExpression )?
-			int alt29=2;
-			alt29 = dfa29.predict(input);
-			switch (alt29) {
+			// SwanExpression.g:255:5: ( ( WS )* ( (location= ID )? c= comparator ) ( WS )* right= additiveExpression )?
+			int alt30=2;
+			alt30 = dfa30.predict(input);
+			switch (alt30) {
 				case 1 :
-					// SwanExpression.g:249:6: ( WS )* ( (location= ID )? c= comparator ) ( WS )* right= additiveExpression
+					// SwanExpression.g:255:6: ( WS )* ( (location= ID )? c= comparator ) ( WS )* right= additiveExpression
 					{
-					// SwanExpression.g:249:6: ( WS )*
-					loop26:
+					// SwanExpression.g:255:6: ( WS )*
+					loop27:
 					while (true) {
-						int alt26=2;
-						int LA26_0 = input.LA(1);
-						if ( (LA26_0==WS) ) {
-							alt26=1;
+						int alt27=2;
+						int LA27_0 = input.LA(1);
+						if ( (LA27_0==WS) ) {
+							alt27=1;
 						}
 
-						switch (alt26) {
+						switch (alt27) {
 						case 1 :
-							// SwanExpression.g:249:6: WS
+							// SwanExpression.g:255:6: WS
 							{
-							match(input,WS,FOLLOW_WS_in_comparativeExpression1058); 
+							match(input,WS,FOLLOW_WS_in_comparativeExpression1113); 
 							}
 							break;
 
 						default :
-							break loop26;
+							break loop27;
 						}
 					}
 
-					// SwanExpression.g:249:10: ( (location= ID )? c= comparator )
-					// SwanExpression.g:249:11: (location= ID )? c= comparator
+					// SwanExpression.g:255:10: ( (location= ID )? c= comparator )
+					// SwanExpression.g:255:11: (location= ID )? c= comparator
 					{
-					// SwanExpression.g:249:11: (location= ID )?
-					int alt27=2;
-					int LA27_0 = input.LA(1);
-					if ( (LA27_0==ID) ) {
-						alt27=1;
+					// SwanExpression.g:255:11: (location= ID )?
+					int alt28=2;
+					int LA28_0 = input.LA(1);
+					if ( (LA28_0==ID) ) {
+						alt28=1;
 					}
-					switch (alt27) {
+					switch (alt28) {
 						case 1 :
-							// SwanExpression.g:249:12: location= ID
+							// SwanExpression.g:255:12: location= ID
 							{
-							location=(Token)match(input,ID,FOLLOW_ID_in_comparativeExpression1065); 
+							location=(Token)match(input,ID,FOLLOW_ID_in_comparativeExpression1120); 
 							}
 							break;
 
 					}
 
-					pushFollow(FOLLOW_comparator_in_comparativeExpression1071);
+					pushFollow(FOLLOW_comparator_in_comparativeExpression1126);
 					c=comparator();
 					state._fsp--;
 
 					}
 
-					// SwanExpression.g:249:40: ( WS )*
-					loop28:
+					// SwanExpression.g:255:40: ( WS )*
+					loop29:
 					while (true) {
-						int alt28=2;
-						int LA28_0 = input.LA(1);
-						if ( (LA28_0==WS) ) {
-							alt28=1;
+						int alt29=2;
+						int LA29_0 = input.LA(1);
+						if ( (LA29_0==WS) ) {
+							alt29=1;
 						}
 
-						switch (alt28) {
+						switch (alt29) {
 						case 1 :
-							// SwanExpression.g:249:40: WS
+							// SwanExpression.g:255:40: WS
 							{
-							match(input,WS,FOLLOW_WS_in_comparativeExpression1074); 
+							match(input,WS,FOLLOW_WS_in_comparativeExpression1129); 
 							}
 							break;
 
 						default :
-							break loop28;
+							break loop29;
 						}
 					}
 
-					pushFollow(FOLLOW_additiveExpression_in_comparativeExpression1079);
+					pushFollow(FOLLOW_additiveExpression_in_comparativeExpression1134);
 					right=additiveExpression();
 					state._fsp--;
 
@@ -2090,7 +2308,7 @@ public class SwanExpressionParser extends Parser {
 
 
 	// $ANTLR start "unaryExpression"
-	// SwanExpression.g:265:1: unaryExpression returns [Expression expression] : ( (location= ID )? NOT exp= comparativeExpression |exp= comparativeExpression );
+	// SwanExpression.g:271:1: unaryExpression returns [Expression expression] : ( (location= ID )? NOT exp= comparativeExpression |exp= comparativeExpression );
 	public final Expression unaryExpression() throws RecognitionException {
 		Expression expression = null;
 
@@ -2099,17 +2317,17 @@ public class SwanExpressionParser extends Parser {
 		Expression exp =null;
 
 		try {
-			// SwanExpression.g:266:5: ( (location= ID )? NOT exp= comparativeExpression |exp= comparativeExpression )
-			int alt31=2;
+			// SwanExpression.g:272:5: ( (location= ID )? NOT exp= comparativeExpression |exp= comparativeExpression )
+			int alt32=2;
 			switch ( input.LA(1) ) {
 			case ID:
 				{
-				int LA31_1 = input.LA(2);
-				if ( (LA31_1==47) ) {
-					alt31=2;
+				int LA32_1 = input.LA(2);
+				if ( (LA32_1==47) ) {
+					alt32=2;
 				}
-				else if ( (LA31_1==NOT) ) {
-					alt31=1;
+				else if ( (LA32_1==NOT) ) {
+					alt32=1;
 				}
 
 				else {
@@ -2117,7 +2335,7 @@ public class SwanExpressionParser extends Parser {
 					try {
 						input.consume();
 						NoViableAltException nvae =
-							new NoViableAltException("", 31, 1, input);
+							new NoViableAltException("", 32, 1, input);
 						throw nvae;
 					} finally {
 						input.rewind(nvaeMark);
@@ -2128,7 +2346,7 @@ public class SwanExpressionParser extends Parser {
 				break;
 			case NOT:
 				{
-				alt31=1;
+				alt32=1;
 				}
 				break;
 			case FLOAT:
@@ -2136,36 +2354,36 @@ public class SwanExpressionParser extends Parser {
 			case STRING:
 			case 41:
 				{
-				alt31=2;
+				alt32=2;
 				}
 				break;
 			default:
 				NoViableAltException nvae =
-					new NoViableAltException("", 31, 0, input);
+					new NoViableAltException("", 32, 0, input);
 				throw nvae;
 			}
-			switch (alt31) {
+			switch (alt32) {
 				case 1 :
-					// SwanExpression.g:266:7: (location= ID )? NOT exp= comparativeExpression
+					// SwanExpression.g:272:7: (location= ID )? NOT exp= comparativeExpression
 					{
-					// SwanExpression.g:266:7: (location= ID )?
-					int alt30=2;
-					int LA30_0 = input.LA(1);
-					if ( (LA30_0==ID) ) {
-						alt30=1;
+					// SwanExpression.g:272:7: (location= ID )?
+					int alt31=2;
+					int LA31_0 = input.LA(1);
+					if ( (LA31_0==ID) ) {
+						alt31=1;
 					}
-					switch (alt30) {
+					switch (alt31) {
 						case 1 :
-							// SwanExpression.g:266:8: location= ID
+							// SwanExpression.g:272:8: location= ID
 							{
-							location=(Token)match(input,ID,FOLLOW_ID_in_unaryExpression1123); 
+							location=(Token)match(input,ID,FOLLOW_ID_in_unaryExpression1178); 
 							}
 							break;
 
 					}
 
-					match(input,NOT,FOLLOW_NOT_in_unaryExpression1127); 
-					pushFollow(FOLLOW_comparativeExpression_in_unaryExpression1131);
+					match(input,NOT,FOLLOW_NOT_in_unaryExpression1182); 
+					pushFollow(FOLLOW_comparativeExpression_in_unaryExpression1186);
 					exp=comparativeExpression();
 					state._fsp--;
 
@@ -2173,9 +2391,9 @@ public class SwanExpressionParser extends Parser {
 					}
 					break;
 				case 2 :
-					// SwanExpression.g:268:7: exp= comparativeExpression
+					// SwanExpression.g:274:7: exp= comparativeExpression
 					{
-					pushFollow(FOLLOW_comparativeExpression_in_unaryExpression1152);
+					pushFollow(FOLLOW_comparativeExpression_in_unaryExpression1207);
 					exp=comparativeExpression();
 					state._fsp--;
 
@@ -2199,7 +2417,7 @@ public class SwanExpressionParser extends Parser {
 
 
 	// $ANTLR start "andExpression"
-	// SwanExpression.g:272:1: andExpression returns [Expression expression] : left= unaryExpression ( (location= ID '@' )? AND right= unaryExpression )* ;
+	// SwanExpression.g:278:1: andExpression returns [Expression expression] : left= unaryExpression ( (location= ID '@' )? AND right= unaryExpression )* ;
 	public final Expression andExpression() throws RecognitionException {
 		Expression expression = null;
 
@@ -2213,56 +2431,56 @@ public class SwanExpressionParser extends Parser {
 		    Stack<String> locationStack = new Stack<String>();
 
 		try {
-			// SwanExpression.g:277:5: (left= unaryExpression ( (location= ID '@' )? AND right= unaryExpression )* )
-			// SwanExpression.g:277:7: left= unaryExpression ( (location= ID '@' )? AND right= unaryExpression )*
+			// SwanExpression.g:283:5: (left= unaryExpression ( (location= ID '@' )? AND right= unaryExpression )* )
+			// SwanExpression.g:283:7: left= unaryExpression ( (location= ID '@' )? AND right= unaryExpression )*
 			{
-			pushFollow(FOLLOW_unaryExpression_in_andExpression1191);
+			pushFollow(FOLLOW_unaryExpression_in_andExpression1246);
 			left=unaryExpression();
 			state._fsp--;
 
-			// SwanExpression.g:278:5: ( (location= ID '@' )? AND right= unaryExpression )*
-			loop33:
+			// SwanExpression.g:284:5: ( (location= ID '@' )? AND right= unaryExpression )*
+			loop34:
 			while (true) {
-				int alt33=2;
-				int LA33_0 = input.LA(1);
-				if ( (LA33_0==ID) ) {
-					int LA33_1 = input.LA(2);
-					if ( (LA33_1==47) ) {
-						int LA33_4 = input.LA(3);
-						if ( (LA33_4==AND) ) {
-							alt33=1;
+				int alt34=2;
+				int LA34_0 = input.LA(1);
+				if ( (LA34_0==ID) ) {
+					int LA34_1 = input.LA(2);
+					if ( (LA34_1==47) ) {
+						int LA34_4 = input.LA(3);
+						if ( (LA34_4==AND) ) {
+							alt34=1;
 						}
 
 					}
 
 				}
-				else if ( (LA33_0==AND) ) {
-					alt33=1;
+				else if ( (LA34_0==AND) ) {
+					alt34=1;
 				}
 
-				switch (alt33) {
+				switch (alt34) {
 				case 1 :
-					// SwanExpression.g:278:6: (location= ID '@' )? AND right= unaryExpression
+					// SwanExpression.g:284:6: (location= ID '@' )? AND right= unaryExpression
 					{
-					// SwanExpression.g:278:6: (location= ID '@' )?
-					int alt32=2;
-					int LA32_0 = input.LA(1);
-					if ( (LA32_0==ID) ) {
-						alt32=1;
+					// SwanExpression.g:284:6: (location= ID '@' )?
+					int alt33=2;
+					int LA33_0 = input.LA(1);
+					if ( (LA33_0==ID) ) {
+						alt33=1;
 					}
-					switch (alt32) {
+					switch (alt33) {
 						case 1 :
-							// SwanExpression.g:278:7: location= ID '@'
+							// SwanExpression.g:284:7: location= ID '@'
 							{
-							location=(Token)match(input,ID,FOLLOW_ID_in_andExpression1201); 
-							match(input,47,FOLLOW_47_in_andExpression1203); 
+							location=(Token)match(input,ID,FOLLOW_ID_in_andExpression1256); 
+							match(input,47,FOLLOW_47_in_andExpression1258); 
 							}
 							break;
 
 					}
 
-					match(input,AND,FOLLOW_AND_in_andExpression1207); 
-					pushFollow(FOLLOW_unaryExpression_in_andExpression1211);
+					match(input,AND,FOLLOW_AND_in_andExpression1262); 
+					pushFollow(FOLLOW_unaryExpression_in_andExpression1266);
 					right=unaryExpression();
 					state._fsp--;
 
@@ -2271,7 +2489,7 @@ public class SwanExpressionParser extends Parser {
 					break;
 
 				default :
-					break loop33;
+					break loop34;
 				}
 			}
 
@@ -2303,7 +2521,7 @@ public class SwanExpressionParser extends Parser {
 
 
 	// $ANTLR start "orExpression"
-	// SwanExpression.g:294:1: orExpression returns [Expression expression] : left= andExpression ( (location= ID '@' )? OR right= andExpression )* ;
+	// SwanExpression.g:300:1: orExpression returns [Expression expression] : left= andExpression ( (location= ID '@' )? OR right= andExpression )* ;
 	public final Expression orExpression() throws RecognitionException {
 		Expression expression = null;
 
@@ -2317,45 +2535,45 @@ public class SwanExpressionParser extends Parser {
 		    Stack<String> locationStack = new Stack<String>();
 
 		try {
-			// SwanExpression.g:299:5: (left= andExpression ( (location= ID '@' )? OR right= andExpression )* )
-			// SwanExpression.g:299:7: left= andExpression ( (location= ID '@' )? OR right= andExpression )*
+			// SwanExpression.g:305:5: (left= andExpression ( (location= ID '@' )? OR right= andExpression )* )
+			// SwanExpression.g:305:7: left= andExpression ( (location= ID '@' )? OR right= andExpression )*
 			{
-			pushFollow(FOLLOW_andExpression_in_orExpression1259);
+			pushFollow(FOLLOW_andExpression_in_orExpression1314);
 			left=andExpression();
 			state._fsp--;
 
-			// SwanExpression.g:300:5: ( (location= ID '@' )? OR right= andExpression )*
-			loop35:
+			// SwanExpression.g:306:5: ( (location= ID '@' )? OR right= andExpression )*
+			loop36:
 			while (true) {
-				int alt35=2;
-				int LA35_0 = input.LA(1);
-				if ( (LA35_0==ID||LA35_0==OR) ) {
-					alt35=1;
+				int alt36=2;
+				int LA36_0 = input.LA(1);
+				if ( (LA36_0==ID||LA36_0==OR) ) {
+					alt36=1;
 				}
 
-				switch (alt35) {
+				switch (alt36) {
 				case 1 :
-					// SwanExpression.g:300:6: (location= ID '@' )? OR right= andExpression
+					// SwanExpression.g:306:6: (location= ID '@' )? OR right= andExpression
 					{
-					// SwanExpression.g:300:6: (location= ID '@' )?
-					int alt34=2;
-					int LA34_0 = input.LA(1);
-					if ( (LA34_0==ID) ) {
-						alt34=1;
+					// SwanExpression.g:306:6: (location= ID '@' )?
+					int alt35=2;
+					int LA35_0 = input.LA(1);
+					if ( (LA35_0==ID) ) {
+						alt35=1;
 					}
-					switch (alt34) {
+					switch (alt35) {
 						case 1 :
-							// SwanExpression.g:300:7: location= ID '@'
+							// SwanExpression.g:306:7: location= ID '@'
 							{
-							location=(Token)match(input,ID,FOLLOW_ID_in_orExpression1269); 
-							match(input,47,FOLLOW_47_in_orExpression1271); 
+							location=(Token)match(input,ID,FOLLOW_ID_in_orExpression1324); 
+							match(input,47,FOLLOW_47_in_orExpression1326); 
 							}
 							break;
 
 					}
 
-					match(input,OR,FOLLOW_OR_in_orExpression1275); 
-					pushFollow(FOLLOW_andExpression_in_orExpression1279);
+					match(input,OR,FOLLOW_OR_in_orExpression1330); 
+					pushFollow(FOLLOW_andExpression_in_orExpression1334);
 					right=andExpression();
 					state._fsp--;
 
@@ -2364,7 +2582,7 @@ public class SwanExpressionParser extends Parser {
 					break;
 
 				default :
-					break loop35;
+					break loop36;
 				}
 			}
 
@@ -2396,7 +2614,7 @@ public class SwanExpressionParser extends Parser {
 
 
 	// $ANTLR start "expression"
-	// SwanExpression.g:316:1: expression returns [Expression expression] : logic= orExpression EOF ;
+	// SwanExpression.g:322:1: expression returns [Expression expression] : logic= orExpression EOF ;
 	public final Expression expression() throws RecognitionException {
 		Expression expression = null;
 
@@ -2404,14 +2622,14 @@ public class SwanExpressionParser extends Parser {
 		Expression logic =null;
 
 		try {
-			// SwanExpression.g:317:5: (logic= orExpression EOF )
-			// SwanExpression.g:318:5: logic= orExpression EOF
+			// SwanExpression.g:323:5: (logic= orExpression EOF )
+			// SwanExpression.g:324:5: logic= orExpression EOF
 			{
-			pushFollow(FOLLOW_orExpression_in_expression1329);
+			pushFollow(FOLLOW_orExpression_in_expression1384);
 			logic=orExpression();
 			state._fsp--;
 
-			match(input,EOF,FOLLOW_EOF_in_expression1331); 
+			match(input,EOF,FOLLOW_EOF_in_expression1386); 
 			expression = logic /* .expression */ ;
 			}
 
@@ -2430,7 +2648,7 @@ public class SwanExpressionParser extends Parser {
 
 
 	// $ANTLR start "time_value"
-	// SwanExpression.g:323:1: time_value returns [Long time] : val= INT (unit= TIME_UNIT )? (rep_val= INT (rep_unit= TIME_UNIT )? )* ;
+	// SwanExpression.g:329:1: time_value returns [Long time] : val= INT (unit= TIME_UNIT )? (rep_val= INT (rep_unit= TIME_UNIT )? )* ;
 	public final Long time_value() throws RecognitionException {
 		Long time = null;
 
@@ -2441,52 +2659,52 @@ public class SwanExpressionParser extends Parser {
 		Token rep_unit=null;
 
 		try {
-			// SwanExpression.g:324:5: (val= INT (unit= TIME_UNIT )? (rep_val= INT (rep_unit= TIME_UNIT )? )* )
-			// SwanExpression.g:325:5: val= INT (unit= TIME_UNIT )? (rep_val= INT (rep_unit= TIME_UNIT )? )*
+			// SwanExpression.g:330:5: (val= INT (unit= TIME_UNIT )? (rep_val= INT (rep_unit= TIME_UNIT )? )* )
+			// SwanExpression.g:331:5: val= INT (unit= TIME_UNIT )? (rep_val= INT (rep_unit= TIME_UNIT )? )*
 			{
-			val=(Token)match(input,INT,FOLLOW_INT_in_time_value1369); 
-			// SwanExpression.g:325:17: (unit= TIME_UNIT )?
-			int alt36=2;
-			int LA36_0 = input.LA(1);
-			if ( (LA36_0==TIME_UNIT) ) {
-				alt36=1;
+			val=(Token)match(input,INT,FOLLOW_INT_in_time_value1424); 
+			// SwanExpression.g:331:17: (unit= TIME_UNIT )?
+			int alt37=2;
+			int LA37_0 = input.LA(1);
+			if ( (LA37_0==TIME_UNIT) ) {
+				alt37=1;
 			}
-			switch (alt36) {
+			switch (alt37) {
 				case 1 :
-					// SwanExpression.g:325:17: unit= TIME_UNIT
+					// SwanExpression.g:331:17: unit= TIME_UNIT
 					{
-					unit=(Token)match(input,TIME_UNIT,FOLLOW_TIME_UNIT_in_time_value1373); 
+					unit=(Token)match(input,TIME_UNIT,FOLLOW_TIME_UNIT_in_time_value1428); 
 					}
 					break;
 
 			}
 
 			 long theTime = convertTime(val, unit); 
-			// SwanExpression.g:327:5: (rep_val= INT (rep_unit= TIME_UNIT )? )*
-			loop38:
+			// SwanExpression.g:333:5: (rep_val= INT (rep_unit= TIME_UNIT )? )*
+			loop39:
 			while (true) {
-				int alt38=2;
-				int LA38_0 = input.LA(1);
-				if ( (LA38_0==INT) ) {
-					alt38=1;
+				int alt39=2;
+				int LA39_0 = input.LA(1);
+				if ( (LA39_0==INT) ) {
+					alt39=1;
 				}
 
-				switch (alt38) {
+				switch (alt39) {
 				case 1 :
-					// SwanExpression.g:327:6: rep_val= INT (rep_unit= TIME_UNIT )?
+					// SwanExpression.g:333:6: rep_val= INT (rep_unit= TIME_UNIT )?
 					{
-					rep_val=(Token)match(input,INT,FOLLOW_INT_in_time_value1390); 
-					// SwanExpression.g:327:26: (rep_unit= TIME_UNIT )?
-					int alt37=2;
-					int LA37_0 = input.LA(1);
-					if ( (LA37_0==TIME_UNIT) ) {
-						alt37=1;
+					rep_val=(Token)match(input,INT,FOLLOW_INT_in_time_value1445); 
+					// SwanExpression.g:333:26: (rep_unit= TIME_UNIT )?
+					int alt38=2;
+					int LA38_0 = input.LA(1);
+					if ( (LA38_0==TIME_UNIT) ) {
+						alt38=1;
 					}
-					switch (alt37) {
+					switch (alt38) {
 						case 1 :
-							// SwanExpression.g:327:26: rep_unit= TIME_UNIT
+							// SwanExpression.g:333:26: rep_unit= TIME_UNIT
 							{
-							rep_unit=(Token)match(input,TIME_UNIT,FOLLOW_TIME_UNIT_in_time_value1394); 
+							rep_unit=(Token)match(input,TIME_UNIT,FOLLOW_TIME_UNIT_in_time_value1449); 
 							}
 							break;
 
@@ -2497,7 +2715,7 @@ public class SwanExpressionParser extends Parser {
 					break;
 
 				default :
-					break loop38;
+					break loop39;
 				}
 			}
 
@@ -2519,104 +2737,105 @@ public class SwanExpressionParser extends Parser {
 	// Delegated rules
 
 
-	protected DFA14 dfa14 = new DFA14(this);
-	protected DFA23 dfa23 = new DFA23(this);
-	protected DFA29 dfa29 = new DFA29(this);
-	static final String DFA14_eotS =
-		"\24\uffff";
-	static final String DFA14_eofS =
-		"\5\uffff\2\10\4\uffff\2\10\1\uffff\1\20\4\uffff\1\20";
-	static final String DFA14_minS =
-		"\1\24\1\57\1\24\1\55\1\24\2\5\1\24\1\uffff\1\24\1\uffff\2\5\1\12\1\5\1"+
+	protected DFA15 dfa15 = new DFA15(this);
+	protected DFA24 dfa24 = new DFA24(this);
+	protected DFA30 dfa30 = new DFA30(this);
+	static final String DFA15_eotS =
+		"\25\uffff";
+	static final String DFA15_eofS =
+		"\5\uffff\2\10\5\uffff\2\10\1\uffff\1\21\4\uffff\1\21";
+	static final String DFA15_minS =
+		"\1\24\1\57\1\24\1\55\1\24\2\5\1\24\1\uffff\1\24\2\uffff\2\5\1\12\1\5\1"+
 		"\24\2\uffff\1\12\1\5";
-	static final String DFA14_maxS =
-		"\1\24\1\57\1\24\1\55\1\45\2\56\1\45\1\uffff\1\24\1\uffff\2\56\1\12\1\52"+
+	static final String DFA15_maxS =
+		"\1\24\1\57\1\24\1\55\1\45\2\60\1\45\1\uffff\1\24\2\uffff\2\60\1\12\1\52"+
 		"\1\24\2\uffff\1\12\1\52";
-	static final String DFA14_acceptS =
-		"\10\uffff\1\1\1\uffff\1\3\5\uffff\1\2\1\4\2\uffff";
-	static final String DFA14_specialS =
-		"\24\uffff}>";
-	static final String[] DFA14_transitionS = {
+	static final String DFA15_acceptS =
+		"\10\uffff\1\1\1\uffff\1\3\1\4\5\uffff\1\2\1\5\2\uffff";
+	static final String DFA15_specialS =
+		"\25\uffff}>";
+	static final String[] DFA15_transitionS = {
 			"\1\1",
 			"\1\2",
 			"\1\3",
 			"\1\4",
 			"\1\5\20\uffff\1\6",
 			"\1\10\5\uffff\3\10\3\uffff\2\10\1\uffff\1\10\1\uffff\2\10\4\uffff\3"+
-			"\10\2\uffff\4\10\2\uffff\1\10\1\12\1\uffff\1\10\1\uffff\1\7\1\uffff\1"+
-			"\11",
+			"\10\2\uffff\4\10\2\uffff\1\10\1\13\1\uffff\1\10\1\uffff\1\7\1\uffff\1"+
+			"\11\1\uffff\1\12",
 			"\1\10\5\uffff\3\10\3\uffff\2\10\1\uffff\1\10\1\uffff\2\10\4\uffff\3"+
-			"\10\2\uffff\4\10\2\uffff\1\10\1\12\1\uffff\1\10\1\uffff\1\7\1\uffff\1"+
-			"\11",
-			"\1\13\20\uffff\1\14",
+			"\10\2\uffff\4\10\2\uffff\1\10\1\13\1\uffff\1\10\1\uffff\1\7\1\uffff\1"+
+			"\11\1\uffff\1\12",
+			"\1\14\20\uffff\1\15",
 			"",
-			"\1\15",
-			"",
-			"\1\10\5\uffff\3\10\3\uffff\2\10\1\uffff\1\10\1\uffff\2\10\4\uffff\3"+
-			"\10\2\uffff\4\10\2\uffff\1\10\1\12\1\uffff\1\10\1\uffff\1\7\1\uffff\1"+
-			"\11",
-			"\1\10\5\uffff\3\10\3\uffff\2\10\1\uffff\1\10\1\uffff\2\10\4\uffff\3"+
-			"\10\2\uffff\4\10\2\uffff\1\10\1\12\1\uffff\1\10\1\uffff\1\7\1\uffff\1"+
-			"\11",
 			"\1\16",
-			"\1\20\1\uffff\1\17\3\uffff\3\20\3\uffff\2\20\1\uffff\1\20\1\uffff\2"+
-			"\20\4\uffff\3\20\2\uffff\4\20\2\uffff\1\20\1\21\1\uffff\1\20",
-			"\1\22",
 			"",
 			"",
+			"\1\10\5\uffff\3\10\3\uffff\2\10\1\uffff\1\10\1\uffff\2\10\4\uffff\3"+
+			"\10\2\uffff\4\10\2\uffff\1\10\1\13\1\uffff\1\10\1\uffff\1\7\1\uffff\1"+
+			"\11\1\uffff\1\12",
+			"\1\10\5\uffff\3\10\3\uffff\2\10\1\uffff\1\10\1\uffff\2\10\4\uffff\3"+
+			"\10\2\uffff\4\10\2\uffff\1\10\1\13\1\uffff\1\10\1\uffff\1\7\1\uffff\1"+
+			"\11\1\uffff\1\12",
+			"\1\17",
+			"\1\21\1\uffff\1\20\3\uffff\3\21\3\uffff\2\21\1\uffff\1\21\1\uffff\2"+
+			"\21\4\uffff\3\21\2\uffff\4\21\2\uffff\1\21\1\22\1\uffff\1\21",
 			"\1\23",
-			"\1\20\1\uffff\1\17\3\uffff\3\20\3\uffff\2\20\1\uffff\1\20\1\uffff\2"+
-			"\20\4\uffff\3\20\2\uffff\4\20\2\uffff\1\20\1\21\1\uffff\1\20"
+			"",
+			"",
+			"\1\24",
+			"\1\21\1\uffff\1\20\3\uffff\3\21\3\uffff\2\21\1\uffff\1\21\1\uffff\2"+
+			"\21\4\uffff\3\21\2\uffff\4\21\2\uffff\1\21\1\22\1\uffff\1\21"
 	};
 
-	static final short[] DFA14_eot = DFA.unpackEncodedString(DFA14_eotS);
-	static final short[] DFA14_eof = DFA.unpackEncodedString(DFA14_eofS);
-	static final char[] DFA14_min = DFA.unpackEncodedStringToUnsignedChars(DFA14_minS);
-	static final char[] DFA14_max = DFA.unpackEncodedStringToUnsignedChars(DFA14_maxS);
-	static final short[] DFA14_accept = DFA.unpackEncodedString(DFA14_acceptS);
-	static final short[] DFA14_special = DFA.unpackEncodedString(DFA14_specialS);
-	static final short[][] DFA14_transition;
+	static final short[] DFA15_eot = DFA.unpackEncodedString(DFA15_eotS);
+	static final short[] DFA15_eof = DFA.unpackEncodedString(DFA15_eofS);
+	static final char[] DFA15_min = DFA.unpackEncodedStringToUnsignedChars(DFA15_minS);
+	static final char[] DFA15_max = DFA.unpackEncodedStringToUnsignedChars(DFA15_maxS);
+	static final short[] DFA15_accept = DFA.unpackEncodedString(DFA15_acceptS);
+	static final short[] DFA15_special = DFA.unpackEncodedString(DFA15_specialS);
+	static final short[][] DFA15_transition;
 
 	static {
-		int numStates = DFA14_transitionS.length;
-		DFA14_transition = new short[numStates][];
+		int numStates = DFA15_transitionS.length;
+		DFA15_transition = new short[numStates][];
 		for (int i=0; i<numStates; i++) {
-			DFA14_transition[i] = DFA.unpackEncodedString(DFA14_transitionS[i]);
+			DFA15_transition[i] = DFA.unpackEncodedString(DFA15_transitionS[i]);
 		}
 	}
 
-	protected class DFA14 extends DFA {
+	protected class DFA15 extends DFA {
 
-		public DFA14(BaseRecognizer recognizer) {
+		public DFA15(BaseRecognizer recognizer) {
 			this.recognizer = recognizer;
-			this.decisionNumber = 14;
-			this.eot = DFA14_eot;
-			this.eof = DFA14_eof;
-			this.min = DFA14_min;
-			this.max = DFA14_max;
-			this.accept = DFA14_accept;
-			this.special = DFA14_special;
-			this.transition = DFA14_transition;
+			this.decisionNumber = 15;
+			this.eot = DFA15_eot;
+			this.eof = DFA15_eof;
+			this.min = DFA15_min;
+			this.max = DFA15_max;
+			this.accept = DFA15_accept;
+			this.special = DFA15_special;
+			this.transition = DFA15_transition;
 		}
 		@Override
 		public String getDescription() {
-			return "154:1: sensor_value_expression returns [SensorValueExpression value_expression] : (location= ID '@' entity= ID ':' path= value_path |location= ID '@' entity= ID ':' path= value_path '?' config= configuration_options |location= ID '@' entity= ID ':' path= value_path '$' http_config= http_configuration_options '{' ( (mode= history_mode ',' time= time_value ) |mode= history_mode |time= time_value ) '}' |location= ID '@' entity= ID ':' path= value_path '?' config= configuration_options '$' http_config= http_configuration_options '{' ( (mode= history_mode ',' time= time_value ) |mode= history_mode |time= time_value ) '}' );";
+			return "154:1: sensor_value_expression returns [SensorValueExpression value_expression] : (location= ID '@' entity= ID ':' path= value_path |location= ID '@' entity= ID ':' path= value_path '?' config= configuration_options |location= ID '@' entity= ID ':' path= value_path '{' ( (mode= history_mode ',' time= time_value ) |mode= history_mode |time= time_value ) '}' |location= ID '@' entity= ID ':' path= value_path '$' http_config= http_configuration_options '{' ( (mode= history_mode ',' time= time_value ) |mode= history_mode |time= time_value ) '}' |location= ID '@' entity= ID ':' path= value_path '?' config= configuration_options '$' http_config= http_configuration_options '{' ( (mode= history_mode ',' time= time_value ) |mode= history_mode |time= time_value ) '}' );";
 		}
 	}
 
-	static final String DFA23_eotS =
+	static final String DFA24_eotS =
 		"\7\uffff";
-	static final String DFA23_eofS =
+	static final String DFA24_eofS =
 		"\1\2\6\uffff";
-	static final String DFA23_minS =
+	static final String DFA24_minS =
 		"\1\5\1\13\1\uffff\1\13\1\uffff\1\5\1\13";
-	static final String DFA23_maxS =
+	static final String DFA24_maxS =
 		"\1\52\1\57\1\uffff\1\52\1\uffff\1\43\1\57";
-	static final String DFA23_acceptS =
+	static final String DFA24_acceptS =
 		"\2\uffff\1\2\1\uffff\1\1\2\uffff";
-	static final String DFA23_specialS =
+	static final String DFA24_specialS =
 		"\7\uffff}>";
-	static final String[] DFA23_transitionS = {
+	static final String[] DFA24_transitionS = {
 			"\1\2\5\uffff\1\2\1\4\1\2\3\uffff\2\2\1\uffff\1\1\1\uffff\2\2\4\uffff"+
 			"\1\2\2\4\2\uffff\4\2\2\uffff\1\3\2\uffff\1\2",
 			"\1\2\1\uffff\1\2\3\uffff\2\2\3\uffff\2\2\11\uffff\1\2\2\uffff\1\2\12"+
@@ -2630,54 +2849,54 @@ public class SwanExpressionParser extends Parser {
 			"\uffff\1\4"
 	};
 
-	static final short[] DFA23_eot = DFA.unpackEncodedString(DFA23_eotS);
-	static final short[] DFA23_eof = DFA.unpackEncodedString(DFA23_eofS);
-	static final char[] DFA23_min = DFA.unpackEncodedStringToUnsignedChars(DFA23_minS);
-	static final char[] DFA23_max = DFA.unpackEncodedStringToUnsignedChars(DFA23_maxS);
-	static final short[] DFA23_accept = DFA.unpackEncodedString(DFA23_acceptS);
-	static final short[] DFA23_special = DFA.unpackEncodedString(DFA23_specialS);
-	static final short[][] DFA23_transition;
+	static final short[] DFA24_eot = DFA.unpackEncodedString(DFA24_eotS);
+	static final short[] DFA24_eof = DFA.unpackEncodedString(DFA24_eofS);
+	static final char[] DFA24_min = DFA.unpackEncodedStringToUnsignedChars(DFA24_minS);
+	static final char[] DFA24_max = DFA.unpackEncodedStringToUnsignedChars(DFA24_maxS);
+	static final short[] DFA24_accept = DFA.unpackEncodedString(DFA24_acceptS);
+	static final short[] DFA24_special = DFA.unpackEncodedString(DFA24_specialS);
+	static final short[][] DFA24_transition;
 
 	static {
-		int numStates = DFA23_transitionS.length;
-		DFA23_transition = new short[numStates][];
+		int numStates = DFA24_transitionS.length;
+		DFA24_transition = new short[numStates][];
 		for (int i=0; i<numStates; i++) {
-			DFA23_transition[i] = DFA.unpackEncodedString(DFA23_transitionS[i]);
+			DFA24_transition[i] = DFA.unpackEncodedString(DFA24_transitionS[i]);
 		}
 	}
 
-	protected class DFA23 extends DFA {
+	protected class DFA24 extends DFA {
 
-		public DFA23(BaseRecognizer recognizer) {
+		public DFA24(BaseRecognizer recognizer) {
 			this.recognizer = recognizer;
-			this.decisionNumber = 23;
-			this.eot = DFA23_eot;
-			this.eof = DFA23_eof;
-			this.min = DFA23_min;
-			this.max = DFA23_max;
-			this.accept = DFA23_accept;
-			this.special = DFA23_special;
-			this.transition = DFA23_transition;
+			this.decisionNumber = 24;
+			this.eot = DFA24_eot;
+			this.eof = DFA24_eof;
+			this.min = DFA24_min;
+			this.max = DFA24_max;
+			this.accept = DFA24_accept;
+			this.special = DFA24_special;
+			this.transition = DFA24_transition;
 		}
 		@Override
 		public String getDescription() {
-			return "()* loopback of 203:5: ( ( WS )* (location= ID '@' )? op= multiplicative_math_operator ( WS )* right= parentheticalExpression )*";
+			return "()* loopback of 209:5: ( ( WS )* (location= ID '@' )? op= multiplicative_math_operator ( WS )* right= parentheticalExpression )*";
 		}
 	}
 
-	static final String DFA29_eotS =
+	static final String DFA30_eotS =
 		"\5\uffff";
-	static final String DFA29_eofS =
+	static final String DFA30_eofS =
 		"\1\4\4\uffff";
-	static final String DFA29_minS =
+	static final String DFA30_minS =
 		"\1\5\2\13\2\uffff";
-	static final String DFA29_maxS =
+	static final String DFA30_maxS =
 		"\2\52\1\57\2\uffff";
-	static final String DFA29_acceptS =
+	static final String DFA30_acceptS =
 		"\3\uffff\1\1\1\2";
-	static final String DFA29_specialS =
+	static final String DFA30_specialS =
 		"\5\uffff}>";
-	static final String[] DFA29_transitionS = {
+	static final String[] DFA30_transitionS = {
 			"\1\4\5\uffff\1\3\1\uffff\1\3\3\uffff\2\3\1\uffff\1\2\1\uffff\2\3\11\uffff"+
 			"\1\3\1\4\1\uffff\1\3\2\uffff\1\1\2\uffff\1\4",
 			"\1\3\1\uffff\1\3\3\uffff\2\3\1\uffff\1\3\1\uffff\2\3\11\uffff\1\3\2"+
@@ -2688,38 +2907,38 @@ public class SwanExpressionParser extends Parser {
 			""
 	};
 
-	static final short[] DFA29_eot = DFA.unpackEncodedString(DFA29_eotS);
-	static final short[] DFA29_eof = DFA.unpackEncodedString(DFA29_eofS);
-	static final char[] DFA29_min = DFA.unpackEncodedStringToUnsignedChars(DFA29_minS);
-	static final char[] DFA29_max = DFA.unpackEncodedStringToUnsignedChars(DFA29_maxS);
-	static final short[] DFA29_accept = DFA.unpackEncodedString(DFA29_acceptS);
-	static final short[] DFA29_special = DFA.unpackEncodedString(DFA29_specialS);
-	static final short[][] DFA29_transition;
+	static final short[] DFA30_eot = DFA.unpackEncodedString(DFA30_eotS);
+	static final short[] DFA30_eof = DFA.unpackEncodedString(DFA30_eofS);
+	static final char[] DFA30_min = DFA.unpackEncodedStringToUnsignedChars(DFA30_minS);
+	static final char[] DFA30_max = DFA.unpackEncodedStringToUnsignedChars(DFA30_maxS);
+	static final short[] DFA30_accept = DFA.unpackEncodedString(DFA30_acceptS);
+	static final short[] DFA30_special = DFA.unpackEncodedString(DFA30_specialS);
+	static final short[][] DFA30_transition;
 
 	static {
-		int numStates = DFA29_transitionS.length;
-		DFA29_transition = new short[numStates][];
+		int numStates = DFA30_transitionS.length;
+		DFA30_transition = new short[numStates][];
 		for (int i=0; i<numStates; i++) {
-			DFA29_transition[i] = DFA.unpackEncodedString(DFA29_transitionS[i]);
+			DFA30_transition[i] = DFA.unpackEncodedString(DFA30_transitionS[i]);
 		}
 	}
 
-	protected class DFA29 extends DFA {
+	protected class DFA30 extends DFA {
 
-		public DFA29(BaseRecognizer recognizer) {
+		public DFA30(BaseRecognizer recognizer) {
 			this.recognizer = recognizer;
-			this.decisionNumber = 29;
-			this.eot = DFA29_eot;
-			this.eof = DFA29_eof;
-			this.min = DFA29_min;
-			this.max = DFA29_max;
-			this.accept = DFA29_accept;
-			this.special = DFA29_special;
-			this.transition = DFA29_transition;
+			this.decisionNumber = 30;
+			this.eot = DFA30_eot;
+			this.eof = DFA30_eof;
+			this.min = DFA30_min;
+			this.max = DFA30_max;
+			this.accept = DFA30_accept;
+			this.special = DFA30_special;
+			this.transition = DFA30_transition;
 		}
 		@Override
 		public String getDescription() {
-			return "249:5: ( ( WS )* ( (location= ID )? c= comparator ) ( WS )* right= additiveExpression )?";
+			return "255:5: ( ( WS )* ( (location= ID )? c= comparator ) ( WS )* right= additiveExpression )?";
 		}
 	}
 
@@ -2780,79 +2999,91 @@ public class SwanExpressionParser extends Parser {
 	public static final BitSet FOLLOW_47_in_sensor_value_expression594 = new BitSet(new long[]{0x0000000000100000L});
 	public static final BitSet FOLLOW_ID_in_sensor_value_expression598 = new BitSet(new long[]{0x0000200000000000L});
 	public static final BitSet FOLLOW_45_in_sensor_value_expression600 = new BitSet(new long[]{0x0000002000100000L});
-	public static final BitSet FOLLOW_value_path_in_sensor_value_expression604 = new BitSet(new long[]{0x0000010000000000L});
-	public static final BitSet FOLLOW_40_in_sensor_value_expression606 = new BitSet(new long[]{0x0000000000100000L});
-	public static final BitSet FOLLOW_http_configuration_options_in_sensor_value_expression610 = new BitSet(new long[]{0x0001000000000000L});
-	public static final BitSet FOLLOW_48_in_sensor_value_expression612 = new BitSet(new long[]{0x000000000F200050L});
-	public static final BitSet FOLLOW_history_mode_in_sensor_value_expression618 = new BitSet(new long[]{0x0000080000000000L});
-	public static final BitSet FOLLOW_43_in_sensor_value_expression620 = new BitSet(new long[]{0x0000000000200000L});
-	public static final BitSet FOLLOW_time_value_in_sensor_value_expression624 = new BitSet(new long[]{0x0002000000000000L});
-	public static final BitSet FOLLOW_history_mode_in_sensor_value_expression631 = new BitSet(new long[]{0x0002000000000000L});
-	public static final BitSet FOLLOW_time_value_in_sensor_value_expression637 = new BitSet(new long[]{0x0002000000000000L});
-	public static final BitSet FOLLOW_49_in_sensor_value_expression640 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_ID_in_sensor_value_expression652 = new BitSet(new long[]{0x0000800000000000L});
-	public static final BitSet FOLLOW_47_in_sensor_value_expression654 = new BitSet(new long[]{0x0000000000100000L});
-	public static final BitSet FOLLOW_ID_in_sensor_value_expression658 = new BitSet(new long[]{0x0000200000000000L});
-	public static final BitSet FOLLOW_45_in_sensor_value_expression660 = new BitSet(new long[]{0x0000002000100000L});
-	public static final BitSet FOLLOW_value_path_in_sensor_value_expression664 = new BitSet(new long[]{0x0000400000000000L});
-	public static final BitSet FOLLOW_46_in_sensor_value_expression666 = new BitSet(new long[]{0x0000000000100000L});
-	public static final BitSet FOLLOW_configuration_options_in_sensor_value_expression670 = new BitSet(new long[]{0x0000010000000000L});
-	public static final BitSet FOLLOW_40_in_sensor_value_expression672 = new BitSet(new long[]{0x0000000000100000L});
-	public static final BitSet FOLLOW_http_configuration_options_in_sensor_value_expression676 = new BitSet(new long[]{0x0001000000000000L});
-	public static final BitSet FOLLOW_48_in_sensor_value_expression678 = new BitSet(new long[]{0x000000000F200050L});
-	public static final BitSet FOLLOW_history_mode_in_sensor_value_expression684 = new BitSet(new long[]{0x0000080000000000L});
-	public static final BitSet FOLLOW_43_in_sensor_value_expression686 = new BitSet(new long[]{0x0000000000200000L});
-	public static final BitSet FOLLOW_time_value_in_sensor_value_expression690 = new BitSet(new long[]{0x0002000000000000L});
-	public static final BitSet FOLLOW_history_mode_in_sensor_value_expression697 = new BitSet(new long[]{0x0002000000000000L});
-	public static final BitSet FOLLOW_time_value_in_sensor_value_expression703 = new BitSet(new long[]{0x0002000000000000L});
-	public static final BitSet FOLLOW_49_in_sensor_value_expression706 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_INT_in_constant_value_expression728 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_FLOAT_in_constant_value_expression741 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_STRING_in_constant_value_expression755 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_constant_value_expression_in_value_expression778 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_sensor_value_expression_in_value_expression792 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_value_expression_in_parentheticalExpression821 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_41_in_parentheticalExpression846 = new BitSet(new long[]{0x000002A100310000L});
-	public static final BitSet FOLLOW_WS_in_parentheticalExpression848 = new BitSet(new long[]{0x000002A100310000L});
-	public static final BitSet FOLLOW_orExpression_in_parentheticalExpression853 = new BitSet(new long[]{0x0000048000000000L});
-	public static final BitSet FOLLOW_WS_in_parentheticalExpression855 = new BitSet(new long[]{0x0000048000000000L});
-	public static final BitSet FOLLOW_42_in_parentheticalExpression858 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_parentheticalExpression_in_multiplicativeExpression905 = new BitSet(new long[]{0x0000008060101002L});
-	public static final BitSet FOLLOW_WS_in_multiplicativeExpression912 = new BitSet(new long[]{0x0000008060101000L});
-	public static final BitSet FOLLOW_ID_in_multiplicativeExpression918 = new BitSet(new long[]{0x0000800000000000L});
-	public static final BitSet FOLLOW_47_in_multiplicativeExpression920 = new BitSet(new long[]{0x0000000060001000L});
-	public static final BitSet FOLLOW_multiplicative_math_operator_in_multiplicativeExpression926 = new BitSet(new long[]{0x000002A000310000L});
-	public static final BitSet FOLLOW_WS_in_multiplicativeExpression928 = new BitSet(new long[]{0x000002A000310000L});
-	public static final BitSet FOLLOW_parentheticalExpression_in_multiplicativeExpression933 = new BitSet(new long[]{0x0000008060101002L});
-	public static final BitSet FOLLOW_multiplicativeExpression_in_additiveExpression981 = new BitSet(new long[]{0x0000000810100002L});
-	public static final BitSet FOLLOW_ID_in_additiveExpression991 = new BitSet(new long[]{0x0000800000000000L});
-	public static final BitSet FOLLOW_47_in_additiveExpression993 = new BitSet(new long[]{0x0000000810000000L});
-	public static final BitSet FOLLOW_additive_math_operator_in_additiveExpression999 = new BitSet(new long[]{0x0000022000310000L});
-	public static final BitSet FOLLOW_multiplicativeExpression_in_additiveExpression1003 = new BitSet(new long[]{0x0000000810100002L});
-	public static final BitSet FOLLOW_additiveExpression_in_comparativeExpression1051 = new BitSet(new long[]{0x0000009200D62802L});
-	public static final BitSet FOLLOW_WS_in_comparativeExpression1058 = new BitSet(new long[]{0x0000009200D62800L});
-	public static final BitSet FOLLOW_ID_in_comparativeExpression1065 = new BitSet(new long[]{0x0000001200C62800L});
-	public static final BitSet FOLLOW_comparator_in_comparativeExpression1071 = new BitSet(new long[]{0x000002A000310000L});
-	public static final BitSet FOLLOW_WS_in_comparativeExpression1074 = new BitSet(new long[]{0x000002A000310000L});
-	public static final BitSet FOLLOW_additiveExpression_in_comparativeExpression1079 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_ID_in_unaryExpression1123 = new BitSet(new long[]{0x0000000100000000L});
-	public static final BitSet FOLLOW_NOT_in_unaryExpression1127 = new BitSet(new long[]{0x0000022000310000L});
-	public static final BitSet FOLLOW_comparativeExpression_in_unaryExpression1131 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_comparativeExpression_in_unaryExpression1152 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_unaryExpression_in_andExpression1191 = new BitSet(new long[]{0x0000000000100022L});
-	public static final BitSet FOLLOW_ID_in_andExpression1201 = new BitSet(new long[]{0x0000800000000000L});
-	public static final BitSet FOLLOW_47_in_andExpression1203 = new BitSet(new long[]{0x0000000000000020L});
-	public static final BitSet FOLLOW_AND_in_andExpression1207 = new BitSet(new long[]{0x0000022100310000L});
-	public static final BitSet FOLLOW_unaryExpression_in_andExpression1211 = new BitSet(new long[]{0x0000000000100022L});
-	public static final BitSet FOLLOW_andExpression_in_orExpression1259 = new BitSet(new long[]{0x0000000400100002L});
-	public static final BitSet FOLLOW_ID_in_orExpression1269 = new BitSet(new long[]{0x0000800000000000L});
-	public static final BitSet FOLLOW_47_in_orExpression1271 = new BitSet(new long[]{0x0000000400000000L});
-	public static final BitSet FOLLOW_OR_in_orExpression1275 = new BitSet(new long[]{0x0000022100310000L});
-	public static final BitSet FOLLOW_andExpression_in_orExpression1279 = new BitSet(new long[]{0x0000000400100002L});
-	public static final BitSet FOLLOW_orExpression_in_expression1329 = new BitSet(new long[]{0x0000000000000000L});
-	public static final BitSet FOLLOW_EOF_in_expression1331 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_INT_in_time_value1369 = new BitSet(new long[]{0x0000004000200002L});
-	public static final BitSet FOLLOW_TIME_UNIT_in_time_value1373 = new BitSet(new long[]{0x0000000000200002L});
-	public static final BitSet FOLLOW_INT_in_time_value1390 = new BitSet(new long[]{0x0000004000200002L});
-	public static final BitSet FOLLOW_TIME_UNIT_in_time_value1394 = new BitSet(new long[]{0x0000000000200002L});
+	public static final BitSet FOLLOW_value_path_in_sensor_value_expression604 = new BitSet(new long[]{0x0001000000000000L});
+	public static final BitSet FOLLOW_48_in_sensor_value_expression606 = new BitSet(new long[]{0x000000000F200050L});
+	public static final BitSet FOLLOW_history_mode_in_sensor_value_expression612 = new BitSet(new long[]{0x0000080000000000L});
+	public static final BitSet FOLLOW_43_in_sensor_value_expression614 = new BitSet(new long[]{0x0000000000200000L});
+	public static final BitSet FOLLOW_time_value_in_sensor_value_expression618 = new BitSet(new long[]{0x0002000000000000L});
+	public static final BitSet FOLLOW_history_mode_in_sensor_value_expression625 = new BitSet(new long[]{0x0002000000000000L});
+	public static final BitSet FOLLOW_time_value_in_sensor_value_expression631 = new BitSet(new long[]{0x0002000000000000L});
+	public static final BitSet FOLLOW_49_in_sensor_value_expression634 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_ID_in_sensor_value_expression647 = new BitSet(new long[]{0x0000800000000000L});
+	public static final BitSet FOLLOW_47_in_sensor_value_expression649 = new BitSet(new long[]{0x0000000000100000L});
+	public static final BitSet FOLLOW_ID_in_sensor_value_expression653 = new BitSet(new long[]{0x0000200000000000L});
+	public static final BitSet FOLLOW_45_in_sensor_value_expression655 = new BitSet(new long[]{0x0000002000100000L});
+	public static final BitSet FOLLOW_value_path_in_sensor_value_expression659 = new BitSet(new long[]{0x0000010000000000L});
+	public static final BitSet FOLLOW_40_in_sensor_value_expression661 = new BitSet(new long[]{0x0000000000100000L});
+	public static final BitSet FOLLOW_http_configuration_options_in_sensor_value_expression665 = new BitSet(new long[]{0x0001000000000000L});
+	public static final BitSet FOLLOW_48_in_sensor_value_expression667 = new BitSet(new long[]{0x000000000F200050L});
+	public static final BitSet FOLLOW_history_mode_in_sensor_value_expression673 = new BitSet(new long[]{0x0000080000000000L});
+	public static final BitSet FOLLOW_43_in_sensor_value_expression675 = new BitSet(new long[]{0x0000000000200000L});
+	public static final BitSet FOLLOW_time_value_in_sensor_value_expression679 = new BitSet(new long[]{0x0002000000000000L});
+	public static final BitSet FOLLOW_history_mode_in_sensor_value_expression686 = new BitSet(new long[]{0x0002000000000000L});
+	public static final BitSet FOLLOW_time_value_in_sensor_value_expression692 = new BitSet(new long[]{0x0002000000000000L});
+	public static final BitSet FOLLOW_49_in_sensor_value_expression695 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_ID_in_sensor_value_expression707 = new BitSet(new long[]{0x0000800000000000L});
+	public static final BitSet FOLLOW_47_in_sensor_value_expression709 = new BitSet(new long[]{0x0000000000100000L});
+	public static final BitSet FOLLOW_ID_in_sensor_value_expression713 = new BitSet(new long[]{0x0000200000000000L});
+	public static final BitSet FOLLOW_45_in_sensor_value_expression715 = new BitSet(new long[]{0x0000002000100000L});
+	public static final BitSet FOLLOW_value_path_in_sensor_value_expression719 = new BitSet(new long[]{0x0000400000000000L});
+	public static final BitSet FOLLOW_46_in_sensor_value_expression721 = new BitSet(new long[]{0x0000000000100000L});
+	public static final BitSet FOLLOW_configuration_options_in_sensor_value_expression725 = new BitSet(new long[]{0x0000010000000000L});
+	public static final BitSet FOLLOW_40_in_sensor_value_expression727 = new BitSet(new long[]{0x0000000000100000L});
+	public static final BitSet FOLLOW_http_configuration_options_in_sensor_value_expression731 = new BitSet(new long[]{0x0001000000000000L});
+	public static final BitSet FOLLOW_48_in_sensor_value_expression733 = new BitSet(new long[]{0x000000000F200050L});
+	public static final BitSet FOLLOW_history_mode_in_sensor_value_expression739 = new BitSet(new long[]{0x0000080000000000L});
+	public static final BitSet FOLLOW_43_in_sensor_value_expression741 = new BitSet(new long[]{0x0000000000200000L});
+	public static final BitSet FOLLOW_time_value_in_sensor_value_expression745 = new BitSet(new long[]{0x0002000000000000L});
+	public static final BitSet FOLLOW_history_mode_in_sensor_value_expression752 = new BitSet(new long[]{0x0002000000000000L});
+	public static final BitSet FOLLOW_time_value_in_sensor_value_expression758 = new BitSet(new long[]{0x0002000000000000L});
+	public static final BitSet FOLLOW_49_in_sensor_value_expression761 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_INT_in_constant_value_expression783 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_FLOAT_in_constant_value_expression796 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_STRING_in_constant_value_expression810 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_constant_value_expression_in_value_expression833 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_sensor_value_expression_in_value_expression847 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_value_expression_in_parentheticalExpression876 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_41_in_parentheticalExpression901 = new BitSet(new long[]{0x000002A100310000L});
+	public static final BitSet FOLLOW_WS_in_parentheticalExpression903 = new BitSet(new long[]{0x000002A100310000L});
+	public static final BitSet FOLLOW_orExpression_in_parentheticalExpression908 = new BitSet(new long[]{0x0000048000000000L});
+	public static final BitSet FOLLOW_WS_in_parentheticalExpression910 = new BitSet(new long[]{0x0000048000000000L});
+	public static final BitSet FOLLOW_42_in_parentheticalExpression913 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_parentheticalExpression_in_multiplicativeExpression960 = new BitSet(new long[]{0x0000008060101002L});
+	public static final BitSet FOLLOW_WS_in_multiplicativeExpression967 = new BitSet(new long[]{0x0000008060101000L});
+	public static final BitSet FOLLOW_ID_in_multiplicativeExpression973 = new BitSet(new long[]{0x0000800000000000L});
+	public static final BitSet FOLLOW_47_in_multiplicativeExpression975 = new BitSet(new long[]{0x0000000060001000L});
+	public static final BitSet FOLLOW_multiplicative_math_operator_in_multiplicativeExpression981 = new BitSet(new long[]{0x000002A000310000L});
+	public static final BitSet FOLLOW_WS_in_multiplicativeExpression983 = new BitSet(new long[]{0x000002A000310000L});
+	public static final BitSet FOLLOW_parentheticalExpression_in_multiplicativeExpression988 = new BitSet(new long[]{0x0000008060101002L});
+	public static final BitSet FOLLOW_multiplicativeExpression_in_additiveExpression1036 = new BitSet(new long[]{0x0000000810100002L});
+	public static final BitSet FOLLOW_ID_in_additiveExpression1046 = new BitSet(new long[]{0x0000800000000000L});
+	public static final BitSet FOLLOW_47_in_additiveExpression1048 = new BitSet(new long[]{0x0000000810000000L});
+	public static final BitSet FOLLOW_additive_math_operator_in_additiveExpression1054 = new BitSet(new long[]{0x0000022000310000L});
+	public static final BitSet FOLLOW_multiplicativeExpression_in_additiveExpression1058 = new BitSet(new long[]{0x0000000810100002L});
+	public static final BitSet FOLLOW_additiveExpression_in_comparativeExpression1106 = new BitSet(new long[]{0x0000009200D62802L});
+	public static final BitSet FOLLOW_WS_in_comparativeExpression1113 = new BitSet(new long[]{0x0000009200D62800L});
+	public static final BitSet FOLLOW_ID_in_comparativeExpression1120 = new BitSet(new long[]{0x0000001200C62800L});
+	public static final BitSet FOLLOW_comparator_in_comparativeExpression1126 = new BitSet(new long[]{0x000002A000310000L});
+	public static final BitSet FOLLOW_WS_in_comparativeExpression1129 = new BitSet(new long[]{0x000002A000310000L});
+	public static final BitSet FOLLOW_additiveExpression_in_comparativeExpression1134 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_ID_in_unaryExpression1178 = new BitSet(new long[]{0x0000000100000000L});
+	public static final BitSet FOLLOW_NOT_in_unaryExpression1182 = new BitSet(new long[]{0x0000022000310000L});
+	public static final BitSet FOLLOW_comparativeExpression_in_unaryExpression1186 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_comparativeExpression_in_unaryExpression1207 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_unaryExpression_in_andExpression1246 = new BitSet(new long[]{0x0000000000100022L});
+	public static final BitSet FOLLOW_ID_in_andExpression1256 = new BitSet(new long[]{0x0000800000000000L});
+	public static final BitSet FOLLOW_47_in_andExpression1258 = new BitSet(new long[]{0x0000000000000020L});
+	public static final BitSet FOLLOW_AND_in_andExpression1262 = new BitSet(new long[]{0x0000022100310000L});
+	public static final BitSet FOLLOW_unaryExpression_in_andExpression1266 = new BitSet(new long[]{0x0000000000100022L});
+	public static final BitSet FOLLOW_andExpression_in_orExpression1314 = new BitSet(new long[]{0x0000000400100002L});
+	public static final BitSet FOLLOW_ID_in_orExpression1324 = new BitSet(new long[]{0x0000800000000000L});
+	public static final BitSet FOLLOW_47_in_orExpression1326 = new BitSet(new long[]{0x0000000400000000L});
+	public static final BitSet FOLLOW_OR_in_orExpression1330 = new BitSet(new long[]{0x0000022100310000L});
+	public static final BitSet FOLLOW_andExpression_in_orExpression1334 = new BitSet(new long[]{0x0000000400100002L});
+	public static final BitSet FOLLOW_orExpression_in_expression1384 = new BitSet(new long[]{0x0000000000000000L});
+	public static final BitSet FOLLOW_EOF_in_expression1386 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_INT_in_time_value1424 = new BitSet(new long[]{0x0000004000200002L});
+	public static final BitSet FOLLOW_TIME_UNIT_in_time_value1428 = new BitSet(new long[]{0x0000000000200002L});
+	public static final BitSet FOLLOW_INT_in_time_value1445 = new BitSet(new long[]{0x0000004000200002L});
+	public static final BitSet FOLLOW_TIME_UNIT_in_time_value1449 = new BitSet(new long[]{0x0000000000200002L});
 }
