@@ -79,7 +79,7 @@ public class TestActivity extends Activity {
             connectTo = "NEARBY";
         }
 
-        mExpression = connectTo + "@light:lux{ANY,0}";
+        mExpression = connectTo + "@light:lux";
 
         if(!mRegistered) {
             registerSWANSensor(mExpression);

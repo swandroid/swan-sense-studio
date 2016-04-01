@@ -22,9 +22,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import interdroid.swan.crossdevice.Converter;
 import interdroid.swan.crossdevice.swanplus.ProximityManagerI;
@@ -52,12 +54,12 @@ public class BTManager implements ProximityManagerI {
 
     /** IMPORTANT the order of items in this list matters! */
     private List<SwanUser> nearbyPeers = new ArrayList<SwanUser>();
-    private List<SwanUser> unconnectablePeers = new ArrayList<SwanUser>();
     private Map<String, String> registeredExpressions = new HashMap<String, String>();
     private Context context;
     private BTReceiver btReceiver;
     private BluetoothAdapter btAdapter;
     private ConcurrentLinkedQueue<BTRemoteExpression> evalQueue;
+    private CopyOnWriteArrayList<BTRemoteExpression> processingList = new CopyOnWriteArrayList<>();
     private boolean busy = false;
     private Handler handler;
 
@@ -260,16 +262,40 @@ public class BTManager implements ProximityManagerI {
             return;
         }
 
-        setBusy(true);
-
-        if(!send(expression.getUser().getUsername(), expression.getId(),
+        if(send(expression.getUser().getUsername(), expression.getId(),
                 expression.getAction(), expression.getExpression())) {
+            processingList.add(expression);
+            setBusy(true);
+        } else {
             setBusy(false);
         }
     }
 
+    private boolean isProcessing(String id, String user) {
+        for(BTRemoteExpression expr : processingList) {
+            if(expr.getId().equals(id) && expr.getUser().getUsername().equals(user)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void stopProcessing(String id, String user) {
+        BTRemoteExpression toRemove = null;
+
+        for(BTRemoteExpression expr : processingList) {
+            if(expr.getId().equals(id) && expr.getUser().getUsername().equals(user)) {
+                toRemove = expr;
+            }
+        }
+
+        if(toRemove != null) {
+            processingList.remove(toRemove);
+        }
+    }
+
     // blocking call; use only in a separate thread
-    public BluetoothSocket connect(SwanUser user) {
+    public BluetoothSocket connect(SwanUser user, int tag) {
         BluetoothSocket btSocket = null;
         btAdapter.cancelDiscovery();
 
@@ -281,7 +307,7 @@ public class BTManager implements ProximityManagerI {
                 btSocket.connect();
                 Log.i(TAG, "connected to " + user);
                 user.setBtSocket(btSocket);
-                manageConnection(btSocket);
+                manageConnection(btSocket, tag);
             }
         } catch (IOException e) {
             try {
@@ -290,11 +316,16 @@ public class BTManager implements ProximityManagerI {
                 e1.printStackTrace();
             }
 
-            removeRemoteExpressions(user);
+//            removeRemoteExpressions(user);
             user.setConnectable(false);
+
             setBusy(false);
+            synchronized (evalThread) {
+                evalThread.notify();
+            }
+
             btAdapter.startDiscovery();
-            Log.e(TAG, "can't connect to " + user.getUsername(), e);
+            Log.e(TAG, "can't connect to " + user.getUsername() + ": " + e.getMessage());
 
             return null;
         }
@@ -321,11 +352,12 @@ public class BTManager implements ProximityManagerI {
     public boolean send(String toUsername, String expressionId,
                       String action, String data) {
         SwanUser user = getPeerByUsername(toUsername);
-        Log.w(TAG, "sending " + action + " message to " + toUsername + ": " + data + " (id: " + expressionId + ")");
+        int tag = new Random().nextInt(100);
+        Log.w(TAG, "[" + tag + "] sending " + action + " message to " + toUsername + ": " + data + " (id: " + expressionId + ")");
 
         try {
             if (user != null) {
-                BluetoothSocket btSocket = connect(user);
+                BluetoothSocket btSocket = connect(user, tag);
 
                 if(btSocket != null) {
                     ObjectOutputStream oos = user.getOos();
@@ -359,7 +391,7 @@ public class BTManager implements ProximityManagerI {
                 Log.e(TAG, "user not found");
             }
         } catch (Exception e) {
-            Log.e(TAG, "couldn't send message to " + user + ": " + e.getMessage());
+            Log.e(TAG, "couldn't send " + action + " to " + user + ": " + e.getMessage());
 
             if(action.equals(EvaluationEngineService.ACTION_NEW_RESULT_REMOTE)) {
                 // unregister the expression
@@ -375,7 +407,7 @@ public class BTManager implements ProximityManagerI {
         return false;
     }
 
-    protected void manageConnection(final BluetoothSocket socket) {
+    protected void manageConnection(final BluetoothSocket socket, final int tag) {
         new Thread() {
             public void run() {
                 try {
@@ -426,30 +458,33 @@ public class BTManager implements ProximityManagerI {
                                 result = (Result) Converter.stringToObject(data);
                             }
 
-                            Log.w(TAG, "received " + action + " from " + source + ": " + result + " (id: " + dataMap.get("id") + ")");
+                            Log.w(TAG, "[" + tag + "] received " + action + " from " + source + ": " + result + " (id: " + dataMap.get("id") + ")");
 
-                            if (result != null && result.getValues().length > 0) {
-                                // if result is not null, send it to the evaluation engine
-                                Intent intent = new Intent(action);
-                                intent.setClass(context, EvaluationEngineService.class);
-                                intent.putExtra("id", dataMap.get("id"));
-                                intent.putExtra("data", data);
-                                context.startService(intent);
+                            if(isProcessing(id, source)) {
+                                if (result != null && result.getValues().length > 0) {
+                                    // if result is not null, send it to the evaluation engine
+                                    Intent intent = new Intent(action);
+                                    intent.setClass(context, EvaluationEngineService.class);
+                                    intent.putExtra("id", dataMap.get("id"));
+                                    intent.putExtra("data", data);
+                                    context.startService(intent);
 
-                                // unregister the expression remotely after we get the first result, then register it again
-                                if(!evalQueue.isEmpty()) {
-                                    send(source, id, EvaluationEngineService.ACTION_UNREGISTER_REMOTE, null);
+                                    // unregister the expression remotely after we get the first result, then register it again
+                                    if (!evalQueue.isEmpty()) {
+                                        send(source, id, EvaluationEngineService.ACTION_UNREGISTER_REMOTE, null);
+                                        addToQueue(new BTRemoteExpression(id, getPeerByUsername(source),
+                                                registeredExpressions.get(id), EvaluationEngineService.ACTION_REGISTER_REMOTE));
 
-                                    addToQueue(new BTRemoteExpression(id, getPeerByUsername(source),
-                                            registeredExpressions.get(id), EvaluationEngineService.ACTION_REGISTER_REMOTE));
+                                        stopProcessing(id, source);
+                                        setBusy(false);
 
-                                    setBusy(false);
-
-                                    synchronized (evalThread) {
-                                        evalThread.notify();
+                                        synchronized (evalThread) {
+                                            evalThread.notify();
+                                        }
                                     }
-
                                 }
+                            } else {
+                                Log.e(TAG, "already processed expression; ignoring result");
                             }
                         }
                     }
@@ -459,7 +494,7 @@ public class BTManager implements ProximityManagerI {
                     if(user != null) {
                         user.setBtSocket(null);
                         user.setOos(null);
-                        Log.e(TAG, "disconnected from " + user + ": " + e.getMessage());
+                        Log.e(TAG, "[" + tag + "] disconnected from " + user + ": " + e.getMessage());
                     } else {
                         e.printStackTrace();
                     }
@@ -474,12 +509,8 @@ public class BTManager implements ProximityManagerI {
     }
 
     private void addToQueue(BTRemoteExpression remoteExpr) {
-        if(!evalQueue.contains(remoteExpr)) {
-            evalQueue.add(remoteExpr);
-            Log.d(TAG, "remote expr added to queue: " + remoteExpr);
-        } else {
-            Log.d(TAG, "[Queue] won't add, expression already present: " + remoteExpr);
-        }
+        evalQueue.add(remoteExpr);
+        Log.d(TAG, "remote expr added to queue: " + remoteExpr);
         Log.d(TAG, "[Queue] " + evalQueue);
     }
 
@@ -568,5 +599,11 @@ public class BTManager implements ProximityManagerI {
 
     public void setBusy(boolean busy) {
         this.busy = busy;
+
+        if(busy) {
+            Log.e(TAG, "IS BUSY");
+        } else {
+            Log.e(TAG, "IS NOT BUSY");
+        }
     }
 }

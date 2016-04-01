@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import java.io.IOException;
+import java.util.Random;
 
 /**
  * Created by vladimir on 3/11/16.
@@ -43,7 +44,7 @@ public class BTReceiver extends AsyncTask<Void, String, Void>  {
 
                 if (socket != null) {
                     // Do work to manage the connection (in a separate thread)
-                    btManager.manageConnection(socket);
+                    btManager.manageConnection(socket, new Random().nextInt(100));
                 }
             }
         } catch (Exception e) {
