@@ -32,6 +32,7 @@ import interdroid.swan.crossdevice.Converter;
 import interdroid.swan.crossdevice.swanplus.ProximityManagerI;
 import interdroid.swan.crossdevice.swanplus.SwanUser;
 import interdroid.swan.engine.EvaluationEngineService;
+import interdroid.swan.swansong.Expression;
 import interdroid.swan.swansong.Result;
 
 /**
@@ -223,16 +224,27 @@ public class BTManager implements ProximityManagerI {
     public void registerExpression(String id, String expression, String resolvedLocation, String action) {
         boolean addedExpr = false;
 
-        if(action.equals(EvaluationEngineService.ACTION_REGISTER_REMOTE)) {
-            registeredExpressions.put(id, expression);
-        } else if(action.equals(EvaluationEngineService.ACTION_UNREGISTER_REMOTE)) {
-            registeredExpressions.remove(id);
-        } else {
-            Log.e(TAG, "not a valid action");
-        }
+        if(resolvedLocation.equals(Expression.LOCATION_NEARBY)) {
+            if (action.equals(EvaluationEngineService.ACTION_REGISTER_REMOTE)) {
+                registeredExpressions.put(id, expression);
+            } else if (action.equals(EvaluationEngineService.ACTION_UNREGISTER_REMOTE)) {
+                registeredExpressions.remove(id);
+            } else {
+                Log.e(TAG, "not a valid action");
+            }
 
-        // TODO filter by name
-        for(SwanUser user : nearbyPeers) {
+            // TODO filter by name
+            for (SwanUser user : nearbyPeers) {
+                if (user.isConnectable()) {
+                    BTRemoteExpression remoteExpr = new BTRemoteExpression(id, user, expression, action);
+                    addToQueue(remoteExpr);
+                    addedExpr = true;
+                    Log.d(TAG, "added new expression to queue: " + expression);
+                }
+            }
+        } else {
+            SwanUser user = getPeerByUsername(resolvedLocation);
+
             if(user.isConnectable()) {
                 BTRemoteExpression remoteExpr = new BTRemoteExpression(id, user, expression, action);
                 addToQueue(remoteExpr);
@@ -264,9 +276,8 @@ public class BTManager implements ProximityManagerI {
 
         // TODO get rid of this
         if(!expression.getUser().isConnectable()) {
-            return;
-        } else {
             Log.e(TAG, "user not connectable");
+            return;
         }
 
         processingList.add(expression);
@@ -322,6 +333,7 @@ public class BTManager implements ProximityManagerI {
             }
 
 //            removeRemoteExpressions(user);
+            Log.e(TAG, "can't connect to " + user.getUsername() + ": " + e.getMessage());
             user.setConnectable(false);
 
             setBusy(false);
@@ -330,7 +342,6 @@ public class BTManager implements ProximityManagerI {
             }
 
             btAdapter.startDiscovery();
-            Log.e(TAG, "can't connect to " + user.getUsername() + ": " + e.getMessage());
 
             return null;
         }
@@ -392,7 +403,7 @@ public class BTManager implements ProximityManagerI {
                             if(action.equals(EvaluationEngineService.ACTION_NEW_RESULT_REMOTE) && data != null) {
                                 _data = Converter.stringToObject(data).toString();
                             }
-                            Log.w(TAG, "successfully sent " + action + " message to " + toUsername + ": " + _data + " (id: " + expressionId + ")");
+                            Log.w(TAG, "[" + tag + "]successfully sent " + action + " message to " + toUsername + ": " + _data + " (id: " + expressionId + ")");
 
                             return;
                         }
@@ -505,7 +516,6 @@ public class BTManager implements ProximityManagerI {
                                     }
                                 }
                             } else {
-                                send(source, id, EvaluationEngineService.ACTION_UNREGISTER_REMOTE, null);
                                 Log.e(TAG, "already processed expression; ignoring result");
                             }
                         }
