@@ -18,7 +18,7 @@ public class SwanUser {
     BluetoothDevice btDevice;
     BluetoothSocket btSocket;
     InetAddress ip;
-    boolean connectable = true;
+    boolean ready = true;
 
     ObjectOutputStream oos;
 
@@ -111,11 +111,11 @@ public class SwanUser {
         this.oos = oos;
     }
 
-    public boolean isConnectable() {
-        return connectable;
+    public boolean isReady() {
+        return ready;
     }
 
-    public void setConnectable(boolean connectable) {
-        this.connectable = connectable;
+    public void setReady(boolean ready) {
+        this.ready = ready;
     }
 }
