@@ -631,6 +631,7 @@ public class EvaluationEngineService extends Service {
 			final String expressionId, final Result result) {
 		// pusher is async
 		try {
+			Log.e(TAG, "!!! GOT THERE !!!");
 			if(mProximityManager.hasPeer(registrationId)) {
 				mProximityManager.send(registrationId, expressionId, ACTION_NEW_RESULT_REMOTE,
 						Converter.objectToString(result));

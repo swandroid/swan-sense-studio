@@ -18,7 +18,6 @@ public class SwanUser {
     BluetoothDevice btDevice;
     BluetoothSocket btSocket;
     InetAddress ip;
-    boolean ready = true;
 
     ObjectOutputStream oos;
 
@@ -32,6 +31,11 @@ public class SwanUser {
         this.username = username;
         this.regId = regId;
         this.btDevice = btDevice;
+    }
+
+    public SwanUser(String username, String regId) {
+        this.username = username;
+        this.regId = regId;
     }
 
     public String getUsername() {
@@ -111,11 +115,4 @@ public class SwanUser {
         this.oos = oos;
     }
 
-    public boolean isReady() {
-        return ready;
-    }
-
-    public void setReady(boolean ready) {
-        this.ready = ready;
-    }
 }

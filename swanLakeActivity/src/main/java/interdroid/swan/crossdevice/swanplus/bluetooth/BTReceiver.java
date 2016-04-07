@@ -7,6 +7,10 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.util.Random;
 
 /**
@@ -43,8 +47,13 @@ public class BTReceiver extends AsyncTask<Void, String, Void>  {
                 socket = mmServerSocket.accept();
 
                 if (socket != null) {
+                    OutputStream os = socket.getOutputStream();
+                    ObjectOutputStream oos = new ObjectOutputStream(os);
+                    InputStream is = socket.getInputStream();
+                    ObjectInputStream ois = new ObjectInputStream(is);
+
                     // Do work to manage the connection (in a separate thread)
-                    btManager.manageConnection(socket);
+                    btManager.manageConnection(socket, ois, oos);
                 }
             }
         } catch (Exception e) {
