@@ -55,6 +55,7 @@ public class BTManager implements ProximityManagerI {
     /** IMPORTANT the order of items in this list matters! */
     private List<SwanUser> nearbyPeers = new ArrayList<SwanUser>();
     private Map<String, String> registeredExpressions = new HashMap<String, String>();
+
     private Context context;
     private BTReceiver btReceiver;
     private BluetoothAdapter btAdapter;
@@ -98,7 +99,6 @@ public class BTManager implements ProximityManagerI {
             }
         }
     };
-
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -254,6 +254,14 @@ public class BTManager implements ProximityManagerI {
         }
     }
 
+    public void reRegisterExpression(BTRemoteExpression remoteExpression) {
+        String exprId = getNewId(getOriginalId(remoteExpression.getId()));
+        SwanUser exprUser = remoteExpression.getUser();
+        String exprData = registeredExpressions.get(getOriginalId(remoteExpression.getId()));
+
+        addToQueue(new BTRemoteExpression(exprId, exprUser, exprData, EvaluationEngineService.ACTION_REGISTER_REMOTE));
+    }
+
     /** remove all queued expressions that are assigned to a remote user */
     public void removeRemoteExpressions(SwanUser user) {
         for(Iterator<BTRemoteExpression> it = evalQueue.iterator(); it.hasNext();) {
@@ -285,7 +293,7 @@ public class BTManager implements ProximityManagerI {
                     send(oos, expression.getUser().getUsername(), expression.getId(),
                             expression.getAction(), expression.getExpression());
                 } else {
-                    stopProcessing(expression.getId(), expression.getUser().getUsername());
+                    finishProcessing(expression.getId());
                     setBusy(false);
 
                     addToQueue(expression);
@@ -321,18 +329,31 @@ public class BTManager implements ProximityManagerI {
         return false;
     }
 
-    private void stopProcessing(String id, String user) {
+    // TODO use the list of worker threads instead
+    protected void finishProcessing(String id) {
         BTRemoteExpression toRemove = null;
 
         for(BTRemoteExpression expr : processingList) {
-            if(expr.getId().equals(id) && expr.getUser().getUsername().equals(user)) {
+            if(expr.getId().equals(id)) {
                 toRemove = expr;
             }
         }
 
         if(toRemove != null) {
+            Log.d(TAG, "stopped processing expression: " + toRemove);
             processingList.remove(toRemove);
         }
+    }
+
+    /** send expression to the evaluation engine
+     * TODO consider moving this to Worker base class
+     * */
+    protected void sendExprForEvaluation(String exprId, String exprAction, String exprSource, String exprData) {
+        Intent intent = new Intent(exprAction);
+        intent.setClass(context, EvaluationEngineService.class);
+        intent.putExtra("id", exprId);
+        intent.putExtra("data", exprData);
+        context.startService(intent);
     }
 
     // blocking call; use only in a separate thread
@@ -431,19 +452,19 @@ public class BTManager implements ProximityManagerI {
 
                 // if we are here then the send failed for some reason
                 if(action.equals(EvaluationEngineService.ACTION_NEW_RESULT_REMOTE)) {
-                    Log.e(TAG, "couldn't send remote result, unregistering expression " + getOriginalId(expressionId));
+                    Log.e(TAG, "couldn't send remote result, unregistering expression " + expressionId);
                     disconnect(user);
 
                     // unregister the expression
                     Intent intent = new Intent(EvaluationEngineService.ACTION_UNREGISTER_REMOTE);
                     intent.setClass(context, EvaluationEngineService.class);
                     intent.putExtra("source", user.getUsername());
-                    intent.putExtra("id", getOriginalId(expressionId));
+                    intent.putExtra("id", expressionId);
                     intent.putExtra("data", (String) null);
                     context.startService(intent);
                 } else if(action.equals(EvaluationEngineService.ACTION_REGISTER_REMOTE)) {
                     Log.e(TAG, "cancel remote registration for expression " + expressionId);
-                    stopProcessing(expressionId, toUsername);
+                    finishProcessing(expressionId);
                     setBusy(false);
 
                     synchronized (evalThread) {
@@ -527,11 +548,12 @@ public class BTManager implements ProximityManagerI {
                                     addToQueue(new BTRemoteExpression(getNewId(getOriginalId(id)), getPeerByUsername(source),
                                             registeredExpressions.get(getOriginalId(id)), EvaluationEngineService.ACTION_REGISTER_REMOTE));
 
-                                    stopProcessing(id, source);
+                                    finishProcessing(id);
 
                                 }
                             } else {
                                 Log.e(TAG, "already processed expression; ignoring result");
+                                send(oos, source, id, EvaluationEngineService.ACTION_UNREGISTER_REMOTE, null);
                             }
                         }
                     }
@@ -650,6 +672,24 @@ public class BTManager implements ProximityManagerI {
         }
     }
 
+    protected void workerDone(Thread worker) {
+        if(worker instanceof BTClientThread) {
+            BTClientThread clientWorker = (BTClientThread) worker;
+            BTRemoteExpression remoteExpression = clientWorker.getRemoteExpression();
+
+            if(remoteExpression.getAction().equals(EvaluationEngineService.ACTION_REGISTER_REMOTE)) {
+                Log.d(TAG, "worker finished processing expression " + remoteExpression.getId());
+
+                addToQueue(remoteExpression);
+                setBusy(false);
+
+                synchronized (evalThread) {
+                    evalThread.notify();
+                }
+            }
+        }
+    }
+
     /** increment expression counter */
     private synchronized int incCounter() {
         return exprCounter++;
@@ -659,7 +699,12 @@ public class BTManager implements ProximityManagerI {
         return id + "/" + incCounter();
     }
 
+    // TODO cosider moving this to Worker base class
     private String getOriginalId(String id) {
         return id.replaceAll("/.*", "");
+    }
+
+    public Context getContext() {
+        return context;
     }
 }
