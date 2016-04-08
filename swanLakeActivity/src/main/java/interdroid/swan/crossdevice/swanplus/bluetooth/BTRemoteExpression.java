@@ -2,23 +2,40 @@ package interdroid.swan.crossdevice.swanplus.bluetooth;
 
 import android.bluetooth.BluetoothDevice;
 
-import interdroid.swan.crossdevice.swanplus.SwanUser;
-import interdroid.swan.swansong.Expression;
-
 /**
  * Created by vladimir on 3/17/16.
  */
 public class BTRemoteExpression {
+
+    private static int exprCounter = 0;
+
     private String id;
-    private SwanUser user;
+    private BluetoothDevice remoteDevice;
     private String expression;
     private String action;
 
-    public BTRemoteExpression(String id, SwanUser user, String expression, String action) {
-        this.id = id;
-        this.user = user;
+    public BTRemoteExpression(String baseId, BluetoothDevice remoteDevice, String expression, String action) {
+        this.id = getNewId(baseId);
+        this.remoteDevice = remoteDevice;
         this.expression = expression;
         this.action = action;
+    }
+
+    /** increment expression counter */
+    private synchronized int incCounter() {
+        return exprCounter++;
+    }
+
+    private String getNewId(String baseId) {
+        return baseId + "/" + incCounter();
+    }
+
+    private String getBaseId() {
+        return id.replaceAll("/.*", "");
+    }
+
+    public void renewId() {
+        this.id = getNewId(getBaseId());
     }
 
     public String getId() {
@@ -45,17 +62,13 @@ public class BTRemoteExpression {
         this.expression = expression;
     }
 
-    public SwanUser getUser() {
-        return user;
-    }
-
-    public void setUser(SwanUser user) {
-        this.user = user;
+    public BluetoothDevice getRemoteDevice() {
+        return remoteDevice;
     }
 
     @Override
     public String toString() {
-        return "RemoteExpr[" + id + ", " + user + ", " + expression + ", " + action + "]";
+        return "RemoteExpr[" + id + ", " + remoteDevice.getName() + ", " + expression + ", " + action + "]";
     }
 
     @Override
@@ -65,19 +78,12 @@ public class BTRemoteExpression {
 
         BTRemoteExpression that = (BTRemoteExpression) o;
 
-        if (!id.equals(that.id)) return false;
-        if (!user.equals(that.user)) return false;
-        if (!expression.equals(that.expression)) return false;
-        return action.equals(that.action);
+        return id.equals(that.id);
 
     }
 
     @Override
     public int hashCode() {
-        int result = id.hashCode();
-        result = 31 * result + user.hashCode();
-        result = 31 * result + expression.hashCode();
-        result = 31 * result + action.hashCode();
-        return result;
+        return id.hashCode();
     }
 }

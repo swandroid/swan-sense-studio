@@ -1,18 +1,11 @@
 package interdroid.swan.crossdevice.swanplus.bluetooth;
 
-import android.bluetooth.BluetoothSocket;
-import android.content.Intent;
 import android.util.Log;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.util.HashMap;
 
 import interdroid.swan.crossdevice.Converter;
-import interdroid.swan.crossdevice.swanplus.SwanUser;
 import interdroid.swan.engine.EvaluationEngineService;
 import interdroid.swan.swansong.Result;
 
@@ -21,17 +14,13 @@ import interdroid.swan.swansong.Result;
  *
  * TODO handle exceptions in send()
  */
-public class BTClientThread extends Thread {
+public class BTClientWorker extends BTWorker {
 
-    private static final String TAG = "BTClientThread";
+    private static final String TAG = "BTClientWorker";
 
-    private BTManager btManager;
     private BTRemoteExpression remoteExpression;
-    private ObjectOutputStream outStream;
-    private ObjectInputStream inStream;
-    private BluetoothSocket btSocket;
 
-    public BTClientThread(BTManager btManager, BTRemoteExpression remoteExpression) {
+    public BTClientWorker(BTManager btManager, BTRemoteExpression remoteExpression) {
         this.btManager = btManager;
         this.remoteExpression = remoteExpression;
     }
@@ -39,61 +28,20 @@ public class BTClientThread extends Thread {
     @Override
     public void run() {
         try {
-            btSocket = btManager.connect(remoteExpression.getUser());
+            Log.d(TAG, "client worker started processing expression " + remoteExpression.getId());
+            btSocket = btManager.connect(remoteExpression.getRemoteDevice());
 
             if (btSocket != null) {
-                OutputStream os = btSocket.getOutputStream();
-                outStream = new ObjectOutputStream(os);
-                InputStream is = btSocket.getInputStream();
-                inStream = new ObjectInputStream(is);
-
+                initConnection();
                 send(remoteExpression.getId(), remoteExpression.getAction(), remoteExpression.getExpression());
                 manageClientConnection();
             } else {
-                btManager.finishProcessing(remoteExpression.getId());
                 btManager.workerDone(this);
             }
         } catch(Exception e) {
             Log.e(TAG, "ERROR in client worker", e);
-
-            btManager.finishProcessing(remoteExpression.getId());
             btManager.workerDone(this);
         }
-    }
-
-    protected void send(String expressionId, String expressionAction, String expressionData) throws IOException {
-        Log.w(TAG, "sending " + expressionAction + " to " + remoteExpression.getUser() + ": "
-                + toPrintableData(expressionData, expressionAction) + " (id: " + expressionId + ")");
-
-        HashMap<String, String> dataMap = new HashMap<>();
-
-        dataMap.put("source", btManager.getBtAdapter().getName());
-        dataMap.put("id", expressionId);
-        dataMap.put("action", expressionAction);
-        dataMap.put("data", expressionData);
-
-        synchronized (outStream) {
-            outStream.writeObject(dataMap);
-        }
-
-        Log.w(TAG, "successfully sent " + expressionAction + " to " + remoteExpression.getUser() + ": "
-                + toPrintableData(expressionData, expressionAction) + " (id: " + expressionId + ")");
-    }
-
-    private String toPrintableData(String data, String action) {
-        if(data == null) {
-            return "(no data)";
-        }
-
-        if(action.equals(EvaluationEngineService.ACTION_NEW_RESULT_REMOTE)) {
-            try {
-                return Converter.stringToObject(data).toString();
-            } catch (Exception e) {
-                Log.e(TAG, "can't get printable data", e);
-            }
-        }
-
-        return data;
     }
 
     protected void manageClientConnection() {
@@ -114,7 +62,6 @@ public class BTClientThread extends Thread {
                         if (result != null && result.getValues().length > 0) {
                             btManager.sendExprForEvaluation(getOriginalId(exprId), exprAction, exprSource, exprData);
                             send(exprId, EvaluationEngineService.ACTION_UNREGISTER_REMOTE, null);
-//                            btManager.reRegisterExpression(remoteExpression);
                         }
                     } else {
                         Log.e(TAG, "ERROR, received result for wrong expression, expecting " + remoteExpression.getId());
@@ -125,7 +72,7 @@ public class BTClientThread extends Thread {
                 }
             }
         } catch(Exception e) {
-            Log.e(TAG, "disconnected from " + remoteExpression.getUser() + ": " + e.getMessage());
+            Log.e(TAG, "disconnected from " + getRemoteDeviceName() + ": " + e.getMessage());
 
             try {
                 btManager.workerDone(this);
@@ -143,4 +90,9 @@ public class BTClientThread extends Thread {
     public BTRemoteExpression getRemoteExpression() {
         return remoteExpression;
     }
+
+    protected String getTag() {
+        return TAG;
+    }
+
 }

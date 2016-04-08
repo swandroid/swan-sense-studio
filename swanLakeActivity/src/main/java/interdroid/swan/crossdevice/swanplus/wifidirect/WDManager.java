@@ -433,8 +433,7 @@ public class WDManager implements ProximityManagerI {
         this.connected = connected;
     }
 
-    public boolean send(String toUsername, String expressionId, String action, String data) {
+    public void send(String toUsername, String expressionId, String action, String data) {
         // TODO implement me
-        return false;
     }
 }

@@ -47,13 +47,9 @@ public class BTReceiver extends AsyncTask<Void, String, Void>  {
                 socket = mmServerSocket.accept();
 
                 if (socket != null) {
-                    OutputStream os = socket.getOutputStream();
-                    ObjectOutputStream oos = new ObjectOutputStream(os);
-                    InputStream is = socket.getInputStream();
-                    ObjectInputStream ois = new ObjectInputStream(is);
-
-                    // Do work to manage the connection (in a separate thread)
-                    btManager.manageConnection(socket, ois, oos);
+                    BTServerWorker serverWorker = new BTServerWorker(btManager, socket);
+                    btManager.addServerWorker(serverWorker);
+                    serverWorker.start();
                 }
             }
         } catch (Exception e) {
@@ -61,12 +57,6 @@ public class BTReceiver extends AsyncTask<Void, String, Void>  {
         }
 
         return null;
-    }
-
-    public void cancel() {
-        try {
-            mmServerSocket.close();
-        } catch (IOException e) { }
     }
 
 }
