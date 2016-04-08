@@ -39,6 +39,7 @@ public class BTManager implements ProximityManagerI {
     protected final static String SERVICE_NAME = "swanlake";
     public static final String ACTION_NEARBY_DEVICE_FOUND = "interdroid.swan.crossdevice.swanplus.bluetooth.ACTION_NEARBY_DEVICE_FOUND";
     private final int PEER_DISCOVERY_INTERVAL = 40000;
+    private final int BLOCKED_WORKERS_CHECKING_INTERVAL = 5000;
 
     private Context context;
     private BTReceiver btReceiver;
@@ -48,8 +49,9 @@ public class BTManager implements ProximityManagerI {
     private Handler handler;
 
     private List<BTClientWorker> clientWorkers = new ArrayList<>();
-
+    private List<BTClientWorker> waitingWorkers = new ArrayList<>();
     private List<BTServerWorker> serverWorkers = new ArrayList<>();
+
     private List<BluetoothDevice> nearbyDevices = new ArrayList<>();
     /** IMPORTANT the order of items in this list matters! (see SwanLakePlus) */
     private Map<String, String> registeredExpressions = new HashMap<String, String>();
@@ -59,6 +61,26 @@ public class BTManager implements ProximityManagerI {
         public void run() {
             discoverPeers();
             handler.postDelayed(nearbyPeersChecker, PEER_DISCOVERY_INTERVAL);
+        }
+    };
+
+    /* we check periodically that client threads are not blocked in connect() */
+    Runnable blockedWorkersChecker = new Runnable() {
+        public void run() {
+            for(BTClientWorker clientWorker : clientWorkers) {
+                if(!clientWorker.isConnected()) {
+                    if(waitingWorkers.contains(clientWorker)) {
+                        Log.e(TAG, "blocked worker found, interrupting...");
+                        clientWorker.interrupt();
+                    } else {
+                        waitingWorkers.add(clientWorker);
+                    }
+                } else {
+                    waitingWorkers.remove(clientWorker);
+                }
+            }
+
+            handler.postDelayed(blockedWorkersChecker, BLOCKED_WORKERS_CHECKING_INTERVAL);
         }
     };
 
@@ -165,6 +187,7 @@ public class BTManager implements ProximityManagerI {
         }
 
         nearbyPeersChecker.run();
+        blockedWorkersChecker.run();
     }
 
     public void clean() {
@@ -317,7 +340,7 @@ public class BTManager implements ProximityManagerI {
             return;
         }
 
-        Log.e(TAG, "couldn't send " + exprAction + " to " + remoteDeviceName + "(id: " + exprId + "): device not present nearby");
+        Log.e(TAG, "couldn't send " + exprAction + " to " + remoteDeviceName + "(id: " + exprId + "): expression already processed");
     }
 
     private void addToQueue(BTRemoteExpression remoteExpr) {
@@ -342,7 +365,7 @@ public class BTManager implements ProximityManagerI {
         return null;
     }
 
-    private void addNearbyDevice(BluetoothDevice device) {
+    protected void addNearbyDevice(BluetoothDevice device) {
         if(!hasPeer(device.getName())) {
             nearbyDevices.add(device);
             registerRemoteDevice(device);
@@ -398,7 +421,11 @@ public class BTManager implements ProximityManagerI {
         }
     }
 
-    protected void workerDone(Thread worker) {
+    /**
+     * we have to synchronize the methods dealing with workers, as it may happen that send() is called
+     * by EvaluationEngineService right before a worker is removed
+     */
+    protected synchronized void workerDone(Thread worker) {
         if(worker instanceof BTClientWorker) {
             BTClientWorker clientWorker = (BTClientWorker) worker;
             BTRemoteExpression remoteExpression = clientWorker.getRemoteExpression();
@@ -423,7 +450,7 @@ public class BTManager implements ProximityManagerI {
         }
     }
 
-    protected BTClientWorker getClientWorker(String deviceName) {
+    protected synchronized BTClientWorker getClientWorker(String deviceName) {
         for (BTClientWorker clientWorker : clientWorkers) {
             if (deviceName.equals(clientWorker.getRemoteDeviceName())) {
                 return clientWorker;
@@ -432,7 +459,7 @@ public class BTManager implements ProximityManagerI {
         return null;
     }
 
-    protected BTServerWorker getServerWorker(String deviceName) {
+    protected synchronized BTServerWorker getServerWorker(String deviceName) {
         for (BTServerWorker serverWorker : serverWorkers) {
             if (deviceName.equals(serverWorker.getRemoteDeviceName())) {
                 return serverWorker;

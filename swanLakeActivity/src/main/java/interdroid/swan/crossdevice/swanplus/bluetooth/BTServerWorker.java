@@ -23,6 +23,7 @@ public class BTServerWorker extends BTWorker {
     @Override
     public void run() {
         try {
+            Log.d(TAG, "server worker started for device " + getRemoteDeviceName());
             initConnection();
             manageServerConnection();
         } catch(Exception e) {
@@ -76,5 +77,10 @@ public class BTServerWorker extends BTWorker {
 
     protected String getTag() {
         return TAG;
+    }
+
+    @Override
+    public String toString() {
+        return "BTServerWorker(device = " + getRemoteDeviceName() + ")";
     }
 }

@@ -12,13 +12,13 @@ import interdroid.swan.swansong.Result;
 /**
  * Created by vladimir on 4/7/16.
  *
- * TODO handle exceptions in send()
  */
 public class BTClientWorker extends BTWorker {
 
     private static final String TAG = "BTClientWorker";
 
     private BTRemoteExpression remoteExpression;
+    private boolean connected = false;
 
     public BTClientWorker(BTManager btManager, BTRemoteExpression remoteExpression) {
         this.btManager = btManager;
@@ -32,6 +32,7 @@ public class BTClientWorker extends BTWorker {
             btSocket = btManager.connect(remoteExpression.getRemoteDevice());
 
             if (btSocket != null) {
+                connected = true;
                 initConnection();
                 send(remoteExpression.getId(), remoteExpression.getAction(), remoteExpression.getExpression());
                 manageClientConnection();
@@ -60,7 +61,7 @@ public class BTClientWorker extends BTWorker {
 
                     if(exprId.equals(remoteExpression.getId())) {
                         if (result != null && result.getValues().length > 0) {
-                            btManager.sendExprForEvaluation(getOriginalId(exprId), exprAction, exprSource, exprData);
+                            btManager.sendExprForEvaluation(remoteExpression.getBaseId(), exprAction, exprSource, exprData);
                             send(exprId, EvaluationEngineService.ACTION_UNREGISTER_REMOTE, null);
                         }
                     } else {
@@ -83,10 +84,6 @@ public class BTClientWorker extends BTWorker {
         }
     }
 
-    private String getOriginalId(String id) {
-        return id.replaceAll("/.*", "");
-    }
-
     public BTRemoteExpression getRemoteExpression() {
         return remoteExpression;
     }
@@ -95,4 +92,12 @@ public class BTClientWorker extends BTWorker {
         return TAG;
     }
 
+    @Override
+    public String toString() {
+        return "BTClientWorker(device = " + getRemoteDeviceName() + ", expr = " + remoteExpression + ")";
+    }
+
+    public boolean isConnected() {
+        return connected;
+    }
 }

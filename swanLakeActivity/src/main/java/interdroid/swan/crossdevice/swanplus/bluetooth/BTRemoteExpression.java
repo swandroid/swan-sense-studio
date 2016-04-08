@@ -30,7 +30,7 @@ public class BTRemoteExpression {
         return baseId + "/" + incCounter();
     }
 
-    private String getBaseId() {
+    public String getBaseId() {
         return id.replaceAll("/.*", "");
     }
 

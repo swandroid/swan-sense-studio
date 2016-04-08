@@ -48,6 +48,8 @@ public class BTReceiver extends AsyncTask<Void, String, Void>  {
 
                 if (socket != null) {
                     BTServerWorker serverWorker = new BTServerWorker(btManager, socket);
+                    // we add the device in the nearby devices list in case it wasn't discovered already
+                    btManager.addNearbyDevice(socket.getRemoteDevice());
                     btManager.addServerWorker(serverWorker);
                     serverWorker.start();
                 }
