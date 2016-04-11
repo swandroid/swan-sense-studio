@@ -38,7 +38,7 @@ public class BTManager implements ProximityManagerI {
     protected final static UUID SERVICE_UUID = UUID.fromString("e2035693-b335-403f-b921-537e5ce2d27d");
     protected final static String SERVICE_NAME = "swanlake";
     public static final String ACTION_NEARBY_DEVICE_FOUND = "interdroid.swan.crossdevice.swanplus.bluetooth.ACTION_NEARBY_DEVICE_FOUND";
-    private final int PEER_DISCOVERY_INTERVAL = 40000;
+    private final int PEER_DISCOVERY_INTERVAL = 60000;
     private final int BLOCKED_WORKERS_CHECKING_INTERVAL = 5000;
 
     private Context context;
