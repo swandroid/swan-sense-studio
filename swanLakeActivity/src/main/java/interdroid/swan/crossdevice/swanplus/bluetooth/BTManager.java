@@ -67,17 +67,25 @@ public class BTManager implements ProximityManagerI {
     /* we check periodically that client threads are not blocked in connect() */
     Runnable blockedWorkersChecker = new Runnable() {
         public void run() {
+            List<BTClientWorker> blockedWorkers = new ArrayList<>();
+
             for(BTClientWorker clientWorker : clientWorkers) {
                 if(!clientWorker.isConnected()) {
                     if(waitingWorkers.contains(clientWorker)) {
                         Log.e(TAG, "blocked worker found, interrupting...");
-                        clientWorker.interrupt();
+                        blockedWorkers.add(clientWorker);
+                        waitingWorkers.remove(clientWorker);
                     } else {
                         waitingWorkers.add(clientWorker);
                     }
                 } else {
                     waitingWorkers.remove(clientWorker);
                 }
+            }
+
+            for(BTClientWorker clientWorker : blockedWorkers) {
+                clientWorker.interrupt();
+                workerDone(clientWorker);
             }
 
             handler.postDelayed(blockedWorkersChecker, BLOCKED_WORKERS_CHECKING_INTERVAL);
@@ -97,7 +105,7 @@ public class BTManager implements ProximityManagerI {
 
                     BTRemoteExpression expression = removeFromQueue();
                     processExpression(expression);
-                    sleep(1000);
+                    sleep(2000);
 
                     while(isBusy()) {
                         synchronized (this) {
@@ -260,7 +268,8 @@ public class BTManager implements ProximityManagerI {
             }
         }
 
-        if(addedExpr) {
+        // if discovery is started, then the evaluation thread is notified when discovery is done
+        if(addedExpr && !btAdapter.isDiscovering()) {
             synchronized (evalThread) {
                 evalThread.notify();
             }
@@ -279,18 +288,6 @@ public class BTManager implements ProximityManagerI {
             send(remoteExpr.getRemoteDevice().getName(), remoteExpr.getId(),
                     remoteExpr.getAction(), remoteExpr.getExpression());
         }
-    }
-
-    /** send expression to the evaluation engine
-     * TODO consider moving this to Worker base class
-     * */
-    protected void sendExprForEvaluation(String exprId, String exprAction, String exprSource, String exprData) {
-        Intent intent = new Intent(exprAction);
-        intent.setClass(context, EvaluationEngineService.class);
-        intent.putExtra("id", exprId);
-        intent.putExtra("source", exprSource);
-        intent.putExtra("data", exprData);
-        context.startService(intent);
     }
 
     // blocking call; use only in a separate thread
@@ -336,6 +333,7 @@ public class BTManager implements ProximityManagerI {
                 }
             }
         } catch (IOException e) {
+            //TODO unregister expression
             Log.e(TAG, "couldn't send " + exprAction + " to " + remoteDeviceName + "(id: " + exprId + ")", e);
             return;
         }
@@ -367,19 +365,29 @@ public class BTManager implements ProximityManagerI {
 
     protected void addNearbyDevice(BluetoothDevice device) {
         if(!hasPeer(device.getName())) {
+            Log.d(TAG, "added new device " + device.getName());
             nearbyDevices.add(device);
             registerRemoteDevice(device);
-            Log.d(TAG, "added new device " + device.getName());
         } else {
             Log.d(TAG, "device " + device.getName() + " already present, won't add");
         }
     }
 
     private void registerRemoteDevice(BluetoothDevice device) {
+        boolean addedExpr = false;
+
         for(Map.Entry<String, String> entry : registeredExpressions.entrySet()) {
             BTRemoteExpression remoteExpr = new BTRemoteExpression(entry.getKey(), device,
                     entry.getValue(), EvaluationEngineService.ACTION_REGISTER_REMOTE);
             addToQueue(remoteExpr);
+            addedExpr = true;
+        }
+
+        // if discovery is started, then the evaluation thread is notified when discovery is done
+        if(addedExpr && !btAdapter.isDiscovering()) {
+            synchronized (evalThread) {
+                evalThread.notify();
+            }
         }
     }
 

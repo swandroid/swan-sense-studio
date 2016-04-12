@@ -31,6 +31,22 @@ public class BTClientWorker extends BTWorker {
             Log.d(TAG, "client worker started processing expression " + remoteExpression.getId());
             btSocket = btManager.connect(remoteExpression.getRemoteDevice());
 
+            // if the worker was interrupted, we no longer need
+            // to clean it from manager by calling workerDone()
+            if(isInterrupted()) {
+                Log.e(TAG, "client worker was interrupted");
+
+                if(btSocket != null) {
+                    try {
+                        btSocket.close();
+                    } catch (IOException e) {
+                        Log.e(TAG, "ERROR couldn't close socket", e);
+                    }
+                }
+
+                return;
+            }
+
             if (btSocket != null) {
                 connected = true;
                 initConnection();
@@ -61,7 +77,7 @@ public class BTClientWorker extends BTWorker {
 
                     if(exprId.equals(remoteExpression.getId())) {
                         if (result != null && result.getValues().length > 0) {
-                            btManager.sendExprForEvaluation(remoteExpression.getBaseId(), exprAction, exprSource, exprData);
+                            sendExprForEvaluation(remoteExpression.getBaseId(), exprAction, exprSource, exprData);
                             send(exprId, EvaluationEngineService.ACTION_UNREGISTER_REMOTE, null);
                         }
                     } else {

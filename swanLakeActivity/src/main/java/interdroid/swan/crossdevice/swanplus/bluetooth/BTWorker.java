@@ -1,6 +1,7 @@
 package interdroid.swan.crossdevice.swanplus.bluetooth;
 
 import android.bluetooth.BluetoothSocket;
+import android.content.Intent;
 import android.util.Log;
 
 import java.io.IOException;
@@ -49,6 +50,18 @@ public class BTWorker extends Thread {
 
         Log.w(getTag(), "successfully sent " + expressionAction + " to " + getRemoteDeviceName() + ": "
                 + toPrintableData(expressionData, expressionAction) + " (id: " + expressionId + ")");
+    }
+
+    /**
+     * send expression to the evaluation engine
+     */
+    protected void sendExprForEvaluation(String exprId, String exprAction, String exprSource, String exprData) {
+        Intent intent = new Intent(exprAction);
+        intent.setClass(btManager.getContext(), EvaluationEngineService.class);
+        intent.putExtra("id", exprId);
+        intent.putExtra("source", exprSource);
+        intent.putExtra("data", exprData);
+        btManager.getContext().startService(intent);
     }
 
     private String toPrintableData(String data, String action) {

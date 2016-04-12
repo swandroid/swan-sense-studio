@@ -45,7 +45,7 @@ public class BTServerWorker extends BTWorker {
                         || exprAction.equals(EvaluationEngineService.ACTION_UNREGISTER_REMOTE)) {
                     Log.w(TAG, "received " + exprAction + " from " + exprSource + ": " + exprData + " (id: " + exprId + ")");
 
-                    btManager.sendExprForEvaluation(exprId, exprAction, exprSource, exprData);
+                    sendExprForEvaluation(exprId, exprAction, exprSource, exprData);
 
                     if(exprAction.equals(EvaluationEngineService.ACTION_UNREGISTER_REMOTE)) {
                         disconnect();
@@ -56,6 +56,7 @@ public class BTServerWorker extends BTWorker {
             }
         } catch(Exception e) {
             Log.e(TAG, "disconnected from " + getRemoteDeviceName() + ": " + e.getMessage());
+            //TODO unregister expression
 
             try {
                 btManager.workerDone(this);
