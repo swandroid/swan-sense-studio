@@ -23,11 +23,11 @@ public class BTServerWorker extends BTWorker {
     @Override
     public void run() {
         try {
-            Log.d(TAG, "server worker started for device " + getRemoteDeviceName());
+            Log.d(TAG, this + " started");
             initConnection();
             manageServerConnection();
         } catch(Exception e) {
-            Log.e(TAG, "ERROR in server worker", e);
+            Log.e(TAG, this + " crashed", e);
         }
     }
 
@@ -43,36 +43,36 @@ public class BTServerWorker extends BTWorker {
 
                 if (exprAction.equals(EvaluationEngineService.ACTION_REGISTER_REMOTE)
                         || exprAction.equals(EvaluationEngineService.ACTION_UNREGISTER_REMOTE)) {
-                    Log.w(TAG, "received " + exprAction + " from " + exprSource + ": " + exprData + " (id: " + exprId + ")");
+                    Log.w(TAG, this + " received " + exprAction + ": " + exprData);
 
-                    sendExprForEvaluation(exprId, exprAction, exprSource, exprData);
+                    btManager.sendExprForEvaluation(exprId, exprAction, exprSource, exprData);
 
                     if(exprAction.equals(EvaluationEngineService.ACTION_UNREGISTER_REMOTE)) {
                         disconnect();
                     }
                 } else {
-                    Log.e(TAG, "ERROR, shouldn't receive " + exprAction);
+                    Log.e(TAG, this + " didn't expect " + exprAction);
                 }
             }
         } catch(Exception e) {
-            Log.e(TAG, "disconnected from " + getRemoteDeviceName() + ": " + e.getMessage());
+            Log.e(TAG, this + " disconnected: " + e.getMessage());
             //TODO unregister expression
 
             try {
                 btManager.workerDone(this);
                 btSocket.close();
             } catch (IOException e1) {
-                Log.e(TAG, "couldn't close socket: " + e1.getMessage(), e1);
+                Log.e(TAG, this + " couldn't close socket", e1);
             }
         }
     }
 
     public void disconnect() {
         try {
-            Log.e(TAG, "disconnecting from " + getRemoteDeviceName());
+            Log.e(TAG, this + " disconnecting");
             btSocket.close();
         } catch (IOException e) {
-            Log.e(TAG, "couldn't close socket: " + e.getMessage(), e);
+            Log.e(TAG, this + " couldn't close socket", e);
         }
     }
 
@@ -82,6 +82,6 @@ public class BTServerWorker extends BTWorker {
 
     @Override
     public String toString() {
-        return "BTServerWorker(device = " + getRemoteDeviceName() + ")";
+        return "SW[" + getRemoteDeviceName() + "]";
     }
 }

@@ -1,5 +1,6 @@
 package interdroid.swan.crossdevice.swanplus.bluetooth;
 
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.util.Log;
@@ -27,10 +28,16 @@ public class BTWorker extends Thread {
     protected ObjectInputStream inStream;
 
     protected void initConnection() throws IOException {
-        OutputStream os = btSocket.getOutputStream();
-        outStream = new ObjectOutputStream(os);
-        InputStream is = btSocket.getInputStream();
-        inStream = new ObjectInputStream(is);
+        try {
+            OutputStream os = btSocket.getOutputStream();
+            outStream = new ObjectOutputStream(os);
+            InputStream is = btSocket.getInputStream();
+            inStream = new ObjectInputStream(is);
+        } catch (IOException e) {
+            // we ususally get this exception when the worker on the other side was interrupted
+            // due to an expired timeout
+            Log.e(getTag(), "connection was closed: " + e.getMessage());
+        }
     }
 
     protected void send(String expressionId, String expressionAction, String expressionData) throws IOException {
@@ -52,18 +59,6 @@ public class BTWorker extends Thread {
                 + toPrintableData(expressionData, expressionAction) + " (id: " + expressionId + ")");
     }
 
-    /**
-     * send expression to the evaluation engine
-     */
-    protected void sendExprForEvaluation(String exprId, String exprAction, String exprSource, String exprData) {
-        Intent intent = new Intent(exprAction);
-        intent.setClass(btManager.getContext(), EvaluationEngineService.class);
-        intent.putExtra("id", exprId);
-        intent.putExtra("source", exprSource);
-        intent.putExtra("data", exprData);
-        btManager.getContext().startService(intent);
-    }
-
     private String toPrintableData(String data, String action) {
         if(data == null) {
             return "(no data)";
@@ -81,7 +76,10 @@ public class BTWorker extends Thread {
     }
 
     public String getRemoteDeviceName() {
-        return btSocket.getRemoteDevice().getName();
+        if(btSocket != null) {
+            return btSocket.getRemoteDevice().getName();
+        }
+        return null;
     }
 
     protected String getTag() {

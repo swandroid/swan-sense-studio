@@ -1,5 +1,7 @@
 package interdroid.swan.crossdevice.swanplus.bluetooth;
 
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 import android.util.Log;
 
 import java.io.IOException;
@@ -28,19 +30,19 @@ public class BTClientWorker extends BTWorker {
     @Override
     public void run() {
         try {
-            Log.d(TAG, "client worker started processing expression " + remoteExpression.getId());
-            btSocket = btManager.connect(remoteExpression.getRemoteDevice());
+            Log.d(TAG, this + " started processing");
+            btSocket = connect(remoteExpression.getRemoteDevice());
 
             // if the worker was interrupted, we no longer need
             // to clean it from manager by calling workerDone()
             if(isInterrupted()) {
-                Log.e(TAG, "client worker was interrupted");
+                Log.e(TAG, this + " interrupted, closing connection");
 
                 if(btSocket != null) {
                     try {
                         btSocket.close();
                     } catch (IOException e) {
-                        Log.e(TAG, "ERROR couldn't close socket", e);
+                        Log.e(TAG, this + " couldn't close socket", e);
                     }
                 }
 
@@ -56,9 +58,34 @@ public class BTClientWorker extends BTWorker {
                 btManager.workerDone(this);
             }
         } catch(Exception e) {
-            Log.e(TAG, "ERROR in client worker", e);
+            Log.e(TAG, this + " crashed", e);
             btManager.workerDone(this);
         }
+    }
+
+    // blocking call; use only in a separate thread
+    protected BluetoothSocket connect(BluetoothDevice device) {
+        Log.i(TAG, this + " connecting to " + device.getName() + "...");
+        BluetoothSocket btSocket = null;
+//        btAdapter.cancelDiscovery();
+
+        try {
+            btSocket = device.createInsecureRfcommSocketToServiceRecord(btManager.SERVICE_UUID);
+            btSocket.connect();
+            Log.i(TAG, this + " connected to " + device.getName());
+        } catch (IOException e) {
+            Log.e(TAG, this + " can't connect to " + device.getName() + ": " + e.getMessage());
+
+            try {
+                btSocket.close();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+
+            return null;
+        }
+
+        return btSocket;
     }
 
     protected void manageClientConnection() {
@@ -73,29 +100,29 @@ public class BTClientWorker extends BTWorker {
 
                 if(exprAction.equals(EvaluationEngineService.ACTION_NEW_RESULT_REMOTE)) {
                     Result result = exprData != null ? (Result) Converter.stringToObject(exprData) : null;
-                    Log.w(TAG, "received " + exprAction + " from " + exprSource + ": " + result + " (id: " + exprId + ")");
+                    Log.w(TAG, this + " received " + exprAction + ": " + result);
 
                     if(exprId.equals(remoteExpression.getId())) {
                         if (result != null && result.getValues().length > 0) {
-                            sendExprForEvaluation(remoteExpression.getBaseId(), exprAction, exprSource, exprData);
+                            btManager.sendExprForEvaluation(remoteExpression.getBaseId(), exprAction, exprSource, exprData);
                             send(exprId, EvaluationEngineService.ACTION_UNREGISTER_REMOTE, null);
                         }
                     } else {
-                        Log.e(TAG, "ERROR, received result for wrong expression, expecting " + remoteExpression.getId());
+                        Log.e(TAG, this + " received result for wrong expression");
                         send(exprId, EvaluationEngineService.ACTION_UNREGISTER_REMOTE, null);
                     }
                 } else {
-                    Log.e(TAG, "ERROR, shouldn't receive " + exprAction);
+                    Log.e(TAG, this + " didn't expect " + exprAction);
                 }
             }
         } catch(Exception e) {
-            Log.e(TAG, "disconnected from " + getRemoteDeviceName() + ": " + e.getMessage());
+            Log.e(TAG, this + " disconnected: " + e.getMessage());
 
             try {
                 btManager.workerDone(this);
                 btSocket.close();
             } catch (IOException e1) {
-                Log.e(TAG, "couldn't close socket: " + e1.getMessage(), e1);
+                Log.e(TAG, this + " couldn't close socket", e1);
             }
         }
     }
@@ -110,7 +137,7 @@ public class BTClientWorker extends BTWorker {
 
     @Override
     public String toString() {
-        return "BTClientWorker(device = " + getRemoteDeviceName() + ", expr = " + remoteExpression + ")";
+        return "CW[" + (getRemoteDeviceName() != null ? getRemoteDeviceName() + ":" : "") + remoteExpression.getId() + "]";
     }
 
     public boolean isConnected() {

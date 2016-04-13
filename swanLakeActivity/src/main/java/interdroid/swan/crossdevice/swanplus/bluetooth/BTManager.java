@@ -30,7 +30,8 @@ import interdroid.swan.swansong.Expression;
  *
  * TODO remove users from the list when they go out of range
  * TODO handle properly the cases when BT is switched on/off during usage
- * TODO connect might hang forever
+ * TODO stop client workers that are blocked waiting for results
+ * TODO try and test with devices close to each other and far from each other (see if there are interference issues)
  */
 public class BTManager implements ProximityManagerI {
 
@@ -60,7 +61,7 @@ public class BTManager implements ProximityManagerI {
     Runnable nearbyPeersChecker = new Runnable() {
         public void run() {
             discoverPeers();
-            handler.postDelayed(nearbyPeersChecker, PEER_DISCOVERY_INTERVAL);
+//            handler.postDelayed(nearbyPeersChecker, PEER_DISCOVERY_INTERVAL);
         }
     };
 
@@ -72,7 +73,7 @@ public class BTManager implements ProximityManagerI {
             for(BTClientWorker clientWorker : clientWorkers) {
                 if(!clientWorker.isConnected()) {
                     if(waitingWorkers.contains(clientWorker)) {
-                        Log.e(TAG, "blocked worker found, interrupting...");
+                        Log.e(TAG, "blocked worker " + clientWorker + " found, interrupting...");
                         blockedWorkers.add(clientWorker);
                         waitingWorkers.remove(clientWorker);
                     } else {
@@ -290,31 +291,6 @@ public class BTManager implements ProximityManagerI {
         }
     }
 
-    // blocking call; use only in a separate thread
-    public BluetoothSocket connect(BluetoothDevice device) {
-        Log.i(TAG, "connecting to " + device.getName() + "...");
-        BluetoothSocket btSocket = null;
-        btAdapter.cancelDiscovery();
-
-        try {
-            btSocket = device.createInsecureRfcommSocketToServiceRecord(SERVICE_UUID);
-            btSocket.connect();
-            Log.i(TAG, "connected to " + device.getName());
-        } catch (IOException e) {
-            Log.e(TAG, "can't connect to " + device.getName() + ": " + e.getMessage());
-
-            try {
-                btSocket.close();
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
-
-            return null;
-        }
-
-        return btSocket;
-    }
-
     public void send(final String remoteDeviceName, final String exprId, final String exprAction, final String exprData) {
         try {
             if(exprAction.equals(EvaluationEngineService.ACTION_NEW_RESULT_REMOTE)) {
@@ -333,12 +309,31 @@ public class BTManager implements ProximityManagerI {
                 }
             }
         } catch (IOException e) {
-            //TODO unregister expression
             Log.e(TAG, "couldn't send " + exprAction + " to " + remoteDeviceName + "(id: " + exprId + ")", e);
+
+            // unregister expression
+            if(exprAction.equals(EvaluationEngineService.ACTION_NEW_RESULT_REMOTE)) {
+                // TODO close socket here, so the other side unblocks
+                Log.e(TAG, "unregistering expression " + exprId + "...");
+                sendExprForEvaluation(exprId, EvaluationEngineService.ACTION_UNREGISTER_REMOTE, remoteDeviceName, exprData);
+            }
+
             return;
         }
 
         Log.e(TAG, "couldn't send " + exprAction + " to " + remoteDeviceName + "(id: " + exprId + "): expression already processed");
+    }
+
+    /**
+     * send expression to the evaluation engine
+     */
+    protected void sendExprForEvaluation(String exprId, String exprAction, String exprSource, String exprData) {
+        Intent intent = new Intent(exprAction);
+        intent.setClass(getContext(), EvaluationEngineService.class);
+        intent.putExtra("id", exprId);
+        intent.putExtra("source", exprSource);
+        intent.putExtra("data", exprData);
+        getContext().startService(intent);
     }
 
     private void addToQueue(BTRemoteExpression remoteExpr) {
@@ -439,7 +434,7 @@ public class BTManager implements ProximityManagerI {
             BTRemoteExpression remoteExpression = clientWorker.getRemoteExpression();
 
             if(remoteExpression.getAction().equals(EvaluationEngineService.ACTION_REGISTER_REMOTE)) {
-                Log.d(TAG, "client worker finished processing expression " + remoteExpression.getId());
+                Log.d(TAG, "client worker " + worker + "finished processing");
 
                 // add expression back at the end of queue
                 remoteExpression.renewId();
@@ -452,7 +447,7 @@ public class BTManager implements ProximityManagerI {
                 }
             }
         } else if(worker instanceof BTServerWorker) {
-            Log.d(TAG, "server worker done");
+            Log.d(TAG, "server worker done " + worker);
             BTServerWorker serverWorker = (BTServerWorker) worker;
             serverWorkers.remove(serverWorker);
         }
