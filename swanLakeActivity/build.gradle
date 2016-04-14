@@ -28,7 +28,7 @@ android {
 }
 
 dependencies {
-    ant.importBuild 'src/main/buildgrammar.ant'
+    //ant.importBuild 'src/main/buildgrammar.ant'
     compile project(':senseandroidlibrary')
     compile project(':shared')
     compile 'com.android.support:support-v4:23.0.1'
