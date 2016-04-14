@@ -83,6 +83,7 @@ public abstract class AbstractWearSensor  extends AbstractSwanSensor{
             return;
         }
 
+        super.register(id,valuePath,configuration,httpConfiguration);
         sensor_name = SensorNames.getInstance().getName(sensorId);
 
         configuration.putInt(SensorConstants.SENSOR_ID, sensorId);
