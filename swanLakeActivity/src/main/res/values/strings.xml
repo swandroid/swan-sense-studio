@@ -49,4 +49,17 @@
 
     <!-- tmp stuff -->
     <string name="title_activity_nearby_runners">NearbyRunnersActivity</string>
+
+    <string name="node_eui_hint">Your node eui. Leave blank for all nodes.</string>
+    <string name="failed_to_retrieve_nodes">Failed to retrieve nodes.</string>
+    <string name="no_nodes_found">No nodes found.</string>
+    <string name="failed_to_retrieve_packets">Failed to retrieve packets.</string>
+    <string name="no_packets_found">No packets found.</string>
+    <string name="packets_retrieved">Packets retrieved!</string>
+    <string name="node_title">Node:</string>
+    <string name="nodes_received">Nodes received!</string>
+    <string name="packet_received">Packet received!</string>
+    <string name="mqtt_error">MQTT error: %1$s</string>
+    <string name="packet_title">Packet:</string>
+
 </resources>

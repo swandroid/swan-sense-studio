@@ -54,6 +54,7 @@ import interdroid.swan.crossdevice.swanplus.bluetooth.BTManager;
 import interdroid.swan.crossdevice.swanplus.run2gether.ActivityRun2gether;
 import interdroid.swan.crossdevice.swanplus.wifidirect.WDManager;
 import interdroid.swan.swansong.Expression;
+import interdroid.swan.ttn.TtnActivity;
 import nl.sense_os.service.constants.SensePrefs;
 
 
@@ -518,6 +519,9 @@ public class SwanLakePlusActivity extends FragmentActivity implements ActionBar.
                 break;
             case R.id.action_r2g:
                 startActivity(new Intent(this, ActivityRun2gether.class));
+                break;
+            case R.id.action_ttn:
+                startActivity(new Intent(this, TtnActivity.class));
                 break;
             default:
                 break;

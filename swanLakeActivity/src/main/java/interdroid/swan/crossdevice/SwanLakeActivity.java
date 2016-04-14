@@ -4,11 +4,13 @@ import interdroid.sense.LoginActivity;
 import interdroid.sense.RegistrationActivity;
 import interdroid.sense.SettingsActivity;
 import interdroid.swan.R;
+import interdroid.swan.crossdevice.swanplus.TestActivity;
 import interdroid.swan.swansong.Expression;
 
 import java.io.IOException;
 import java.util.List;
 
+import interdroid.swan.ttn.TtnActivity;
 import nl.sense_os.service.constants.SensePrefs;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -248,6 +250,9 @@ public class SwanLakeActivity extends ListActivity {
 			break;
 		case R.id.settings:
 			startActivity(new Intent(this, SettingsActivity.class));
+			break;
+		case R.id.action_ttn:
+			startActivity(new Intent(this, TtnActivity.class));
 			break;
 		default:
 			break;

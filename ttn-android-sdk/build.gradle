@@ -1,0 +1,68 @@
+apply plugin: 'com.android.library'
+
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'ttn-android-sdk'
+
+    publishedGroupId = 'io.ticofab'
+    libraryName = 'The Things Network Android SDK'
+    artifact = 'ttn-android-sdk'
+
+    libraryDescription = 'The Android SDK to use the API from The Things Network.'
+
+    siteUrl = 'https://github.com/TheThingsNetwork/android-sdk'
+    gitUrl = 'https://github.com/TheThingsNetwork/android-sdk.git'
+
+    libraryVersion = '1.1.1'
+
+    developerId = 'ticofab'
+    developerName = 'Fabio Tiriticco'
+    developerEmail = 'fabio.europe@gmail.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
+
+    defaultConfig {
+        minSdkVersion 17
+        targetSdkVersion 23
+        versionCode 3
+
+        // http://semver.org
+        versionName "1.1.1"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    testCompile 'junit:junit:4.12'
+
+    // retrofit for API interface
+    // http://square.github.io/retrofit/
+    compile 'com.squareup.retrofit:retrofit:1.9.0'
+
+    // JodaTime for Android
+    // https://github.com/dlew/joda-time-android
+    compile 'net.danlew:android.joda:2.8.2'
+
+    // mqtt client
+    // https://github.com/fusesource/mqtt-client
+    compile 'org.fusesource.mqtt-client:mqtt-client:1.12'
+
+}
+
+apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
+apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
+
+tasks.findByPath(":ttn-android-sdk:javadoc").enabled = false

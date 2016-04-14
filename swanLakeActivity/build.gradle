@@ -49,4 +49,20 @@ dependencies {
     compile 'com.google.android.gms:play-services-identity:8.3.0'
     compile 'com.google.android.gms:play-services-gcm:8.3.0'
     compile 'org.altbeacon:android-beacon-library:2.7.1'
+
+    compile 'com.android.support:appcompat-v7:23.1.1'
+    compile 'com.android.support:recyclerview-v7:23.1.1'
+    compile 'com.android.support:design:23.1.1'
+
+    compile project(':ttn-android-sdk')
+
+    // butterknife for views injection
+    compile 'com.jakewharton:butterknife:7.0.1'
+
+    // otto event bus
+    compile 'com.squareup:otto:1.3.8'
+
+    // material progress bar
+    // https://github.com/lsjwzh/MaterialLoadingProgressBar
+    compile('com.lsjwzh:materialloadingprogressbar:0.5.8-RELEASE')
 }

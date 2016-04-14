@@ -6,9 +6,11 @@
     android:versionName="1.0"
     tools:ignore="ExportedService,ExportedReceiver">
 
-    <uses-sdk
-        android:minSdkVersion="16"
-        android:targetSdkVersion="22" />
+    <!--<uses-sdk-->
+        <!--android:minSdkVersion="16"-->
+        <!--android:targetSdkVersion="22" />-->
+
+    <uses-sdk tools:overrideLibrary="org.ttn.android.sdk"/>
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
@@ -40,7 +42,7 @@
         android:name="android.hardware.nfc"
         android:required="true" />
 
-    <application
+    <application tools:replace="label"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/swan_app_name"
@@ -160,6 +162,18 @@
             android:name="interdroid.sense.SettingsActivity"
             android:label="Sense Settings"
             android:screenOrientation="portrait"></activity>
+
+        <activity
+            android:name=".ttn.TtnActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
 
         <!-- engine stuff -->
         <receiver
