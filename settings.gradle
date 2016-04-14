@@ -1,4 +1,4 @@
-include ':senseandroidlibrary', ':tabsExample'
+include ':senseandroidlibrary'
 include ':swanLakeActivity'
 include ':wear'
 include ':shared'
