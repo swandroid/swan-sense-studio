@@ -22,19 +22,14 @@ import java.nio.ByteBuffer;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class MessageReceiverService extends WearableListenerService {
-    private static final String TAG = "Wear/MessageReceiverService";
+    private static final String TAG = "Wear/MessageReceiver";
 
     private DeviceClient deviceClient;
-
-    private static int activeSensors = 0;
-
-    ReentrantLock lock = new ReentrantLock();
 
 
     @Override
     public void onCreate() {
         super.onCreate();
-
         deviceClient = DeviceClient.getInstance(this);
     }
 
@@ -70,32 +65,19 @@ public class MessageReceiverService extends WearableListenerService {
         if(sensorId == 0)
             Log.w(TAG, "Request to start an unknown sensor");
 
-        if (messageEvent.getPath().equals(ClientPaths.START_MEASUREMENT)) {
+        if (messageEvent.getPath().compareTo(ClientPaths.START_MEASUREMENT) == 0) {
 
-            lock.lock();
-            if(activeSensors == 0) {
-                Intent intent = new Intent(this, SensorService.class);
-                intent.putExtra(SensorConstants.SENSOR_ID, sensorId);
-                intent.putExtra(SensorConstants.ACCURACY, accuracy);
-                startService(intent);
-            } else {
-                addSensor(sensorId, accuracy);
-            }
-            activeSensors++;
+            Intent intent = new Intent(this, SensorService.class);
+            intent.putExtra(SensorConstants.SENSOR_ID, sensorId);
+            intent.putExtra(SensorConstants.ACCURACY, accuracy);
+            startService(intent);
 
-            lock.unlock();
+            addSensor(sensorId, accuracy);
+
         }
 
-        if (messageEvent.getPath().equals(ClientPaths.STOP_MEASUREMENT)) {
-            lock.lock();
-
-            activeSensors--;
-
-            if(activeSensors == 0) {
-                stopService(new Intent(this, SensorService.class));
-            }
-
-            lock.unlock();
+        if (messageEvent.getPath().compareTo(ClientPaths.STOP_MEASUREMENT) == 0) {
+            removeSensor(sensorId);
         }
     }
 

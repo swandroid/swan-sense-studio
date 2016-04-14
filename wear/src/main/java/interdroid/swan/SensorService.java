@@ -6,6 +6,7 @@ import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -79,6 +80,7 @@ public class SensorService extends Service implements SensorEventListener {
 
     Notification.Builder notificationBuilder;
 
+    SensorCommand sensorCommand = new SensorCommand();
 
     private class SensorCommand extends BroadcastReceiver
     {
@@ -112,16 +114,18 @@ public class SensorService extends Service implements SensorEventListener {
         notificationBuilder.setContentText("Collecting sensor data..");
         notificationBuilder.setSmallIcon(R.drawable.ic_launcher);
 
-
+        registerReceiver(sensorCommand, new IntentFilter(WearConstants.BROADCAST_ADD_SENSOR));
+        registerReceiver(sensorCommand, new IntentFilter(WearConstants.BROADCAST_REMOVE_SENSOR));
         startForeground(1, notificationBuilder.build());
 
     }
 
     @Override
     public void onDestroy() {
+        unregisterReceiver(sensorCommand);
+        stopMeasurement();
         super.onDestroy();
 
-        stopMeasurement();
     }
 
     @Override
@@ -133,12 +137,6 @@ public class SensorService extends Service implements SensorEventListener {
     public  int onStartCommand (Intent intent, int flags, int startId) {
 
         Log.d(TAG, intent.getExtras().toString());
-        int sensorId = intent.getExtras().getInt(SensorConstants.SENSOR_ID);
-        int accuracy = intent.getExtras().getInt(SensorConstants.ACCURACY);
-
-        startSingleMeasurement(sensorId, accuracy);
-
-        update_notification();
 
 
         return super.onStartCommand(intent,flags, startId);
@@ -206,7 +204,12 @@ public class SensorService extends Service implements SensorEventListener {
         }
 
         update_notification();
+
+        if(activeSensors.isEmpty()){
+            stopSelf();
+        }
         lock.unlock();
+
     }
 
     protected void startMeasurement() {
