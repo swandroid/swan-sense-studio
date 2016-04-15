@@ -378,4 +378,11 @@
         <item>Intervals</item>
     </string-array>
 
+    <string-array name="beacon_valuepaths">
+        <item>IBeacon-UUID</item>
+        <item>Eddystone-UUID</item>
+        <item>Eddystone-TLM</item>
+        <item>Eddystone-URL</item>
+    </string-array>
+
 </resources>

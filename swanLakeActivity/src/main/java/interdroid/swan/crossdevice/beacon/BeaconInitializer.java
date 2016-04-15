@@ -28,7 +28,7 @@ import org.altbeacon.beacon.startup.RegionBootstrap;
 import org.altbeacon.beacon.startup.BootstrapNotifier;
 
 /**
- * Created by dyoung on 12/13/13.
+ * Created by Veaceslav Munteanu on 13 April 2016
  */
 public class BeaconInitializer  implements BootstrapNotifier {
     private static final String TAG = "BeaconReferenceApp";
@@ -37,18 +37,17 @@ public class BeaconInitializer  implements BootstrapNotifier {
     private boolean haveDetectedBeaconsSinceBoot = false;
     private Context context;
 
-    private BeaconInitializer ourInstance;
+    private static BeaconInitializer ourInstance;
 
     private BeaconInitializer(Context context){
         this.context = context;
         onCreate();
     }
 
-    public BeaconInitializer getInstance(Context context){
+    public static  BeaconInitializer getInstance(Context context){
         if(ourInstance == null){
-            this.ourInstance = new BeaconInitializer(context);
+            ourInstance = new BeaconInitializer(context);
         }
-
         return ourInstance;
     }
 

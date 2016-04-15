@@ -1279,6 +1279,9 @@
                 android:name="valuePaths"
                 android:value="x,y,z,total" />
             <meta-data
+                android:name="delay"
+                android:value="200000" />
+            <meta-data
                 android:name="accuracy"
                 android:value="3" />
             <meta-data
@@ -1311,6 +1314,9 @@
                 android:name="accuracy"
                 android:value="3" />
             <meta-data
+                android:name="delay"
+                android:value="200000" />
+            <meta-data
                 android:name="units"
                 android:value="Degrees,Degrees,Degrees" />
         </activity>
@@ -1341,6 +1347,9 @@
                 android:name="accuracy"
                 android:value="3" />
             <meta-data
+                android:name="delay"
+                android:value="200000" />
+            <meta-data
                 android:name="units"
                 android:value="m/s2,m/s2,m/s2,m/s2" />
         </activity>
@@ -1369,6 +1378,9 @@
             <meta-data
                 android:name="accuracy"
                 android:value="3" />
+            <meta-data
+                android:name="delay"
+                android:value="200000" />
             <meta-data
                 android:name="units"
                 android:value="lux" />
@@ -1399,6 +1411,9 @@
                 android:name="accuracy"
                 android:value="3" />
             <meta-data
+                android:name="delay"
+                android:value="200000" />
+            <meta-data
                 android:name="units"
                 android:value="m/s2,m/s2,m/s2,m/s2" />
         </activity>
@@ -1423,6 +1438,9 @@
             <meta-data
                 android:name="valuePaths"
                 android:value="step_counter" />
+            <meta-data
+                android:name="delay"
+                android:value="200000" />
             <meta-data
                 android:name="authority"
                 android:value="interdroid.context.sensor.step_counter" />
@@ -1457,6 +1475,9 @@
                 android:name="accuracy"
                 android:value="3" />
             <meta-data
+                android:name="delay"
+                android:value="200000" />
+            <meta-data
                 android:name="units"
                 android:value="m/s2,m/s2,m/s2,m/s2" />
         </activity>
@@ -1469,7 +1490,40 @@
             <!-- android:multiprocess="true" /> -->
         <activity
             android:name=".crossdevice.swanplus.run2gether.NearbyRunnersActivity"
-            android:label="@string/title_activity_nearby_runners"></activity>
+            android:label="@string/title_activity_nearby_runners">
+        </activity>
+
+        <activity
+            android:name="interdroid.swan.sensors.impl.BeaconDiscoverySensor$ConfigurationActivity"
+            android:exported="true"
+            android:icon="@drawable/movement_icon" >
+            <intent-filter>
+                <action android:name="interdroid.swan.sensor.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="beacon_discovery" />
+            <meta-data
+                android:name="valuePaths"
+                android:value="IBeacon-UUID,Eddystone-UUID,Eddystone-TLM,Eddystone-URL"/>
+            <meta-data
+                android:name="accuracy"
+                android:value="3" />
+            <meta-data
+                android:name="delay"
+                android:value="200000" />
+            <meta-data
+                android:name="units"
+                android:value="" />
+        </activity>
+
+        <service
+            android:name="interdroid.swan.sensors.impl.BeaconDiscoverySensor"
+            android:exported="true"
+            android:process=":beacondiscovery" >
+        </service>
+
     </application>
 
 </manifest>
