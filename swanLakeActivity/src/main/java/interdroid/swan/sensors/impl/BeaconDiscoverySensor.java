@@ -67,7 +67,7 @@ public class BeaconDiscoverySensor extends AbstractSwanSensor implements BeaconC
 
     @Override
     public String[] getValuePaths() {
-        return new String[] {"IBeacon-UUID","Eddystone-UUID","Eddystone-TLM","Eddystone-URL"};
+        return new String[] {"IBeaconUUID","EddystoneUUID","EddystoneTLM","EddystoneURL"};
     }
 
     @Override
