@@ -137,7 +137,7 @@ public class BTClientWorker extends BTWorker {
 
     @Override
     public String toString() {
-        return "CW[" + (getRemoteDeviceName() != null ? getRemoteDeviceName() + ":" : "") + remoteExpression.getId() + "]";
+        return "CW[" + getRemoteDeviceName() + ":" + remoteExpression.getId() + "]";
     }
 
     public boolean isConnected() {

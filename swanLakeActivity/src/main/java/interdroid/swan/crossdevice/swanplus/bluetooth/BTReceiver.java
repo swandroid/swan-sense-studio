@@ -21,30 +21,20 @@ public class BTReceiver extends AsyncTask<Void, String, Void>  {
 
     private BTManager btManager;
     private Context context;
-    private final BluetoothServerSocket mmServerSocket;
 
     public BTReceiver(BTManager btManager, Context context) {
         this.btManager = btManager;
         this.context = context;
-
-        BluetoothServerSocket tmp = null;
-        try {
-            tmp = btManager.getBtAdapter().listenUsingInsecureRfcommWithServiceRecord(BTManager.SERVICE_NAME, BTManager.SERVICE_UUID);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        mmServerSocket = tmp;
     }
 
     @Override
     protected Void doInBackground(Void... params) {
-        BluetoothSocket socket;
         Log.d(TAG, "BT receiver started");
 
         try {
             while (true) {
-                socket = mmServerSocket.accept();
+                BluetoothServerSocket serverSocket = getServerSocket();
+                BluetoothSocket socket = serverSocket.accept();
 
                 if (socket != null) {
                     BTServerWorker serverWorker = new BTServerWorker(btManager, socket);
@@ -52,6 +42,10 @@ public class BTReceiver extends AsyncTask<Void, String, Void>  {
                     btManager.addNearbyDevice(socket.getRemoteDevice());
                     btManager.addServerWorker(serverWorker);
                     serverWorker.start();
+                }
+
+                synchronized (this) {
+                    wait();
                 }
             }
         } catch (Exception e) {
@@ -61,4 +55,13 @@ public class BTReceiver extends AsyncTask<Void, String, Void>  {
         return null;
     }
 
+    private BluetoothServerSocket getServerSocket() {
+        BluetoothServerSocket tmp = null;
+        try {
+            tmp = btManager.getBtAdapter().listenUsingInsecureRfcommWithServiceRecord(BTManager.SERVICE_NAME, BTManager.SERVICE_UUID);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return tmp;
+    }
 }

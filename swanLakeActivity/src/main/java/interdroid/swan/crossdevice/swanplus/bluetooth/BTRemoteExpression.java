@@ -21,6 +21,13 @@ public class BTRemoteExpression {
         this.action = action;
     }
 
+    public BTRemoteExpression(BTRemoteExpression expr) {
+        this.id = getNewId(expr.getBaseId());
+        this.remoteDevice = expr.getRemoteDevice();
+        this.expression = expr.getExpression();
+        this.action = expr.getAction();
+    }
+
     /** increment expression counter */
     private synchronized int incCounter() {
         return exprCounter++;
@@ -32,10 +39,6 @@ public class BTRemoteExpression {
 
     public String getBaseId() {
         return id.replaceAll("/.*", "");
-    }
-
-    public void renewId() {
-        this.id = getNewId(getBaseId());
     }
 
     public String getId() {

@@ -15,6 +15,8 @@ public class BTServerWorker extends BTWorker {
 
     private static final String TAG = "BTServerWorker";
 
+    private String expressionId = null;
+
     public BTServerWorker(BTManager btManager, BluetoothSocket btSocket) {
         this.btManager = btManager;
         this.btSocket = btSocket;
@@ -40,6 +42,10 @@ public class BTServerWorker extends BTWorker {
                 String exprSource = dataMap.get("source");
                 String exprId = dataMap.get("id");
                 String exprData = dataMap.get("data");
+
+                if(expressionId == null) {
+                    expressionId = exprId;
+                }
 
                 if (exprAction.equals(EvaluationEngineService.ACTION_REGISTER_REMOTE)
                         || exprAction.equals(EvaluationEngineService.ACTION_UNREGISTER_REMOTE)) {
@@ -82,6 +88,6 @@ public class BTServerWorker extends BTWorker {
 
     @Override
     public String toString() {
-        return "SW[" + getRemoteDeviceName() + "]";
+        return "SW[" + getRemoteDeviceName() + ":" + expressionId + "]";
     }
 }

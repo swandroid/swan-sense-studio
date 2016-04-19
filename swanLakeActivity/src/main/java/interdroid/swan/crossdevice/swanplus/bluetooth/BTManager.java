@@ -437,8 +437,7 @@ public class BTManager implements ProximityManagerI {
                 Log.d(TAG, "client worker " + worker + "finished processing");
 
                 // add expression back at the end of queue
-                remoteExpression.renewId();
-                addToQueue(remoteExpression);
+                addToQueue(new BTRemoteExpression(remoteExpression));
                 clientWorkers.remove(clientWorker);
                 setBusy(false);
 
@@ -450,6 +449,10 @@ public class BTManager implements ProximityManagerI {
             Log.d(TAG, "server worker done " + worker);
             BTServerWorker serverWorker = (BTServerWorker) worker;
             serverWorkers.remove(serverWorker);
+
+            synchronized (btReceiver) {
+                btReceiver.notify();
+            }
         }
     }
 

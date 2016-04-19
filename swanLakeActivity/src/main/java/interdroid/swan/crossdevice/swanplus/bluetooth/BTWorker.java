@@ -36,13 +36,13 @@ public class BTWorker extends Thread {
         } catch (IOException e) {
             // we ususally get this exception when the worker on the other side was interrupted
             // due to an expired timeout
-            Log.e(getTag(), "connection was closed: " + e.getMessage());
+            Log.e(getTag(), this + " connection was closed: " + e.getMessage());
         }
     }
 
     protected void send(String expressionId, String expressionAction, String expressionData) throws IOException {
-        Log.w(getTag(), "sending " + expressionAction + " to " + getRemoteDeviceName() + ": "
-                + toPrintableData(expressionData, expressionAction) + " (id: " + expressionId + ")");
+        Log.w(getTag(), this + " sending " + expressionAction + ": "
+                + toPrintableData(expressionData, expressionAction));
 
         HashMap<String, String> dataMap = new HashMap<>();
 
@@ -55,8 +55,8 @@ public class BTWorker extends Thread {
             outStream.writeObject(dataMap);
         }
 
-        Log.w(getTag(), "successfully sent " + expressionAction + " to " + getRemoteDeviceName() + ": "
-                + toPrintableData(expressionData, expressionAction) + " (id: " + expressionId + ")");
+        Log.w(getTag(), this + " successfully sent " + expressionAction + ": "
+                + toPrintableData(expressionData, expressionAction));
     }
 
     private String toPrintableData(String data, String action) {
@@ -68,7 +68,7 @@ public class BTWorker extends Thread {
             try {
                 return Converter.stringToObject(data).toString();
             } catch (Exception e) {
-                Log.e(getTag(), "can't get printable data", e);
+                Log.e(getTag(), this + " can't get printable data", e);
             }
         }
 
