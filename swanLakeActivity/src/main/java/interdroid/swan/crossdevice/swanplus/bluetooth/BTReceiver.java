@@ -42,6 +42,7 @@ public class BTReceiver extends AsyncTask<Void, String, Void>  {
                     btManager.addNearbyDevice(socket.getRemoteDevice());
                     btManager.addServerWorker(serverWorker);
                     serverWorker.start();
+                    serverSocket.close();
                 }
 
                 synchronized (this) {
@@ -49,7 +50,7 @@ public class BTReceiver extends AsyncTask<Void, String, Void>  {
                 }
             }
         } catch (Exception e) {
-            Log.e(TAG, e.getMessage());
+            Log.e(TAG, "FATAL ERROR", e);
         }
 
         return null;
