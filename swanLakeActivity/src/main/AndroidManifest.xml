@@ -1519,9 +1519,7 @@
         </activity>
 
         <service
-            android:name="interdroid.swan.sensors.impl.BeaconDiscoverySensor"
-            android:exported="true"
-            android:process=":beacondiscovery" >
+            android:name="interdroid.swan.sensors.impl.BeaconDiscoverySensor" >
         </service>
 
     </application>

@@ -7,12 +7,12 @@ import android.util.Log;
 import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconConsumer;
 import org.altbeacon.beacon.BeaconManager;
+
 import org.altbeacon.beacon.RangeNotifier;
 import org.altbeacon.beacon.Region;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
 import interdroid.swan.R;
@@ -26,7 +26,7 @@ import interdroid.swan.sensors.AbstractSwanSensor;
 public class BeaconDiscoverySensor extends AbstractSwanSensor implements BeaconConsumer{
 
     BeaconManager beaconManager;
-    HashMap<String, String>ids = new HashMap<>();
+    HashMap<String, String> ids = new HashMap<>();
 
     public static final String TAG = "BatterySensor";
 
@@ -58,6 +58,9 @@ public class BeaconDiscoverySensor extends AbstractSwanSensor implements BeaconC
         super.register(id,valuePath, configuration, httpConfiguration);
         BeaconInitializer.getInstance(this); // needed to initialize the parser values
         beaconManager = BeaconManager.getInstanceForApplication(this);
+
+        ids.put(id, valuePath);
+
         beaconManager.bind(this);
     }
     @Override
