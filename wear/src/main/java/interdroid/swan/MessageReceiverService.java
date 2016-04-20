@@ -4,6 +4,7 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.SystemClock;
 import android.util.Log;
 
 import interdroid.swan.sensordashboard.shared.ClientPaths;
@@ -71,6 +72,10 @@ public class MessageReceiverService extends WearableListenerService {
             intent.putExtra(SensorConstants.SENSOR_ID, sensorId);
             intent.putExtra(SensorConstants.ACCURACY, accuracy);
             startService(intent);
+
+            while(!isMyServiceRunning(SensorService.class)){
+                SystemClock.sleep(100);
+            }
 
             addSensor(sensorId, accuracy);
 
