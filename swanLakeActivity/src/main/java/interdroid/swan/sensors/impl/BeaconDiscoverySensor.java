@@ -7,16 +7,20 @@ import android.util.Log;
 import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconConsumer;
 import org.altbeacon.beacon.BeaconManager;
+
+import org.altbeacon.beacon.Identifier;
 import org.altbeacon.beacon.RangeNotifier;
 import org.altbeacon.beacon.Region;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.locks.ReentrantLock;
 
 import interdroid.swan.R;
 import interdroid.swan.crossdevice.beacon.BeaconInitializer;
+import interdroid.swan.crossdevice.beacon.BeaconUtils;
 import interdroid.swan.sensors.AbstractConfigurationActivity;
 import interdroid.swan.sensors.AbstractSwanSensor;
 
@@ -26,9 +30,17 @@ import interdroid.swan.sensors.AbstractSwanSensor;
 public class BeaconDiscoverySensor extends AbstractSwanSensor implements BeaconConsumer{
 
     BeaconManager beaconManager;
-    HashMap<String, String>ids = new HashMap<>();
+    HashMap<String, String> ids = new HashMap<>();
 
-    public static final String TAG = "BatterySensor";
+    ReentrantLock lock = new ReentrantLock();
+
+    public static final String TAG = "BeaconDiscoverySensor";
+
+    public static final String IBEACON ="ibeaconuuid";
+    public static final String EDDYSTONE_UID = "eddystoneuid";
+    public static final String EDDYSTONE_URL = "EddystoneURL";
+    public static final String ALTBEACON = "altbeacon";
+    public static final String ESTIMOTE_NEARABLE ="estimotenearable";
 
     public String value_path = "";
 
@@ -58,16 +70,29 @@ public class BeaconDiscoverySensor extends AbstractSwanSensor implements BeaconC
         super.register(id,valuePath, configuration, httpConfiguration);
         BeaconInitializer.getInstance(this); // needed to initialize the parser values
         beaconManager = BeaconManager.getInstanceForApplication(this);
-        beaconManager.bind(this);
+
+        lock.lock();
+        ids.put(id, valuePath);
+
+        if(ids.size() == 1)
+            beaconManager.bind(this);
+
+        lock.unlock();
     }
     @Override
     public void unregister(String id) {
-        beaconManager.unbind(this);
+
+        lock.lock();
+        ids.remove(id);
+
+        if(ids.isEmpty())
+            beaconManager.unbind(this);
+        lock.unlock();
     }
 
     @Override
     public String[] getValuePaths() {
-        return new String[] {"IBeaconUUID","EddystoneUUID","EddystoneTLM","EddystoneURL"};
+        return new String[] { IBEACON , EDDYSTONE_UID , ALTBEACON , ESTIMOTE_NEARABLE};
     }
 
     @Override
@@ -85,8 +110,33 @@ public class BeaconDiscoverySensor extends AbstractSwanSensor implements BeaconC
                 long time = System.currentTimeMillis();
                 if (beacons.size() > 0) {
                     for(Beacon beacon : beacons) {
+
+                        StringBuilder allIndetifier =  new StringBuilder();
+                        List<Identifier> identifierList = beacon.getIdentifiers();
+                        for(Identifier identifier : identifierList){
+                            allIndetifier.append(identifier.toString() + "-");
+                        }
+                        allIndetifier.deleteCharAt(allIndetifier.length()-1);
+
                         for (Map.Entry<String, String> id : ids.entrySet()) {
-                            putValueTrimSize(id.getValue(), id.getKey(), time, beacon.getId1().toString());
+                            if(id.getValue().compareTo(IBEACON) == 0
+                                    && BeaconUtils.isAppleIBeacon(beacon)) {
+                                putValueTrimSize(id.getValue(), id.getKey(), time, allIndetifier.toString());
+                            }
+
+                            if(id.getValue().compareTo(EDDYSTONE_UID) == 0
+                                    && BeaconUtils.isEddystoneUID(beacon)){
+                                putValueTrimSize(id.getValue(), id.getKey(), time, allIndetifier.toString());
+                            }
+
+                            if(id.getValue().compareTo(ALTBEACON) == 0
+                                    && BeaconUtils.isAltBeacon(beacon)){
+                                putValueTrimSize(id.getValue(), id.getKey(),
+                                        time,
+                                        allIndetifier.toString());
+
+                            }
+
                         }
                     }
                 }

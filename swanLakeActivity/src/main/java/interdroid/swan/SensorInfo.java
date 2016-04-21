@@ -82,6 +82,7 @@ public class SensorInfo {
 		// and the value paths
 		valuePaths.addAll(Arrays.asList(metaData.getString("valuePaths").split(
 				",")));
+
 		metaData.remove("valuePaths");
 
 		// all other items in the bundle are supposed to be configurable (values
