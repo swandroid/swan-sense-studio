@@ -85,8 +85,7 @@ public class BTManager implements ProximityManagerI {
             }
 
             for(BTClientWorker clientWorker : blockedWorkers) {
-                clientWorker.interrupt();
-                workerDone(clientWorker);
+                clientWorker.abort();
             }
 
             handler.postDelayed(blockedWorkersChecker, BLOCKED_WORKERS_CHECKING_INTERVAL);
@@ -127,7 +126,7 @@ public class BTManager implements ProximityManagerI {
             if(BluetoothDevice.ACTION_FOUND.equals(action)) {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
-                if(device.getName() != null && device.getName().toLowerCase().contains("swan")) {
+                if(device.getName() != null && device.getName().contains("SWAN")) {
                     Log.d(TAG, "found nearby device " + device.getName());
                     addNearbyDevice(device);
 
@@ -141,7 +140,6 @@ public class BTManager implements ProximityManagerI {
 
                 if(connState == BluetoothAdapter.STATE_ON && btReceiver == null) {
                     Log.d(TAG, "bluetooth connected, starting receiver thread...");
-                    btReceiver = new BTReceiver(BTManager.this, context);
                     btReceiver.execute();
                 }
             } else if(BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
@@ -165,6 +163,7 @@ public class BTManager implements ProximityManagerI {
 
         evalQueue = new ConcurrentLinkedQueue<BTRemoteExpression>();
         handler = new Handler();
+        btReceiver = new BTReceiver(this, context);
 
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
@@ -191,7 +190,6 @@ public class BTManager implements ProximityManagerI {
         evalThread.start();
 
         if(btAdapter.isEnabled()) {
-            btReceiver = new BTReceiver(this, context);
             btReceiver.execute();
         }
 
@@ -214,9 +212,9 @@ public class BTManager implements ProximityManagerI {
     }
 
     public void initDiscovery() {
-        if(!btAdapter.getName().toLowerCase().contains("swan")) {
-            btAdapter.setName(btAdapter.getName() + "swan");
-        }
+//        if(!btAdapter.getName().toLowerCase().contains("swan")) {
+//            btAdapter.setName(btAdapter.getName() + "swan");
+//        }
 
         Set<BluetoothDevice> pairedDevices = btAdapter.getBondedDevices();
         // If there are paired devices

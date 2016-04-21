@@ -30,10 +30,10 @@ public class BTReceiver extends AsyncTask<Void, String, Void>  {
     @Override
     protected Void doInBackground(Void... params) {
         Log.d(TAG, "BT receiver started");
+        BluetoothServerSocket serverSocket = getServerSocket();
 
         try {
             while (true) {
-                BluetoothServerSocket serverSocket = getServerSocket();
                 BluetoothSocket socket = serverSocket.accept();
 
                 if (socket != null) {
@@ -42,11 +42,6 @@ public class BTReceiver extends AsyncTask<Void, String, Void>  {
                     btManager.addNearbyDevice(socket.getRemoteDevice());
                     btManager.addServerWorker(serverWorker);
                     serverWorker.start();
-                    serverSocket.close();
-                }
-
-                synchronized (this) {
-                    wait();
                 }
             }
         } catch (Exception e) {
@@ -57,12 +52,12 @@ public class BTReceiver extends AsyncTask<Void, String, Void>  {
     }
 
     private BluetoothServerSocket getServerSocket() {
-        BluetoothServerSocket tmp = null;
+        BluetoothServerSocket serverSocket = null;
         try {
-            tmp = btManager.getBtAdapter().listenUsingInsecureRfcommWithServiceRecord(BTManager.SERVICE_NAME, BTManager.SERVICE_UUID);
+            serverSocket = btManager.getBtAdapter().listenUsingInsecureRfcommWithServiceRecord(BTManager.SERVICE_NAME, BTManager.SERVICE_UUID);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return tmp;
+        return serverSocket;
     }
 }

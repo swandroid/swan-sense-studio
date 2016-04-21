@@ -5,6 +5,8 @@ import android.bluetooth.BluetoothSocket;
 import android.util.Log;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 
 import interdroid.swan.crossdevice.Converter;
@@ -31,23 +33,7 @@ public class BTClientWorker extends BTWorker {
     public void run() {
         try {
             Log.d(TAG, this + " started processing");
-            btSocket = connect(remoteExpression.getRemoteDevice());
-
-            // if the worker was interrupted, we no longer need
-            // to clean it from manager by calling workerDone()
-            if(isInterrupted()) {
-                Log.e(TAG, this + " interrupted, closing connection");
-
-                if(btSocket != null) {
-                    try {
-                        btSocket.close();
-                    } catch (IOException e) {
-                        Log.e(TAG, this + " couldn't close socket", e);
-                    }
-                }
-
-                return;
-            }
+            connect(remoteExpression.getRemoteDevice());
 
             if (btSocket != null) {
                 connected = true;
@@ -64,28 +50,23 @@ public class BTClientWorker extends BTWorker {
     }
 
     // blocking call; use only in a separate thread
-    protected BluetoothSocket connect(BluetoothDevice device) {
+    protected void connect(BluetoothDevice device) {
         Log.i(TAG, this + " connecting to " + device.getName() + "...");
-        BluetoothSocket btSocket = null;
 //        btAdapter.cancelDiscovery();
 
         try {
             btSocket = device.createInsecureRfcommSocketToServiceRecord(btManager.SERVICE_UUID);
             btSocket.connect();
             Log.i(TAG, this + " connected to " + device.getName());
-        } catch (IOException e) {
+        } catch (Exception e) {
             Log.e(TAG, this + " can't connect to " + device.getName() + ": " + e.getMessage());
-
             try {
                 btSocket.close();
-            } catch (IOException e1) {
-                e1.printStackTrace();
+            } catch (Exception e1) {
+                Log.e(TAG, "couldn't close socket", e1);
             }
-
-            return null;
+            btSocket = null;
         }
-
-        return btSocket;
     }
 
     protected void manageClientConnection() {

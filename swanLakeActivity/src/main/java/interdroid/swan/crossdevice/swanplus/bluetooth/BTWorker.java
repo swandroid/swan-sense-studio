@@ -85,4 +85,12 @@ public class BTWorker extends Thread {
     protected String getTag() {
         return TAG;
     }
+
+    public void abort() {
+        try {
+            btSocket.close();
+        } catch (IOException e) {
+            Log.e(TAG, this + " couldn't close socket", e);
+        }
+    }
 }
