@@ -1506,7 +1506,7 @@
                 android:value="beacon_discovery" />
             <meta-data
                 android:name="valuePaths"
-                android:value="IBeaconUUID,EddystoneUUID,EddystoneTLM,EddystoneURL"/>
+                android:value="ibeaconuuid,eddystoneuid,altbeacon,estimotenearable" />
             <meta-data
                 android:name="accuracy"
                 android:value="3" />

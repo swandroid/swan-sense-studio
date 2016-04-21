@@ -396,6 +396,7 @@ public class EvaluationManager {
 		}
 		for (SensorInfo sensorInfo : mSensorList) {
 
+
 			if (sensorInfo.getEntity().equals(expression.getEntity())) {
 				if (sensorInfo.getValuePaths().contains(
 						expression.getValuePath())) {

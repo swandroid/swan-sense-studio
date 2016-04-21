@@ -2,6 +2,7 @@ package interdroid.swan.crossdevice.beacon;
 
 import android.content.Context;
 
+import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconManager;
 import org.altbeacon.beacon.BeaconParser;
 import org.altbeacon.beacon.powersave.BackgroundPowerSaver;
@@ -18,6 +19,7 @@ public class BeaconInitializer{
     private BackgroundPowerSaver backgroundPowerSaver;
     private boolean haveDetectedBeaconsSinceBoot = false;
     private Context context;
+
 
     private static BeaconInitializer ourInstance;
 

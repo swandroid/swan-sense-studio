@@ -379,10 +379,10 @@
     </string-array>
 
     <string-array name="beacon_valuepaths">
-        <item>IBeaconUUID</item>
-        <item>EddystoneUUID</item>
-        <item>EddystoneTLM</item>
-        <item>EddystoneURL</item>
+        <item>ibeaconuuid</item>
+        <item>eddystoneuid</item>
+        <item>altbeacon</item>
+        <item>estimotenearable</item>
     </string-array>
 
 </resources>
