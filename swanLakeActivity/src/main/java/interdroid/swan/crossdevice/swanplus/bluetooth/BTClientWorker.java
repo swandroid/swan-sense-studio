@@ -1,13 +1,11 @@
 package interdroid.swan.crossdevice.swanplus.bluetooth;
 
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
 import android.util.Log;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.UUID;
 
 import interdroid.swan.crossdevice.Converter;
 import interdroid.swan.engine.EvaluationEngineService;
@@ -51,13 +49,14 @@ public class BTClientWorker extends BTWorker {
 
     // blocking call; use only in a separate thread
     protected void connect(BluetoothDevice device) {
-        Log.i(TAG, this + " connecting to " + device.getName() + "...");
 //        btAdapter.cancelDiscovery();
+        Log.i(TAG, this + " connecting to " + device.getName() + "...");
 
         try {
-            btSocket = device.createInsecureRfcommSocketToServiceRecord(btManager.SERVICE_UUID);
+            btSocket = device.createInsecureRfcommSocketToServiceRecord(BTManager.SERVICE_UUID);
             btSocket.connect();
             Log.i(TAG, this + " connected to " + device.getName());
+            return;
         } catch (Exception e) {
             Log.e(TAG, this + " can't connect to " + device.getName() + ": " + e.getMessage());
             try {
@@ -65,8 +64,9 @@ public class BTClientWorker extends BTWorker {
             } catch (Exception e1) {
                 Log.e(TAG, "couldn't close socket", e1);
             }
-            btSocket = null;
         }
+
+        btSocket = null;
     }
 
     protected void manageClientConnection() {
@@ -89,7 +89,7 @@ public class BTClientWorker extends BTWorker {
                             send(exprId, EvaluationEngineService.ACTION_UNREGISTER_REMOTE, null);
                         }
                     } else {
-                        Log.e(TAG, this + " received result for wrong expression");
+                        Log.e(TAG, this + " received result for wrong expression: " + exprId);
                         send(exprId, EvaluationEngineService.ACTION_UNREGISTER_REMOTE, null);
                     }
                 } else {

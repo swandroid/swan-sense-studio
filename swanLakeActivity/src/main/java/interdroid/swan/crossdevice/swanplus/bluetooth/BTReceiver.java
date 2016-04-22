@@ -12,24 +12,27 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.Random;
+import java.util.UUID;
 
 /**
  * Created by vladimir on 3/11/16.
  */
-public class BTReceiver extends AsyncTask<Void, String, Void>  {
+public class BTReceiver extends Thread  {
     private static final String TAG = "BTReceiver";
 
     private BTManager btManager;
     private Context context;
+    private UUID uuid;
 
-    public BTReceiver(BTManager btManager, Context context) {
+    public BTReceiver(BTManager btManager, Context context, UUID uuid) {
         this.btManager = btManager;
         this.context = context;
+        this.uuid = uuid;
     }
 
     @Override
-    protected Void doInBackground(Void... params) {
-        Log.d(TAG, "BT receiver started");
+    public void run() {
+        Log.d(TAG, "BT receiver started for uuid " + uuid);
         BluetoothServerSocket serverSocket = getServerSocket();
 
         try {
@@ -43,18 +46,20 @@ public class BTReceiver extends AsyncTask<Void, String, Void>  {
                     btManager.addServerWorker(serverWorker);
                     serverWorker.start();
                 }
+
+                synchronized(this) {
+                    wait();
+                }
             }
         } catch (Exception e) {
             Log.e(TAG, "FATAL ERROR", e);
         }
-
-        return null;
     }
 
     private BluetoothServerSocket getServerSocket() {
         BluetoothServerSocket serverSocket = null;
         try {
-            serverSocket = btManager.getBtAdapter().listenUsingInsecureRfcommWithServiceRecord(BTManager.SERVICE_NAME, BTManager.SERVICE_UUID);
+            serverSocket = btManager.getBtAdapter().listenUsingInsecureRfcommWithServiceRecord(BTManager.SERVICE_NAME, uuid);
         } catch (IOException e) {
             e.printStackTrace();
         }
