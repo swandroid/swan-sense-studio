@@ -1,6 +1,10 @@
 package interdroid.swan.sensors.impl;
 
-import com.google.gson.Gson;
+import android.content.Intent;
+import android.net.wifi.WifiManager;
+import android.os.Bundle;
+import android.preference.Preference;
+import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -8,15 +12,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
-
-import android.content.Intent;
-import android.os.Bundle;
-import android.preference.Preference;
-import android.util.Log;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -40,6 +40,8 @@ public class RssSensor extends AbstractSwanSensor {
 	public static final String TAG = "RssSensor";
 
     private static final int REQUEST_CODE_RSS = 5124;
+
+    private WifiManager.WifiLock mLock;
 
 	public static class ConfigurationActivity extends
 			AbstractConfigurationActivity {
@@ -115,6 +117,9 @@ public class RssSensor extends AbstractSwanSensor {
 	public void onConnected() {
 		 SENSOR_NAME = "RSS";
 		 Log.e(TAG, "No RSS sensor found on device!");
+//        WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+//        mLock = wifiManager.createWifiLock(WifiManager.WIFI_MODE_FULL_HIGH_PERF, "LockTag");
+//        mLock.acquire();
 	}
 
 	@Override
@@ -143,14 +148,17 @@ public class RssSensor extends AbstractSwanSensor {
         private RssRequestComplete rssRequestComplete;
         private RssSensorRequest rssSensorRequest;
 
+        private boolean interrupted;
+
         RSSPoller(String id, String valuePath, Bundle configuration) {
 			this.id = id;
 			this.configuration = configuration;
 			this.valuePath = valuePath;
+            interrupted = false;
 		}
 
 		public void run() {
-			while (!isInterrupted()) {
+			while (!interrupted) {
                 mStart = System.currentTimeMillis();
 
                 Log.d(TAG, "rssStart: " + mStart);
@@ -172,7 +180,7 @@ public class RssSensor extends AbstractSwanSensor {
                 //TODO: get correct url from configuration, al gedaan denk
                 //doGetRequest(rssRequestComplete.url, valuePath, id, rssRequestComplete);
                 int sampleRate = configuration.getInt(SAMPLE_INTERVAL,
-                        mDefaultConfiguration.getInt(SAMPLE_INTERVAL)) * 1000;
+                        mDefaultConfiguration.getInt(SAMPLE_INTERVAL));
                 if (rssSensorRequest == null) {
                     rssSensorRequest = new RssSensorRequest(rssRequestComplete, id, sampleRate, this);
                 }
@@ -185,10 +193,11 @@ public class RssSensor extends AbstractSwanSensor {
 							0,
 							configuration.getInt(SAMPLE_INTERVAL,
                                     mDefaultConfiguration
-                                            .getInt(SAMPLE_INTERVAL)) * 1000
+                                            .getInt(SAMPLE_INTERVAL))
 									+ mStart - System.currentTimeMillis()));
 				} catch (InterruptedException e) {
                     Log.w(TAG, "interrupted");
+                    interrupted = true;
                     break;
 				}
 			}
@@ -203,6 +212,7 @@ public class RssSensor extends AbstractSwanSensor {
         }
 
         public void destroyPoller() {
+            interrupted = true;
 //            rssSensorRequest.listener = null;
             RssSensorCache.getInstance(getApplicationContext()).removeSensorFromCacheSynchronized(rssSensorRequest);
         }
@@ -215,6 +225,7 @@ public class RssSensor extends AbstractSwanSensor {
             rssPoller.interrupt();
 		}
 		super.onDestroySensor();
+//        mLock.release();
 	};
 
     private void doGetRequest(String url, final String valuePath, final String id,

@@ -6,7 +6,9 @@
         android:allowBackup="true"
         android:supportsRtl="true">
 
-        <activity android:name=".activities.RssMainActivity"
+        <activity
+            android:exported="true"
+            android:name=".activities.RssMainActivity"
             android:label="@string/label_rss_sensor"
             android:theme="@style/AppTheme" >
         </activity>

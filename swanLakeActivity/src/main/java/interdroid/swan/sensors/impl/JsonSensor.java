@@ -1,6 +1,9 @@
 package interdroid.swan.sensors.impl;
 
-import com.google.gson.Gson;
+import android.content.Intent;
+import android.os.Bundle;
+import android.preference.Preference;
+import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -8,15 +11,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import android.content.Intent;
-import android.os.Bundle;
-import android.preference.Preference;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -191,7 +190,7 @@ public class JsonSensor extends AbstractSwanSensor {
                 Log.d("JsonSensor", "testtimer end: " + end);
 
                 int sampleRate = configuration.getInt(SAMPLE_INTERVAL,
-                        mDefaultConfiguration.getInt(SAMPLE_INTERVAL)) * 1000;
+                        mDefaultConfiguration.getInt(SAMPLE_INTERVAL));
                 if (mJsonSensorRequest == null) {
                     mJsonSensorRequest = new JsonSensorRequest(id, mJsonRequestInfo, sampleRate, this);
                 }
@@ -213,7 +212,7 @@ public class JsonSensor extends AbstractSwanSensor {
 							0,
 							configuration.getInt(SAMPLE_INTERVAL,
 									mDefaultConfiguration
-											.getInt(SAMPLE_INTERVAL)) * 1000
+											.getInt(SAMPLE_INTERVAL))
 									+ mStart - System.currentTimeMillis()));
 				} catch (InterruptedException e) {
                     break;
@@ -351,7 +350,17 @@ public class JsonSensor extends AbstractSwanSensor {
                     }
                 }
             }
-            putValueTrimSize(valuePath, id, mStart, jsonItem.stringItem);
+            try {
+                Long longValue = Long.parseLong(jsonItem.stringItem);
+                putValueTrimSize(valuePath, id, mStart, longValue);
+            } catch (NumberFormatException e1) {
+                try {
+                    Double doubleValue = Double.parseDouble(jsonItem.stringItem);
+                    putValueTrimSize(valuePath, id, mStart, doubleValue);
+                } catch (NumberFormatException e2) {
+                    putValueTrimSize(valuePath, id, mStart, jsonItem.stringItem);
+                }
+            }
         }
 
         private JsonItem getJsonItemRootObject(JsonItem jsonItem, JsonPathType jsonPathType) {

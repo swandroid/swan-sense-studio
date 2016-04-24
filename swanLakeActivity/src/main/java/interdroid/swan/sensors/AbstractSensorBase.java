@@ -1,6 +1,7 @@
 package interdroid.swan.sensors;
 
 import android.app.Service;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -99,6 +100,9 @@ public abstract class AbstractSensorBase extends Service implements
 		init();
 		initDefaultConfiguration(mDefaultConfiguration);
 		onConnected();
+
+		int pol = android.provider.Settings.System.WIFI_SLEEP_POLICY_NEVER;
+		android.provider.Settings.System.putInt(getContentResolver(), android.provider.Settings.System.WIFI_SLEEP_POLICY, pol);
 
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "SWAN sensor");

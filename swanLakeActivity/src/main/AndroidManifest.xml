@@ -559,7 +559,7 @@
                 android:value="" /> -->
             <meta-data
                 android:name="json_configuration_full"
-                android:value="" />
+                android:value="interdroid.swan.jsonsensor.activities.SelectionActivity" />
         </activity>
         <activity
             android:name="interdroid.swan.sensors.impl.LocationSensor$ConfigurationActivity"
@@ -674,7 +674,7 @@
                 android:value="10000" />
             <meta-data
                 android:name="rss_configuration_full"
-                android:value="" />
+                android:value="interdroid.swan.rss_sensor.activities.RssMainActivity" />
             <meta-data
                 android:name="units"
                 android:value=",,,," />

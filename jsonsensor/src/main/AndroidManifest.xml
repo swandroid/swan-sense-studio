@@ -6,6 +6,7 @@
 
     <application>
         <activity
+            android:exported="true"
             android:name="interdroid.swan.jsonsensor.activities.SelectionActivity"
             android:label="@string/label_json_sensor"
             android:screenOrientation="portrait"
