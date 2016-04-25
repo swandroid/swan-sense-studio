@@ -23,6 +23,7 @@ public class BTReceiver extends Thread  {
     private BTManager btManager;
     private Context context;
     private UUID uuid;
+    private BluetoothServerSocket serverSocket;
 
     public BTReceiver(BTManager btManager, Context context, UUID uuid) {
         this.btManager = btManager;
@@ -33,7 +34,7 @@ public class BTReceiver extends Thread  {
     @Override
     public void run() {
         Log.d(TAG, "BT receiver started for uuid " + uuid);
-        BluetoothServerSocket serverSocket = getServerSocket();
+        serverSocket = getServerSocket();
 
         try {
             while (true) {
@@ -46,13 +47,9 @@ public class BTReceiver extends Thread  {
                     btManager.addServerWorker(serverWorker);
                     serverWorker.start();
                 }
-
-                synchronized(this) {
-                    wait();
-                }
             }
         } catch (Exception e) {
-            Log.e(TAG, "FATAL ERROR", e);
+            Log.e(TAG, "receiver was stopped: " + e.getMessage());
         }
     }
 
@@ -64,5 +61,13 @@ public class BTReceiver extends Thread  {
             e.printStackTrace();
         }
         return serverSocket;
+    }
+
+    public void abort() {
+        try {
+            serverSocket.close();
+        } catch (IOException e) {
+            Log.e(TAG, this + " couldn't close socket", e);
+        }
     }
 }

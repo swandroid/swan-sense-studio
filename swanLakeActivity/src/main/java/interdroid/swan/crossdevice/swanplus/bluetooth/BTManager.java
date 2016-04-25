@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -41,14 +42,12 @@ public class BTManager implements ProximityManagerI {
     public static final String ACTION_NEARBY_DEVICE_FOUND = "interdroid.swan.crossdevice.swanplus.bluetooth.ACTION_NEARBY_DEVICE_FOUND";
     private final int PEER_DISCOVERY_INTERVAL = 60000;
     private final int BLOCKED_WORKERS_CHECKING_INTERVAL = 5000;
+    private final int MIN_LISTENING_INTERVAL = 2000;
 
     private Context context;
     private BTReceiver btReceiver;
     private BluetoothAdapter btAdapter;
     private ConcurrentLinkedQueue<BTRemoteExpression> evalQueue;
-    private boolean busy = false;
-    private boolean listening = false;
-
     private Handler handler;
 
     private List<BTClientWorker> clientWorkers = new ArrayList<>();
@@ -99,34 +98,50 @@ public class BTManager implements ProximityManagerI {
         public void run() {
             try {
                 while(true) {
+                    // TODO comment this !!!
                     while(evalQueue.isEmpty()) {
                         synchronized (this) {
                             wait();
                         }
                     }
 
-                    BTRemoteExpression expression = removeFromQueue();
-                    processExpression(expression);
+                    if(!evalQueue.isEmpty()) {
+                        BTRemoteExpression expression = removeFromQueue();
+                        processExpression(expression);
 
-                    while(isBusy()) {
+                        while(!clientWorkers.isEmpty()) {
+                            synchronized (this) {
+                                wait();
+                            }
+                        }
+                    }
+
+//                    sleep(2000);
+
+                    btReceiver = new BTReceiver(BTManager.this, context, SERVICE_UUID);
+                    btReceiver.start();
+
+                    int randTime = new Random().nextInt(1000);
+                    Log.i(TAG, "listening for " + (MIN_LISTENING_INTERVAL + randTime) + "ms");
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            btReceiver.abort();
+                            btReceiver = null;
+
+                            synchronized(evalThread) {
+                                evalThread.notify();
+                            }
+                        }
+                    }, MIN_LISTENING_INTERVAL + randTime);
+
+                    while(btReceiver != null || !serverWorkers.isEmpty()) {
                         synchronized (this) {
                             wait();
                         }
                     }
 
-                    setListening(true);
-
-                    synchronized (btReceiver) {
-                        btReceiver.notify();
-                    }
-
-                    while(isListening()) {
-                        synchronized (this) {
-                            wait();
-                        }
-                    }
-
-                    sleep(2000);
+                    Log.i(TAG, "done listening");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -153,10 +168,10 @@ public class BTManager implements ProximityManagerI {
             } else if(BluetoothAdapter.ACTION_STATE_CHANGED.equals(action)) {
                 int connState = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1);
 
-                if(connState == BluetoothAdapter.STATE_ON && btReceiver == null) {
-                    Log.d(TAG, "bluetooth connected, starting receiver thread...");
-                    btReceiver.start();
-                }
+//                if(connState == BluetoothAdapter.STATE_ON && btReceiver == null) {
+//                    Log.d(TAG, "bluetooth connected, starting receiver thread...");
+//                    btReceiver.start();
+//                }
             } else if(BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
                 Log.d(TAG, "discovery finished");
 
@@ -178,7 +193,7 @@ public class BTManager implements ProximityManagerI {
 
         evalQueue = new ConcurrentLinkedQueue<BTRemoteExpression>();
         handler = new Handler();
-        btReceiver = new BTReceiver(this, context, SERVICE_UUID);
+//        btReceiver = new BTReceiver(this, context, SERVICE_UUID);
 
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
@@ -204,9 +219,9 @@ public class BTManager implements ProximityManagerI {
         btAdapter.startDiscovery();
         evalThread.start();
 
-        if(btAdapter.isEnabled()) {
-            btReceiver.start();
-        }
+//        if(btAdapter.isEnabled()) {
+//            btReceiver.start();
+//        }
 
         nearbyPeersChecker.run();
 //        blockedWorkersChecker.run();
@@ -292,7 +307,6 @@ public class BTManager implements ProximityManagerI {
 
     private void processExpression(BTRemoteExpression remoteExpr) {
         Log.d(TAG, "processing " + remoteExpr);
-        setBusy(true);
 
         if(remoteExpr.getAction().equals(EvaluationEngineService.ACTION_REGISTER_REMOTE)) {
             BTClientWorker clientWorker = new BTClientWorker(this, remoteExpr);
@@ -423,34 +437,6 @@ public class BTManager implements ProximityManagerI {
         return btAdapter;
     }
 
-    public boolean isBusy() {
-        return busy;
-    }
-
-    public void setBusy(boolean busy) {
-        this.busy = busy;
-
-        if(busy) {
-            Log.e(TAG, "IS BUSY");
-        } else {
-            Log.e(TAG, "IS NOT BUSY");
-        }
-    }
-
-    public boolean isListening() {
-        return listening;
-    }
-
-    public void setListening(boolean listening) {
-        this.listening = listening;
-
-        if(busy) {
-            Log.e(TAG, "IS LISTENING");
-        } else {
-            Log.e(TAG, "IS NOT LISTENING");
-        }
-    }
-
     /**
      * we have to synchronize the methods dealing with workers, as it may happen that send() is called
      * by EvaluationEngineService right before a worker is removed
@@ -466,7 +452,6 @@ public class BTManager implements ProximityManagerI {
                 // add expression back at the end of queue
                 addToQueue(new BTRemoteExpression(remoteExpression));
                 clientWorkers.remove(clientWorker);
-                setBusy(false);
 
                 synchronized (evalThread) {
                     evalThread.notify();
@@ -476,7 +461,6 @@ public class BTManager implements ProximityManagerI {
             Log.d(TAG, "server worker done " + worker);
             BTServerWorker serverWorker = (BTServerWorker) worker;
             serverWorkers.remove(serverWorker);
-            setListening(false);
 
             synchronized (evalThread) {
                 evalThread.notify();
@@ -509,4 +493,5 @@ public class BTManager implements ProximityManagerI {
     public Context getContext() {
         return context;
     }
+
 }
