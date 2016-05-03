@@ -82,11 +82,7 @@ public abstract class AbstractBeaconSensor extends AbstractSwanSensor implements
 
                 Log.d("Beacon", "++ " + beacons.size());
                 long time = System.currentTimeMillis();
-                if (beacons.size() > 0) {
-                    for(Beacon beacon : beacons) {
-                        setData(ids, beacon, time);
-                    }
-                }
+                setData(ids,beacons,time);
             }
         });
         try {
@@ -98,5 +94,5 @@ public abstract class AbstractBeaconSensor extends AbstractSwanSensor implements
      * Each beacon sensor will implement this abstract method
      * @return object to be put in putValueTrimSize
      */
-    public abstract void setData(HashMap<String, String> ids, Beacon beacon, long time);
+    public abstract void setData(HashMap<String, String> ids, Collection<Beacon> beacons, long time);
 }

@@ -5,6 +5,7 @@ import org.altbeacon.beacon.Beacon;
 
 import org.altbeacon.beacon.Identifier;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,39 +44,42 @@ public class BeaconDiscoverySensor extends AbstractBeaconSensor{
 
 
     @Override
-    public void setData(HashMap<String, String> ids, Beacon beacon, long time) {
-        StringBuilder allIndetifier =  new StringBuilder();
-        List<Identifier> identifierList = beacon.getIdentifiers();
-        for(Identifier identifier : identifierList){
-            allIndetifier.append(identifier.toString() + "-");
-        }
-        allIndetifier.deleteCharAt(allIndetifier.length()-1);
+    public void setData(HashMap<String, String> ids, Collection<Beacon> beacons, long time) {
 
-        for (Map.Entry<String, String> id : ids.entrySet()) {
-            if(id.getValue().compareTo(IBEACON) == 0
-                    && BeaconUtils.isAppleIBeacon(beacon)) {
-                putValueTrimSize(id.getValue(), id.getKey(), time, allIndetifier.toString());
+        for(Beacon beacon : beacons) {
+            StringBuilder allIndetifier = new StringBuilder();
+            List<Identifier> identifierList = beacon.getIdentifiers();
+            for (Identifier identifier : identifierList) {
+                allIndetifier.append(identifier.toString() + "-");
             }
+            allIndetifier.deleteCharAt(allIndetifier.length() - 1);
 
-            if(id.getValue().compareTo(EDDYSTONE_UID) == 0
-                    && BeaconUtils.isEddystoneUID(beacon)){
-                putValueTrimSize(id.getValue(), id.getKey(), time, allIndetifier.toString());
-            }
+            for (Map.Entry<String, String> id : ids.entrySet()) {
+                if (id.getValue().compareTo(IBEACON) == 0
+                        && BeaconUtils.isAppleIBeacon(beacon)) {
+                    putValueTrimSize(id.getValue(), id.getKey(), time, allIndetifier.toString());
+                }
 
-            if(id.getValue().compareTo(ALTBEACON) == 0
-                    && BeaconUtils.isAltBeacon(beacon)){
-                putValueTrimSize(id.getValue(), id.getKey(),
-                        time,
-                        allIndetifier.toString());
+                if (id.getValue().compareTo(EDDYSTONE_UID) == 0
+                        && BeaconUtils.isEddystoneUID(beacon)) {
+                    putValueTrimSize(id.getValue(), id.getKey(), time, allIndetifier.toString());
+                }
 
-            }
+                if (id.getValue().compareTo(ALTBEACON) == 0
+                        && BeaconUtils.isAltBeacon(beacon)) {
+                    putValueTrimSize(id.getValue(), id.getKey(),
+                            time,
+                            allIndetifier.toString());
 
-            if(id.getValue().compareTo(ESTIMOTE_NEARABLE) == 0
-                    && BeaconUtils.isEstimoteNearable(beacon)){
-                putValueTrimSize(id.getValue(), id.getKey(),
-                        time,
-                        allIndetifier.toString());
+                }
 
+                if (id.getValue().compareTo(ESTIMOTE_NEARABLE) == 0
+                        && BeaconUtils.isEstimoteNearable(beacon)) {
+                    putValueTrimSize(id.getValue(), id.getKey(),
+                            time,
+                            allIndetifier.toString());
+
+                }
             }
         }
     }
