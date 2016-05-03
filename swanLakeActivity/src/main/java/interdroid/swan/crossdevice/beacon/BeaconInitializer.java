@@ -63,8 +63,6 @@ public class BeaconInitializer{
         beaconManager.getBeaconParsers().add(new BeaconParser().
                 setBeaconLayout("s:0-1=feaa,m:2-2=10,p:3-3:-41,i:4-20v"));
 
-        beaconManager.getBeaconParsers().add(new BeaconParser()
-                .setBeaconLayout("s:0-1=5d01,m:2-2=01,i:3-11,p:21-21,d:11-22"));
 
         // Apple iBeacon
         beaconManager.getBeaconParsers().add(new BeaconParser()
