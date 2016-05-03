@@ -34,20 +34,23 @@ public class BeaconTempSensor extends AbstractBeaconSensor {
         for(Beacon beacon : beacons){
             if(BeaconUtils.isEddystoneUID(beacon) || BeaconUtils.isEddystoneURL(beacon)){
                 if(beacon.getExtraDataFields().size() > 0){
+                    long temp = beacon.getExtraDataFields().get(2);
+                    float finalTemp = getTemp(temp);
                     for (Map.Entry<String, String> id : ids.entrySet()) {
-                        long temp = beacon.getExtraDataFields().get(2);
-
-                        ByteBuffer buffer = ByteBuffer.allocate(Long.SIZE/8);
-                        buffer.putLong(temp);
-                        byte tempData[] = buffer.array();
-                        byte tempIntegral = tempData[6];
-                        int tempFractional = tempData[7] & 0xff;
-
-                        float finalTemp = tempIntegral + (tempFractional / 256.0f);
                         putValueTrimSize(id.getValue(), id.getKey(),
                                 time,
                                 finalTemp);
                     }
+                }
+            }
+
+            if(BeaconUtils.isEstimoteNearable(beacon)){
+                long temp = beacon.getDataFields().get(2);
+                float finalTemp = getNearableTemp(temp);
+                for (Map.Entry<String, String> id : ids.entrySet()) {
+                    putValueTrimSize(id.getValue(), id.getKey(),
+                            time,
+                            finalTemp);
                 }
             }
         }
@@ -57,5 +60,32 @@ public class BeaconTempSensor extends AbstractBeaconSensor {
     @Override
     public String[] getValuePaths() {
         return new String[] { TEMPERATURE_FIELD };
+    }
+
+    public float getTemp(long rawTemp){
+        ByteBuffer buffer = ByteBuffer.allocate(Long.SIZE/8);
+        buffer.putLong(rawTemp);
+        byte tempData[] = buffer.array();
+        byte tempIntegral = tempData[6];
+        int tempFractional = tempData[7] & 0xff;
+
+        float finalTemp = tempIntegral + (tempFractional / 256.0f);
+
+        return finalTemp;
+    }
+
+    public float getNearableTemp(long rawTemp){
+        short tmp = (short)rawTemp;
+
+        tmp = Short.reverseBytes(tmp);
+
+        int raw = (tmp & 0x0fff) << 4;
+
+        if((raw & 0x8000) != 0){
+            return ((raw & 0x7fff) - 32768.0f) / 256.0f;
+        } else {
+            float data = (tmp & 0x0fff) << 4;
+            return data / 256.0f;
+        }
     }
 }

@@ -70,7 +70,7 @@ public class BeaconInitializer{
 
         // Estimote Nearable
         beaconManager.getBeaconParsers().add(new BeaconParser()
-                .setBeaconLayout("m:1-2=0101,i:3-11,d:12-12,d:13-13,d:14-15,d:16-16,d:17-17,d:18-18,d:19-19,d:20-20,p:21-21"));
+                .setBeaconLayout("m:1-2=0101,i:3-10,d:11-11,d:12-12,d:13-14,d:15-15,d:16-16,d:17-17,d:18-18,d:19-19,p:20-20"));
 
 
         // simply constructing this class and holding a reference to it in your custom Application
