@@ -70,6 +70,10 @@ public class BeaconInitializer{
         beaconManager.getBeaconParsers().add(new BeaconParser()
                 .setBeaconLayout("m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24"));
 
+        // Estimote Nearable
+        beaconManager.getBeaconParsers().add(new BeaconParser()
+                .setBeaconLayout("m:1-2=0101,i:3-11,d:12-12,d:13-13,d:14-15,d:16-16,d:17-17,d:18-18,d:19-19,d:20-20,p:21-21"));
+
 
         // simply constructing this class and holding a reference to it in your custom Application
         // class will automatically cause the BeaconLibrary to save battery whenever the application

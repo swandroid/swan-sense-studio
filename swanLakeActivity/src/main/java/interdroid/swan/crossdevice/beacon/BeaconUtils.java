@@ -22,4 +22,9 @@ public class BeaconUtils {
     public static boolean isAppleIBeacon(Beacon beacon){
         return beacon.getBeaconTypeCode() == 533; //0215 in hex
     }
+
+    public static boolean isEstimoteNearable(Beacon beacon){
+        return beacon.getBeaconTypeCode() == 0x0101;
+    }
+
 }
