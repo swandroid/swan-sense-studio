@@ -465,6 +465,7 @@
                 android:name="units"
                 android:value="C" />
         </activity>
+
         <activity
             android:name=".sensors.impl.BatterySensor$ConfigurationActivity"
             android:exported="true"
@@ -1521,6 +1522,36 @@
         <service
             android:name="interdroid.swan.sensors.impl.BeaconDiscoverySensor" >
         </service>
+
+        <activity
+            android:name=".sensors.impl.BeaconTempSensor$ConfigurationActivity"
+            android:exported="true"
+            android:icon="@drawable/temperature_icon">
+            <intent-filter>
+                <action android:name="interdroid.swan.sensor.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="beaconTemperature" />
+            <meta-data
+                android:name="valuePaths"
+                android:value="temperature" />
+            <meta-data
+                android:name="accuracy"
+                android:value="3" />
+            <meta-data
+                android:name="delay"
+                android:value="200000" />
+            <meta-data
+                android:name="units"
+                android:value="C" />
+        </activity>
+
+        <service
+            android:name="interdroid.swan.sensors.impl.BeaconTempSensor" >
+        </service>
+
 
     </application>
 
