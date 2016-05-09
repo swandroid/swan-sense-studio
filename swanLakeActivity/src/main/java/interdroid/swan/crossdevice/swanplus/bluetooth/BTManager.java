@@ -97,6 +97,10 @@ public class BTManager implements ProximityManagerI {
         @Override
         public void run() {
             try {
+                synchronized (this) {
+                    wait();
+                }
+
                 while(true) {
                     // TODO comment this !!!
                     while(evalQueue.isEmpty()) {
@@ -121,7 +125,7 @@ public class BTManager implements ProximityManagerI {
                     btReceiver = new BTReceiver(BTManager.this, context, SERVICE_UUID);
                     btReceiver.start();
 
-                    int randTime = new Random().nextInt(1000);
+                    int randTime = new Random().nextInt(4000);
                     Log.i(TAG, "listening for " + (MIN_LISTENING_INTERVAL + randTime) + "ms");
                     handler.postDelayed(new Runnable() {
                         @Override
@@ -129,7 +133,7 @@ public class BTManager implements ProximityManagerI {
                             btReceiver.abort();
                             btReceiver = null;
 
-                            synchronized(evalThread) {
+                            synchronized (evalThread) {
                                 evalThread.notify();
                             }
                         }
@@ -305,7 +309,7 @@ public class BTManager implements ProximityManagerI {
         }
     }
 
-    private void processExpression(BTRemoteExpression remoteExpr) {
+        private void processExpression(BTRemoteExpression remoteExpr) {
         Log.d(TAG, "processing " + remoteExpr);
 
         if(remoteExpr.getAction().equals(EvaluationEngineService.ACTION_REGISTER_REMOTE)) {
