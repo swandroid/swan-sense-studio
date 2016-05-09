@@ -47,29 +47,25 @@ public class BeaconDiscoverySensor extends AbstractBeaconSensor{
     public void setData(HashMap<String, String> ids, Collection<Beacon> beacons, long time) {
 
         for(Beacon beacon : beacons) {
-            StringBuilder allIndetifier = new StringBuilder();
-            List<Identifier> identifierList = beacon.getIdentifiers();
-            for (Identifier identifier : identifierList) {
-                allIndetifier.append(identifier.toString() + "-");
-            }
-            allIndetifier.deleteCharAt(allIndetifier.length() - 1);
+            
+            String beaconId = getBeaconId(beacon);
 
             for (Map.Entry<String, String> id : ids.entrySet()) {
                 if (id.getValue().compareTo(IBEACON) == 0
                         && BeaconUtils.isAppleIBeacon(beacon)) {
-                    putValueTrimSize(id.getValue(), id.getKey(), time, allIndetifier.toString());
+                    putValueTrimSize(id.getValue(), id.getKey(), time, beaconId);
                 }
 
                 if (id.getValue().compareTo(EDDYSTONE_UID) == 0
                         && BeaconUtils.isEddystoneUID(beacon)) {
-                    putValueTrimSize(id.getValue(), id.getKey(), time, allIndetifier.toString());
+                    putValueTrimSize(id.getValue(), id.getKey(), time, beaconId);
                 }
 
                 if (id.getValue().compareTo(ALTBEACON) == 0
                         && BeaconUtils.isAltBeacon(beacon)) {
                     putValueTrimSize(id.getValue(), id.getKey(),
                             time,
-                            allIndetifier.toString());
+                            beaconId);
 
                 }
 
@@ -77,7 +73,7 @@ public class BeaconDiscoverySensor extends AbstractBeaconSensor{
                         && BeaconUtils.isEstimoteNearable(beacon)) {
                     putValueTrimSize(id.getValue(), id.getKey(),
                             time,
-                            allIndetifier.toString());
+                            beaconId);
 
                 }
             }

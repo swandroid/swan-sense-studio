@@ -7,11 +7,13 @@ import android.util.Log;
 import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconConsumer;
 import org.altbeacon.beacon.BeaconManager;
+import org.altbeacon.beacon.Identifier;
 import org.altbeacon.beacon.RangeNotifier;
 import org.altbeacon.beacon.Region;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
 import interdroid.swan.sensors.AbstractSwanSensor;
@@ -95,4 +97,15 @@ public abstract class AbstractBeaconSensor extends AbstractSwanSensor implements
      * @return object to be put in putValueTrimSize
      */
     public abstract void setData(HashMap<String, String> ids, Collection<Beacon> beacons, long time);
+
+    public String getBeaconId(Beacon beacon){
+        StringBuilder allIndetifier = new StringBuilder();
+        List<Identifier> identifierList = beacon.getIdentifiers();
+        for (Identifier identifier : identifierList) {
+            allIndetifier.append(identifier.toString() + "-");
+        }
+        allIndetifier.deleteCharAt(allIndetifier.length() - 1);
+
+        return allIndetifier.toString();
+    }
 }

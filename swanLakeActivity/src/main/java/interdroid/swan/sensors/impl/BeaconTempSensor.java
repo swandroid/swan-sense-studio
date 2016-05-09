@@ -31,30 +31,30 @@ public class BeaconTempSensor extends AbstractBeaconSensor {
 
     @Override
     public void setData(HashMap<String, String> ids, Collection<Beacon> beacons, long time) {
+
+        HashMap<String, Object> result = new HashMap<>();
         for(Beacon beacon : beacons){
             if(BeaconUtils.isEddystoneUID(beacon) || BeaconUtils.isEddystoneURL(beacon)){
                 if(beacon.getExtraDataFields().size() > 0){
                     long temp = beacon.getExtraDataFields().get(2);
                     float finalTemp = getTemp(temp);
-                    for (Map.Entry<String, String> id : ids.entrySet()) {
-                        putValueTrimSize(id.getValue(), id.getKey(),
-                                time,
-                                finalTemp);
-                    }
+                    result.put(getBeaconId(beacon), finalTemp);
                 }
             }
 
             if(BeaconUtils.isEstimoteNearable(beacon)){
                 long temp = beacon.getDataFields().get(2);
                 float finalTemp = getNearableTemp(temp);
-                for (Map.Entry<String, String> id : ids.entrySet()) {
-                    putValueTrimSize(id.getValue(), id.getKey(),
-                            time,
-                            finalTemp);
-                }
+                result.put(getBeaconId(beacon), finalTemp);
             }
         }
-
+        if(!result.isEmpty()) {
+            for (Map.Entry<String, String> id : ids.entrySet()) {
+                putValueTrimSize(id.getValue(), id.getKey(),
+                        time,
+                        result);
+            }
+        }
     }
 
     @Override
