@@ -80,4 +80,9 @@ public class BeaconDiscoverySensor extends AbstractBeaconSensor{
         }
     }
 
+    @Override
+    protected String getSensorName() {
+        return TAG;
+    }
+
 }

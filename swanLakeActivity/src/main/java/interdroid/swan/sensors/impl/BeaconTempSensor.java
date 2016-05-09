@@ -20,6 +20,7 @@ import interdroid.swan.sensors.AbstractConfigurationActivity;
 public class BeaconTempSensor extends AbstractBeaconSensor {
 
     public static final String TEMPERATURE_FIELD = "temperature";
+    public static final String TAG = "BeaconTempSensor";
 
     public static class ConfigurationActivity extends AbstractConfigurationActivity {
 
@@ -55,6 +56,11 @@ public class BeaconTempSensor extends AbstractBeaconSensor {
                         result);
             }
         }
+    }
+
+    @Override
+    protected String getSensorName() {
+        return TAG;
     }
 
     @Override
