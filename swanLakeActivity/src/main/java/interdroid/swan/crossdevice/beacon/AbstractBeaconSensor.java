@@ -7,11 +7,13 @@ import android.util.Log;
 import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconConsumer;
 import org.altbeacon.beacon.BeaconManager;
+import org.altbeacon.beacon.Identifier;
 import org.altbeacon.beacon.RangeNotifier;
 import org.altbeacon.beacon.Region;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
 import interdroid.swan.sensors.AbstractSwanSensor;
@@ -24,11 +26,11 @@ import interdroid.swan.sensors.AbstractSwanSensor;
 public abstract class AbstractBeaconSensor extends AbstractSwanSensor implements BeaconConsumer {
 
     BeaconManager beaconManager;
-    HashMap<String, String> ids = new HashMap<>();
+    volatile HashMap<String, String> ids = new HashMap<>();
 
     ReentrantLock lock = new ReentrantLock();
 
-    public static final String TAG = "AbstractBeaconSensor";
+    public String TAG = "AbstractBeaconSensor";
 
     public static final String IBEACON ="ibeaconuuid";
     public static final String EDDYSTONE_UID = "eddystoneuid";
@@ -43,6 +45,9 @@ public abstract class AbstractBeaconSensor extends AbstractSwanSensor implements
 
     }
 
+    public void setTag(String tagName){
+        TAG = tagName;
+    }
     @Override
     public void register(String id, String valuePath, Bundle configuration, Bundle httpConfiguration) {
 
@@ -52,20 +57,25 @@ public abstract class AbstractBeaconSensor extends AbstractSwanSensor implements
 
         lock.lock();
         ids.put(id, valuePath);
-
-        if(ids.size() == 1)
+        Log.d(TAG, "Register " + id + " " + valuePath + " " + ids.toString() + " " +ids.size());
+        if(ids.size() == 1) {
+            Log.d(TAG, "Binding this to beacon manager");
             beaconManager.bind(this);
+        }
 
         lock.unlock();
     }
     @Override
     public void unregister(String id) {
 
+
         lock.lock();
         ids.remove(id);
-
-        if(ids.isEmpty())
+        Log.d(TAG, "UNRegister " + id + " " + ids.toString());
+        if(ids.isEmpty()) {
+            Log.d(TAG, "Unbinding this...");
             beaconManager.unbind(this);
+        }
         lock.unlock();
     }
 
@@ -80,23 +90,39 @@ public abstract class AbstractBeaconSensor extends AbstractSwanSensor implements
             @Override
             public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
 
-                Log.d("Beacon", "++ " + beacons.size());
+                Log.d(TAG, "++ " + beacons.size());
                 long time = System.currentTimeMillis();
-                if (beacons.size() > 0) {
-                    for(Beacon beacon : beacons) {
-                        setData(ids, beacon, time);
-                    }
+                try {
+                    lock.lock();
+                    setData(ids, beacons, time);
+                } finally {
+                    lock.unlock();
                 }
             }
         });
         try {
-            beaconManager.startRangingBeaconsInRegion(new Region("myRangingUniqueId", null, null, null));
-        } catch (RemoteException e) {   }
+            beaconManager.startRangingBeaconsInRegion(new Region(getSensorName(), null, null, null));
+        } catch (RemoteException e) {
+            Log.d(TAG, "Got exception" + e.getMessage());
+        }
     }
 
     /**
      * Each beacon sensor will implement this abstract method
      * @return object to be put in putValueTrimSize
      */
-    public abstract void setData(HashMap<String, String> ids, Beacon beacon, long time);
+    public abstract void setData(HashMap<String, String> ids, Collection<Beacon> beacons, long time);
+
+    public String getBeaconId(Beacon beacon){
+        StringBuilder allIndetifier = new StringBuilder();
+        List<Identifier> identifierList = beacon.getIdentifiers();
+        for (Identifier identifier : identifierList) {
+            allIndetifier.append(identifier.toString() + "-");
+        }
+        allIndetifier.deleteCharAt(allIndetifier.length() - 1);
+
+        return allIndetifier.toString();
+    }
+
+    protected abstract String getSensorName();
 }

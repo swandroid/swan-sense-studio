@@ -63,8 +63,6 @@ public class BeaconInitializer{
         beaconManager.getBeaconParsers().add(new BeaconParser().
                 setBeaconLayout("s:0-1=feaa,m:2-2=10,p:3-3:-41,i:4-20v"));
 
-        beaconManager.getBeaconParsers().add(new BeaconParser()
-                .setBeaconLayout("s:0-1=5d01,m:2-2=01,i:3-11,p:21-21,d:11-22"));
 
         // Apple iBeacon
         beaconManager.getBeaconParsers().add(new BeaconParser()
@@ -72,7 +70,7 @@ public class BeaconInitializer{
 
         // Estimote Nearable
         beaconManager.getBeaconParsers().add(new BeaconParser()
-                .setBeaconLayout("m:1-2=0101,i:3-11,d:12-12,d:13-13,d:14-15,d:16-16,d:17-17,d:18-18,d:19-19,d:20-20,p:21-21"));
+                .setBeaconLayout("m:1-2=0101,i:3-10,d:11-11,d:12-12,d:13-14,d:15-15,d:16-16,d:17-17,d:18-18,d:19-19,p:20-20"));
 
 
         // simply constructing this class and holding a reference to it in your custom Application
