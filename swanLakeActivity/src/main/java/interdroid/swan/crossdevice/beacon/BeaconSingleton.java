@@ -44,8 +44,6 @@ public class BeaconSingleton extends Service implements BeaconConsumer {
 
     public BeaconSingleton() {
         Log.d(TAG,"++++ Service started+++");
-        beaconManager = org.altbeacon.beacon.BeaconManager.getInstanceForApplication(this);
-        ourInstance = this;
     }
 
     public void addSensor(AbstractBeaconSensor sensor){
@@ -81,6 +79,8 @@ public class BeaconSingleton extends Service implements BeaconConsumer {
     @Override
     public void onCreate() {
         super.onCreate();
+        beaconManager = org.altbeacon.beacon.BeaconManager.getInstanceForApplication(this);
+        ourInstance = this;
         Log.d(TAG, "Service created+++");
     }
 
@@ -94,6 +94,7 @@ public class BeaconSingleton extends Service implements BeaconConsumer {
     @Override
     public void onBeaconServiceConnect() {
         Log.d(TAG, "On beacon connect+++++++++++++++++");
+        beaconManager.setBackgroundMode(false);
         beaconManager.setRangeNotifier(new RangeNotifier() {
             @Override
             public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
