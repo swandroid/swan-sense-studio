@@ -40,9 +40,8 @@ public class BTManager implements ProximityManagerI {
     protected final static UUID SERVICE_UUID = UUID.fromString("e2035693-b335-403f-b921-537e5ce2d27d");
     protected final static String SERVICE_NAME = "swanlake";
     public static final String ACTION_NEARBY_DEVICE_FOUND = "interdroid.swan.crossdevice.swanplus.bluetooth.ACTION_NEARBY_DEVICE_FOUND";
-    private final int PEER_DISCOVERY_INTERVAL = 60000;
+    public static final String ACTION_LOG_MESSAGE = "interdroid.swan.crossdevice.swanplus.bluetooth.ACTION_LOG_MESSAGE";
     private final int BLOCKED_WORKERS_CHECKING_INTERVAL = 5000;
-    private final int MIN_LISTENING_INTERVAL = 2000;
 
     private Context context;
     private BTReceiver btReceiver;
@@ -97,55 +96,23 @@ public class BTManager implements ProximityManagerI {
         @Override
         public void run() {
             try {
-                synchronized (this) {
-                    wait();
-                }
-
                 while(true) {
-                    // TODO comment this !!!
                     while(evalQueue.isEmpty()) {
                         synchronized (this) {
                             wait();
                         }
                     }
 
-                    if(!evalQueue.isEmpty()) {
-                        BTRemoteExpression expression = removeFromQueue();
-                        processExpression(expression);
+                    BTRemoteExpression expression = removeFromQueue();
+                    processExpression(expression);
 
-                        while(!clientWorkers.isEmpty()) {
-                            synchronized (this) {
-                                wait();
-                            }
-                        }
-                    }
-
-//                    sleep(2000);
-
-                    btReceiver = new BTReceiver(BTManager.this, context, SERVICE_UUID);
-                    btReceiver.start();
-
-                    int randTime = new Random().nextInt(4000);
-                    Log.i(TAG, "listening for " + (MIN_LISTENING_INTERVAL + randTime) + "ms");
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            btReceiver.abort();
-                            btReceiver = null;
-
-                            synchronized (evalThread) {
-                                evalThread.notify();
-                            }
-                        }
-                    }, MIN_LISTENING_INTERVAL + randTime);
-
-                    while(btReceiver != null || !serverWorkers.isEmpty()) {
+                    while(!clientWorkers.isEmpty()) {
                         synchronized (this) {
                             wait();
                         }
                     }
 
-                    Log.i(TAG, "done listening");
+                    sleep(2000);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -172,10 +139,10 @@ public class BTManager implements ProximityManagerI {
             } else if(BluetoothAdapter.ACTION_STATE_CHANGED.equals(action)) {
                 int connState = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1);
 
-//                if(connState == BluetoothAdapter.STATE_ON && btReceiver == null) {
-//                    Log.d(TAG, "bluetooth connected, starting receiver thread...");
-//                    btReceiver.start();
-//                }
+                if(connState == BluetoothAdapter.STATE_ON) {
+                    Log.d(TAG, "bluetooth connected, starting receiver thread...");
+                    btReceiver.start();
+                }
             } else if(BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
                 Log.d(TAG, "discovery finished");
 
@@ -197,7 +164,7 @@ public class BTManager implements ProximityManagerI {
 
         evalQueue = new ConcurrentLinkedQueue<BTRemoteExpression>();
         handler = new Handler();
-//        btReceiver = new BTReceiver(this, context, SERVICE_UUID);
+        btReceiver = new BTReceiver(this, context, SERVICE_UUID);
 
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
@@ -223,9 +190,9 @@ public class BTManager implements ProximityManagerI {
         btAdapter.startDiscovery();
         evalThread.start();
 
-//        if(btAdapter.isEnabled()) {
-//            btReceiver.start();
-//        }
+        if(btAdapter.isEnabled()) {
+            btReceiver.start();
+        }
 
         nearbyPeersChecker.run();
 //        blockedWorkersChecker.run();
@@ -465,10 +432,6 @@ public class BTManager implements ProximityManagerI {
             Log.d(TAG, "server worker done " + worker);
             BTServerWorker serverWorker = (BTServerWorker) worker;
             serverWorkers.remove(serverWorker);
-
-            synchronized (evalThread) {
-                evalThread.notify();
-            }
         }
     }
 
@@ -492,6 +455,16 @@ public class BTManager implements ProximityManagerI {
 
     protected void addServerWorker(BTServerWorker serverWorker) {
         serverWorkers.add(serverWorker);
+    }
+
+    /**
+     * temporary method used for debug
+     */
+    protected void bcastLogMessage(String message) {
+        Intent logMsgIntent = new Intent();
+        logMsgIntent.setAction(ACTION_LOG_MESSAGE);
+        logMsgIntent.putExtra("log", message);
+        context.sendBroadcast(logMsgIntent);
     }
 
     public Context getContext() {

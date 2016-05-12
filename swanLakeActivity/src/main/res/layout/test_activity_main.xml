@@ -8,17 +8,18 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.accelerometerapp.MainActivity" >
 
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
+    <EditText
+        android:id="@+id/username"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Sensor value" />
+        android:hint="Connect to peer"
+        android:inputType="text" />
 
     <LinearLayout
         android:id="@+id/mLlayoutBottomButtons"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@id/username"
         android:orientation="horizontal" >
 
         <Button
@@ -38,12 +39,26 @@
             android:text="Unregister" />
     </LinearLayout>
 
-    <EditText
-        android:id="@+id/username"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Connect to peer"
-        android:layout_above="@id/mLlayoutBottomButtons"
-        android:inputType="text" />
+        android:layout_below="@id/mLlayoutBottomButtons"
+        android:text="Sensor value" />
+
+    <ScrollView
+        android:id="@+id/scroll_view"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textView1"
+        android:scrollbars="vertical"
+        android:fillViewport="true" >
+
+        <TextView
+            android:id="@+id/result"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            />
+    </ScrollView>
 
 </RelativeLayout>

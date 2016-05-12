@@ -51,14 +51,18 @@ public class BTClientWorker extends BTWorker {
     protected void connect(BluetoothDevice device) {
 //        btAdapter.cancelDiscovery();
         Log.i(TAG, this + " connecting to " + device.getName() + "...");
+        btManager.bcastLogMessage(this + " connecting to " + device.getName() + "...");
 
         try {
             btSocket = device.createInsecureRfcommSocketToServiceRecord(BTManager.SERVICE_UUID);
             btSocket.connect();
             Log.i(TAG, this + " connected to " + device.getName());
+            btManager.bcastLogMessage(this + " connected to " + device.getName());
             return;
         } catch (Exception e) {
             Log.e(TAG, this + " can't connect to " + device.getName() + ": " + e.getMessage());
+            btManager.bcastLogMessage(this + " can't connect to " + device.getName() + ": " + e.getMessage());
+
             try {
                 btSocket.close();
             } catch (Exception e1) {

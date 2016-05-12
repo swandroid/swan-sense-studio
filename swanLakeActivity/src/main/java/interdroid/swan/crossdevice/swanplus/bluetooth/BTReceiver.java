@@ -62,12 +62,4 @@ public class BTReceiver extends Thread  {
         }
         return serverSocket;
     }
-
-    public void abort() {
-        try {
-            serverSocket.close();
-        } catch (IOException e) {
-            Log.e(TAG, this + " couldn't close socket", e);
-        }
-    }
 }

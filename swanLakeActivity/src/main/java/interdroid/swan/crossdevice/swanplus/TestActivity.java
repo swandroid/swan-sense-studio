@@ -5,6 +5,7 @@ import interdroid.swan.R;
 import interdroid.swan.SensorInfo;
 import interdroid.swan.SwanException;
 import interdroid.swan.ValueExpressionListener;
+import interdroid.swan.crossdevice.swanplus.bluetooth.BTManager;
 import interdroid.swan.sensors.impl.FitnessSensor;
 import interdroid.swan.swansong.ExpressionFactory;
 import interdroid.swan.swansong.ExpressionParseException;
@@ -13,6 +14,7 @@ import interdroid.swan.swansong.ValueExpression;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -42,11 +44,26 @@ public class TestActivity extends Activity {
     String mExpression;
     private boolean mRegistered = false;
 
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+
+            if(BTManager.ACTION_LOG_MESSAGE.equals(action)) {
+                String message = intent.getStringExtra("log");
+                TextView tv = (TextView) findViewById(R.id.result);
+                tv.setText(message + "\n" + tv.getText());
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.test_activity_main);
         tv = (TextView) findViewById(R.id.textView1);
+
+        IntentFilter intentFilter = new IntentFilter(BTManager.ACTION_LOG_MESSAGE);
+        registerReceiver(mReceiver, intentFilter);
 //        initialize();
 //        testSensor();
     }
