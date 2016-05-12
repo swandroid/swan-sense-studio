@@ -31,7 +31,7 @@ public class BeaconTempSensor extends AbstractBeaconSensor {
     }
 
     @Override
-    public void setData(HashMap<String, String> ids, Collection<Beacon> beacons, long time) {
+    public void setData(Collection<Beacon> beacons, long time) {
 
         HashMap<String, Object> result = new HashMap<>();
         for(Beacon beacon : beacons){

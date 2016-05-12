@@ -1,6 +1,7 @@
 package interdroid.swan.crossdevice.beacon;
 
 import android.content.Context;
+import android.content.Intent;
 
 import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconManager;
@@ -77,6 +78,10 @@ public class BeaconInitializer{
         // class will automatically cause the BeaconLibrary to save battery whenever the application
         // is not visible.  This reduces bluetooth power usage by about 60%
         backgroundPowerSaver = new BackgroundPowerSaver(this.getApplicationContext());
+
+        //beaconManager.setDebug(true);
+
+        context.startService(new Intent(context,BeaconSingleton.class));
     }
 
 

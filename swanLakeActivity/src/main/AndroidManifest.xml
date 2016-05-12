@@ -1552,6 +1552,10 @@
             android:name="interdroid.swan.sensors.impl.BeaconTempSensor" >
         </service>
 
+        <service
+            android:name="interdroid.swan.crossdevice.beacon.BeaconSingleton">
+        </service>
+
 
     </application>
 
