@@ -385,4 +385,8 @@
         <item>estimotenearable</item>
     </string-array>
 
+    <string-array name="beacon_distance_valuepaths">
+        <item>distance</item>
+    </string-array>
+
 </resources>

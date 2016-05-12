@@ -75,7 +75,7 @@ public class BeaconSingleton extends Service implements BeaconConsumer {
             beaconManager.unbind(this);
             isBinded = false;
         }
-       // lock.unlock();
+        lock.unlock();
     }
 
     @Override
