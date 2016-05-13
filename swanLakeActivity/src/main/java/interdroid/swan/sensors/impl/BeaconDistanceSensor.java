@@ -1,5 +1,7 @@
 package interdroid.swan.sensors.impl;
 
+import android.util.Log;
+
 import org.altbeacon.beacon.Beacon;
 
 import java.util.Collection;
@@ -38,9 +40,16 @@ public class BeaconDistanceSensor  extends AbstractBeaconSensor{
 
         HashMap<String, Object> result = new HashMap<>();
         for(Beacon beacon : beacons){
-            result.put(getBeaconId(beacon), beacon.getDistance());
-//            if(BeaconUtils.isEddystoneUID(beacon) || BeaconUtils.isEddystoneURL(beacon)) {
-//            }
+
+
+            if(BeaconUtils.isEstimoteNearable(beacon)){
+                Log.d(TAG, "Estimote nearable power " + beacon.getTxPower() + " " + getNearableTxPower(beacon));
+                double distance = Beacon.getDistanceCalculator().calculateDistance(getNearableTxPower(beacon),
+                                                                                    (double)beacon.getRssi());
+                result.put(getBeaconId(beacon), distance);
+            } else {
+                result.put(getBeaconId(beacon), beacon.getDistance());
+            }
         }
         if(!result.isEmpty()) {
             for (Map.Entry<String, String> id : ids.entrySet()) {
@@ -59,5 +68,12 @@ public class BeaconDistanceSensor  extends AbstractBeaconSensor{
     @Override
     public String[] getValuePaths() {
         return new String[]{ DISTANCE_VALUEPATH };
+    }
+
+    private int getNearableTxPower(Beacon beacon){
+        int[] powerLevels = {1, 2, 3, 7, 5, 6, 4, 8};
+        int powerIndex = (byte)beacon.getTxPower() & 0x0f;
+        Log.d(TAG, "Power Index " + powerIndex);
+        return powerLevels[powerIndex-1];
     }
 }
