@@ -37,14 +37,25 @@ import interdroid.swan.swansong.Expression;
 public class BTManager implements ProximityManagerI {
 
     private static final String TAG = "BTManager";
-    protected final static UUID SERVICE_UUID = UUID.fromString("e2035693-b335-403f-b921-537e5ce2d27d");
+//    protected final static UUID SERVICE_UUID = UUID.fromString("e2035693-b335-403f-b921-537e5ce2d27d");
+    protected final static UUID[] SERVICE_UUIDS = {
+            UUID.fromString("e2035693-b335-403f-b921-537e5ce2d27d"),
+//            UUID.fromString("b0ec7a42-2e19-438e-a091-d6954b999225"),
+//            UUID.fromString("fc74ed56-8cf2-4eae-b609-7a32bd70183d"),
+//            UUID.fromString("15e416a2-0fab-45ff-b799-b6e67b131d3a"),
+//            UUID.fromString("c84a39b5-8a25-43ac-9f2d-e5f3e96f615a"),
+//            UUID.fromString("803581d4-55d5-45fc-a31b-acf55052a5d7"),
+//            UUID.fromString("94192877-54e0-43a3-abc5-fbf9bbc43137")
+    };
     protected final static String SERVICE_NAME = "swanlake";
     public static final String ACTION_NEARBY_DEVICE_FOUND = "interdroid.swan.crossdevice.swanplus.bluetooth.ACTION_NEARBY_DEVICE_FOUND";
     public static final String ACTION_LOG_MESSAGE = "interdroid.swan.crossdevice.swanplus.bluetooth.ACTION_LOG_MESSAGE";
     private final int BLOCKED_WORKERS_CHECKING_INTERVAL = 5000;
+    private final int MIN_BETWEEN_CONNECTIONS_TIMEOUT = 1000;
 
     private Context context;
-    private BTReceiver btReceiver;
+//    private BTReceiver btReceiver;
+    private List<BTReceiver> btReceivers = new ArrayList<>();
     private BluetoothAdapter btAdapter;
     private ConcurrentLinkedQueue<BTRemoteExpression> evalQueue;
     private Handler handler;
@@ -112,7 +123,7 @@ public class BTManager implements ProximityManagerI {
                         }
                     }
 
-                    sleep(2000);
+                    sleep(MIN_BETWEEN_CONNECTIONS_TIMEOUT + new Random().nextInt(1500));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -141,7 +152,10 @@ public class BTManager implements ProximityManagerI {
 
                 if(connState == BluetoothAdapter.STATE_ON) {
                     Log.d(TAG, "bluetooth connected, starting receiver thread...");
-                    btReceiver.start();
+//                    btReceiver.start();
+                    for(BTReceiver receiver : btReceivers) {
+                        receiver.start();
+                    }
                 }
             } else if(BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
                 Log.d(TAG, "discovery finished");
@@ -164,7 +178,11 @@ public class BTManager implements ProximityManagerI {
 
         evalQueue = new ConcurrentLinkedQueue<BTRemoteExpression>();
         handler = new Handler();
-        btReceiver = new BTReceiver(this, context, SERVICE_UUID);
+//        btReceiver = new BTReceiver(this, context, SERVICE_UUID);
+
+        for(UUID uuid : SERVICE_UUIDS) {
+            btReceivers.add(new BTReceiver(this, context, uuid));
+        }
 
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
@@ -191,7 +209,10 @@ public class BTManager implements ProximityManagerI {
         evalThread.start();
 
         if(btAdapter.isEnabled()) {
-            btReceiver.start();
+//            btReceiver.start();
+            for(BTReceiver receiver : btReceivers) {
+                receiver.start();
+            }
         }
 
         nearbyPeersChecker.run();
@@ -359,6 +380,7 @@ public class BTManager implements ProximityManagerI {
     protected void addNearbyDevice(BluetoothDevice device) {
         if(!hasPeer(device.getName())) {
             Log.d(TAG, "added new device " + device.getName());
+            bcastLogMessage("nearby device found " + device.getName());
             nearbyDevices.add(device);
             registerRemoteDevice(device);
         } else {
@@ -432,6 +454,19 @@ public class BTManager implements ProximityManagerI {
             Log.d(TAG, "server worker done " + worker);
             BTServerWorker serverWorker = (BTServerWorker) worker;
             serverWorkers.remove(serverWorker);
+
+//            synchronized (btReceiver) {
+//                btReceiver.notify();
+//            }
+
+            for(BTReceiver receiver : btReceivers) {
+                if(receiver.getSocket() != null && receiver.getSocket().equals(serverWorker.getBtSocket())) {
+                    synchronized (receiver) {
+                        receiver.notify();
+                    }
+                    break;
+                }
+            }
         }
     }
 

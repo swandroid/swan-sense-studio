@@ -23,6 +23,7 @@ public class BTWorker extends Thread {
     private static final String TAG = "BTWorker";
 
     protected BTManager btManager;
+
     protected BluetoothSocket btSocket;
     protected ObjectOutputStream outStream;
     protected ObjectInputStream inStream;
@@ -92,5 +93,9 @@ public class BTWorker extends Thread {
         } catch (IOException e) {
             Log.e(TAG, this + " couldn't close socket", e);
         }
+    }
+
+    public BluetoothSocket getBtSocket() {
+        return btSocket;
     }
 }

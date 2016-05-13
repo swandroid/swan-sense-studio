@@ -5,6 +5,7 @@ import android.util.Log;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.UUID;
 
 import interdroid.swan.crossdevice.Converter;
@@ -50,18 +51,20 @@ public class BTClientWorker extends BTWorker {
     // blocking call; use only in a separate thread
     protected void connect(BluetoothDevice device) {
 //        btAdapter.cancelDiscovery();
-        Log.i(TAG, this + " connecting to " + device.getName() + "...");
-        btManager.bcastLogMessage(this + " connecting to " + device.getName() + "...");
+        int uuidIdx = new Random().nextInt(BTManager.SERVICE_UUIDS.length);
+        UUID uuid = BTManager.SERVICE_UUIDS[uuidIdx];
+        Log.i(TAG, this + " connecting to " + device.getName() + " on port " + uuidIdx + "...");
+        btManager.bcastLogMessage("connecting to " + device.getName() + " on port " + uuidIdx + "...");
 
         try {
-            btSocket = device.createInsecureRfcommSocketToServiceRecord(BTManager.SERVICE_UUID);
+            btSocket = device.createInsecureRfcommSocketToServiceRecord(uuid);
             btSocket.connect();
             Log.i(TAG, this + " connected to " + device.getName());
-            btManager.bcastLogMessage(this + " connected to " + device.getName());
+            btManager.bcastLogMessage("connected to " + device.getName());
             return;
         } catch (Exception e) {
             Log.e(TAG, this + " can't connect to " + device.getName() + ": " + e.getMessage());
-            btManager.bcastLogMessage(this + " can't connect to " + device.getName() + ": " + e.getMessage());
+            btManager.bcastLogMessage("can't connect to " + device.getName() + ": " + e.getMessage());
 
             try {
                 btSocket.close();
