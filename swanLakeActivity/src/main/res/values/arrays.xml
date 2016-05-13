@@ -389,4 +389,10 @@
         <item>distance</item>
     </string-array>
 
+    <string-array name="beacon_motion_valuepths">
+        <item>isMoving</item>
+        <item>currentMotionTime</item>
+        <item>previousMotionTime</item>
+    </string-array>
+
 </resources>
