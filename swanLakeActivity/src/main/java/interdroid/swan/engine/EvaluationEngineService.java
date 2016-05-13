@@ -26,6 +26,7 @@ import interdroid.swan.SensorConfigurationException;
 import interdroid.swan.SwanException;
 import interdroid.swan.crossdevice.Converter;
 import interdroid.swan.crossdevice.Pusher;
+import interdroid.swan.crossdevice.beacon.BeaconInitializer;
 import interdroid.swan.crossdevice.swanplus.ProximityManagerI;
 import interdroid.swan.crossdevice.swanplus.bluetooth.BTManager;
 import interdroid.swan.sensors.SensorInterface;
@@ -545,6 +546,8 @@ public class EvaluationEngineService extends Service {
 		mEvaluationThread.start();
 		// init the notification stuff
 		mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+		BeaconInitializer.getInstance(getApplicationContext());
 	}
 
 	@Override

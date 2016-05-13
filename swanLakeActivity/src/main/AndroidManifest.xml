@@ -1526,7 +1526,7 @@
         <activity
             android:name=".sensors.impl.BeaconTempSensor$ConfigurationActivity"
             android:exported="true"
-            android:icon="@drawable/temperature_icon">
+            android:icon="@drawable/bluetooth_icon">
             <intent-filter>
                 <action android:name="interdroid.swan.sensor.DISCOVER" />
             </intent-filter>
@@ -1552,6 +1552,98 @@
             android:name="interdroid.swan.sensors.impl.BeaconTempSensor" >
         </service>
 
+
+        <activity
+            android:name=".sensors.impl.BeaconDistanceSensor$ConfigurationActivity"
+            android:exported="true"
+            android:icon="@drawable/temperature_icon">
+            <intent-filter>
+                <action android:name="interdroid.swan.sensor.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="beaconDistance" />
+            <meta-data
+                android:name="valuePaths"
+                android:value="distance" />
+            <meta-data
+                android:name="accuracy"
+                android:value="3" />
+            <meta-data
+                android:name="delay"
+                android:value="200000" />
+            <meta-data
+                android:name="units"
+                android:value="m" />
+        </activity>
+
+        <service
+            android:name="interdroid.swan.sensors.impl.BeaconDistanceSensor" >
+        </service>
+
+        <activity
+            android:name="interdroid.swan.sensors.impl.BeaconMovementSensor$ConfigurationActivity"
+            android:exported="true"
+            android:icon="@drawable/movement_icon" >
+            <intent-filter>
+                <action android:name="interdroid.swan.sensor.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="beacon_movement" />
+            <meta-data
+                android:name="valuePaths"
+                android:value="x,y,z,total" />
+            <meta-data
+                android:name="delay"
+                android:value="200000" />
+            <meta-data
+                android:name="accuracy"
+                android:value="3" />
+            <meta-data
+                android:name="units"
+                android:value="m/s2,m/s2,m/s2,m/s2" />
+        </activity>
+
+        <service
+            android:name="interdroid.swan.sensors.impl.BeaconMovementSensor">
+        </service>
+
+
+        <activity
+            android:name="interdroid.swan.sensors.impl.BeaconMotionSensor$ConfigurationActivity"
+            android:exported="true"
+            android:icon="@drawable/movement_icon" >
+            <intent-filter>
+                <action android:name="interdroid.swan.sensor.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="beacon_motion" />
+            <meta-data
+                android:name="valuePaths"
+                android:value="isMoving,currentMotionTime,previousMotionTime" />
+            <meta-data
+                android:name="delay"
+                android:value="200000" />
+            <meta-data
+                android:name="accuracy"
+                android:value="3" />
+            <meta-data
+                android:name="units"
+                android:value="s,s,s" />
+        </activity>
+
+        <service
+            android:name="interdroid.swan.sensors.impl.BeaconMotionSensor">
+        </service>
+
+        <service
+            android:name="interdroid.swan.crossdevice.beacon.BeaconSingleton">
+        </service>
 
     </application>
 

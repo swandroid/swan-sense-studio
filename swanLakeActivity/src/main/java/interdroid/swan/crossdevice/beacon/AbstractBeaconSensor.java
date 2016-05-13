@@ -23,10 +23,10 @@ import interdroid.swan.sensors.AbstractSwanSensor;
  *
  * @email veaceslav.munteanu90@gmail.com
  */
-public abstract class AbstractBeaconSensor extends AbstractSwanSensor implements BeaconConsumer {
+public abstract class AbstractBeaconSensor extends AbstractSwanSensor {
 
     BeaconManager beaconManager;
-    volatile HashMap<String, String> ids = new HashMap<>();
+    protected HashMap<String, String> ids = new HashMap<>();
 
     ReentrantLock lock = new ReentrantLock();
 
@@ -48,20 +48,20 @@ public abstract class AbstractBeaconSensor extends AbstractSwanSensor implements
     public void setTag(String tagName){
         TAG = tagName;
     }
+
     @Override
     public void register(String id, String valuePath, Bundle configuration, Bundle httpConfiguration) {
 
         super.register(id,valuePath, configuration, httpConfiguration);
-        BeaconInitializer.getInstance(this); // needed to initialize the parser values
-        beaconManager = BeaconManager.getInstanceForApplication(this);
+        //BeaconInitializer.getInstance(this); // needed to initialize the parser values
+        if(beaconManager == null)
+            beaconManager = BeaconManager.getInstanceForApplication(this);
 
         lock.lock();
         ids.put(id, valuePath);
         Log.d(TAG, "Register " + id + " " + valuePath + " " + ids.toString() + " " +ids.size());
-        if(ids.size() == 1) {
-            Log.d(TAG, "Binding this to beacon manager");
-            beaconManager.bind(this);
-        }
+
+        BeaconSingleton.getInstance().addSensor(this);
 
         lock.unlock();
     }
@@ -72,10 +72,7 @@ public abstract class AbstractBeaconSensor extends AbstractSwanSensor implements
         lock.lock();
         ids.remove(id);
         Log.d(TAG, "UNRegister " + id + " " + ids.toString());
-        if(ids.isEmpty()) {
-            Log.d(TAG, "Unbinding this...");
-            beaconManager.unbind(this);
-        }
+        BeaconSingleton.getInstance().removeSensor(this);
         lock.unlock();
     }
 
@@ -84,34 +81,12 @@ public abstract class AbstractBeaconSensor extends AbstractSwanSensor implements
 
     }
 
-    @Override
-    public void onBeaconServiceConnect() {
-        beaconManager.setRangeNotifier(new RangeNotifier() {
-            @Override
-            public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
-
-                Log.d(TAG, "++ " + beacons.size());
-                long time = System.currentTimeMillis();
-                try {
-                    lock.lock();
-                    setData(ids, beacons, time);
-                } finally {
-                    lock.unlock();
-                }
-            }
-        });
-        try {
-            beaconManager.startRangingBeaconsInRegion(new Region(getSensorName(), null, null, null));
-        } catch (RemoteException e) {
-            Log.d(TAG, "Got exception" + e.getMessage());
-        }
-    }
 
     /**
      * Each beacon sensor will implement this abstract method
      * @return object to be put in putValueTrimSize
      */
-    public abstract void setData(HashMap<String, String> ids, Collection<Beacon> beacons, long time);
+    public abstract void setData(Collection<Beacon> beacons, long time);
 
     public String getBeaconId(Beacon beacon){
         StringBuilder allIndetifier = new StringBuilder();

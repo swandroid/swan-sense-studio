@@ -1,0 +1,118 @@
+package interdroid.swan.sensors.impl;
+
+import org.altbeacon.beacon.Beacon;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+import interdroid.swan.R;
+import interdroid.swan.crossdevice.beacon.AbstractBeaconSensor;
+import interdroid.swan.crossdevice.beacon.BeaconUtils;
+import interdroid.swan.sensors.AbstractConfigurationActivity;
+
+/**
+ * Created by Veaceslav Munteanu on 5/13/16.
+ *
+ * @email veaceslav.munteanu90@gmail.com
+ */
+public class BeaconMotionSensor extends AbstractBeaconSensor {
+
+    public final String MOVING_VALUEPATH = "isMoving";
+    public final String CURRENT_MOTION_TIME   = "currentMotionTime";
+    public final String PREVIOUS_MOTION_TIME = "previousMotionTime";
+
+    public final String TAG = "BeaconMotionSensor";
+    @Override
+    public void setData(Collection<Beacon> beacons, long time) {
+
+        HashMap<String, Object> isMovingData = new HashMap<>();
+        HashMap<String, Object> currentMoveTime = new HashMap<>();
+        HashMap<String, Object> previousMoveTime = new HashMap<>();
+
+        for(Beacon beacon : beacons){
+            if(BeaconUtils.isEstimoteNearable(beacon)){
+                isMovingData.put(getBeaconId(beacon), isMoving(beacon));
+                currentMoveTime.put(getBeaconId(beacon), currentMotionTime(beacon));
+                previousMoveTime.put(getBeaconId(beacon), previousMotionTime(beacon));
+            }
+        }
+        if(!isMovingData.isEmpty()) { // you can check only for one hashmap, since all 3 should be populated
+            for (Map.Entry<String, String> id : ids.entrySet()) {
+                if(id.getValue().equals(MOVING_VALUEPATH)) {
+                    putValueTrimSize(id.getValue(), id.getKey(),
+                            time,
+                            isMovingData);
+                }
+
+                if(id.getValue().equals(CURRENT_MOTION_TIME)) {
+                    putValueTrimSize(id.getValue(), id.getKey(),
+                            time,
+                            currentMoveTime);
+                }
+
+                if(id.getValue().equals(PREVIOUS_MOTION_TIME)) {
+                    putValueTrimSize(id.getValue(), id.getKey(),
+                            time,
+                            previousMoveTime);
+                }
+            }
+        }
+    }
+
+    @Override
+    protected String getSensorName() {
+        return TAG;
+    }
+
+    private int isMoving(Beacon beacon){
+        byte val = beacon.getDataFields().get(3).byteValue();
+
+        if((val & 0x40) != 0){
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    private int currentMotionTime(Beacon beacon){
+        return convertMotionStateDuration(beacon.getDataFields().get(7).byteValue());
+    }
+
+    private int previousMotionTime(Beacon beacon){
+        return convertMotionStateDuration(beacon.getDataFields().get(8).byteValue());
+    }
+
+    private int convertMotionStateDuration(byte raw){
+        byte unit = (byte )((raw >> 6) & 0x03);
+        int duration = (raw & 0x3f);
+
+        if (unit == 1) {
+            duration *= 60;
+        } else if (unit == 2) {
+            duration *= (60 * 60);
+        }
+
+        return duration;
+    }
+    @Override
+    public String[] getValuePaths() {
+        return new String[]{ MOVING_VALUEPATH, CURRENT_MOTION_TIME, PREVIOUS_MOTION_TIME};
+    }
+
+    /**
+     * The configuration activity for this sensor.
+     *
+     * @author Veaceslav Munteanu
+     *
+     */
+    public static class ConfigurationActivity extends
+            AbstractConfigurationActivity {
+
+        @Override
+        public final int getPreferencesXML() {
+            return R.xml.beacon_motion_preferences;
+        }
+
+    }
+}
