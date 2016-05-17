@@ -71,9 +71,9 @@ public class BeaconDistanceSensor  extends AbstractBeaconSensor{
     }
 
     private int getNearableTxPower(Beacon beacon){
-        int[] powerLevels = {1, 2, 3, 7, 5, 6, 4, 8};
+        int[] powerLevels = {-30, -20, -16, 0, -8, -4, -12, 4};
         int powerIndex = (byte)beacon.getTxPower() & 0x0f;
         Log.d(TAG, "Power Index " + powerIndex);
-        return powerLevels[powerIndex-1];
+        return powerLevels[powerIndex];
     }
 }
