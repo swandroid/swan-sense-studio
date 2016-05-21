@@ -4,7 +4,6 @@ import interdroid.swan.R;
 import interdroid.swan.sensors.AbstractConfigurationActivity;
 import interdroid.swan.sensors.AbstractSwanSensor;
 
-import java.util.HashMap;
 import java.util.List;
 
 import android.content.Context;
@@ -86,8 +85,8 @@ public class LightSensor extends AbstractSwanSensor {
 	}
 
 	@Override
-	public final void register(String id, String valuePath, Bundle configuration, final Bundle httpConfiguration) {
-		super.register(id, valuePath, configuration, httpConfiguration);
+	public final void register(String id, String valuePath, Bundle configuration, final Bundle httpConfiguration, Bundle extraConfiguration) {
+		super.register(id, valuePath, configuration, httpConfiguration, extraConfiguration);
 		updateDelay();
 	}
 

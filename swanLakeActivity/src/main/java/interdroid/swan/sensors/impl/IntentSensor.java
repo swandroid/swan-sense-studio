@@ -64,7 +64,7 @@ public class IntentSensor extends AbstractSwanSensor {
 
 	@Override
 	public void register(final String id, final String valuePath,
-			final Bundle configuration, final Bundle httpConfiguration) {
+						 final Bundle configuration, final Bundle httpConfiguration, Bundle extraConfiguration) {
 		configuration.putString("logcat_parameters", "'ActivityManager:I'");
 		try {
 			ExpressionManager.registerValueExpression(this, id + "."

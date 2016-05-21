@@ -3,11 +3,8 @@ package interdroid.swan.sensors.impl.wear;
 import android.hardware.Sensor;
 import android.os.Bundle;
 
-import java.io.IOException;
-
 import interdroid.swan.R;
 import interdroid.swan.sensors.AbstractConfigurationActivity;
-import interdroid.swan.sensors.AbstractSwanSensor;
 import interdroid.swan.sensors.impl.wear.shared.AbstractWearSensor;
 
 /**
@@ -44,7 +41,7 @@ public class WearGameRotationSensor extends AbstractWearSensor {
     }
 
     @Override
-    public void register(String id, String valuePath, Bundle configuration, final Bundle httpConfiguration) {
+    public void register(String id, String valuePath, Bundle configuration, final Bundle httpConfiguration, Bundle extraConfiguration) {
         SENSOR_NAME = "Wear Game Rotation Sensor";
         sensor_name = "Game Rotation Vector";
 
@@ -53,7 +50,7 @@ public class WearGameRotationSensor extends AbstractWearSensor {
         valuePathMappings.put(Y_FIELD, 1);
         valuePathMappings.put(Z_FIELD, 2);
 
-        super.register(id, valuePath, configuration, httpConfiguration);
+        super.register(id, valuePath, configuration, httpConfiguration, extraConfiguration);
     }
     @Override
     public String[] getValuePaths() {

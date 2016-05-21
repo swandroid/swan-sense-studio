@@ -1,18 +1,11 @@
 package interdroid.swan.sensors.impl;
 
-import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.IBinder;
-import android.os.Message;
-import android.os.Messenger;
 import android.util.Log;
-import android.widget.Toast;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -83,7 +76,7 @@ public class FitnessSensor extends AbstractSwanSensor {
     }
 
     @Override
-    public void register(final String id, final String valuePath, Bundle configuration, final Bundle httpConfiguration) {
+    public void register(final String id, final String valuePath, Bundle configuration, final Bundle httpConfiguration, Bundle extraConfiguration) {
         FitnessDataPoller fdp = new FitnessDataPoller(id, valuePath, configuration);
         activeThreads.put(id, fdp);
         fdp.start();

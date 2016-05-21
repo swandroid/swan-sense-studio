@@ -3,8 +3,6 @@ package interdroid.swan.sensors.impl.wear;
 import android.hardware.Sensor;
 import android.os.Bundle;
 
-import java.io.IOException;
-
 import interdroid.swan.R;
 import interdroid.swan.sensors.AbstractConfigurationActivity;
 import interdroid.swan.sensors.impl.wear.shared.AbstractWearSensor;
@@ -29,11 +27,11 @@ public class WearStepCounterSensor extends AbstractWearSensor{
     }
 
     @Override
-    public void register(String id, String valuePath, Bundle configuration, final Bundle httpConfiguration) {
+    public void register(String id, String valuePath, Bundle configuration, final Bundle httpConfiguration, Bundle extraConfiguration) {
         SENSOR_NAME = "Wear Step Counter Sensor";
         sensorId = Sensor.TYPE_STEP_COUNTER;
         valuePathMappings.put(STEP_COUNTER, 0);
-        super.register(id, valuePath, configuration, httpConfiguration);
+        super.register(id, valuePath, configuration, httpConfiguration, extraConfiguration);
     }
     @Override
     public String[] getValuePaths() {

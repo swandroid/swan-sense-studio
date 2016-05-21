@@ -27,10 +27,13 @@ public interface SensorInterface {
 	 *            the value path being registered
 	 * @param configuration
 	 *            the configuration for the expression
+	 * @param httpConfiguration
+	 * 			  http configuration of the expression
+	 * @param extraConfiguration
 	 * @throws IOException
 	 *             if there is a problem with the sensor
 	 */
-	void register(String id, String valuePath, Bundle configuration, Bundle httpConfiguration)
+	void register(String id, String valuePath, Bundle configuration, Bundle httpConfiguration, Bundle extraConfiguration)
 			throws IOException;
 
 	/**

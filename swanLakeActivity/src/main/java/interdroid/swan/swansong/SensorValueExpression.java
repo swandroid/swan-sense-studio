@@ -96,6 +96,12 @@ public class SensorValueExpression implements ValueExpression {
 		return mConfig;
 	}
 
+	public Bundle getExtraConfiguration() {
+		Bundle extra = new Bundle();
+		extra.putString("location", mLocation);
+		return extra;
+	}
+
 	public Bundle getHttConfiguration(){
 
 		return mHttpConfig;

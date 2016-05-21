@@ -1,26 +1,14 @@
 package interdroid.swan.sensors.impl.wear;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import interdroid.swan.R;
 import interdroid.swan.sensordashboard.shared.SensorConstants;
 import interdroid.swan.sensors.AbstractConfigurationActivity;
-import interdroid.swan.sensors.AbstractSwanSensor;
 import interdroid.swan.sensors.impl.wear.shared.AbstractWearSensor;
-import interdroid.swan.sensors.impl.wear.shared.RemoteSensorManager;
-import interdroid.swan.sensors.impl.wear.shared.data.WearSensor;
-import interdroid.swan.sensors.impl.wear.shared.data.SensorDataPoint;
 
 /**
  * Created by veaceslav on 2/22/16.
@@ -50,13 +38,13 @@ public class HeartRateSensor extends AbstractWearSensor {
     }
 
     @Override
-    public void register(String id, String valuePath, Bundle configuration, final Bundle httpConfiguration) {
+    public void register(String id, String valuePath, Bundle configuration, final Bundle httpConfiguration, Bundle extraConfiguration) {
         SENSOR_NAME = "Wear Heart Rate Sensor";
         sensorId = Sensor.TYPE_HEART_RATE;
         valuePathMappings.put(VALUE_PATH, 0);
         Log.d("Heart RATE", "Register++++++++++++++++++++++++++++++++");
 
-        super.register(id, valuePath, configuration, httpConfiguration);
+        super.register(id, valuePath, configuration, httpConfiguration, extraConfiguration);
     }
 
 

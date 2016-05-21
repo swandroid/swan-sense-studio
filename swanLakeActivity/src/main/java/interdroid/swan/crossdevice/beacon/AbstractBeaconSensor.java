@@ -1,15 +1,11 @@
 package interdroid.swan.crossdevice.beacon;
 
 import android.os.Bundle;
-import android.os.RemoteException;
 import android.util.Log;
 
 import org.altbeacon.beacon.Beacon;
-import org.altbeacon.beacon.BeaconConsumer;
 import org.altbeacon.beacon.BeaconManager;
 import org.altbeacon.beacon.Identifier;
-import org.altbeacon.beacon.RangeNotifier;
-import org.altbeacon.beacon.Region;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -50,9 +46,9 @@ public abstract class AbstractBeaconSensor extends AbstractSwanSensor {
     }
 
     @Override
-    public void register(String id, String valuePath, Bundle configuration, Bundle httpConfiguration) {
+    public void register(String id, String valuePath, Bundle configuration, Bundle httpConfiguration, Bundle extraConfiguration) {
 
-        super.register(id,valuePath, configuration, httpConfiguration);
+        super.register(id,valuePath, configuration, httpConfiguration, extraConfiguration);
         //BeaconInitializer.getInstance(this); // needed to initialize the parser values
         if(beaconManager == null)
             beaconManager = BeaconManager.getInstanceForApplication(this);

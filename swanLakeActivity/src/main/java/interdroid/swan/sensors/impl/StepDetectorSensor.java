@@ -1,7 +1,5 @@
 package interdroid.swan.sensors.impl;
 
-import java.io.IOException;
-
 import interdroid.swan.R;
 import interdroid.swan.sensors.AbstractConfigurationActivity;
 import interdroid.swan.sensors.AbstractSwanSensor;
@@ -121,8 +119,8 @@ public class StepDetectorSensor extends AbstractSwanSensor {
 	}
 
 	@Override
-	public final void register(String id, String valuePath, Bundle configuration, final Bundle httpConfiguration) {
-		super.register(id, valuePath, configuration, httpConfiguration);
+	public final void register(String id, String valuePath, Bundle configuration, final Bundle httpConfiguration, Bundle extraConfiguration) {
+		super.register(id, valuePath, configuration, httpConfiguration, extraConfiguration);
 		updateDelay();
 	}
 

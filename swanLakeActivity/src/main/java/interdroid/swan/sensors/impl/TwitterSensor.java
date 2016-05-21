@@ -105,8 +105,8 @@ public class TwitterSensor extends AbstractSwanSensor {
 	}
 
 	@Override
-	public final void register(String id, String valuePath, Bundle configuration, final Bundle httpConfiguration) {
-		super.register(id,valuePath,configuration,httpConfiguration);
+	public final void register(String id, String valuePath, Bundle configuration, final Bundle httpConfiguration, Bundle extraConfiguration) {
+		super.register(id,valuePath,configuration,httpConfiguration, extraConfiguration);
 		TwitterPoller twitterPoller = new TwitterPoller(id, valuePath,
 				configuration);
 		activeThreads.put(id, twitterPoller);

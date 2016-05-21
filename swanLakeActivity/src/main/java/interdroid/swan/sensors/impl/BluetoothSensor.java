@@ -147,9 +147,9 @@ public class BluetoothSensor extends AbstractSwanSensor {
 
 	@Override
 	public final void register(final String id, final String valuePath,
-			final Bundle configuration,final Bundle httpConfiguration) {
+							   final Bundle configuration, final Bundle httpConfiguration, Bundle extraConfiguration) {
 
-		super.register(id,valuePath,configuration,httpConfiguration);
+		super.register(id,valuePath,configuration,httpConfiguration, extraConfiguration);
 
 		if (registeredConfigurations.size() == 1) {
 			registerReceiver(bluetoothReceiver, new IntentFilter(

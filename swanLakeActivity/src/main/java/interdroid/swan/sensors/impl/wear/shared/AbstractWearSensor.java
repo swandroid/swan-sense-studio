@@ -5,16 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.util.Log;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import interdroid.swan.sensordashboard.shared.SensorConstants;
@@ -70,7 +65,7 @@ public abstract class AbstractWearSensor  extends AbstractSwanSensor{
     }
 
     @Override
-    public void register(String id, String valuePath, Bundle configuration, final Bundle httpConfiguration) {
+    public void register(String id, String valuePath, Bundle configuration, final Bundle httpConfiguration, Bundle extraConfiguration) {
 
 
         if(valuePathMappings.isEmpty()) {
@@ -83,7 +78,7 @@ public abstract class AbstractWearSensor  extends AbstractSwanSensor{
             return;
         }
 
-        super.register(id,valuePath,configuration,httpConfiguration);
+        super.register(id,valuePath,configuration,httpConfiguration, extraConfiguration);
         sensor_name = SensorNames.getInstance().getName(sensorId);
 
         configuration.putInt(SensorConstants.SENSOR_ID, sensorId);

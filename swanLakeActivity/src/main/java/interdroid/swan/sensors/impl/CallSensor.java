@@ -80,8 +80,8 @@ public class CallSensor extends AbstractSwanSensor {
 
 	@Override
 	public final void register(final String id, final String valuePath,
-			final Bundle configuration, final Bundle httpConfiguration) {
-		super.register(id,valuePath,configuration,httpConfiguration);
+							   final Bundle configuration, final Bundle httpConfiguration, Bundle extraConfiguration) {
+		super.register(id,valuePath,configuration,httpConfiguration, extraConfiguration);
 		if (registeredConfigurations.size() == 1) {
 			telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
 			telephonyManager.listen(phoneStateListener,

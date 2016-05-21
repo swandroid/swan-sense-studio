@@ -106,7 +106,7 @@ public abstract class AbstractSensorBase extends Service implements
 
 		@Override
 		public void register(final String id, final String valuePath,
-				final Bundle configuration, final Bundle httpConfiguration) throws RemoteException {
+				final Bundle configuration, final Bundle httpConfiguration, final Bundle extraConfiguration) throws RemoteException {
 			// value path exists and id is unique (enforced by evaluation
 			// engine)
 			synchronized (mSensorInterface) {
@@ -125,7 +125,7 @@ public abstract class AbstractSensorBase extends Service implements
 					printState();
 					Log.d(TAG, "Registering with implementation.");
 					
-					mSensorInterface.register(id, valuePath, configuration, httpConfiguration);
+					mSensorInterface.register(id, valuePath, configuration, httpConfiguration, extraConfiguration);
 				} catch (Exception e) {
 					Log.e(TAG, "Caught exception while registering.", e);
 					throw new RemoteException();

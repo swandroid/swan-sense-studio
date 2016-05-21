@@ -3,7 +3,6 @@ package interdroid.swan.sensors;
 import interdroid.swan.sensors.impl.ServerConnection;
 import interdroid.swan.swansong.TimestampedValue;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -103,7 +102,7 @@ public abstract class AbstractSwanSensor extends AbstractSensorBase{
 
 
 	@Override
-	public void register(String id, String valuePath, Bundle configuration, Bundle httpConfiguration) {
+	public void register(String id, String valuePath, Bundle configuration, Bundle httpConfiguration, Bundle extraConfiguration) {
 
 		for(String key : httpConfiguration.keySet()){
 			Object obj = httpConfiguration.get(key);   //later parse it as per your required type

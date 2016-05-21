@@ -4,8 +4,6 @@ package interdroid.swan.sensors.impl.wear;
 import android.hardware.Sensor;
 import android.os.Bundle;
 
-import java.io.IOException;
-
 import interdroid.swan.R;
 import interdroid.swan.sensors.AbstractConfigurationActivity;
 import interdroid.swan.sensors.impl.wear.shared.AbstractWearSensor;
@@ -45,14 +43,14 @@ public class WearLinearAcceleration extends AbstractWearSensor{
     }
 
     @Override
-    public void register(String id, String valuePath, Bundle configuration, final Bundle httpConfiguration) {
+    public void register(String id, String valuePath, Bundle configuration, final Bundle httpConfiguration, Bundle extraConfiguration) {
         SENSOR_NAME = "Wear Movement Sensor";
         sensorId = Sensor.TYPE_LINEAR_ACCELERATION;
         valuePathMappings.put(X_FIELD, 0);
         valuePathMappings.put(Y_FIELD, 1);
         valuePathMappings.put(Z_FIELD, 2);
 
-        super.register(id, valuePath, configuration, httpConfiguration);
+        super.register(id, valuePath, configuration, httpConfiguration, extraConfiguration);
     }
 
     @Override
