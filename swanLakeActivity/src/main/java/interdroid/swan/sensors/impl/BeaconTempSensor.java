@@ -1,5 +1,7 @@
 package interdroid.swan.sensors.impl;
 
+import android.util.Log;
+
 import org.altbeacon.beacon.Beacon;
 
 import java.nio.ByteBuffer;
@@ -21,6 +23,8 @@ public class BeaconTempSensor extends AbstractBeaconSensor {
     public static final String TEMPERATURE_FIELD = "temperature";
     public static final String TAG = "BeaconTempSensor";
 
+    float INVALID_TEMP = -99999;
+
     public static class ConfigurationActivity extends AbstractConfigurationActivity {
 
         @Override
@@ -32,27 +36,31 @@ public class BeaconTempSensor extends AbstractBeaconSensor {
     @Override
     public void setData(HashMap<String, Beacon> beacons, long time) {
 
-        HashMap<String, Object> result = new HashMap<>();
-        for(Beacon beacon : beacons.values()){
-            if(BeaconUtils.isEddystoneUID(beacon) || BeaconUtils.isEddystoneURL(beacon)){
-                if(beacon.getExtraDataFields().size() > 0){
-                    long temp = beacon.getExtraDataFields().get(2);
-                    float finalTemp = getTemp(temp);
-                    result.put(getBeaconId(beacon), finalTemp);
-                }
-            }
+        Beacon beacon = getRequiredBeacon(locationString, beacons);
 
-            if(BeaconUtils.isEstimoteNearable(beacon)){
-                long temp = beacon.getDataFields().get(2);
-                float finalTemp = getNearableTemp(temp);
-                result.put(getBeaconId(beacon), finalTemp);
+        if(beacon == null){
+            Log.e(TAG,"Error: Beacon is null");
+            return;
+        }
+
+        float finalTemp = INVALID_TEMP;
+        if (BeaconUtils.isEddystoneUID(beacon) || BeaconUtils.isEddystoneURL(beacon)) {
+            if (beacon.getExtraDataFields().size() > 0) {
+                long temp = beacon.getExtraDataFields().get(2);
+                finalTemp = getTemp(temp);
             }
         }
-        if(!result.isEmpty()) {
+
+        if (BeaconUtils.isEstimoteNearable(beacon)) {
+            long temp = beacon.getDataFields().get(2);
+            finalTemp = getNearableTemp(temp);
+        }
+
+        if (finalTemp != INVALID_TEMP) {
             for (Map.Entry<String, String> id : ids.entrySet()) {
                 putValueTrimSize(id.getValue(), id.getKey(),
                         time,
-                        result);
+                        finalTemp);
             }
         }
     }

@@ -22,8 +22,9 @@ import interdroid.swan.sensors.AbstractSwanSensor;
  */
 public abstract class AbstractBeaconSensor extends AbstractSwanSensor {
 
-    BeaconManager beaconManager;
     protected HashMap<String, String> ids = new HashMap<>();
+
+    public String locationString = new String();
 
     ReentrantLock lock = new ReentrantLock();
 
@@ -48,18 +49,14 @@ public abstract class AbstractBeaconSensor extends AbstractSwanSensor {
 
     @Override
     public void register(String id, String valuePath, Bundle configuration, Bundle httpConfiguration, Bundle extraConfiguration) {
-
         super.register(id,valuePath, configuration, httpConfiguration, extraConfiguration);
-        //BeaconInitializer.getInstance(this); // needed to initialize the parser values
-        if(beaconManager == null)
-            beaconManager = BeaconManager.getInstanceForApplication(this);
+        locationString = extraConfiguration.getString("location");
 
         lock.lock();
         ids.put(id, valuePath);
         Log.d(TAG, "Register " + id + " " + valuePath + " " + ids.toString() + " " +ids.size());
 
         BeaconSingleton.getInstance().addSensor(this);
-
         lock.unlock();
     }
     @Override
@@ -103,14 +100,17 @@ public abstract class AbstractBeaconSensor extends AbstractSwanSensor {
      * and then the sensor will put that data in the set
      * @return
      */
-    public Beacon getRequiredBeacon(String location, Collection<Beacon> beacons){
+    public Beacon getRequiredBeacon(String location, HashMap<String,Beacon> beacons){
+
 
         if(location.equals("self") || location.equals("any")){
             // return random beacon
             int val = new Random().nextInt(beacons.size());
-            for(Beacon t: beacons) if (--val < 0) return t;
+            for(Beacon t: beacons.values()) if (--val < 0) return t;
+        } else if(beacons.containsKey(location)){
+            return beacons.get(location);
         }
 
-        return beacons.iterator().next();
+        return null;
     }
 }

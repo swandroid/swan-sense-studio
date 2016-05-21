@@ -102,6 +102,9 @@ public class BeaconSingleton extends Service implements BeaconConsumer {
             public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
 
                 Log.d(TAG, "++ " + beacons.size());
+
+                if(beacons.isEmpty())
+                    return;
                 HashMap<String, Beacon> beaconData = new HashMap<String, Beacon>();
 
                 for(Beacon beacon : beacons){

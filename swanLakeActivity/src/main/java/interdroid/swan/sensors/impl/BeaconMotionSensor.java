@@ -1,5 +1,7 @@
 package interdroid.swan.sensors.impl;
 
+import android.util.Log;
+
 import org.altbeacon.beacon.Beacon;
 
 import java.util.HashMap;
@@ -25,38 +27,38 @@ public class BeaconMotionSensor extends AbstractBeaconSensor {
     @Override
     public void setData(HashMap<String, Beacon> beacons, long time) {
 
-        HashMap<String, Object> isMovingData = new HashMap<>();
-        HashMap<String, Object> currentMoveTime = new HashMap<>();
-        HashMap<String, Object> previousMoveTime = new HashMap<>();
 
-        for(Beacon beacon : beacons.values()){
-            if(BeaconUtils.isEstimoteNearable(beacon)){
-                isMovingData.put(getBeaconId(beacon), isMoving(beacon));
-                currentMoveTime.put(getBeaconId(beacon), currentMotionTime(beacon));
-                previousMoveTime.put(getBeaconId(beacon), previousMotionTime(beacon));
-            }
+        Beacon beacon = getRequiredBeacon(locationString,beacons);
+
+        if(beacon == null){
+            Log.e(TAG,"Error: Beacon is null");
+            return;
         }
-        if(!isMovingData.isEmpty()) { // you can check only for one hashmap, since all 3 should be populated
+
+        if(!BeaconUtils.isEstimoteNearable(beacon)){
+            return;
+        }
+
             for (Map.Entry<String, String> id : ids.entrySet()) {
                 if(id.getValue().equals(MOVING_VALUEPATH)) {
                     putValueTrimSize(id.getValue(), id.getKey(),
                             time,
-                            isMovingData);
+                            isMoving(beacon));
                 }
 
                 if(id.getValue().equals(CURRENT_MOTION_TIME)) {
                     putValueTrimSize(id.getValue(), id.getKey(),
                             time,
-                            currentMoveTime);
+                            currentMotionTime(beacon));
                 }
 
                 if(id.getValue().equals(PREVIOUS_MOTION_TIME)) {
                     putValueTrimSize(id.getValue(), id.getKey(),
                             time,
-                            previousMoveTime);
+                            currentMotionTime(beacon));
                 }
             }
-        }
+
     }
 
     @Override

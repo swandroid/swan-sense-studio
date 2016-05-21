@@ -1,5 +1,7 @@
 package interdroid.swan.sensors.impl;
 
+import android.util.Log;
+
 import org.altbeacon.beacon.Beacon;
 
 import java.util.HashMap;
@@ -27,39 +29,33 @@ public class BeaconMovementSensor extends AbstractBeaconSensor{
     @Override
     public void setData(HashMap<String, Beacon> beacons, long time) {
 
-        HashMap<String, Object> resultx = new HashMap<>();
-        HashMap<String, Object> resulty = new HashMap<>();
-        HashMap<String, Object> resultz = new HashMap<>();
+        Beacon beacon = getRequiredBeacon(locationString, beacons);
 
-        for(Beacon beacon : beacons.values()){
-            if(BeaconUtils.isEstimoteNearable(beacon)){
-                resultx.put(getBeaconId(beacon), getXValue(beacon));
-                resulty.put(getBeaconId(beacon), getYValue(beacon));
-                resultz.put(getBeaconId(beacon), getZValue(beacon));
+        if(beacon == null){
+            Log.e(TAG,"Error: Beacon is null");
+            return;
+        }
+
+        for (Map.Entry<String, String> id : ids.entrySet()) {
+            if (id.getValue().equals(X_FIELD)) {
+                putValueTrimSize(id.getValue(), id.getKey(),
+                        time,
+                        getXValue(beacon));
             }
 
-            if(!resultx.isEmpty()) { // you can check only for one hashmap, since all 3 should be populated
-                for (Map.Entry<String, String> id : ids.entrySet()) {
-                    if (id.getValue().equals(X_FIELD)) {
-                        putValueTrimSize(id.getValue(), id.getKey(),
-                                time,
-                                getXValue(beacon));
-                    }
+            if (id.getValue().equals(Y_FIELD)) {
+                putValueTrimSize(id.getValue(), id.getKey(),
+                        time,
+                        getYValue(beacon));
+            }
 
-                    if (id.getValue().equals(Y_FIELD)) {
-                        putValueTrimSize(id.getValue(), id.getKey(),
-                                time,
-                                getYValue(beacon));
-                    }
-
-                    if (id.getValue().equals(Z_FIELD)) {
-                        putValueTrimSize(id.getValue(), id.getKey(),
-                                time,
-                                getZValue(beacon));
-                    }
-                }
+            if (id.getValue().equals(Z_FIELD)) {
+                putValueTrimSize(id.getValue(), id.getKey(),
+                        time,
+                        getZValue(beacon));
             }
         }
+
     }
 
     @Override

@@ -23,6 +23,8 @@ public class BeaconDistanceSensor  extends AbstractBeaconSensor{
 
     public final String DISTANCE_VALUEPATH = "distance";
 
+    double INVALID_DISTANCE = -9999;
+
 
     public static class ConfigurationActivity extends
             AbstractConfigurationActivity {
@@ -37,26 +39,28 @@ public class BeaconDistanceSensor  extends AbstractBeaconSensor{
     @Override
     public void setData(HashMap<String, Beacon> beacons, long time) {
 
-        HashMap<String, Object> result = new HashMap<>();
-        for(Beacon beacon : beacons.values()){
+        Beacon beacon = getRequiredBeacon(locationString,beacons);
 
+        if(beacon == null){
+            Log.e(TAG,"Error: Beacon is null");
+            return;
+        }
+
+        double distance = INVALID_DISTANCE;
 
             if(BeaconUtils.isEstimoteNearable(beacon)){
                 Log.d(TAG, "Estimote nearable power " + beacon.getTxPower() + " " + getNearableTxPower(beacon));
-                double distance = Beacon.getDistanceCalculator().calculateDistance(getNearableTxPower(beacon),
+                distance = Beacon.getDistanceCalculator().calculateDistance(getNearableTxPower(beacon),
                                                                                     (double)beacon.getRssi());
-                result.put(getBeaconId(beacon), distance);
             } else {
-                result.put(getBeaconId(beacon), beacon.getDistance());
+                distance = beacon.getDistance();
             }
-        }
-        if(!result.isEmpty()) {
+
             for (Map.Entry<String, String> id : ids.entrySet()) {
                 putValueTrimSize(id.getValue(), id.getKey(),
                         time,
-                        result);
+                        distance);
             }
-        }
     }
 
     @Override
