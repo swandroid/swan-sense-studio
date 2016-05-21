@@ -10,11 +10,14 @@ import android.util.Log;
 import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconConsumer;
 import org.altbeacon.beacon.BeaconManager;
+import org.altbeacon.beacon.Identifier;
 import org.altbeacon.beacon.RangeNotifier;
 import org.altbeacon.beacon.Region;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -81,7 +84,6 @@ public class BeaconSingleton extends Service implements BeaconConsumer {
         super.onCreate();
         beaconManager = org.altbeacon.beacon.BeaconManager.getInstanceForApplication(this);
         ourInstance = this;
-        Log.d(TAG, "Service created+++");
     }
 
     @Nullable
@@ -100,14 +102,20 @@ public class BeaconSingleton extends Service implements BeaconConsumer {
             public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
 
                 Log.d(TAG, "++ " + beacons.size());
+                HashMap<String, Beacon> beaconData = new HashMap<String, Beacon>();
+
+                for(Beacon beacon : beacons){
+                    beaconData.put(getBeaconId(beacon), beacon);
+                }
+
                 long time = System.currentTimeMillis();
                 try {
-                    //lock.lock();
+                    lock.lock();
                     for(AbstractBeaconSensor sensor : sensors) {
-                        sensor.setData(beacons, time);
+                        sensor.setData(beaconData, time);
                     }
                 } finally {
-                    //lock.unlock();
+                    lock.unlock();
                 }
             }
         });
@@ -116,5 +124,16 @@ public class BeaconSingleton extends Service implements BeaconConsumer {
         } catch (RemoteException e) {
             Log.d(TAG, "Got exception" + e.getMessage());
         }
+    }
+
+    public String getBeaconId(Beacon beacon){
+        StringBuilder allIndetifier = new StringBuilder();
+        List<Identifier> identifierList = beacon.getIdentifiers();
+        for (Identifier identifier : identifierList) {
+            allIndetifier.append(identifier.toString() + "-");
+        }
+        allIndetifier.deleteCharAt(allIndetifier.length() - 1);
+
+        return allIndetifier.toString();
     }
 }

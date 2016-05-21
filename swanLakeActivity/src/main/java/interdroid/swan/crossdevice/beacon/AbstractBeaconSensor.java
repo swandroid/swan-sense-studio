@@ -10,6 +10,7 @@ import org.altbeacon.beacon.Identifier;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.locks.ReentrantLock;
 
 import interdroid.swan.sensors.AbstractSwanSensor;
@@ -82,7 +83,7 @@ public abstract class AbstractBeaconSensor extends AbstractSwanSensor {
      * Each beacon sensor will implement this abstract method
      * @return object to be put in putValueTrimSize
      */
-    public abstract void setData(Collection<Beacon> beacons, long time);
+    public abstract void setData(HashMap<String, Beacon> beacons, long time);
 
     public String getBeaconId(Beacon beacon){
         StringBuilder allIndetifier = new StringBuilder();
@@ -96,4 +97,20 @@ public abstract class AbstractBeaconSensor extends AbstractSwanSensor {
     }
 
     protected abstract String getSensorName();
+
+    /**
+     * getRequired beacon will parse, self, any or identifier
+     * and then the sensor will put that data in the set
+     * @return
+     */
+    public Beacon getRequiredBeacon(String location, Collection<Beacon> beacons){
+
+        if(location.equals("self") || location.equals("any")){
+            // return random beacon
+            int val = new Random().nextInt(beacons.size());
+            for(Beacon t: beacons) if (--val < 0) return t;
+        }
+
+        return beacons.iterator().next();
+    }
 }

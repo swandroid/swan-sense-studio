@@ -4,7 +4,6 @@ import android.util.Log;
 
 import org.altbeacon.beacon.Beacon;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,10 +35,10 @@ public class BeaconDistanceSensor  extends AbstractBeaconSensor{
 
 
     @Override
-    public void setData( Collection<Beacon> beacons, long time) {
+    public void setData(HashMap<String, Beacon> beacons, long time) {
 
         HashMap<String, Object> result = new HashMap<>();
-        for(Beacon beacon : beacons){
+        for(Beacon beacon : beacons.values()){
 
 
             if(BeaconUtils.isEstimoteNearable(beacon)){

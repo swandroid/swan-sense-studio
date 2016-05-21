@@ -3,11 +3,7 @@ package interdroid.swan.sensors.impl;
 
 import org.altbeacon.beacon.Beacon;
 
-import org.altbeacon.beacon.Identifier;
-
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import interdroid.swan.R;
@@ -44,9 +40,9 @@ public class BeaconDiscoverySensor extends AbstractBeaconSensor{
 
 
     @Override
-    public void setData( Collection<Beacon> beacons, long time) {
+    public void setData(HashMap<String, Beacon> beacons, long time) {
 
-        for(Beacon beacon : beacons) {
+        for(Beacon beacon : beacons.values()) {
             
             String beaconId = getBeaconId(beacon);
 

@@ -2,7 +2,6 @@ package interdroid.swan.sensors.impl;
 
 import org.altbeacon.beacon.Beacon;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,13 +23,13 @@ public class BeaconMotionSensor extends AbstractBeaconSensor {
 
     public final String TAG = "BeaconMotionSensor";
     @Override
-    public void setData(Collection<Beacon> beacons, long time) {
+    public void setData(HashMap<String, Beacon> beacons, long time) {
 
         HashMap<String, Object> isMovingData = new HashMap<>();
         HashMap<String, Object> currentMoveTime = new HashMap<>();
         HashMap<String, Object> previousMoveTime = new HashMap<>();
 
-        for(Beacon beacon : beacons){
+        for(Beacon beacon : beacons.values()){
             if(BeaconUtils.isEstimoteNearable(beacon)){
                 isMovingData.put(getBeaconId(beacon), isMoving(beacon));
                 currentMoveTime.put(getBeaconId(beacon), currentMotionTime(beacon));
