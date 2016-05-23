@@ -7,23 +7,23 @@ import org.altbeacon.beacon.Beacon;
  */
 public class BeaconUtils {
 
-    public static boolean isEddystoneUID(Beacon beacon){
+    public static boolean isEddystoneUID(Beacon beacon) {
         return (beacon.getServiceUuid() == 0xfeaa) && (beacon.getBeaconTypeCode() == 0);
     }
 
-    public static boolean isEddystoneURL(Beacon beacon){
+    public static boolean isEddystoneURL(Beacon beacon) {
         return (beacon.getServiceUuid() == 0xfeaa && beacon.getBeaconTypeCode() == 16);
     }
 
-    public static boolean isAltBeacon(Beacon beacon){
+    public static boolean isAltBeacon(Beacon beacon) {
         return beacon.getServiceUuid() == 0xbeac;
     }
 
-    public static boolean isAppleIBeacon(Beacon beacon){
+    public static boolean isAppleIBeacon(Beacon beacon) {
         return beacon.getBeaconTypeCode() == 533; //0215 in hex
     }
 
-    public static boolean isEstimoteNearable(Beacon beacon){
+    public static boolean isEstimoteNearable(Beacon beacon) {
         return beacon.getBeaconTypeCode() == 0x0101;
     }
 

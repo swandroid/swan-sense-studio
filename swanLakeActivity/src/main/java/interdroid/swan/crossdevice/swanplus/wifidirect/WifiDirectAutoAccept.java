@@ -16,29 +16,27 @@
 
 package interdroid.swan.crossdevice.swanplus.wifidirect;
 
-import java.lang.reflect.Proxy;
-import java.lang.reflect.Method;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
-
+import android.content.Context;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.ActionListener;
-
-import android.content.Context;
-
 import android.util.Log;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
 /**
  * Automatic approval of push-button WiFi Direct group formation.
- *
+ * <p/>
  * While this object is intercepting approval requests and this application
  * is in the foreground, the user will not see dialogs from the WifiP2p subsystem.
  * It's recommended to only intercept requests when the application is expecting
  * incoming group requests.  Group requests with PIN values are ignored and
  * no user prompt will appear.
- *
+ * <p/>
  * This class will build for Android API 15 and later, but the
  * DialogListener interface was added in API 16.  It is safe to create
  * objects of this class and call its public methods in API 15, but no
@@ -50,7 +48,7 @@ public class WifiDirectAutoAccept {
     private WifiP2pManager manager;
     private WifiP2pManager.Channel channel;
     private Object dialogListener;
-    private Class< ? > dialogInterface = null;
+    private Class<?> dialogInterface = null;
     private Method dialogListenerMethod = null;
 
     /**
@@ -72,8 +70,8 @@ public class WifiDirectAutoAccept {
         try {
             dialogInterface = Class.forName("android.net.wifi.p2p.WifiP2pManager$DialogListener");
             dialogListenerMethod = manager.getClass().getMethod("setDialogListener",
-                                                                WifiP2pManager.Channel.class,
-                                                                dialogInterface);
+                    WifiP2pManager.Channel.class,
+                    dialogInterface);
         } catch (NoSuchMethodException ex) {
             // Ignore
         } catch (ClassNotFoundException ex) {
@@ -101,7 +99,7 @@ public class WifiDirectAutoAccept {
 
     /**
      * Enable or disable interception of Wifi Direct group formation requests.
-     *
+     * <p/>
      * A user of this object should make sure to call intercept(false) before
      * deleting the object, otherwise the internal dialog listener object will
      * remain registered until the app goes in to the background.
@@ -117,10 +115,10 @@ public class WifiDirectAutoAccept {
     /**
      * Creating a new DialogListenerProxy object that also inherits the
      * DialogListener interface.
-     *
+     * <p/>
      * The caller does not need to have any awareness of the
      * DialogListener interface.
-     *
+     * <p/>
      * Returns null if the object could not be created.  This can
      * happen if the DialogListener interface is not available at
      * runtime.
@@ -163,20 +161,20 @@ public class WifiDirectAutoAccept {
         };
 
         dialogListener = Proxy.newProxyInstance(DialogListenerProxy.class.getClassLoader(),
-                                                new Class[] { dialogInterface }, handler);
+                new Class[]{dialogInterface}, handler);
 
         return dialogListener;
     }
 
     /**
      * Call WifiP2pManager.setDialogListener() using reflection.
-     *
+     * <p/>
      * Passing null for the listener parameter will deregister any
      * previous listener and cause the WiFi P2P framework to revert to
      * system handling of P2P group formation.
-     *
+     * <p/>
      * If the method is not available at runtime, no action is taken.
-     *
+     * <p/>
      * WifiP2pManager.setDialogListener() exists in Android API 16, but
      * not in earlier APIs.
      */
@@ -199,7 +197,7 @@ public class WifiDirectAutoAccept {
     /**
      * A DialogListenerProxy provides access to the DialogListener
      * interface and associated functionality.
-     *
+     * <p/>
      * DialogListener is used to handle WiFi P2P group formation events in
      * Android API 16 and later.
      */
@@ -227,11 +225,11 @@ public class WifiDirectAutoAccept {
 
         /**
          * Callback that reports connection attempts.
-         *
+         * <p/>
          * The device parameter provides information about the remote
          * device that is trying to form a P2P group.  The config
          * parameter describes the type of connection being made.
-         *
+         * <p/>
          * To accept a connection request, call manager.connect.
          * config.wps.pin should be assigned within this method for
          * PIN-based group formation before passing the config to
@@ -266,7 +264,7 @@ public class WifiDirectAutoAccept {
 
         /**
          * Callback to report deregistration of this object.
-         *
+         * <p/>
          * The object will be deregistered automatically if a group
          * formation event occurs when the application is in the
          * background.

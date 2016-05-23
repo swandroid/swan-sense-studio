@@ -1,9 +1,5 @@
 package interdroid.sense;
 
-import interdroid.swan.R;
-import nl.sense_os.platform.SensePlatform;
-import nl.sense_os.service.ISenseServiceCallback;
-import nl.sense_os.service.commonsense.SenseApi;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
@@ -20,6 +16,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import interdroid.swan.R;
+import nl.sense_os.platform.SensePlatform;
+import nl.sense_os.service.ISenseServiceCallback;
+import nl.sense_os.service.commonsense.SenseApi;
+
 /**
  * Activity which displays a login screen to the user, offering registration as well.
  */
@@ -33,7 +34,7 @@ public class LoginActivity extends Activity {
     private static final String TAG = "LoginActivity";
 
     public boolean login = false;
-    
+
     // Values for email and password at the time of the login attempt
     private String mEmail;
     private String mPassword;
@@ -47,7 +48,7 @@ public class LoginActivity extends Activity {
 
     // Sense specific members
     private SensePlatform mSensePlatform;
-    
+
     // Sense specific members
     private ISenseServiceCallback mServiceCallback = new ISenseServiceCallback.Stub() {
 
@@ -79,16 +80,16 @@ public class LoginActivity extends Activity {
             // not used
         }
     };
-   
 
-	@Override
-	public boolean onKeyUp(int keyCode, KeyEvent event) {
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
 //		if (keyCode == KeyEvent.KEYCODE_BACK)
 //			return true;
-		return super.onKeyUp(keyCode, event);
-	}
+        return super.onKeyUp(keyCode, event);
+    }
 
-	private boolean busy;
+    private boolean busy;
 
     /**
      * Attempts to sign in or register the account specified by the login form. If there are form
@@ -135,9 +136,9 @@ public class LoginActivity extends Activity {
             mLoginStatusMessageView.setText(R.string.login_progress_signing_in);
             showProgress(true);
 
-            if (null == mSensePlatform){
-            	attemptLogin();
-            	return;
+            if (null == mSensePlatform) {
+                attemptLogin();
+                return;
             }
             // log in (you only need to do this once, Sense will remember the login)
             try {
@@ -159,7 +160,7 @@ public class LoginActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sense_login);        // the activity needs to be part of a SenseApplication so it can talk to the SensePlatform
         mSensePlatform = new SensePlatform(this);
-        
+
         // Set up the login form.
         mEmail = getIntent().getStringExtra(EXTRA_EMAIL);
         mEmailView = (EditText) findViewById(R.id.email);
@@ -212,23 +213,23 @@ public class LoginActivity extends Activity {
 
             @Override
             public void run() {
-            	/*
+                /*
             	 * Default values are hardcoded in SensePlatform
-            	 */            	
+            	 */
                 Toast.makeText(LoginActivity.this, R.string.login_success, Toast.LENGTH_LONG)
                         .show();
             }
         });
-                
+
         mSensePlatform.setDefaultPreference();
-        
+
         //Unbind from sense (login) service
         mSensePlatform.close();
-        
+
         setResult(RESULT_OK);
         finish();
     }
-    
+
     /**
      * Shows the progress UI and hides the login form.
      */

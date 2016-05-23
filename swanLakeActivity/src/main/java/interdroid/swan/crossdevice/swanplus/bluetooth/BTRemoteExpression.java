@@ -28,7 +28,9 @@ public class BTRemoteExpression {
         this.action = expr.getAction();
     }
 
-    /** increment expression counter */
+    /**
+     * increment expression counter
+     */
     private synchronized int incCounter() {
         return exprCounter++;
     }

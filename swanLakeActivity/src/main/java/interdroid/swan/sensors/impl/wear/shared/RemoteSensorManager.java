@@ -6,12 +6,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.util.SparseArray;
 
-import interdroid.swan.sensordashboard.shared.SensorConstants;
-import interdroid.swan.sensors.impl.wear.shared.data.WearSensor;
-import interdroid.swan.sensors.impl.wear.shared.data.SensorDataPoint;
-import interdroid.swan.sensors.impl.wear.shared.data.SensorNames;
-import interdroid.swan.sensordashboard.shared.ClientPaths;
-import interdroid.swan.sensordashboard.shared.DataMapKeys;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
@@ -30,6 +24,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import interdroid.swan.sensordashboard.shared.ClientPaths;
+import interdroid.swan.sensordashboard.shared.DataMapKeys;
+import interdroid.swan.sensordashboard.shared.SensorConstants;
+import interdroid.swan.sensors.impl.wear.shared.data.SensorDataPoint;
+import interdroid.swan.sensors.impl.wear.shared.data.SensorNames;
+import interdroid.swan.sensors.impl.wear.shared.data.WearSensor;
+
 public class RemoteSensorManager {
     private static final String TAG = "Wear/RemoteSensorManager";
     private static final int CLIENT_CONNECTION_TIMEOUT = 15000;
@@ -44,7 +45,7 @@ public class RemoteSensorManager {
     private GoogleApiClient googleApiClient;
 
     public static final String REGISTER_MESSAGE = "RegisterMessage";
-    public static final String UPDATE_MESSAGE   = "SensorUpdateMessage";
+    public static final String UPDATE_MESSAGE = "SensorUpdateMessage";
 
     public static synchronized RemoteSensorManager getInstance(Context context) {
         if (instance == null) {

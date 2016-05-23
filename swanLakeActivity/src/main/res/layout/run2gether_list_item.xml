@@ -3,40 +3,47 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
-    <TextView android:id="@+id/username"
+    <TextView
+        android:id="@+id/username"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:textSize="22dp"/>
+        android:textSize="22dp" />
 
-    <TextView android:id="@+id/goal"
+    <TextView
+        android:id="@+id/goal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/username" />
 
-    <TextView android:id="@+id/level"
+    <TextView
+        android:id="@+id/level"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/goal" />
 
-    <TextView android:id="@+id/gender"
+    <TextView
+        android:id="@+id/gender"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/level" />
 
-    <TextView android:id="@+id/age"
+    <TextView
+        android:id="@+id/age"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/gender" />
 
-    <TextView android:id="@+id/weight"
+    <TextView
+        android:id="@+id/weight"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/age" />
 
-    <TextView android:id="@+id/height"
+    <TextView
+        android:id="@+id/height"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/weight" />

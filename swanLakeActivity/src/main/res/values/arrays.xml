@@ -3,60 +3,60 @@
     <string-array name="battery_state_options">
         <item>Only when charging</item>
         <item>When battery level above threshold</item>
- 		<item>Always</item> 
- 	</string-array>
-    
-     <string-array name="mobile_network_options">
+        <item>Always</item>
+    </string-array>
+
+    <string-array name="mobile_network_options">
         <item>WiFi</item>
         <item>4G</item>
- 		<item>3G</item> 
- 		<item>2G</item>
- 		<item>Any</item>      
+        <item>3G</item>
+        <item>2G</item>
+        <item>Any</item>
     </string-array>
-    
+
     <string-array name="sync_rate_options">
         <item>ECO</item>
         <item>RARELY</item>
- 		<item>NORMAL</item> 
- 		<item>OFTEN</item>
- 		<item>REAL TIME</item>      
+        <item>NORMAL</item>
+        <item>OFTEN</item>
+        <item>REAL TIME</item>
     </string-array>
-    
+
     <string-array name="sync_rate_options_values">
         <item>1</item>
         <item>2</item>
- 		<item>0</item> 
- 		<item>-1</item>
- 		<item>-2</item>      
+        <item>0</item>
+        <item>-1</item>
+        <item>-2</item>
     </string-array>
-    
+
     <string-array name="storage_options">
         <item>Remote storage</item>
         <item>Local storage</item>
- 		<item>None</item>       
+        <item>None</item>
     </string-array>
-<!--     
-    <string-array name="storage_options_values">
-        <item>1</item>
-        <item>2</item>
-        <item >3</item>
-    </string-array> -->
-    
-	<!-- step sensor -->
+    <!--
+        <string-array name="storage_options_values">
+            <item>1</item>
+            <item>2</item>
+            <item >3</item>
+        </string-array> -->
+
+    <!-- step sensor -->
     <string-array name="stepdetector_valuepaths">
         <item>is_step_detected</item>
     </string-array>
     <string-array name="stepcounter_valuepaths">
         <item>step_counter</item>
     </string-array>
-    
+
     <string-array name="time_units">
         <item>milliseconds</item>
         <item>seconds</item>
         <item>minutes</item>
         <item>hours</item>
     </string-array>
-    
+
     <string-array name="time_units_values">
         <item>ms</item>
         <item>s</item>
@@ -111,7 +111,7 @@
     </string-array>
 
 
-   <!-- battery sensor -->
+    <!-- battery sensor -->
     <string-array name="battery_valuepaths">
         <item>level</item>
         <item>voltage</item>
@@ -137,7 +137,7 @@
     <string-array name="movement_valuepaths">
         <item>x</item>
         <item>y</item>
-        <item>z</item> 
+        <item>z</item>
         <item>total</item>
     </string-array>
 
@@ -295,7 +295,7 @@
     <!-- fitness sensor -->
     <string-array name="fitness_valuepaths">
         <item>avg_speed</item>
-  	</string-array>
+    </string-array>
 
     <string-array name="ov_valuepaths">
         <item>line</item>
@@ -337,14 +337,14 @@
         <item>rri</item>
         <item>status_text</item>
     </string-array>
-    
+
     <string-array name="accuracy">
         <item>fastest</item>
         <item>game</item>
         <item>ui</item>
         <item>normal</item>
     </string-array>
-    
+
     <string-array name="accuracy_values">
         <item>0</item>
         <item>1</item>

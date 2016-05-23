@@ -9,6 +9,7 @@ import interdroid.swan.sensors.impl.wear.shared.AbstractWearSensor;
 
 /**
  * Created by Veaceslav Munteanu on 14-March-16.
+ *
  * @email veaceslav.munteanu90@gmail.com
  */
 public class WearGameRotationSensor extends AbstractWearSensor {
@@ -23,7 +24,6 @@ public class WearGameRotationSensor extends AbstractWearSensor {
      * The configuration activity for this sensor.
      *
      * @author Veaceslav Munteanu
-     *
      */
     public static class ConfigurationActivity extends
             AbstractConfigurationActivity {
@@ -52,8 +52,9 @@ public class WearGameRotationSensor extends AbstractWearSensor {
 
         super.register(id, valuePath, configuration, httpConfiguration, extraConfiguration);
     }
+
     @Override
     public String[] getValuePaths() {
-        return new String[] { X_FIELD, Y_FIELD, Z_FIELD, TOTAL_FIELD };
+        return new String[]{X_FIELD, Y_FIELD, Z_FIELD, TOTAL_FIELD};
     }
 }

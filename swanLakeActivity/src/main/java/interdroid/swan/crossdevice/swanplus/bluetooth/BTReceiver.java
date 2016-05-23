@@ -11,7 +11,7 @@ import java.util.UUID;
 /**
  * Created by vladimir on 3/11/16.
  */
-public class BTReceiver extends Thread  {
+public class BTReceiver extends Thread {
     private static final String TAG = "BTReceiver";
 
     private BTManager btManager;

@@ -8,7 +8,6 @@ import retrofit.client.Response;
 public interface ServerCallbackInterface {
 
 
-
     void execute(String result, Response response);
 
 

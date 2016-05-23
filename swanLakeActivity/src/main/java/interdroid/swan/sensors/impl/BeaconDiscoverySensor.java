@@ -14,13 +14,12 @@ import interdroid.swan.sensors.AbstractConfigurationActivity;
 /**
  * Created by slavik on 4/13/16.
  */
-public class BeaconDiscoverySensor extends AbstractBeaconSensor{
+public class BeaconDiscoverySensor extends AbstractBeaconSensor {
 
     /**
      * The configuration activity for this sensor.
      *
      * @author nick &lt;palmer@cs.vu.nl&gt;
-     *
      */
     public static class ConfigurationActivity extends
             AbstractConfigurationActivity {
@@ -32,18 +31,17 @@ public class BeaconDiscoverySensor extends AbstractBeaconSensor{
     }
 
 
-
     @Override
     public String[] getValuePaths() {
-        return new String[] { IBEACON , EDDYSTONE_UID , ALTBEACON , ESTIMOTE_NEARABLE};
+        return new String[]{IBEACON, EDDYSTONE_UID, ALTBEACON, ESTIMOTE_NEARABLE};
     }
 
 
     @Override
     public void setData(HashMap<String, Beacon> beacons, long time) {
 
-        for(Beacon beacon : beacons.values()) {
-            
+        for (Beacon beacon : beacons.values()) {
+
             String beaconId = getBeaconId(beacon);
 
             for (Map.Entry<String, String> id : ids.entrySet()) {

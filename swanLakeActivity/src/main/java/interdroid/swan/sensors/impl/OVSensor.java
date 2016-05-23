@@ -26,7 +26,6 @@ import interdroid.swan.sensors.AbstractSwanSensor;
 public class OVSensor extends AbstractSwanSensor {
 
 
-
     public static class ConfigurationActivity extends
             AbstractConfigurationActivity {
 
@@ -38,11 +37,10 @@ public class OVSensor extends AbstractSwanSensor {
     }
 
 
-
     public static final String SAMPLE_INTERVAL = "sample_interval";
     public static final long DEFAULT_SAMPLE_INTERVAL = 5 * 60 * 1000;
 
-    public  static final String API_BASE_URL = "http://v0.ovapi.nl/";
+    public static final String API_BASE_URL = "http://v0.ovapi.nl/";
 
     public static final String LINE = "line";
 
@@ -61,7 +59,7 @@ public class OVSensor extends AbstractSwanSensor {
     }
 
     @Override
-    public void register(String id, String valuePath, Bundle configuration, final Bundle httpConfiguration, Bundle extraConfiguration){// throws IOException {
+    public void register(String id, String valuePath, Bundle configuration, final Bundle httpConfiguration, Bundle extraConfiguration) {// throws IOException {
 
 
         GVBPoller gvbPoller = new GVBPoller(id, valuePath,
@@ -96,9 +94,9 @@ public class OVSensor extends AbstractSwanSensor {
             while (!isInterrupted()) {
                 long start = System.currentTimeMillis();
 
-                String url = API_BASE_URL+valuePath+"/"+configuration.get(VALUE);
+                String url = API_BASE_URL + valuePath + "/" + configuration.get(VALUE);
 
-                Log.e("Roshan",valuePath+" "+id);
+                Log.e("Roshan", valuePath + " " + id);
                 try {
                     JSONObject data = JsonReader.readJsonFromUrl(url);
 
@@ -122,10 +120,6 @@ public class OVSensor extends AbstractSwanSensor {
 
 
     }
-
-
-
-
 
 
     public static class JsonReader {
@@ -153,23 +147,15 @@ public class OVSensor extends AbstractSwanSensor {
     }
 
 
-
-
-
     @Override
     public String[] getValuePaths() {
-        return new String[] { LINE, STOPAREACODE };
+        return new String[]{LINE, STOPAREACODE};
     }
 
     @Override
     public void onConnected() {
 
     }
-
-
-
-
-
 
 
 }

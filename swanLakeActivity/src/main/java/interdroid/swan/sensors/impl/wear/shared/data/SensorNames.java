@@ -1,6 +1,5 @@
 package interdroid.swan.sensors.impl.wear.shared.data;
 
-import android.hardware.*;
 import android.hardware.Sensor;
 import android.util.SparseArray;
 
@@ -9,7 +8,7 @@ public class SensorNames {
 
     public static SensorNames sensor = new SensorNames();
 
-    public static SensorNames getInstance(){
+    public static SensorNames getInstance() {
         return sensor;
     }
 

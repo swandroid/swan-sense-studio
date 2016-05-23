@@ -60,14 +60,14 @@ public class WDReceiver extends AsyncTask<Void, String, Void> {
             String action = dataMap.get("action");
             Log.d(TAG, "received " + action + " from " + remoteIp);
 
-            if(action.equals("initConnect")) {
+            if (action.equals("initConnect")) {
                 wdManager.connected(remoteIp.getHostAddress(), false);
-            } else if(action.equals(EvaluationEngineService.ACTION_REGISTER_REMOTE)) {
+            } else if (action.equals(EvaluationEngineService.ACTION_REGISTER_REMOTE)) {
                 String source = dataMap.get("source");
 
-                if(source != null) {
+                if (source != null) {
                     SwanUser user = wdManager.getPeerByRegId(source);
-                    if(user != null) {
+                    if (user != null) {
                         user.setIp(remoteIp);
                     }
                 } else {
@@ -80,7 +80,7 @@ public class WDReceiver extends AsyncTask<Void, String, Void> {
                 intent.putExtra("id", dataMap.get("id"));
                 intent.putExtra("data", dataMap.get("data"));
                 context.startService(intent);
-            } else if(action.equals(EvaluationEngineService.ACTION_NEW_RESULT_REMOTE)) {
+            } else if (action.equals(EvaluationEngineService.ACTION_NEW_RESULT_REMOTE)) {
                 Intent intent = new Intent(action);
                 intent.setClass(context, EvaluationEngineService.class);
                 intent.putExtra("id", dataMap.get("id"));

@@ -116,9 +116,12 @@ public class NodeAdapter extends RecyclerView.Adapter<NodeAdapter.ViewHolder> {
     public static class ViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.node_eui)
         TextView mNodeId;
-        @Bind(R.id.node_last_seen) TextView mLastSeen;
-        @Bind(R.id.node_packets_count) TextView mPacketsCount;
-        @Bind(R.id.node_last_gateway_eui) TextView mLastGatewayEui;
+        @Bind(R.id.node_last_seen)
+        TextView mLastSeen;
+        @Bind(R.id.node_packets_count)
+        TextView mPacketsCount;
+        @Bind(R.id.node_last_gateway_eui)
+        TextView mLastGatewayEui;
 
         public ViewHolder(View itemView) {
             super(itemView);

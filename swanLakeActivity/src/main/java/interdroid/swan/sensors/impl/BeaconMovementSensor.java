@@ -9,7 +9,6 @@ import java.util.Map;
 
 import interdroid.swan.R;
 import interdroid.swan.crossdevice.beacon.AbstractBeaconSensor;
-import interdroid.swan.crossdevice.beacon.BeaconUtils;
 import interdroid.swan.sensors.AbstractConfigurationActivity;
 
 /**
@@ -17,7 +16,7 @@ import interdroid.swan.sensors.AbstractConfigurationActivity;
  *
  * @email veaceslav.munteanu90@gmail.com
  */
-public class BeaconMovementSensor extends AbstractBeaconSensor{
+public class BeaconMovementSensor extends AbstractBeaconSensor {
 
     public static final String TAG = "BeaconMovementSensor";
 
@@ -31,8 +30,8 @@ public class BeaconMovementSensor extends AbstractBeaconSensor{
 
         Beacon beacon = getRequiredBeacon(locationString, beacons);
 
-        if(beacon == null){
-            Log.e(TAG,"Error: Beacon is null");
+        if (beacon == null) {
+            Log.e(TAG, "Error: Beacon is null");
             return;
         }
 
@@ -63,28 +62,28 @@ public class BeaconMovementSensor extends AbstractBeaconSensor{
         return TAG;
     }
 
-    public double getXValue(Beacon beacon){
+    public double getXValue(Beacon beacon) {
 
         return beacon.getDataFields().get(4).byteValue() * 15.625;
     }
 
-    public double getYValue(Beacon beacon){
+    public double getYValue(Beacon beacon) {
         return beacon.getDataFields().get(5).byteValue() * 15.625;
     }
 
-    public double getZValue(Beacon beacon){
+    public double getZValue(Beacon beacon) {
         return beacon.getDataFields().get(6).byteValue() * 15.625;
     }
+
     @Override
     public String[] getValuePaths() {
-        return new String[] { X_FIELD, Y_FIELD, Z_FIELD, TOTAL_FIELD };
+        return new String[]{X_FIELD, Y_FIELD, Z_FIELD, TOTAL_FIELD};
     }
 
     /**
      * The configuration activity for this sensor.
      *
      * @author Veaceslav Munteanu
-     *
      */
     public static class ConfigurationActivity extends
             AbstractConfigurationActivity {

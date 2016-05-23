@@ -1,9 +1,5 @@
 package interdroid.sense;
 
-import interdroid.swan.R;
-import nl.sense_os.platform.SensePlatform;
-import nl.sense_os.service.ISenseServiceCallback;
-import nl.sense_os.service.commonsense.SenseApi;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
@@ -19,6 +15,11 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import interdroid.swan.R;
+import nl.sense_os.platform.SensePlatform;
+import nl.sense_os.service.ISenseServiceCallback;
+import nl.sense_os.service.commonsense.SenseApi;
 
 /**
  * Activity which displays a registration screen to the user.
@@ -41,10 +42,10 @@ public class RegistrationActivity extends Activity {
     private View mRegistrationStatusView;
 
     private boolean mBusy;
-    
+
     // Sense specific members
     private SensePlatform mSensePlatform;
-    
+
     private ISenseServiceCallback mSenseCallback = new ISenseServiceCallback.Stub() {
 
         @Override
@@ -134,7 +135,7 @@ public class RegistrationActivity extends Activity {
 
             // register using SensePlatform
             try {
-            	mSensePlatform.registerUser(mEmail,
+                mSensePlatform.registerUser(mEmail,
                         SenseApi.hashPassword(mPassword), mEmail, null, null, null, null, null,
                         null, mSenseCallback);
                 // this is an asynchronous call, we get a callback when the registration is complete
@@ -155,7 +156,7 @@ public class RegistrationActivity extends Activity {
 
         setContentView(R.layout.sense_registration);
         mSensePlatform = new SensePlatform(this);
-        
+
         // Set up the registration form.
         mEmailView = (EditText) findViewById(R.id.email);
 

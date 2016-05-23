@@ -97,8 +97,10 @@ public class PacketAdapter extends RecyclerView.Adapter<PacketAdapter.ViewHolder
     public static class ViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.packet_time)
         TextView mTime;
-        @Bind(R.id.packet_data) TextView mData;
-        @Bind(R.id.packet_device_id) TextView mDeviceId;
+        @Bind(R.id.packet_data)
+        TextView mData;
+        @Bind(R.id.packet_device_id)
+        TextView mDeviceId;
 
         public ViewHolder(View itemView) {
             super(itemView);

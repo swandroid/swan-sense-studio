@@ -2,11 +2,10 @@ package interdroid.swan.sensors.impl.wear.shared.data;
 
 import android.util.Log;
 
-
 import java.io.Serializable;
 import java.util.LinkedList;
 
-public class WearSensor implements Serializable{
+public class WearSensor implements Serializable {
     private static final String TAG = "SensorDashboard/Sensor";
     private static final int MAX_DATA_POINTS = 1000;
 

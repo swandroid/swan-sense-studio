@@ -9,17 +9,17 @@ import android.os.Bundle;
 public class LaunchService extends Activity {
 
 
-	/* (non-Javadoc)
-	 * @see android.app.Activity#onCreate(android.os.Bundle)
-	 */
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+    /* (non-Javadoc)
+     * @see android.app.Activity#onCreate(android.os.Bundle)
+     */
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 //		Log.d("LaunchService", "thread: " + Thread.currentThread().getId()
 //				+ " - " + Thread.currentThread().getName()
 //				+ " Process: " + android.os.Process.myPid());
 //		startService(new Intent(ContextManager.CONTEXT_SERVICE));
-		finish();
-	}
+        finish();
+    }
 
 }

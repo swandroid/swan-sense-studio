@@ -1,32 +1,28 @@
 package interdroid.swan.crossdevice.swanplus;
 
-import interdroid.swan.ExpressionManager;
-import interdroid.swan.R;
-import interdroid.swan.SensorInfo;
-import interdroid.swan.SwanException;
-import interdroid.swan.ValueExpressionListener;
-import interdroid.swan.crossdevice.swanplus.bluetooth.BTManager;
-import interdroid.swan.sensors.impl.FitnessSensor;
-import interdroid.swan.swansong.ExpressionFactory;
-import interdroid.swan.swansong.ExpressionParseException;
-import interdroid.swan.swansong.TimestampedValue;
-import interdroid.swan.swansong.ValueExpression;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.os.Messenger;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import interdroid.swan.ExpressionManager;
+import interdroid.swan.R;
+import interdroid.swan.SensorInfo;
+import interdroid.swan.SwanException;
+import interdroid.swan.ValueExpressionListener;
+import interdroid.swan.crossdevice.swanplus.bluetooth.BTManager;
+import interdroid.swan.swansong.ExpressionFactory;
+import interdroid.swan.swansong.ExpressionParseException;
+import interdroid.swan.swansong.TimestampedValue;
+import interdroid.swan.swansong.ValueExpression;
 
 public class TestActivity extends Activity {
 
@@ -48,7 +44,7 @@ public class TestActivity extends Activity {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
 
-            if(BTManager.ACTION_LOG_MESSAGE.equals(action)) {
+            if (BTManager.ACTION_LOG_MESSAGE.equals(action)) {
                 String message = intent.getStringExtra("log");
                 TextView tv = (TextView) findViewById(R.id.result);
                 tv.setText(message + "\n" + tv.getText());
@@ -74,7 +70,7 @@ public class TestActivity extends Activity {
 //        registerSWANSensor(myExpression);
     }
 
-    public void initialize(){
+    public void initialize() {
 
         try {
             swanSensor = ExpressionManager.getSensor(this, SENSOR_NAME);
@@ -91,14 +87,14 @@ public class TestActivity extends Activity {
     public void registerExpression(View view) {
         EditText usernameEdit = (EditText) findViewById(R.id.username);
         String connectTo = usernameEdit.getText().toString();
-        
-        if(connectTo.trim().isEmpty()) {
+
+        if (connectTo.trim().isEmpty()) {
             connectTo = "NEARBY";
         }
 
         mExpression = connectTo + "@light:lux";
 
-        if(!mRegistered) {
+        if (!mRegistered) {
             registerSWANSensor(mExpression);
         } else {
             Log.d(TAG, "Already registered");
@@ -106,7 +102,7 @@ public class TestActivity extends Activity {
     }
 
     public void unregisterExpression(View view) {
-        if(mRegistered) {
+        if (mRegistered) {
             unregisterSWANSensor();
         } else {
             Log.d(TAG, "Already unregistered");
@@ -125,7 +121,7 @@ public class TestActivity extends Activity {
 
             if (REQUEST_CODE == requestCode) {
                 mExpression = data.getStringExtra("Expression");
-					/*Based on sensor configuration an expression will be created*/
+                    /*Based on sensor configuration an expression will be created*/
                 Log.d(TAG, "expression: " + mExpression);
             }
         }
@@ -133,7 +129,7 @@ public class TestActivity extends Activity {
     }
 
     /* Register expression to SWAN */
-    private void registerSWANSensor(String myExpression){
+    private void registerSWANSensor(String myExpression) {
         try {
             ExpressionManager.registerValueExpression(this, String.valueOf(REQUEST_CODE),
                     (ValueExpression) ExpressionFactory.parse(myExpression),
@@ -144,7 +140,7 @@ public class TestActivity extends Activity {
                         public void onNewValues(String id, TimestampedValue[] arg1) {
                             if (arg1 != null && arg1.length > 0) {
                                 String value = arg1[0].getValue().toString();
-                                tv.setText("Value = "+value);
+                                tv.setText("Value = " + value);
 
                             } else {
                                 tv.setText("Value = null");
@@ -165,7 +161,7 @@ public class TestActivity extends Activity {
     }
 
     /* Unregister expression from SWAN */
-    private void unregisterSWANSensor(){
+    private void unregisterSWANSensor() {
         ExpressionManager.unregisterExpression(this, String.valueOf(REQUEST_CODE));
         mRegistered = false;
     }

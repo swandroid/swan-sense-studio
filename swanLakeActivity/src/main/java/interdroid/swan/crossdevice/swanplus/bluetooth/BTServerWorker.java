@@ -28,7 +28,7 @@ public class BTServerWorker extends BTWorker {
             Log.d(TAG, this + " started");
             initConnection();
             manageServerConnection();
-        } catch(Exception e) {
+        } catch (Exception e) {
             Log.e(TAG, this + " crashed", e);
         }
     }
@@ -43,7 +43,7 @@ public class BTServerWorker extends BTWorker {
                 String exprId = dataMap.get("id");
                 String exprData = dataMap.get("data");
 
-                if(expressionId == null) {
+                if (expressionId == null) {
                     expressionId = exprId;
                 }
 
@@ -53,14 +53,14 @@ public class BTServerWorker extends BTWorker {
 
                     btManager.sendExprForEvaluation(exprId, exprAction, exprSource, exprData);
 
-                    if(exprAction.equals(EvaluationEngineService.ACTION_UNREGISTER_REMOTE)) {
+                    if (exprAction.equals(EvaluationEngineService.ACTION_UNREGISTER_REMOTE)) {
                         disconnect();
                     }
                 } else {
                     Log.e(TAG, this + " didn't expect " + exprAction);
                 }
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             Log.e(TAG, this + " disconnected: " + e.getMessage());
             //TODO unregister expression
 

@@ -58,7 +58,8 @@ public class FitnessSensor extends AbstractSwanSensor {
 
                 try {
                     sleep(5000);
-                } catch (InterruptedException e) {}
+                } catch (InterruptedException e) {
+                }
             }
         }
     }
@@ -89,7 +90,7 @@ public class FitnessSensor extends AbstractSwanSensor {
 
     @Override
     public String[] getValuePaths() {
-        return new String[] { AVG_SPEED };
+        return new String[]{AVG_SPEED};
     }
 
     @Override

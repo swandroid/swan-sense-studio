@@ -3,8 +3,6 @@ package interdroid.swan.sensors.impl.wear.shared;
 import android.net.Uri;
 import android.util.Log;
 
-//import interdroid.swan.sensordashboard.database.DataEntry;
-import interdroid.swan.sensordashboard.shared.DataMapKeys;
 import com.google.android.gms.wearable.DataEvent;
 import com.google.android.gms.wearable.DataEventBuffer;
 import com.google.android.gms.wearable.DataItem;
@@ -14,6 +12,10 @@ import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.WearableListenerService;
 
 import java.util.Arrays;
+
+import interdroid.swan.sensordashboard.shared.DataMapKeys;
+
+//import interdroid.swan.sensordashboard.database.DataEntry;
 
 //import io.realm.Realm;
 
@@ -55,8 +57,8 @@ public class SensorReceiverService extends WearableListenerService {
 
                 if (path.startsWith("/sensors/")) {
                     unpackSensorData(
-                        Integer.parseInt(uri.getLastPathSegment()),
-                        DataMapItem.fromDataItem(dataItem).getDataMap()
+                            Integer.parseInt(uri.getLastPathSegment()),
+                            DataMapItem.fromDataItem(dataItem).getDataMap()
                     );
                 }
             }

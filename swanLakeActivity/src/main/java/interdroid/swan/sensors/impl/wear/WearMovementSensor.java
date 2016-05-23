@@ -4,13 +4,13 @@ import android.hardware.Sensor;
 import android.os.Bundle;
 
 import interdroid.swan.R;
-
 import interdroid.swan.sensors.AbstractConfigurationActivity;
 import interdroid.swan.sensors.impl.wear.shared.AbstractWearSensor;
 
 
 /**
  * Created by Veaceslav Munteanu on 14-March-16.
+ *
  * @email veaceslav.munteanu90@gmail.com
  */
 public class WearMovementSensor extends AbstractWearSensor {
@@ -26,7 +26,6 @@ public class WearMovementSensor extends AbstractWearSensor {
      * The configuration activity for this sensor.
      *
      * @author Veaceslav Munteanu
-     *
      */
     public static class ConfigurationActivity extends
             AbstractConfigurationActivity {
@@ -55,6 +54,6 @@ public class WearMovementSensor extends AbstractWearSensor {
 
     @Override
     public String[] getValuePaths() {
-        return new String[] { X_FIELD, Y_FIELD, Z_FIELD, TOTAL_FIELD };
+        return new String[]{X_FIELD, Y_FIELD, Z_FIELD, TOTAL_FIELD};
     }
 }

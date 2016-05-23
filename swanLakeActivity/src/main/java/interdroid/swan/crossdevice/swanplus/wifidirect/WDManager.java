@@ -40,9 +40,11 @@ public class WDManager implements ProximityManagerI {
     private final int PEER_DISCOVERY_INTERVAL = 10000;
     private final int PORT = 2222;
 
-    /** IMPORTANT the order of items in this list matters! */
+    /**
+     * IMPORTANT the order of items in this list matters!
+     */
     private List<SwanUser> nearbyPeers = new ArrayList<SwanUser>();
-//    private WDManager instance;
+    //    private WDManager instance;
     private SwanLakePlusActivity slpActivity;
 
     public static WifiP2pManager p2pManager;
@@ -54,7 +56,9 @@ public class WDManager implements ProximityManagerI {
     private WifiP2pDnsSdServiceInfo serviceInfo;
     private WifiDirectAutoAccept wdAutoAccept;
 
-    /** TODO temporary solution */
+    /**
+     * TODO temporary solution
+     */
     private Thread waitingThread;
     private SwanUser waitingUser;
 
@@ -141,12 +145,12 @@ public class WDManager implements ProximityManagerI {
             public void onDnsSdTxtRecordAvailable(String fullDomain, Map<String, String> userAttribMap, WifiP2pDevice device) {
                 final SwanUser nearbyUser = new SwanUser(userAttribMap.get("name"), userAttribMap.get("regId"), device);
 
-                if(!hasPeer(nearbyUser.getUsername())) {
+                if (!hasPeer(nearbyUser.getUsername())) {
                     addPeer(nearbyUser);
                     slpActivity.getNearbyPeersAdapter().notifyDataSetChanged();
                     Log.d(TAG, "Found new nearby user " + nearbyUser);
                 } else {
-                    if(updatePeer(nearbyUser)) {
+                    if (updatePeer(nearbyUser)) {
                         log("Updated nearby user " + nearbyUser, true);
                     }
                 }
@@ -190,7 +194,7 @@ public class WDManager implements ProximityManagerI {
         userAttribMap.put("name", userFriendlyName);
         userAttribMap.put("regId", regId);
 
-        if(serviceInfo != null) {
+        if (serviceInfo != null) {
             unregisterService();
         }
 
@@ -232,19 +236,18 @@ public class WDManager implements ProximityManagerI {
         });
     }
 
-    public void registerExpression(String id, String expression,String resolvedLocation, String action) {
+    public void registerExpression(String id, String expression, String resolvedLocation, String action) {
         // TODO implement me
     }
 
     /**
      * returns true if the sending thread from Pusher has to wait for getting the IP of user
-     *
      */
     public boolean connect(SwanUser user, Thread thread) {
-        if(user.getDevice() == null) {
+        if (user.getDevice() == null) {
             return false;
         }
-        if(user.getIp() != null) {
+        if (user.getIp() != null) {
             return false;
         }
 
@@ -286,8 +289,8 @@ public class WDManager implements ProximityManagerI {
 
     public void connected(String ip, boolean myIp) {
         try {
-            if(waitingThread != null && waitingUser != null) {
-                if(!myIp) {
+            if (waitingThread != null && waitingUser != null) {
+                if (!myIp) {
                     waitingUser.setIp(InetAddress.getByName(ip));
                     synchronized (waitingThread) {
                         waitingThread.notify();
@@ -297,7 +300,7 @@ public class WDManager implements ProximityManagerI {
                     Log.d(TAG, "notify sending thread");
                 }
             } else {
-                if(!myIp) {
+                if (!myIp) {
                     initConn(InetAddress.getByName(ip));
                     Log.d(TAG, "send initConn to GO");
                 }
@@ -359,8 +362,8 @@ public class WDManager implements ProximityManagerI {
     }
 
     public SwanUser getPeer(String username) {
-        for(SwanUser peer : nearbyPeers) {
-            if(peer.getUsername().equals(username)) {
+        for (SwanUser peer : nearbyPeers) {
+            if (peer.getUsername().equals(username)) {
                 return peer;
             }
         }
@@ -368,8 +371,8 @@ public class WDManager implements ProximityManagerI {
     }
 
     public SwanUser getPeerByRegId(String regId) {
-        for(SwanUser peer : nearbyPeers) {
-            if(peer.getRegId().equals(regId)) {
+        for (SwanUser peer : nearbyPeers) {
+            if (peer.getRegId().equals(regId)) {
                 return peer;
             }
         }
@@ -377,8 +380,8 @@ public class WDManager implements ProximityManagerI {
     }
 
     public boolean hasPeer(String username) {
-        for(SwanUser peer : nearbyPeers) {
-            if(peer.getUsername().equals(username)) {
+        for (SwanUser peer : nearbyPeers) {
+            if (peer.getUsername().equals(username)) {
                 return true;
             }
         }
@@ -389,12 +392,12 @@ public class WDManager implements ProximityManagerI {
         SwanUser peer = getPeer(newPeer.getUsername());
         boolean updated = false;
 
-        if(peer != null) {
-            if(!peer.getRegId().equals(newPeer.getRegId())) {
+        if (peer != null) {
+            if (!peer.getRegId().equals(newPeer.getRegId())) {
                 peer.setRegId(newPeer.getRegId());
                 updated = true;
             }
-            if(!peer.getDevice().equals(newPeer.getDevice())) {
+            if (!peer.getDevice().equals(newPeer.getDevice())) {
                 peer.setDevice(newPeer.getDevice());
                 updated = true;
             }
@@ -404,7 +407,7 @@ public class WDManager implements ProximityManagerI {
     }
 
     public void resetPeers() {
-        for(SwanUser peer : nearbyPeers) {
+        for (SwanUser peer : nearbyPeers) {
             peer.setIp(null);
         }
     }
@@ -420,7 +423,7 @@ public class WDManager implements ProximityManagerI {
     public void log(String message, boolean display) {
         Log.d(TAG, message);
 
-        if(display) {
+        if (display) {
             Toast.makeText(slpActivity, message, Toast.LENGTH_LONG).show();
         }
     }

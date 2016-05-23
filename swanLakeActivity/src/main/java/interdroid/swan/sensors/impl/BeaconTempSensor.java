@@ -38,8 +38,8 @@ public class BeaconTempSensor extends AbstractBeaconSensor {
 
         Beacon beacon = getRequiredBeacon(locationString, beacons);
 
-        if(beacon == null){
-            Log.e(TAG,"Error: Beacon is null");
+        if (beacon == null) {
+            Log.e(TAG, "Error: Beacon is null");
             return;
         }
 
@@ -72,11 +72,11 @@ public class BeaconTempSensor extends AbstractBeaconSensor {
 
     @Override
     public String[] getValuePaths() {
-        return new String[] { TEMPERATURE_FIELD };
+        return new String[]{TEMPERATURE_FIELD};
     }
 
-    public float getTemp(long rawTemp){
-        ByteBuffer buffer = ByteBuffer.allocate(Long.SIZE/8);
+    public float getTemp(long rawTemp) {
+        ByteBuffer buffer = ByteBuffer.allocate(Long.SIZE / 8);
         buffer.putLong(rawTemp);
         byte tempData[] = buffer.array();
         byte tempIntegral = tempData[6];
@@ -87,14 +87,14 @@ public class BeaconTempSensor extends AbstractBeaconSensor {
         return finalTemp;
     }
 
-    public float getNearableTemp(long rawTemp){
-        short tmp = (short)rawTemp;
+    public float getNearableTemp(long rawTemp) {
+        short tmp = (short) rawTemp;
 
         tmp = Short.reverseBytes(tmp);
 
         int raw = (tmp & 0x0fff) << 4;
 
-        if((raw & 0x8000) != 0){
+        if ((raw & 0x8000) != 0) {
             return ((raw & 0x7fff) - 32768.0f) / 256.0f;
         } else {
             float data = (tmp & 0x0fff) << 4;

@@ -19,7 +19,9 @@ public class HeartRateSensor extends AbstractWearSensor {
 
     public static final String VALUE_PATH = "heart_rate";
 
-    /** Value of ACCURACY must be one of SensorManager.SENSOR_DELAY_* */
+    /**
+     * Value of ACCURACY must be one of SensorManager.SENSOR_DELAY_*
+     */
 
     public static class ConfigurationActivity extends
             AbstractConfigurationActivity {
@@ -30,6 +32,7 @@ public class HeartRateSensor extends AbstractWearSensor {
         }
 
     }
+
     @Override
     public void initDefaultConfiguration(Bundle defaults) {
         Log.d("Heart Rate Sensor", "Init default configuration");
@@ -50,8 +53,10 @@ public class HeartRateSensor extends AbstractWearSensor {
 
     @Override
     public String[] getValuePaths() {
-        return new String[]{ "heart_rate" };
-    };
+        return new String[]{"heart_rate"};
+    }
+
+    ;
 
 
 }

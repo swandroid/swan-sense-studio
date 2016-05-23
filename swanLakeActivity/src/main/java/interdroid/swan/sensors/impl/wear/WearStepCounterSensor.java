@@ -9,9 +9,10 @@ import interdroid.swan.sensors.impl.wear.shared.AbstractWearSensor;
 
 /**
  * Created by Veaceslav Munteanu on 14-March-16.
+ *
  * @email veaceslav.munteanu90@gmail.com
  */
-public class WearStepCounterSensor extends AbstractWearSensor{
+public class WearStepCounterSensor extends AbstractWearSensor {
     public static final String TAG = "Wear Step Counter Sensor";
 
     /**
@@ -33,8 +34,9 @@ public class WearStepCounterSensor extends AbstractWearSensor{
         valuePathMappings.put(STEP_COUNTER, 0);
         super.register(id, valuePath, configuration, httpConfiguration, extraConfiguration);
     }
+
     @Override
     public String[] getValuePaths() {
-        return new String[] { STEP_COUNTER };
+        return new String[]{STEP_COUNTER};
     }
 }

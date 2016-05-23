@@ -57,17 +57,17 @@ public class NearbyRunnersActivity extends ListActivity {
             }
 
             ((TextView) (convertView.findViewById(R.id.username)))
-                    .setText(((Runner)getItem(position)).getUsername());
+                    .setText(((Runner) getItem(position)).getUsername());
             ((TextView) (convertView.findViewById(R.id.goal)))
                     .setText("Goal: " + ((Runner) getItem(position)).getGoal());
             ((TextView) (convertView.findViewById(R.id.level)))
-                    .setText("Level: " + ((Runner)getItem(position)).getLevel());
+                    .setText("Level: " + ((Runner) getItem(position)).getLevel());
             ((TextView) (convertView.findViewById(R.id.gender)))
                     .setText("Gender: " + ((Runner) getItem(position)).getGender());
             ((TextView) (convertView.findViewById(R.id.age)))
-                    .setText("Age: " + ((Runner)getItem(position)).getAge());
+                    .setText("Age: " + ((Runner) getItem(position)).getAge());
             ((TextView) (convertView.findViewById(R.id.weight)))
-                    .setText("Weight: " + ((Runner)getItem(position)).getWeight());
+                    .setText("Weight: " + ((Runner) getItem(position)).getWeight());
             ((TextView) (convertView.findViewById(R.id.height)))
                     .setText("Height: " + ((Runner) getItem(position)).getHeight());
 
@@ -95,33 +95,33 @@ public class NearbyRunnersActivity extends ListActivity {
     }
 
     /* Register expression to SWAN */
-    private void registerSWANSensor(String myExpression){
+    private void registerSWANSensor(String myExpression) {
         try {
             ExpressionManager.registerValueExpression(this, String.valueOf(REQUEST_CODE),
-                (ValueExpression) ExpressionFactory.parse(myExpression),
-                new ValueExpressionListener() {
+                    (ValueExpression) ExpressionFactory.parse(myExpression),
+                    new ValueExpressionListener() {
 
-                    /* Registering a listener to process new values from the registered sensor*/
-                    @Override
-                    public void onNewValues(String id, TimestampedValue[] arg1) {
-                        if(arg1.length > 0) {
-                            String data = arg1[0].getValue().toString();
-                            Log.d(TAG, "Received fitness data: " + data);
+                        /* Registering a listener to process new values from the registered sensor*/
+                        @Override
+                        public void onNewValues(String id, TimestampedValue[] arg1) {
+                            if (arg1.length > 0) {
+                                String data = arg1[0].getValue().toString();
+                                Log.d(TAG, "Received fitness data: " + data);
 
-                            Runner runner = nearbyRunners.get(0);
-                            Map<String, String> dataMap = getRunningData(data);
-                            runner.setUsername(dataMap.get("username"));
-                            runner.setGoal(dataMap.get("goal"));
-                            runner.setLevel(dataMap.get("runLevel"));
-                            runner.setGender(dataMap.get("gender"));
-                            runner.setAge(dataMap.get("age"));
-                            runner.setWeight(dataMap.get("weight"));
-                            runner.setHeight(dataMap.get("height"));
+                                Runner runner = nearbyRunners.get(0);
+                                Map<String, String> dataMap = getRunningData(data);
+                                runner.setUsername(dataMap.get("username"));
+                                runner.setGoal(dataMap.get("goal"));
+                                runner.setLevel(dataMap.get("runLevel"));
+                                runner.setGender(dataMap.get("gender"));
+                                runner.setAge(dataMap.get("age"));
+                                runner.setWeight(dataMap.get("weight"));
+                                runner.setHeight(dataMap.get("height"));
 
-                            runnersAdapter.notifyDataSetChanged();
+                                runnersAdapter.notifyDataSetChanged();
+                            }
                         }
-                    }
-                });
+                    });
         } catch (SwanException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -135,7 +135,7 @@ public class NearbyRunnersActivity extends ListActivity {
         Map<String, String> dataMap = new HashMap<String, String>();
         String[] dataParts = data.split("&");
 
-        for(String dataItem : dataParts) {
+        for (String dataItem : dataParts) {
             String[] dataPair = dataItem.split("=", -1);
             dataMap.put(dataPair[0], dataPair[1]);
         }

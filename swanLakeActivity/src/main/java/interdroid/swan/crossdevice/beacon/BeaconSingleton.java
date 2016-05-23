@@ -46,13 +46,13 @@ public class BeaconSingleton extends Service implements BeaconConsumer {
 
 
     public BeaconSingleton() {
-        Log.d(TAG,"++++ Service started+++");
+        Log.d(TAG, "++++ Service started+++");
     }
 
-    public void addSensor(AbstractBeaconSensor sensor){
+    public void addSensor(AbstractBeaconSensor sensor) {
         lock.lock();
 
-        if(sensors.isEmpty() && !isBinded) {
+        if (sensors.isEmpty() && !isBinded) {
             beaconManager.bind(this);
             Log.d(TAG, "Binding+++++++++++++++++++");
             isBinded = true;
@@ -62,12 +62,12 @@ public class BeaconSingleton extends Service implements BeaconConsumer {
         lock.unlock();
     }
 
-    public void removeSensor(AbstractBeaconSensor sensor){
+    public void removeSensor(AbstractBeaconSensor sensor) {
         lock.lock();
 
         sensors.remove(sensor);
 
-        if(sensors.isEmpty() && isBinded){
+        if (sensors.isEmpty() && isBinded) {
             try {
                 beaconManager.stopRangingBeaconsInRegion(myRegion);
             } catch (RemoteException e) {
@@ -103,18 +103,18 @@ public class BeaconSingleton extends Service implements BeaconConsumer {
 
                 Log.d(TAG, "++ " + beacons.size());
 
-                if(beacons.isEmpty())
+                if (beacons.isEmpty())
                     return;
                 HashMap<String, Beacon> beaconData = new HashMap<String, Beacon>();
 
-                for(Beacon beacon : beacons){
+                for (Beacon beacon : beacons) {
                     beaconData.put(getBeaconId(beacon), beacon);
                 }
 
                 long time = System.currentTimeMillis();
                 try {
                     lock.lock();
-                    for(AbstractBeaconSensor sensor : sensors) {
+                    for (AbstractBeaconSensor sensor : sensors) {
                         sensor.setData(beaconData, time);
                     }
                 } finally {
@@ -129,7 +129,7 @@ public class BeaconSingleton extends Service implements BeaconConsumer {
         }
     }
 
-    public String getBeaconId(Beacon beacon){
+    public String getBeaconId(Beacon beacon) {
         StringBuilder allIndetifier = new StringBuilder();
         List<Identifier> identifierList = beacon.getIdentifiers();
         for (Identifier identifier : identifierList) {

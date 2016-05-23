@@ -1,12 +1,5 @@
 package interdroid.swan.sensors;
 
-import interdroid.swan.swansong.TimestampedValue;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import android.app.Service;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,309 +7,309 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import interdroid.swan.swansong.TimestampedValue;
+
 /**
  * This class is the abstract base for all Sensor services. Sensor implementors
  * are advised to use AbstractVdbSensor or AbstractMemorySensor as a basis for
  * their sensors instead of using this class directly.
- * 
+ *
  * @author nick &lt;palmer@cs.vu.nl&gt;
- * 
  */
 public abstract class AbstractSensorBase extends Service implements
-		SensorInterface {
+        SensorInterface {
 
-	private static final String TAG = "AbstractSensorBase";
-	
-	/**
-	 * The sensor interface.
-	 */
-	private final SensorInterface mSensorInterface = this;
+    private static final String TAG = "AbstractSensorBase";
 
-	private long mStartTime;
-	// Designed for direct use by subclasses.
-	/**
-	 * The value paths we support.
-	 */
-	protected final String[] VALUE_PATHS = getValuePaths();
+    /**
+     * The sensor interface.
+     */
+    private final SensorInterface mSensorInterface = this;
 
-	/**
-	 * The default configuration.
-	 */
-	protected final Bundle mDefaultConfiguration = new Bundle();
+    private long mStartTime;
+    // Designed for direct use by subclasses.
+    /**
+     * The value paths we support.
+     */
+    protected final String[] VALUE_PATHS = getValuePaths();
 
-	/**
-	 * The current configuration of the sensor.
-	 */
-	protected final Bundle currentConfiguration = new Bundle();
+    /**
+     * The default configuration.
+     */
+    protected final Bundle mDefaultConfiguration = new Bundle();
 
-	/**
-	 * The registered configurations for the sensor.
-	 */
-	protected final Map<String, Bundle> registeredConfigurations = new HashMap<String, Bundle>();
+    /**
+     * The current configuration of the sensor.
+     */
+    protected final Bundle currentConfiguration = new Bundle();
 
-	/**
-	 * The value paths registered as watched.
-	 */
-	protected final Map<String, String> registeredValuePaths = new HashMap<String, String>();
+    /**
+     * The registered configurations for the sensor.
+     */
+    protected final Map<String, Bundle> registeredConfigurations = new HashMap<String, Bundle>();
 
-
-
-	protected final Map<String, Bundle> registeredHttpConfigurations = new HashMap<String, Bundle>();
+    /**
+     * The value paths registered as watched.
+     */
+    protected final Map<String, String> registeredValuePaths = new HashMap<String, String>();
 
 
-	/**
-	 * The expression ids for each value path.
-	 */
-	protected final Map<String, List<String>> expressionIdsPerValuePath = new HashMap<String, List<String>>();
+    protected final Map<String, Bundle> registeredHttpConfigurations = new HashMap<String, Bundle>();
 
-	/**
-	 * Initializes the default configuration for this sensor.
-	 * 
-	 * @param defaults
-	 *            the bundle to add defaults to
-	 */
-	public abstract void initDefaultConfiguration(Bundle defaults);
 
-	/**
-	 * Called when the sensor is starting to allow subclasses to handle any
-	 * setup that needs to be done.
-	 */
-	protected abstract void init();
+    /**
+     * The expression ids for each value path.
+     */
+    protected final Map<String, List<String>> expressionIdsPerValuePath = new HashMap<String, List<String>>();
 
-	@Override
-	public abstract String[] getValuePaths();
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see android.app.Service#onCreate()
-	 * 
-	 * Creates the ContextManager and connects to the Swan service.
-	 */
-	@Override
-	public final void onCreate() {
-		mStartTime = System.currentTimeMillis();
-		init();
-		initDefaultConfiguration(mDefaultConfiguration);
-		onConnected();
-	}
-		 
-	/** The binder. */
-	private final Sensor.Stub mBinder = new Sensor.Stub() {
+    /**
+     * Initializes the default configuration for this sensor.
+     *
+     * @param defaults the bundle to add defaults to
+     */
+    public abstract void initDefaultConfiguration(Bundle defaults);
 
-		@Override
-		public void register(final String id, final String valuePath,
-				final Bundle configuration, final Bundle httpConfiguration, final Bundle extraConfiguration) throws RemoteException {
-			// value path exists and id is unique (enforced by evaluation
-			// engine)
-			synchronized (mSensorInterface) {
-				try {
-					Log.d(TAG, "Registering id: " + id + " value path: "
-							+ valuePath);
-					registeredConfigurations.put(id, configuration);
-					registeredValuePaths.put(id, valuePath);
-					registeredHttpConfigurations.put(id,httpConfiguration);
-					List<String> ids = expressionIdsPerValuePath.get(valuePath);
-					if (ids == null) {
-						ids = new ArrayList<String>();
-						expressionIdsPerValuePath.put(valuePath, ids);
-					}
-					ids.add(id);
-					printState();
-					Log.d(TAG, "Registering with implementation.");
-					
-					mSensorInterface.register(id, valuePath, configuration, httpConfiguration, extraConfiguration);
-				} catch (Exception e) {
-					Log.e(TAG, "Caught exception while registering.", e);
-					throw new RemoteException();
-				}
-			}
-		}
+    /**
+     * Called when the sensor is starting to allow subclasses to handle any
+     * setup that needs to be done.
+     */
+    protected abstract void init();
 
-		@Override
-		public void unregister(final String id) throws RemoteException {
-			registeredConfigurations.remove(id);
-			String valuePath = registeredValuePaths.remove(id);
-			expressionIdsPerValuePath.get(valuePath).remove(id);
-			printState();
-			mSensorInterface.unregister(id);
-		}
+    @Override
+    public abstract String[] getValuePaths();
 
-		@Override
-		public List<TimestampedValue> getValues(final String id,
-				final long now, final long timespan) throws RemoteException {
-			try {
-				return mSensorInterface.getValues(id, now, timespan);
-			} catch (Throwable t) {
-				t.printStackTrace();
-			}
-			return null;
-		}
+    /*
+     * (non-Javadoc)
+     *
+     * @see android.app.Service#onCreate()
+     *
+     * Creates the ContextManager and connects to the Swan service.
+     */
+    @Override
+    public final void onCreate() {
+        mStartTime = System.currentTimeMillis();
+        init();
+        initDefaultConfiguration(mDefaultConfiguration);
+        onConnected();
+    }
 
-		@Override
-		public long getStartUpTime(String id) throws RemoteException {
-			return mSensorInterface.getStartUpTime(id);
-		}
+    /**
+     * The binder.
+     */
+    private final Sensor.Stub mBinder = new Sensor.Stub() {
 
-		@Override
-		public Bundle getInfo() throws RemoteException {
-			Bundle info = new Bundle();
-			info.putString("name", AbstractSensorBase.this.getClass().getSimpleName());
-			int num = 0;
-			for (Map.Entry<String, List<String>> entry : expressionIdsPerValuePath
-					.entrySet()) {
-				num += entry.getValue().size();
-			}
-			info.putInt("registeredids", num);
-			info.putDouble("sensingRate", getAverageSensingRate());
-			info.putLong("starttime", getStartTime());
-			info.putFloat("currentMilliAmpere", getCurrentMilliAmpere());
-			return info;
-		}
-	};
+        @Override
+        public void register(final String id, final String valuePath,
+                             final Bundle configuration, final Bundle httpConfiguration, final Bundle extraConfiguration) throws RemoteException {
+            // value path exists and id is unique (enforced by evaluation
+            // engine)
+            synchronized (mSensorInterface) {
+                try {
+                    Log.d(TAG, "Registering id: " + id + " value path: "
+                            + valuePath);
+                    registeredConfigurations.put(id, configuration);
+                    registeredValuePaths.put(id, valuePath);
+                    registeredHttpConfigurations.put(id, httpConfiguration);
+                    List<String> ids = expressionIdsPerValuePath.get(valuePath);
+                    if (ids == null) {
+                        ids = new ArrayList<String>();
+                        expressionIdsPerValuePath.put(valuePath, ids);
+                    }
+                    ids.add(id);
+                    printState();
+                    Log.d(TAG, "Registering with implementation.");
 
-	/**
-	 * Debug helper which prints the state for this sensor.
-	 */
-	private void printState() {
-		for (String key : registeredConfigurations.keySet()) {
-			Log.d(TAG,
-					"configs: " + key + ": "
-							+ registeredConfigurations.get(key));
-		}
-		for (String key : registeredValuePaths.keySet()) {
-			Log.d(TAG,
-					"valuepaths: " + key + ": " + registeredValuePaths.get(key));
-		}
-		for (String key : expressionIdsPerValuePath.keySet()) {
-			Log.d(TAG, "expressionIds: " + key + ": "
-					+ expressionIdsPerValuePath.get(key));
-		}
-	}
+                    mSensorInterface.register(id, valuePath, configuration, httpConfiguration, extraConfiguration);
+                } catch (Exception e) {
+                    Log.e(TAG, "Caught exception while registering.", e);
+                    throw new RemoteException();
+                }
+            }
+        }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see android.app.Service#onBind(android.content.Intent)
-	 * 
-	 * returns the sensor interface
-	 */
-	@Override
-	public final IBinder onBind(final Intent arg0) {
-		return mBinder;
-	}
+        @Override
+        public void unregister(final String id) throws RemoteException {
+            registeredConfigurations.remove(id);
+            String valuePath = registeredValuePaths.remove(id);
+            expressionIdsPerValuePath.get(valuePath).remove(id);
+            printState();
+            mSensorInterface.unregister(id);
+        }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see android.app.Service#onDestroy()
-	 * 
-	 * Stops the connection to Swan
-	 */
-	@Override
-	public final void onDestroy() {
-		try {
-			mSensorInterface.onDestroySensor();
-		} catch (Exception e) {
-			Log.e(TAG, "Got exception destroying sensor service", e);
-		}
-		super.onDestroy();
-	}
+        @Override
+        public List<TimestampedValue> getValues(final String id,
+                                                final long now, final long timespan) throws RemoteException {
+            try {
+                return mSensorInterface.getValues(id, now, timespan);
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
+            return null;
+        }
 
-	// =-=-=-=- Utility Functions -=-=-=-=
+        @Override
+        public long getStartUpTime(String id) throws RemoteException {
+            return mSensorInterface.getStartUpTime(id);
+        }
 
-	/**
-	 * Send a notification that data changed for the given id.
-	 * 
-	 * @param id
-	 *            the id of the value to notify for.
-	 */
-	protected final void notifyDataChangedForId(final String... ids) {
-		Intent notifyIntent = new Intent(ACTION_NOTIFY);
-		notifyIntent.putExtra("expressionIds", ids);
-		sendBroadcast(notifyIntent);
-	}
+        @Override
+        public Bundle getInfo() throws RemoteException {
+            Bundle info = new Bundle();
+            info.putString("name", AbstractSensorBase.this.getClass().getSimpleName());
+            int num = 0;
+            for (Map.Entry<String, List<String>> entry : expressionIdsPerValuePath
+                    .entrySet()) {
+                num += entry.getValue().size();
+            }
+            info.putInt("registeredids", num);
+            info.putDouble("sensingRate", getAverageSensingRate());
+            info.putLong("starttime", getStartTime());
+            info.putFloat("currentMilliAmpere", getCurrentMilliAmpere());
+            return info;
+        }
+    };
 
-	@Override
-	public long getStartUpTime(String id) {
-		return 0;
-	}
+    /**
+     * Debug helper which prints the state for this sensor.
+     */
+    private void printState() {
+        for (String key : registeredConfigurations.keySet()) {
+            Log.d(TAG,
+                    "configs: " + key + ": "
+                            + registeredConfigurations.get(key));
+        }
+        for (String key : registeredValuePaths.keySet()) {
+            Log.d(TAG,
+                    "valuepaths: " + key + ": " + registeredValuePaths.get(key));
+        }
+        for (String key : expressionIdsPerValuePath.keySet()) {
+            Log.d(TAG, "expressionIds: " + key + ": "
+                    + expressionIdsPerValuePath.get(key));
+        }
+    }
 
-	/**
-	 * Send a notification that data for the given value path changed.
-	 * 
-	 * @param valuePath
-	 *            the value path to notify for.
-	 */
-	protected final void notifyDataChanged(final String valuePath) {
-		List<String> notify = new ArrayList<String>();
+    /*
+     * (non-Javadoc)
+     *
+     * @see android.app.Service#onBind(android.content.Intent)
+     *
+     * returns the sensor interface
+     */
+    @Override
+    public final IBinder onBind(final Intent arg0) {
+        return mBinder;
+    }
 
-		synchronized (mSensorInterface) {
-			// can be null if multiple valuepaths are updated together and not
-			// for all of them, there's an id registered.
-			if (expressionIdsPerValuePath.get(valuePath) != null) {
-				for (String id : expressionIdsPerValuePath.get(valuePath)) {
-					notify.add(id);
-				}
-			}
-		}
+    /*
+     * (non-Javadoc)
+     *
+     * @see android.app.Service#onDestroy()
+     *
+     * Stops the connection to Swan
+     */
+    @Override
+    public final void onDestroy() {
+        try {
+            mSensorInterface.onDestroySensor();
+        } catch (Exception e) {
+            Log.e(TAG, "Got exception destroying sensor service", e);
+        }
+        super.onDestroy();
+    }
 
-		if (notify.size() > 0) {
-			notifyDataChangedForId(notify.toArray(new String[notify.size()]));
-		}
-	}
+    // =-=-=-=- Utility Functions -=-=-=-=
 
-	/**
-	 * Gets all readings from timespan seconds ago until now. Readings are returned in
-	 * reverse order (latest first). This is important for the expression
-	 * engine.
-	 * 
-	 * @param now
-	 *            the start
-	 * @param timespan
-	 *            the end
-	 * @param values
-	 *            the values
-	 * @return All readings in the timespan between timespan seconds ago and now
-	 */
-	protected static final List<TimestampedValue> getValuesForTimeSpan(
-			final List<TimestampedValue> values, final long now,
-			final long timespan){
-		List<TimestampedValue> result = new ArrayList<TimestampedValue>();
-		if (timespan == 0) {
-			if (values != null && values.size() > 0) {
-				result.add(values.get(values.size()-1));	//item in the last position has the latest timestamp
-			}
-		} else {
-			if (values != null) {
-				for (int i = values.size()-1; i >= 0 ; i --) {
-					if ((now - timespan) <= values.get(i).getTimestamp()) {
-						if (now >= values.get(i).getTimestamp())	//it shouldn't be a future value
-							result.add(values.get(i));
-					}
-					else {	//stop when it reaches too outdated values
-						break;
-					}
-				}
-			}
-		}
-	    
-		return result;
-	}
+    /**
+     * Send a notification that data changed for the given id.
+     *
+     * @param id the id of the value to notify for.
+     */
+    protected final void notifyDataChangedForId(final String... ids) {
+        Intent notifyIntent = new Intent(ACTION_NOTIFY);
+        notifyIntent.putExtra("expressionIds", ids);
+        sendBroadcast(notifyIntent);
+    }
 
-	@Override
-	public double getAverageSensingRate() {
-		return (double) getReadings()
-				/ ((System.currentTimeMillis() - mStartTime) / 1000.0);
-	}
+    @Override
+    public long getStartUpTime(String id) {
+        return 0;
+    }
 
-	public long getStartTime() {
-		return mStartTime;
-	}
+    /**
+     * Send a notification that data for the given value path changed.
+     *
+     * @param valuePath the value path to notify for.
+     */
+    protected final void notifyDataChanged(final String valuePath) {
+        List<String> notify = new ArrayList<String>();
 
-	public abstract long getReadings();
+        synchronized (mSensorInterface) {
+            // can be null if multiple valuepaths are updated together and not
+            // for all of them, there's an id registered.
+            if (expressionIdsPerValuePath.get(valuePath) != null) {
+                for (String id : expressionIdsPerValuePath.get(valuePath)) {
+                    notify.add(id);
+                }
+            }
+        }
 
-	public float getCurrentMilliAmpere() {
-		return -1;
-	}
+        if (notify.size() > 0) {
+            notifyDataChangedForId(notify.toArray(new String[notify.size()]));
+        }
+    }
+
+    /**
+     * Gets all readings from timespan seconds ago until now. Readings are returned in
+     * reverse order (latest first). This is important for the expression
+     * engine.
+     *
+     * @param now      the start
+     * @param timespan the end
+     * @param values   the values
+     * @return All readings in the timespan between timespan seconds ago and now
+     */
+    protected static final List<TimestampedValue> getValuesForTimeSpan(
+            final List<TimestampedValue> values, final long now,
+            final long timespan) {
+        List<TimestampedValue> result = new ArrayList<TimestampedValue>();
+        if (timespan == 0) {
+            if (values != null && values.size() > 0) {
+                result.add(values.get(values.size() - 1));    //item in the last position has the latest timestamp
+            }
+        } else {
+            if (values != null) {
+                for (int i = values.size() - 1; i >= 0; i--) {
+                    if ((now - timespan) <= values.get(i).getTimestamp()) {
+                        if (now >= values.get(i).getTimestamp())    //it shouldn't be a future value
+                            result.add(values.get(i));
+                    } else {    //stop when it reaches too outdated values
+                        break;
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
+
+    @Override
+    public double getAverageSensingRate() {
+        return (double) getReadings()
+                / ((System.currentTimeMillis() - mStartTime) / 1000.0);
+    }
+
+    public long getStartTime() {
+        return mStartTime;
+    }
+
+    public abstract long getReadings();
+
+    public float getCurrentMilliAmpere() {
+        return -1;
+    }
 }

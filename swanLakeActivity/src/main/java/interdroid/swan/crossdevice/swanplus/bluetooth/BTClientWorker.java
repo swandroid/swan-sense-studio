@@ -14,7 +14,6 @@ import interdroid.swan.swansong.Result;
 
 /**
  * Created by vladimir on 4/7/16.
- *
  */
 public class BTClientWorker extends BTWorker {
 
@@ -42,7 +41,7 @@ public class BTClientWorker extends BTWorker {
             } else {
                 btManager.workerDone(this);
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             Log.e(TAG, this + " crashed", e);
             btManager.workerDone(this);
         }
@@ -86,11 +85,11 @@ public class BTClientWorker extends BTWorker {
                 String exprId = dataMap.get("id");
                 String exprData = dataMap.get("data");
 
-                if(exprAction.equals(EvaluationEngineService.ACTION_NEW_RESULT_REMOTE)) {
+                if (exprAction.equals(EvaluationEngineService.ACTION_NEW_RESULT_REMOTE)) {
                     Result result = exprData != null ? (Result) Converter.stringToObject(exprData) : null;
                     Log.w(TAG, this + " received " + exprAction + ": " + result);
 
-                    if(exprId.equals(remoteExpression.getId())) {
+                    if (exprId.equals(remoteExpression.getId())) {
                         if (result != null && result.getValues().length > 0) {
                             btManager.sendExprForEvaluation(remoteExpression.getBaseId(), exprAction, exprSource, exprData);
                             send(exprId, EvaluationEngineService.ACTION_UNREGISTER_REMOTE, null);
@@ -103,7 +102,7 @@ public class BTClientWorker extends BTWorker {
                     Log.e(TAG, this + " didn't expect " + exprAction);
                 }
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             Log.e(TAG, this + " disconnected: " + e.getMessage());
 
             try {

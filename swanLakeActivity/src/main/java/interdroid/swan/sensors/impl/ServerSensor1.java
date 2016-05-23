@@ -27,15 +27,14 @@ import interdroid.swan.sensors.AbstractSwanSensor;
  * Created by Roshan Bharath Das on 05/11/15.
  */
 
-        //entity id = server
-        //valuepath url = "http://fs0.das4.cs.vu.nl:8090"
-        //configuration type = "pull"/"push"
-        //configuration content_url = "http://ovapi.nl"
-        //configuration content
+//entity id = server
+//valuepath url = "http://fs0.das4.cs.vu.nl:8090"
+//configuration type = "pull"/"push"
+//configuration content_url = "http://ovapi.nl"
+//configuration content
 
 
 public class ServerSensor1 extends AbstractSwanSensor {
-
 
 
     public static class ConfigurationActivity extends
@@ -49,11 +48,10 @@ public class ServerSensor1 extends AbstractSwanSensor {
     }
 
 
-
     public static final String SAMPLE_INTERVAL = "sample_interval";
     public static final long DEFAULT_SAMPLE_INTERVAL = 5 * 60 * 1000;
 
-    public  static final String MY_SERVER_ADDRESS = "http://fs0.das5.cs.vu.nl:3000/";
+    public static final String MY_SERVER_ADDRESS = "http://fs0.das5.cs.vu.nl:3000/";
 
     public static final String URL = "url";
 
@@ -70,7 +68,7 @@ public class ServerSensor1 extends AbstractSwanSensor {
     }
 
     @Override
-    public void register(String id, String valuePath, Bundle configuration, final Bundle httpConfiguration, Bundle extraConfiguration){// throws IOException {
+    public void register(String id, String valuePath, Bundle configuration, final Bundle httpConfiguration, Bundle extraConfiguration) {// throws IOException {
 
 
         ServerPoller serverPoller = new ServerPoller(id, valuePath,
@@ -107,30 +105,26 @@ public class ServerSensor1 extends AbstractSwanSensor {
                 long start = System.currentTimeMillis();
 
                 //String url = valuePath;
-                String url= configuration.getString("url");
-                String apiKey= configuration.getString("api_key");
+                String url = configuration.getString("url");
+                String apiKey = configuration.getString("api_key");
                 String requestType = configuration.getString("type");
                 String sensorValupath = configuration.getString("sensor");
 
 
-                    if(requestType.equalsIgnoreCase("post")){
+                if (requestType.equalsIgnoreCase("post")) {
 
 
-                        String content = "name="+sensorValupath;
-                        response = HttpConnection.postRequest(url, content);
-                        //Log.e("Roshan",response.toString());
+                    String content = "name=" + sensorValupath;
+                    response = HttpConnection.postRequest(url, content);
+                    //Log.e("Roshan",response.toString());
 
-                    }
+                } else if (requestType.equalsIgnoreCase("get")) {
+                    Log.e("Roshan", url);
+                    response = HttpConnection.getRequest(url);
+                    //Log.e("Roshan",response.toString());
+                }
 
-                    else if(requestType.equalsIgnoreCase("get")){
-                        Log.e("Roshan",url);
-                        response = HttpConnection.getRequest(url);
-                        //Log.e("Roshan",response.toString());
-                    }
-
-                    //putValueTrimSize(valuePath, id, start, content.toString());
-
-
+                //putValueTrimSize(valuePath, id, start, content.toString());
 
 
                 try {
@@ -143,8 +137,6 @@ public class ServerSensor1 extends AbstractSwanSensor {
 
 
     }
-
-
 
 
     public static class HttpConnection {
@@ -166,7 +158,7 @@ public class ServerSensor1 extends AbstractSwanSensor {
             try {
                 urlConnection = (HttpURLConnection) url.openConnection();
                 in = new BufferedInputStream(urlConnection.getInputStream());
-                Log.e("Roshan",in.toString());
+                Log.e("Roshan", in.toString());
                 readStream(in);
 
 
@@ -182,7 +174,7 @@ public class ServerSensor1 extends AbstractSwanSensor {
             try {
                 ByteArrayOutputStream bo = new ByteArrayOutputStream();
                 int i = is.read();
-                while(i != -1) {
+                while (i != -1) {
                     bo.write(i);
                     i = is.read();
                 }
@@ -192,7 +184,7 @@ public class ServerSensor1 extends AbstractSwanSensor {
             }
         }
 
-        private static void writeStream(OutputStream os, String data){
+        private static void writeStream(OutputStream os, String data) {
 
             try {
                 os.write(data.getBytes());
@@ -203,7 +195,7 @@ public class ServerSensor1 extends AbstractSwanSensor {
         }
 
 
-        public static InputStream postRequest(String stringURL, String content){
+        public static InputStream postRequest(String stringURL, String content) {
 
             URL url = null;
 
@@ -248,28 +240,18 @@ public class ServerSensor1 extends AbstractSwanSensor {
         }
 
 
-
-
     }
-
-
-
 
 
     @Override
     public String[] getValuePaths() {
-        return new String[] { URL };
+        return new String[]{URL};
     }
 
     @Override
     public void onConnected() {
 
     }
-
-
-
-
-
 
 
 }

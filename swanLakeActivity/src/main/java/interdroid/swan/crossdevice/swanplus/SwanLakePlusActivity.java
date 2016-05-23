@@ -4,7 +4,6 @@ import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.FragmentTransaction;
-import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -52,7 +51,6 @@ import interdroid.swan.crossdevice.Registry;
 import interdroid.swan.crossdevice.SwanGCMConstants;
 import interdroid.swan.crossdevice.swanplus.bluetooth.BTManager;
 import interdroid.swan.crossdevice.swanplus.run2gether.ActivityRun2gether;
-import interdroid.swan.crossdevice.swanplus.wifidirect.WDManager;
 import interdroid.swan.swansong.Expression;
 import interdroid.swan.ttn.TtnActivity;
 import nl.sense_os.service.constants.SensePrefs;
@@ -60,7 +58,7 @@ import nl.sense_os.service.constants.SensePrefs;
 
 /**
  * Created by vladimir on 9/8/15.
- *
+ * <p/>
  * TODO implement mechanism from removing nearby nodes when they are no longer around
  * TODO if peers are already connected when starting the app, they should request user details from each other
  * TODO if disconnected, attempting to unregister from remote will fail
@@ -86,7 +84,7 @@ public class SwanLakePlusActivity extends FragmentActivity implements ActionBar.
             String action = intent.getAction();
 
             // When discovery finds a device
-            if(BTManager.ACTION_NEARBY_DEVICE_FOUND.equals(action)) {
+            if (BTManager.ACTION_NEARBY_DEVICE_FOUND.equals(action)) {
                 getNearbyPeersAdapter().notifyDataSetChanged();
             }
         }
@@ -279,17 +277,17 @@ public class SwanLakePlusActivity extends FragmentActivity implements ActionBar.
             ta.recycle();
 
             ((CheckedTextView) (convertView.findViewById(android.R.id.text1)))
-                .setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mContactsFragment.getListView().setItemChecked(position,
-                                !((CheckedTextView) v).isChecked());
-                    }
-                });
+                    .setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mContactsFragment.getListView().setItemChecked(position,
+                                    !((CheckedTextView) v).isChecked());
+                        }
+                    });
             ((TextView) (convertView.findViewById(android.R.id.text1)))
-                .setText(getItem(position).toString());
+                    .setText(getItem(position).toString());
             ((TextView) (convertView.findViewById(android.R.id.text1)))
-                .setPadding(20, 20, 20, 20);
+                    .setPadding(20, 20, 20, 20);
             return convertView;
         }
     }
@@ -330,16 +328,16 @@ public class SwanLakePlusActivity extends FragmentActivity implements ActionBar.
             ta.recycle();
 
             ((CheckedTextView) (convertView.findViewById(android.R.id.text1)))
-                .setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mNearbyPeersFragment.getListView().setItemChecked(position, !((CheckedTextView) v).isChecked());
-                    }
-                });
+                    .setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mNearbyPeersFragment.getListView().setItemChecked(position, !((CheckedTextView) v).isChecked());
+                        }
+                    });
             ((TextView) (convertView.findViewById(android.R.id.text1)))
-                .setText(getItem(position).toString());
+                    .setText(getItem(position).toString());
             ((TextView) (convertView.findViewById(android.R.id.text1)))
-                .setPadding(20, 20, 20, 20);
+                    .setPadding(20, 20, 20, 20);
             return convertView;
         }
     }
@@ -467,8 +465,8 @@ public class SwanLakePlusActivity extends FragmentActivity implements ActionBar.
                             registerBackground((Switch) buttonView);
                         } else {
                             PreferenceManager
-                                .getDefaultSharedPreferences(SwanLakePlusActivity.this).edit()
-                                .putBoolean("enabled", isChecked).commit();
+                                    .getDefaultSharedPreferences(SwanLakePlusActivity.this).edit()
+                                    .putBoolean("enabled", isChecked).commit();
                         }
                     }
                 });
@@ -542,9 +540,9 @@ public class SwanLakePlusActivity extends FragmentActivity implements ActionBar.
                     }
 
                     Registry.add(SwanLakePlusActivity.this, Expression.LOCATION_SELF, GoogleCloudMessaging
-                        .getInstance(SwanLakePlusActivity.this).register(SwanGCMConstants.SENDER_ID));
+                            .getInstance(SwanLakePlusActivity.this).register(SwanGCMConstants.SENDER_ID));
                     PreferenceManager.getDefaultSharedPreferences(SwanLakePlusActivity.this)
-                        .edit().putBoolean("enabled", true).commit();
+                            .edit().putBoolean("enabled", true).commit();
 
                     runOnUiThread(new Runnable() {
                         @Override
@@ -585,7 +583,7 @@ public class SwanLakePlusActivity extends FragmentActivity implements ActionBar.
     public void log(String message, boolean display) {
         Log.d(TAG, message);
 
-        if(display) {
+        if (display) {
             Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         }
     }

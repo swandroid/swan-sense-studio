@@ -24,7 +24,7 @@ public class Run2getherBroadcastReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
 
-        if(FitnessSensor.ACTION_REQ_FITNESS_DATA.equals(action)) {
+        if (FitnessSensor.ACTION_REQ_FITNESS_DATA.equals(action)) {
             Intent replyIntent = new Intent();
             replyIntent.setAction(FitnessSensor.ACTION_SEND_FITNESS_DATA);
             replyIntent.putExtra("avg_speed", r2gActivity.getRunningData());

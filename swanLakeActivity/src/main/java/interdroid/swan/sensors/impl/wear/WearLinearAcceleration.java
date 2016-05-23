@@ -10,9 +10,10 @@ import interdroid.swan.sensors.impl.wear.shared.AbstractWearSensor;
 
 /**
  * Created by Veaceslav Munteanu on 14-March-16.
+ *
  * @email veaceslav.munteanu90@gmail.com
  */
-public class WearLinearAcceleration extends AbstractWearSensor{
+public class WearLinearAcceleration extends AbstractWearSensor {
 
     public static final String X_FIELD = "x";
     public static final String Y_FIELD = "y";
@@ -25,7 +26,6 @@ public class WearLinearAcceleration extends AbstractWearSensor{
      * The configuration activity for this sensor.
      *
      * @author Veaceslav Munteanu
-     *
      */
     public static class ConfigurationActivity extends
             AbstractConfigurationActivity {
@@ -55,6 +55,6 @@ public class WearLinearAcceleration extends AbstractWearSensor{
 
     @Override
     public String[] getValuePaths() {
-        return new String[] { X_FIELD, Y_FIELD, Z_FIELD, TOTAL_FIELD };
+        return new String[]{X_FIELD, Y_FIELD, Z_FIELD, TOTAL_FIELD};
     }
 }

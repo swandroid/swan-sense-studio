@@ -12,5 +12,5 @@
     <string name="error_field_required">This field is required</string>
     <string name="login_success">Logged in</string>
     <string name="login_failure">Login request failed</string>
-	<string name="logout_success">Logged out</string>
+    <string name="logout_success">Logged out</string>
 </resources>

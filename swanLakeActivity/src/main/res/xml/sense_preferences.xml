@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory 
-        android:title="Storage Preferences">
+    <PreferenceCategory android:title="Storage Preferences">
         <ListPreference
             android:defaultValue="Remote Storage"
             android:entries="@array/storage_options"
@@ -11,9 +10,8 @@
             android:summary="Select storage model"
             android:title="Storage models" />
     </PreferenceCategory>
-    
-    <PreferenceCategory 
-        android:title="Energy Consumption Preferences">
+
+    <PreferenceCategory android:title="Energy Consumption Preferences">
         <ListPreference
             android:defaultValue="Only if charging"
             android:entries="@array/battery_state_options"
@@ -21,8 +19,8 @@
             android:key="battery"
             android:summary="Select energy usage model"
             android:title="Battery state" />
-        
-         <EditTextPreference
+
+        <EditTextPreference
             android:defaultValue="80"
             android:dialogTitle="Enter battery threshold"
             android:inputType="number"
@@ -30,8 +28,8 @@
             android:summary="Set battery threshold"
             android:title="Battery threshold" />
     </PreferenceCategory>
-    
-    <PreferenceCategory android:title="Upload data to Sense cloud" >       
+
+    <PreferenceCategory android:title="Upload data to Sense cloud">
         <ListPreference
             android:defaultValue="30"
             android:entries="@array/sync_rate_options"
@@ -39,7 +37,7 @@
             android:key="sync_rate"
             android:summary="Select sync rate"
             android:title="Sync rate" />
-        
+
 
         <ListPreference
             android:defaultValue="WiFi"
@@ -50,7 +48,7 @@
             android:title="Mobile networks" />
     </PreferenceCategory>
 
-     <PreferenceCategory android:title="Download data from Sense cloud" >       
+    <PreferenceCategory android:title="Download data from Sense cloud">
         <ListPreference
             android:defaultValue="WiFi"
             android:entries="@array/mobile_network_options"
@@ -59,5 +57,5 @@
             android:summary="Select network"
             android:title="Mobile networks" />
     </PreferenceCategory>
-    
+
 </PreferenceScreen>

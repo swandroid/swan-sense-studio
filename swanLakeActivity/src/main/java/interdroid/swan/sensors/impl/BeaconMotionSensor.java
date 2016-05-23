@@ -20,44 +20,45 @@ import interdroid.swan.sensors.AbstractConfigurationActivity;
 public class BeaconMotionSensor extends AbstractBeaconSensor {
 
     public final String MOVING_VALUEPATH = "isMoving";
-    public final String CURRENT_MOTION_TIME   = "currentMotionTime";
+    public final String CURRENT_MOTION_TIME = "currentMotionTime";
     public final String PREVIOUS_MOTION_TIME = "previousMotionTime";
 
     public final String TAG = "BeaconMotionSensor";
+
     @Override
     public void setData(HashMap<String, Beacon> beacons, long time) {
 
 
-        Beacon beacon = getRequiredBeacon(locationString,beacons);
+        Beacon beacon = getRequiredBeacon(locationString, beacons);
 
-        if(beacon == null){
-            Log.e(TAG,"Error: Beacon is null");
+        if (beacon == null) {
+            Log.e(TAG, "Error: Beacon is null");
             return;
         }
 
-        if(!BeaconUtils.isEstimoteNearable(beacon)){
+        if (!BeaconUtils.isEstimoteNearable(beacon)) {
             return;
         }
 
-            for (Map.Entry<String, String> id : ids.entrySet()) {
-                if(id.getValue().equals(MOVING_VALUEPATH)) {
-                    putValueTrimSize(id.getValue(), id.getKey(),
-                            time,
-                            isMoving(beacon));
-                }
-
-                if(id.getValue().equals(CURRENT_MOTION_TIME)) {
-                    putValueTrimSize(id.getValue(), id.getKey(),
-                            time,
-                            currentMotionTime(beacon));
-                }
-
-                if(id.getValue().equals(PREVIOUS_MOTION_TIME)) {
-                    putValueTrimSize(id.getValue(), id.getKey(),
-                            time,
-                            currentMotionTime(beacon));
-                }
+        for (Map.Entry<String, String> id : ids.entrySet()) {
+            if (id.getValue().equals(MOVING_VALUEPATH)) {
+                putValueTrimSize(id.getValue(), id.getKey(),
+                        time,
+                        isMoving(beacon));
             }
+
+            if (id.getValue().equals(CURRENT_MOTION_TIME)) {
+                putValueTrimSize(id.getValue(), id.getKey(),
+                        time,
+                        currentMotionTime(beacon));
+            }
+
+            if (id.getValue().equals(PREVIOUS_MOTION_TIME)) {
+                putValueTrimSize(id.getValue(), id.getKey(),
+                        time,
+                        currentMotionTime(beacon));
+            }
+        }
 
     }
 
@@ -66,26 +67,26 @@ public class BeaconMotionSensor extends AbstractBeaconSensor {
         return TAG;
     }
 
-    private int isMoving(Beacon beacon){
+    private int isMoving(Beacon beacon) {
         byte val = beacon.getDataFields().get(3).byteValue();
 
-        if((val & 0x40) != 0){
+        if ((val & 0x40) != 0) {
             return 1;
         } else {
             return 0;
         }
     }
 
-    private int currentMotionTime(Beacon beacon){
+    private int currentMotionTime(Beacon beacon) {
         return convertMotionStateDuration(beacon.getDataFields().get(7).byteValue());
     }
 
-    private int previousMotionTime(Beacon beacon){
+    private int previousMotionTime(Beacon beacon) {
         return convertMotionStateDuration(beacon.getDataFields().get(8).byteValue());
     }
 
-    private int convertMotionStateDuration(byte raw){
-        byte unit = (byte )((raw >> 6) & 0x03);
+    private int convertMotionStateDuration(byte raw) {
+        byte unit = (byte) ((raw >> 6) & 0x03);
         int duration = (raw & 0x3f);
 
         if (unit == 1) {
@@ -96,16 +97,16 @@ public class BeaconMotionSensor extends AbstractBeaconSensor {
 
         return duration;
     }
+
     @Override
     public String[] getValuePaths() {
-        return new String[]{ MOVING_VALUEPATH, CURRENT_MOTION_TIME, PREVIOUS_MOTION_TIME};
+        return new String[]{MOVING_VALUEPATH, CURRENT_MOTION_TIME, PREVIOUS_MOTION_TIME};
     }
 
     /**
      * The configuration activity for this sensor.
      *
      * @author Veaceslav Munteanu
-     *
      */
     public static class ConfigurationActivity extends
             AbstractConfigurationActivity {

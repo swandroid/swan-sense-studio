@@ -3,18 +3,16 @@ package interdroid.swan.crossdevice.beacon;
 import android.content.Context;
 import android.content.Intent;
 
-import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconManager;
 import org.altbeacon.beacon.BeaconParser;
 import org.altbeacon.beacon.powersave.BackgroundPowerSaver;
 import org.altbeacon.beacon.startup.RegionBootstrap;
 
 
-
 /**
  * Created by Veaceslav Munteanu on 13 April 2016
  */
-public class BeaconInitializer{
+public class BeaconInitializer {
     private static final String TAG = "BeaconReferenceApp";
     private RegionBootstrap regionBootstrap;
     private BackgroundPowerSaver backgroundPowerSaver;
@@ -25,13 +23,13 @@ public class BeaconInitializer{
     private static BeaconInitializer ourInstance;
 
 
-    private BeaconInitializer(Context context){
+    private BeaconInitializer(Context context) {
         this.context = context;
         onCreate();
     }
 
-    public static  BeaconInitializer getInstance(Context context){
-        if(ourInstance == null){
+    public static BeaconInitializer getInstance(Context context) {
+        if (ourInstance == null) {
             ourInstance = new BeaconInitializer(context);
         }
         return ourInstance;
@@ -81,7 +79,7 @@ public class BeaconInitializer{
 
         //beaconManager.setDebug(true);
 
-        context.startService(new Intent(context,BeaconSingleton.class));
+        context.startService(new Intent(context, BeaconSingleton.class));
     }
 
 

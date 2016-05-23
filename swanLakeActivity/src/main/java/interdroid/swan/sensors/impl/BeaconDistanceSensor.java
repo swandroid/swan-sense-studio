@@ -17,9 +17,9 @@ import interdroid.swan.sensors.AbstractConfigurationActivity;
  *
  * @email veaceslav.munteanu90@gmail.com
  */
-public class BeaconDistanceSensor  extends AbstractBeaconSensor{
+public class BeaconDistanceSensor extends AbstractBeaconSensor {
 
-    public  String TAG = "DistanceBeaconSensor";
+    public String TAG = "DistanceBeaconSensor";
 
     public final String DISTANCE_VALUEPATH = "distance";
 
@@ -39,28 +39,28 @@ public class BeaconDistanceSensor  extends AbstractBeaconSensor{
     @Override
     public void setData(HashMap<String, Beacon> beacons, long time) {
 
-        Beacon beacon = getRequiredBeacon(locationString,beacons);
+        Beacon beacon = getRequiredBeacon(locationString, beacons);
 
-        if(beacon == null){
-            Log.e(TAG,"Error: Beacon is null");
+        if (beacon == null) {
+            Log.e(TAG, "Error: Beacon is null");
             return;
         }
 
         double distance = INVALID_DISTANCE;
 
-            if(BeaconUtils.isEstimoteNearable(beacon)){
-                Log.d(TAG, "Estimote nearable power " + beacon.getTxPower() + " " + getNearableTxPower(beacon));
-                distance = Beacon.getDistanceCalculator().calculateDistance(getNearableTxPower(beacon),
-                                                                                    (double)beacon.getRssi());
-            } else {
-                distance = beacon.getDistance();
-            }
+        if (BeaconUtils.isEstimoteNearable(beacon)) {
+            Log.d(TAG, "Estimote nearable power " + beacon.getTxPower() + " " + getNearableTxPower(beacon));
+            distance = Beacon.getDistanceCalculator().calculateDistance(getNearableTxPower(beacon),
+                    (double) beacon.getRssi());
+        } else {
+            distance = beacon.getDistance();
+        }
 
-            for (Map.Entry<String, String> id : ids.entrySet()) {
-                putValueTrimSize(id.getValue(), id.getKey(),
-                        time,
-                        distance);
-            }
+        for (Map.Entry<String, String> id : ids.entrySet()) {
+            putValueTrimSize(id.getValue(), id.getKey(),
+                    time,
+                    distance);
+        }
     }
 
     @Override
@@ -70,12 +70,12 @@ public class BeaconDistanceSensor  extends AbstractBeaconSensor{
 
     @Override
     public String[] getValuePaths() {
-        return new String[]{ DISTANCE_VALUEPATH };
+        return new String[]{DISTANCE_VALUEPATH};
     }
 
-    private int getNearableTxPower(Beacon beacon){
+    private int getNearableTxPower(Beacon beacon) {
         int[] powerLevels = {-30, -20, -16, 0, -8, -4, -12, 4};
-        int powerIndex = (byte)beacon.getTxPower() & 0x0f;
+        int powerIndex = (byte) beacon.getTxPower() & 0x0f;
         Log.d(TAG, "Power Index " + powerIndex);
         return powerLevels[powerIndex];
     }

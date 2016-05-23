@@ -1,17 +1,5 @@
 package interdroid.swan.crossdevice;
 
-import interdroid.sense.LoginActivity;
-import interdroid.sense.RegistrationActivity;
-import interdroid.sense.SettingsActivity;
-import interdroid.swan.R;
-import interdroid.swan.crossdevice.swanplus.TestActivity;
-import interdroid.swan.swansong.Expression;
-
-import java.io.IOException;
-import java.util.List;
-
-import interdroid.swan.ttn.TtnActivity;
-import nl.sense_os.service.constants.SensePrefs;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
@@ -47,380 +35,390 @@ import android.widget.Toast;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
+import java.io.IOException;
+import java.util.List;
+
+import interdroid.sense.LoginActivity;
+import interdroid.sense.RegistrationActivity;
+import interdroid.sense.SettingsActivity;
+import interdroid.swan.R;
+import interdroid.swan.swansong.Expression;
+import interdroid.swan.ttn.TtnActivity;
+import nl.sense_os.service.constants.SensePrefs;
+
 /**
  * Activity that shows which remote devices are known and enables to pair with
  * other devices.
- * 
+ *
  * @author rkemp
- * 
  */
 public class SwanLakeActivity extends ListActivity {
 
-	private static final String TAG = "SwanLakeActivity";
+    private static final String TAG = "SwanLakeActivity";
 
-	private static final int DIALOG_SET_NAME = 1;
+    private static final int DIALOG_SET_NAME = 1;
 
-	private NfcAdapter mNfcAdapter;
-	private RegisteredSWANsAdapter mAdapter;
-	private EditText mNameEditText;
+    private NfcAdapter mNfcAdapter;
+    private RegisteredSWANsAdapter mAdapter;
+    private EditText mNameEditText;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		final ListView listView = getListView();
-		listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
-		listView.setMultiChoiceModeListener(new MultiChoiceModeListener() {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        final ListView listView = getListView();
+        listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        listView.setMultiChoiceModeListener(new MultiChoiceModeListener() {
 
-			@Override
-			public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-				return false;
-			}
+            @Override
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
 
-			@Override
-			public void onDestroyActionMode(ActionMode mode) {
-			}
+            @Override
+            public void onDestroyActionMode(ActionMode mode) {
+            }
 
-			@Override
-			public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-				MenuInflater inflater = mode.getMenuInflater();
-				inflater.inflate(R.menu.swanlake_cab, menu);
-				return true;
-			}
+            @Override
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                MenuInflater inflater = mode.getMenuInflater();
+                inflater.inflate(R.menu.swanlake_cab, menu);
+                return true;
+            }
 
-			@Override
-			public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-				switch (item.getItemId()) {
-				case R.id.action_delete:
-					SparseBooleanArray array = getListView()
-							.getCheckedItemPositions();
-					List<String> names = Registry
-							.getNames(SwanLakeActivity.this);
-					for (int i = 0; i < names.size(); i++) {
-						if (array.get(i)) {
-							Registry.remove(SwanLakeActivity.this, names.get(i));
-						}
-					}
-					mAdapter.notifyDataSetChanged();
-				}
-				mode.finish();
-				return true;
-			}
+            @Override
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_delete:
+                        SparseBooleanArray array = getListView()
+                                .getCheckedItemPositions();
+                        List<String> names = Registry
+                                .getNames(SwanLakeActivity.this);
+                        for (int i = 0; i < names.size(); i++) {
+                            if (array.get(i)) {
+                                Registry.remove(SwanLakeActivity.this, names.get(i));
+                            }
+                        }
+                        mAdapter.notifyDataSetChanged();
+                }
+                mode.finish();
+                return true;
+            }
 
-			@Override
-			public void onItemCheckedStateChanged(ActionMode mode,
-					int position, long id, boolean checked) {
-				mode.setTitle(getListView().getCheckedItemCount() + " selected");
-			}
-		});
-		mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
-		mAdapter = new RegisteredSWANsAdapter();
-		onNewIntent(getIntent());
-		setListAdapter(mAdapter);		
-	}
+            @Override
+            public void onItemCheckedStateChanged(ActionMode mode,
+                                                  int position, long id, boolean checked) {
+                mode.setTitle(getListView().getCheckedItemCount() + " selected");
+            }
+        });
+        mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        mAdapter = new RegisteredSWANsAdapter();
+        onNewIntent(getIntent());
+        setListAdapter(mAdapter);
+    }
 
-	@Override
-	protected Dialog onCreateDialog(int id) {
-		mNameEditText = new EditText(this);
-		mNameEditText.setPadding(10, 10, 10, 10);
-		mNameEditText.setText(PreferenceManager.getDefaultSharedPreferences(
-				SwanLakeActivity.this).getString("name",
-				"SWAN-" + System.currentTimeMillis()));
-		return new AlertDialog.Builder(this)
-				.setTitle("Choose a name for your device")
-				.setView(mNameEditText)
-				.setPositiveButton(android.R.string.ok, new OnClickListener() {
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        mNameEditText = new EditText(this);
+        mNameEditText.setPadding(10, 10, 10, 10);
+        mNameEditText.setText(PreferenceManager.getDefaultSharedPreferences(
+                SwanLakeActivity.this).getString("name",
+                "SWAN-" + System.currentTimeMillis()));
+        return new AlertDialog.Builder(this)
+                .setTitle("Choose a name for your device")
+                .setView(mNameEditText)
+                .setPositiveButton(android.R.string.ok, new OnClickListener() {
 
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						if (mNameEditText.getText().toString().contains(":")) {
-							runOnUiThread(new Runnable() {
-								public void run() {
-									Toast.makeText(
-											SwanLakeActivity.this,
-											"Character ':' is not allowed in the name, pick another name.",
-											Toast.LENGTH_LONG).show();
-								}
-							});
-							return;
-						}
-						PreferenceManager
-								.getDefaultSharedPreferences(
-										SwanLakeActivity.this)
-								.edit()
-								.putString("name",
-										mNameEditText.getText().toString())
-								.commit();
-						updateNFC();
-					}
-				}).create();
-	}
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (mNameEditText.getText().toString().contains(":")) {
+                            runOnUiThread(new Runnable() {
+                                public void run() {
+                                    Toast.makeText(
+                                            SwanLakeActivity.this,
+                                            "Character ':' is not allowed in the name, pick another name.",
+                                            Toast.LENGTH_LONG).show();
+                                }
+                            });
+                            return;
+                        }
+                        PreferenceManager
+                                .getDefaultSharedPreferences(
+                                        SwanLakeActivity.this)
+                                .edit()
+                                .putString("name",
+                                        mNameEditText.getText().toString())
+                                .commit();
+                        updateNFC();
+                    }
+                }).create();
+    }
 
-	@SuppressWarnings("deprecation")
-	@Override
-	protected void onPause() {
-		if(mNfcAdapter != null) {
-			mNfcAdapter.disableForegroundNdefPush(this);
-		}
-		super.onPause();
-	}
+    @SuppressWarnings("deprecation")
+    @Override
+    protected void onPause() {
+        if (mNfcAdapter != null) {
+            mNfcAdapter.disableForegroundNdefPush(this);
+        }
+        super.onPause();
+    }
 
-	@Override
-	protected void onNewIntent(Intent intent) {
-		// NDEF exchange mode
-		if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())) {
-			// just get the data from the intent
-			String authority = intent.getData().getAuthority();
-			final String name = authority.split(":")[0];
-			String regId = authority.split(":", 2)[1];
-			if (!Registry.add(this, name, regId)) {
-				// pop up duplicate dialog
-				runOnUiThread(new Runnable() {
+    @Override
+    protected void onNewIntent(Intent intent) {
+        // NDEF exchange mode
+        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())) {
+            // just get the data from the intent
+            String authority = intent.getData().getAuthority();
+            final String name = authority.split(":")[0];
+            String regId = authority.split(":", 2)[1];
+            if (!Registry.add(this, name, regId)) {
+                // pop up duplicate dialog
+                runOnUiThread(new Runnable() {
 
-					@Override
-					public void run() {
-						Toast.makeText(SwanLakeActivity.this,
-								"Duplicate '" + name + "', to be implemented",
-								Toast.LENGTH_LONG).show();
-					}
-				});
-			} else {
-				mAdapter.notifyDataSetChanged();
-			}
-		}
-	}
+                    @Override
+                    public void run() {
+                        Toast.makeText(SwanLakeActivity.this,
+                                "Duplicate '" + name + "', to be implemented",
+                                Toast.LENGTH_LONG).show();
+                    }
+                });
+            } else {
+                mAdapter.notifyDataSetChanged();
+            }
+        }
+    }
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.swanlake, menu);
-		((Switch) (menu.findItem(R.id.action_enable).getActionView()))
-				.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.swanlake, menu);
+        ((Switch) (menu.findItem(R.id.action_enable).getActionView()))
+                .setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
-					@Override
-					public void onCheckedChanged(CompoundButton buttonView,
-							boolean isChecked) {
-						if (isChecked
-								&& Registry.get(SwanLakeActivity.this,
-										Expression.LOCATION_SELF) == null) {
-							// first time, we should register with gcm in the
-							// background now.
-							registerBackground((Switch) buttonView);
-						} else {
-							PreferenceManager
-									.getDefaultSharedPreferences(
-											SwanLakeActivity.this).edit()
-									.putBoolean("enabled", isChecked).commit();
-						}
-					}
-				});
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView,
+                                                 boolean isChecked) {
+                        if (isChecked
+                                && Registry.get(SwanLakeActivity.this,
+                                Expression.LOCATION_SELF) == null) {
+                            // first time, we should register with gcm in the
+                            // background now.
+                            registerBackground((Switch) buttonView);
+                        } else {
+                            PreferenceManager
+                                    .getDefaultSharedPreferences(
+                                            SwanLakeActivity.this).edit()
+                                    .putBoolean("enabled", isChecked).commit();
+                        }
+                    }
+                });
 
-		return true;
-	}
+        return true;
+    }
 
-	@SuppressWarnings("deprecation")
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.action_share:
-			updateNFC();
-			break;
-		case R.id.action_set_name:
-			showDialog(DIALOG_SET_NAME);
-			break;
-		case R.id.login:
-			startActivity(new Intent(this, LoginActivity.class));
-			break;
-		case R.id.logout:
-			// clear cached settings of the previous user (e.g. device id)
-	        Editor authEditor = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE).edit();
-	        authEditor.clear();
-	        authEditor.commit();
-	        // update UI
-	        runOnUiThread(new Runnable() {
+    @SuppressWarnings("deprecation")
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_share:
+                updateNFC();
+                break;
+            case R.id.action_set_name:
+                showDialog(DIALOG_SET_NAME);
+                break;
+            case R.id.login:
+                startActivity(new Intent(this, LoginActivity.class));
+                break;
+            case R.id.logout:
+                // clear cached settings of the previous user (e.g. device id)
+                Editor authEditor = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE).edit();
+                authEditor.clear();
+                authEditor.commit();
+                // update UI
+                runOnUiThread(new Runnable() {
 
-	            @Override
-	            public void run() {
-	                Toast.makeText(SwanLakeActivity.this, R.string.logout_success, Toast.LENGTH_LONG)
-	                        .show();
-	            }
-	        });
-	        
-			break;
-		case R.id.signup:
-			startActivity(new Intent(this, RegistrationActivity.class));
-			break;
-		case R.id.settings:
-			startActivity(new Intent(this, SettingsActivity.class));
-			break;
-		case R.id.action_ttn:
-			startActivity(new Intent(this, TtnActivity.class));
-			break;
-		default:
-			break;
-		}
-		return super.onOptionsItemSelected(item);
-	}
+                    @Override
+                    public void run() {
+                        Toast.makeText(SwanLakeActivity.this, R.string.logout_success, Toast.LENGTH_LONG)
+                                .show();
+                    }
+                });
 
-	
-	@SuppressWarnings("deprecation")
-	private void updateNFC() {
-		String regId = Registry.get(this, Expression.LOCATION_SELF);
-		if (regId == null) {
-			Log.d(TAG,
-					"Not registered with Google Cloud Messaging, cannot share");
-			runOnUiThread(new Runnable() {
-				public void run() {
-					Toast.makeText(
-							SwanLakeActivity.this,
-							"Not registered with Google Cloud Messaging, cannot share",
-							Toast.LENGTH_LONG).show();
-				}
-			});
-			return;
-		}
-		if (mNfcAdapter != null) {
-			String userFriendlyName = PreferenceManager
-					.getDefaultSharedPreferences(SwanLakeActivity.this)
-					.getString("name", null);
-			if (userFriendlyName == null) {
-				runOnUiThread(new Runnable() {
+                break;
+            case R.id.signup:
+                startActivity(new Intent(this, RegistrationActivity.class));
+                break;
+            case R.id.settings:
+                startActivity(new Intent(this, SettingsActivity.class));
+                break;
+            case R.id.action_ttn:
+                startActivity(new Intent(this, TtnActivity.class));
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
-					@Override
-					public void run() {
-						Toast.makeText(SwanLakeActivity.this,
-								"Please set a name for your device",
-								Toast.LENGTH_SHORT).show();
-						showDialog(DIALOG_SET_NAME);
-					}
-				});
-				return;
-			}
 
-			NdefRecord data = NdefRecord.createUri("swan://" + userFriendlyName
-					+ ":" + regId);
-			NdefMessage message = new NdefMessage(new NdefRecord[] { data });
-			mNfcAdapter.enableForegroundNdefPush(this, message);
-			runOnUiThread(new Runnable() {
-				public void run() {
-					Toast.makeText(SwanLakeActivity.this,
-							"Ready for NFC sharing", Toast.LENGTH_LONG).show();
-				}
-			});
-		}
-	}
+    @SuppressWarnings("deprecation")
+    private void updateNFC() {
+        String regId = Registry.get(this, Expression.LOCATION_SELF);
+        if (regId == null) {
+            Log.d(TAG,
+                    "Not registered with Google Cloud Messaging, cannot share");
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    Toast.makeText(
+                            SwanLakeActivity.this,
+                            "Not registered with Google Cloud Messaging, cannot share",
+                            Toast.LENGTH_LONG).show();
+                }
+            });
+            return;
+        }
+        if (mNfcAdapter != null) {
+            String userFriendlyName = PreferenceManager
+                    .getDefaultSharedPreferences(SwanLakeActivity.this)
+                    .getString("name", null);
+            if (userFriendlyName == null) {
+                runOnUiThread(new Runnable() {
 
-	@Override
-	public boolean onPrepareOptionsMenu(Menu menu) {
-		((Switch) (menu.findItem(R.id.action_enable).getActionView()))
-				.setChecked(PreferenceManager.getDefaultSharedPreferences(this)
-						.getBoolean("enabled", false));
-		return super.onPrepareOptionsMenu(menu);
-	}
+                    @Override
+                    public void run() {
+                        Toast.makeText(SwanLakeActivity.this,
+                                "Please set a name for your device",
+                                Toast.LENGTH_SHORT).show();
+                        showDialog(DIALOG_SET_NAME);
+                    }
+                });
+                return;
+            }
 
-	protected void registerBackground(final Switch switchWidget) {
-		switchWidget.setEnabled(false);
-		new Thread() {
-			public void run() {
-				try {
-					if (SwanGCMConstants.API_KEY.equals(SwanGCMConstants.EMPTY)
-							|| SwanGCMConstants.SENDER_ID
-									.equals(SwanGCMConstants.EMPTY)) {
-						throw new RuntimeException(
-								"Please provide valid values in SwanGCMConstants");
+            NdefRecord data = NdefRecord.createUri("swan://" + userFriendlyName
+                    + ":" + regId);
+            NdefMessage message = new NdefMessage(new NdefRecord[]{data});
+            mNfcAdapter.enableForegroundNdefPush(this, message);
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    Toast.makeText(SwanLakeActivity.this,
+                            "Ready for NFC sharing", Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+    }
 
-					}
-					Registry.add(SwanLakeActivity.this,
-							Expression.LOCATION_SELF, GoogleCloudMessaging
-									.getInstance(SwanLakeActivity.this)
-									.register(SwanGCMConstants.SENDER_ID));
-					PreferenceManager
-							.getDefaultSharedPreferences(SwanLakeActivity.this)
-							.edit().putBoolean("enabled", true).commit();
-					runOnUiThread(new Runnable() {
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        ((Switch) (menu.findItem(R.id.action_enable).getActionView()))
+                .setChecked(PreferenceManager.getDefaultSharedPreferences(this)
+                        .getBoolean("enabled", false));
+        return super.onPrepareOptionsMenu(menu);
+    }
 
-						@Override
-						public void run() {
-							Toast.makeText(
-									SwanLakeActivity.this,
-									"Got a registration ID: "
-											+ Registry.get(
-													SwanLakeActivity.this,
-													Expression.LOCATION_SELF),
-									Toast.LENGTH_LONG).show();
-						}
-					});
-				} catch (IOException e) {
-					Log.d(TAG,
-							"Failed to register with Google Cloud Messaging", e);
-					runOnUiThread(new Runnable() {
+    protected void registerBackground(final Switch switchWidget) {
+        switchWidget.setEnabled(false);
+        new Thread() {
+            public void run() {
+                try {
+                    if (SwanGCMConstants.API_KEY.equals(SwanGCMConstants.EMPTY)
+                            || SwanGCMConstants.SENDER_ID
+                            .equals(SwanGCMConstants.EMPTY)) {
+                        throw new RuntimeException(
+                                "Please provide valid values in SwanGCMConstants");
 
-						@Override
-						public void run() {
-							switchWidget.setChecked(false);
-							Toast.makeText(
-									SwanLakeActivity.this,
-									"Failed to register with Google Cloud Messaging",
-									Toast.LENGTH_LONG).show();
-						}
-					});
-				}
-				runOnUiThread(new Runnable() {
+                    }
+                    Registry.add(SwanLakeActivity.this,
+                            Expression.LOCATION_SELF, GoogleCloudMessaging
+                                    .getInstance(SwanLakeActivity.this)
+                                    .register(SwanGCMConstants.SENDER_ID));
+                    PreferenceManager
+                            .getDefaultSharedPreferences(SwanLakeActivity.this)
+                            .edit().putBoolean("enabled", true).commit();
+                    runOnUiThread(new Runnable() {
 
-					@Override
-					public void run() {
-						switchWidget.setEnabled(true);
-					}
-				});
-			}
-		}.start();
-	}
+                        @Override
+                        public void run() {
+                            Toast.makeText(
+                                    SwanLakeActivity.this,
+                                    "Got a registration ID: "
+                                            + Registry.get(
+                                            SwanLakeActivity.this,
+                                            Expression.LOCATION_SELF),
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    });
+                } catch (IOException e) {
+                    Log.d(TAG,
+                            "Failed to register with Google Cloud Messaging", e);
+                    runOnUiThread(new Runnable() {
 
-	class RegisteredSWANsAdapter extends BaseAdapter {
+                        @Override
+                        public void run() {
+                            switchWidget.setChecked(false);
+                            Toast.makeText(
+                                    SwanLakeActivity.this,
+                                    "Failed to register with Google Cloud Messaging",
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+                runOnUiThread(new Runnable() {
 
-		@Override
-		public int getCount() {
-			return Registry.getNames(SwanLakeActivity.this).size();
-		}
+                    @Override
+                    public void run() {
+                        switchWidget.setEnabled(true);
+                    }
+                });
+            }
+        }.start();
+    }
 
-		@Override
-		public Object getItem(int position) {
-			return Registry.getNames(SwanLakeActivity.this).get(position);
-		}
+    class RegisteredSWANsAdapter extends BaseAdapter {
 
-		@Override
-		public long getItemId(int position) {
-			return 0;
-		}
+        @Override
+        public int getCount() {
+            return Registry.getNames(SwanLakeActivity.this).size();
+        }
 
-		@SuppressWarnings("deprecation")
-		@Override
-		public View getView(final int position, View convertView,
-				ViewGroup parent) {
-			if (convertView == null) {
-				convertView = LayoutInflater
-						.from(SwanLakeActivity.this)
-						.inflate(
-								android.R.layout.simple_list_item_multiple_choice,
-								null);
-			}
-			TypedArray ta = SwanLakeActivity.this
-					.obtainStyledAttributes(new int[] { android.R.attr.activatedBackgroundIndicator });
-			convertView.setBackgroundDrawable(ta.getDrawable(0));
-			ta.recycle();
+        @Override
+        public Object getItem(int position) {
+            return Registry.getNames(SwanLakeActivity.this).get(position);
+        }
 
-			((CheckedTextView) (convertView.findViewById(android.R.id.text1)))
-					.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
 
-						@Override
-						public void onClick(View v) {
-							getListView().setItemChecked(position,
-									!((CheckedTextView) v).isChecked());
-						}
-					});
-			((TextView) (convertView.findViewById(android.R.id.text1)))
-					.setText(getItem(position).toString());
-			((TextView) (convertView.findViewById(android.R.id.text1)))
-					.setPadding(20, 20, 20, 20);
-			return convertView;
-		}
-	}
+        @SuppressWarnings("deprecation")
+        @Override
+        public View getView(final int position, View convertView,
+                            ViewGroup parent) {
+            if (convertView == null) {
+                convertView = LayoutInflater
+                        .from(SwanLakeActivity.this)
+                        .inflate(
+                                android.R.layout.simple_list_item_multiple_choice,
+                                null);
+            }
+            TypedArray ta = SwanLakeActivity.this
+                    .obtainStyledAttributes(new int[]{android.R.attr.activatedBackgroundIndicator});
+            convertView.setBackgroundDrawable(ta.getDrawable(0));
+            ta.recycle();
+
+            ((CheckedTextView) (convertView.findViewById(android.R.id.text1)))
+                    .setOnClickListener(new View.OnClickListener() {
+
+                        @Override
+                        public void onClick(View v) {
+                            getListView().setItemChecked(position,
+                                    !((CheckedTextView) v).isChecked());
+                        }
+                    });
+            ((TextView) (convertView.findViewById(android.R.id.text1)))
+                    .setText(getItem(position).toString());
+            ((TextView) (convertView.findViewById(android.R.id.text1)))
+                    .setPadding(20, 20, 20, 20);
+            return convertView;
+        }
+    }
 }

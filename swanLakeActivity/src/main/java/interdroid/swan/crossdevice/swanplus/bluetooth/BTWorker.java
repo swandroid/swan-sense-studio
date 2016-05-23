@@ -1,8 +1,6 @@
 package interdroid.swan.crossdevice.swanplus.bluetooth;
 
-import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
-import android.content.Intent;
 import android.util.Log;
 
 import java.io.IOException;
@@ -61,11 +59,11 @@ public class BTWorker extends Thread {
     }
 
     private String toPrintableData(String data, String action) {
-        if(data == null) {
+        if (data == null) {
             return "(no data)";
         }
 
-        if(action.equals(EvaluationEngineService.ACTION_NEW_RESULT_REMOTE)) {
+        if (action.equals(EvaluationEngineService.ACTION_NEW_RESULT_REMOTE)) {
             try {
                 return Converter.stringToObject(data).toString();
             } catch (Exception e) {
@@ -77,7 +75,7 @@ public class BTWorker extends Thread {
     }
 
     public String getRemoteDeviceName() {
-        if(btSocket != null) {
+        if (btSocket != null) {
             return btSocket.getRemoteDevice().getName();
         }
         return null;

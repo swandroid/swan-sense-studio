@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory android:title="Value Path" >
+    <PreferenceCategory android:title="Value Path">
         <ListPreference
             android:entries="@array/sound_valuepaths"
             android:entryValues="@array/sound_valuepaths"
@@ -9,7 +9,7 @@
             android:summary="Select a Value Path"
             android:title="Value Path" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="Configuration" >
+    <PreferenceCategory android:title="Configuration">
         <interdroid.swan.util.SeekBarPreference
             android:defaultValue="300"
             android:key="sample_interval"

@@ -7,6 +7,9 @@ package interdroid.swan.sensors.impl;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,11 +17,6 @@ import java.util.Map;
 import interdroid.swan.R;
 import interdroid.swan.sensors.AbstractConfigurationActivity;
 import interdroid.swan.sensors.AbstractSwanSensor;
-
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -29,15 +27,14 @@ import retrofit.converter.GsonConverter;
  * Created by Roshan Bharath Das on 05/11/15.
  */
 
-        //entity id = server
-        //valuepath url = "http://fs0.das4.cs.vu.nl:8090"
-        //configuration type = "pull"/"push"
-        //configuration content_url = "http://ovapi.nl"
-        //configuration content
+//entity id = server
+//valuepath url = "http://fs0.das4.cs.vu.nl:8090"
+//configuration type = "pull"/"push"
+//configuration content_url = "http://ovapi.nl"
+//configuration content
 
 
 public class ServerSensor extends AbstractSwanSensor {
-
 
 
     public static class ConfigurationActivity extends
@@ -51,11 +48,10 @@ public class ServerSensor extends AbstractSwanSensor {
     }
 
 
-
     public static final String SAMPLE_INTERVAL = "sample_interval";
     public static final long DEFAULT_SAMPLE_INTERVAL = 5 * 60 * 1000;
 
-    public  static final String MY_SERVER_ADDRESS = "https://api.thingspeak.com/update?api_key=VA1FPOVBRSVBF8LV&field1=0";
+    public static final String MY_SERVER_ADDRESS = "https://api.thingspeak.com/update?api_key=VA1FPOVBRSVBF8LV&field1=0";
 
     public static final String URL = "url";
 
@@ -111,7 +107,7 @@ public class ServerSensor extends AbstractSwanSensor {
 
                 //String url= configuration.getString("url");
                 String url = MY_SERVER_ADDRESS;
-                String apiKey= configuration.getString("api_key");
+                String apiKey = configuration.getString("api_key");
                 String requestType = configuration.getString("type");
                 String sensorValupath = configuration.getString("sensor");
 
@@ -125,46 +121,42 @@ public class ServerSensor extends AbstractSwanSensor {
                         .build();
 
 
-                    if(requestType.equalsIgnoreCase("post")){
+                if (requestType.equalsIgnoreCase("post")) {
 
 
-                        String content = "name="+sensorValupath;
+                    String content = "name=" + sensorValupath;
 
 
-                        eventResultsAdapter.create(ServerAPI.class).postInfo(content, new Callback<String>(){
-                            @Override
-                            public void success(String result, Response response) {
+                    eventResultsAdapter.create(ServerAPI.class).postInfo(content, new Callback<String>() {
+                        @Override
+                        public void success(String result, Response response) {
 
-                            }
+                        }
 
-                            @Override
-                            public void failure(RetrofitError error) {
-                                System.out.println(error);
-                            }
-                        });
-
-
-                    }
-
-                    else if(requestType.equalsIgnoreCase("get")){
-                        Log.e("Roshan",url);
-
-                        eventResultsAdapter.create(ServerAPI.class).getInfo(new Callback<String>(){
-                            @Override
-                            public void success(String result, Response response) {
-                                Log.e("Roshan", result);
-                            }
-
-                            @Override
-                            public void failure(RetrofitError error) {
-                                System.out.println(error);
-                            }
-                        });
-                    }
-
-                    //putValueTrimSize(valuePath, id, start, content.toString());
+                        @Override
+                        public void failure(RetrofitError error) {
+                            System.out.println(error);
+                        }
+                    });
 
 
+                } else if (requestType.equalsIgnoreCase("get")) {
+                    Log.e("Roshan", url);
+
+                    eventResultsAdapter.create(ServerAPI.class).getInfo(new Callback<String>() {
+                        @Override
+                        public void success(String result, Response response) {
+                            Log.e("Roshan", result);
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+                            System.out.println(error);
+                        }
+                    });
+                }
+
+                //putValueTrimSize(valuePath, id, start, content.toString());
 
 
                 try {
@@ -179,22 +171,15 @@ public class ServerSensor extends AbstractSwanSensor {
     }
 
 
-
-
     @Override
     public String[] getValuePaths() {
-        return new String[] { URL };
+        return new String[]{URL};
     }
 
     @Override
     public void onConnected() {
 
     }
-
-
-
-
-
 
 
 }

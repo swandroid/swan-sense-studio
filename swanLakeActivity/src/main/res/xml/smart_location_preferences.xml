@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory android:title="Value Path" >
+    <PreferenceCategory android:title="Value Path">
 
         <ListPreference
             android:entries="@array/smart_location_valuepaths"
@@ -11,7 +11,7 @@
             android:title="Value Path" />
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="Configuration" >
+    <PreferenceCategory android:title="Configuration">
 
         <EditTextPreference
             android:dialogTitle="Enter Latitude"
