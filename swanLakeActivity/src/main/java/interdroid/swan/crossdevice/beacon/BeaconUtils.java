@@ -28,11 +28,11 @@ public class BeaconUtils {
     }
 
     public static boolean haveEddystoneTML(Beacon beacon){
-        if(isEddystoneURL(beacon) && !beacon.getDataFields().isEmpty()){
+        if(isEddystoneURL(beacon) && !beacon.getExtraDataFields().isEmpty()){
             return true;
         }
 
-        if(isEddystoneUID(beacon) && !beacon.getDataFields().isEmpty()){
+        if(isEddystoneUID(beacon) && !beacon.getExtraDataFields().isEmpty()){
             return true;
         }
 

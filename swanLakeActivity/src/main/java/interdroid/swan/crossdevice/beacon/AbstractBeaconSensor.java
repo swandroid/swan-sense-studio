@@ -6,8 +6,11 @@ import android.util.Log;
 import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.Identifier;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -106,12 +109,36 @@ public abstract class AbstractBeaconSensor extends AbstractSwanSensor {
 
         if (location.equals("self") || location.equals("any")) {
             // return random beacon
+            Collection<Beacon> filtered = filterByType(beacons, type);
+            if(filtered.isEmpty())
+                return null;
             int val = new Random().nextInt(beacons.size());
-            for (Beacon t : beacons.values()) if (--val < 0) return t;
+            for (Beacon t : filtered) if (--val < 0) return t;
         } else if (beacons.containsKey(location)) {
             return beacons.get(location);
         }
 
         return null;
+    }
+
+    public Collection<Beacon> filterByType( HashMap<String, Beacon> beacons, int type){
+        Collection<Beacon> filtered = new ArrayList<>();
+
+        for(Beacon beacon : beacons.values()){
+            if(BeaconUtils.isAppleIBeacon(beacon) && ((type & BeaconTypes.IBEACON)!= 0)){
+                filtered.add(beacon);
+            } else if(BeaconUtils.isEddystoneUID(beacon) && ((type & BeaconTypes.EDDYSTONE_UID)!= 0)){
+                filtered.add(beacon);
+            } else if(BeaconUtils.isEddystoneURL(beacon) && ((type & BeaconTypes.EDYSTONE_URL)!= 0)){
+                filtered.add(beacon);
+            } else if(BeaconUtils.isAltBeacon(beacon) && ((type & BeaconTypes.ALT_BEACON)!= 0)){
+                filtered.add(beacon);
+            } else if(BeaconUtils.isEstimoteNearable(beacon) && ((type & BeaconTypes.ESTIMOTE_NEARABLE)!= 0)){
+                filtered.add(beacon);
+            } else if(BeaconUtils.haveEddystoneTML(beacon) && ((type & BeaconTypes.EDDYSTOME_TML) != 0)){
+                filtered.add(beacon);
+            }
+        }
+        return filtered;
     }
 }
