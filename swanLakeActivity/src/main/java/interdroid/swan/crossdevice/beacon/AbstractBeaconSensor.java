@@ -101,7 +101,7 @@ public abstract class AbstractBeaconSensor extends AbstractSwanSensor {
      *
      * @return
      */
-    public Beacon getRequiredBeacon(String location, HashMap<String, Beacon> beacons) {
+    public Beacon getRequiredBeacon(String location, HashMap<String, Beacon> beacons, int type) {
 
 
         if (location.equals("self") || location.equals("any")) {

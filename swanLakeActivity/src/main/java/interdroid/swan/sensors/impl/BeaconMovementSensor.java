@@ -9,6 +9,8 @@ import java.util.Map;
 
 import interdroid.swan.R;
 import interdroid.swan.crossdevice.beacon.AbstractBeaconSensor;
+import interdroid.swan.crossdevice.beacon.BeaconTypes;
+import interdroid.swan.crossdevice.beacon.BeaconUtils;
 import interdroid.swan.sensors.AbstractConfigurationActivity;
 
 /**
@@ -28,7 +30,7 @@ public class BeaconMovementSensor extends AbstractBeaconSensor {
     @Override
     public void setData(HashMap<String, Beacon> beacons, long time) {
 
-        Beacon beacon = getRequiredBeacon(locationString, beacons);
+        Beacon beacon = getRequiredBeacon(locationString, beacons, BeaconTypes.ESTIMOTE_NEARABLE);
 
         if (beacon == null) {
             Log.e(TAG, "Error: Beacon is null");

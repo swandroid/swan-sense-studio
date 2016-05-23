@@ -27,4 +27,15 @@ public class BeaconUtils {
         return beacon.getBeaconTypeCode() == 0x0101;
     }
 
+    public static boolean haveEddystoneTML(Beacon beacon){
+        if(isEddystoneURL(beacon) && !beacon.getDataFields().isEmpty()){
+            return true;
+        }
+
+        if(isEddystoneUID(beacon) && !beacon.getDataFields().isEmpty()){
+            return true;
+        }
+
+        return false;
+    }
 }
