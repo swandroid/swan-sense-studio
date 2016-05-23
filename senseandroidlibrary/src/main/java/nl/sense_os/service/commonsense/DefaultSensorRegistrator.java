@@ -1,12 +1,5 @@
 package nl.sense_os.service.commonsense;
 
-import nl.sense_os.service.constants.SenseDataTypes;
-import nl.sense_os.service.constants.SensePrefs;
-import nl.sense_os.service.constants.SensePrefs.Main;
-import nl.sense_os.service.constants.SensePrefs.Main.Ambience;
-import nl.sense_os.service.constants.SensePrefs.Main.Motion;
-import nl.sense_os.service.constants.SensorData.SensorDescriptions;
-import nl.sense_os.service.constants.SensorData.SensorNames;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -17,11 +10,18 @@ import android.nfc.NfcManager;
 import android.os.Build;
 import android.telephony.TelephonyManager;
 
+import nl.sense_os.service.constants.SenseDataTypes;
+import nl.sense_os.service.constants.SensePrefs;
+import nl.sense_os.service.constants.SensePrefs.Main;
+import nl.sense_os.service.constants.SensePrefs.Main.Ambience;
+import nl.sense_os.service.constants.SensePrefs.Main.Motion;
+import nl.sense_os.service.constants.SensorData.SensorDescriptions;
+import nl.sense_os.service.constants.SensorData.SensorNames;
+
 /**
  * Class that verifies that all the phone's sensors are known at CommonSense.
- * 
+ *
  * @author Steven Mulder <steven@sense-os.nl>
- * 
  * @see DefaultSensorRegistrationService
  */
 public class DefaultSensorRegistrator extends SensorRegistrator {
@@ -34,10 +34,9 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
 
     /**
      * Checks the IDs for light, camera light, noise, pressure sensors.
-     * 
+     *
      * @param deviceUuid
      * @param deviceType
-     * 
      * @return true if all sensor IDs are found or created
      */
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
@@ -72,13 +71,13 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
         // match noise sensor
         success &= checkSensor(SensorNames.NOISE, "noise", SenseDataTypes.FLOAT, SensorNames.NOISE,
                 "0.0", deviceType, deviceUuid);
-        
+
         // match noise sensor (burst-mode)
         SharedPreferences mainPrefs = getContext().getSharedPreferences(SensePrefs.MAIN_PREFS,
-        		Context.MODE_PRIVATE);
+                Context.MODE_PRIVATE);
         if (mainPrefs.getBoolean(Ambience.BURSTMODE, false)) {
-        	success &= checkSensor(SensorNames.NOISE_BURST, "noise (burst-mode)", SenseDataTypes.JSON, "noise (dB)",
-        			"{\"interval:\":0,\"data\":[2.23, 19.45, 20.2]}", deviceType, deviceUuid);
+            success &= checkSensor(SensorNames.NOISE_BURST, "noise (burst-mode)", SenseDataTypes.JSON, "noise (dB)",
+                    "{\"interval:\":0,\"data\":[2.23, 19.45, 20.2]}", deviceType, deviceUuid);
         }
         // match auto calibrated noise sensor
         success &= checkSensor(SensorNames.NOISE, "noise", SenseDataTypes.FLOAT,
@@ -155,10 +154,9 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
 
     /**
      * Checks the IDs for Bluetooth and Wi-Fi scan sensors.
-     * 
+     *
      * @param deviceUuid
      * @param deviceType
-     * 
      * @return true if all sensor IDs are found or created
      */
     @TargetApi(10)
@@ -202,10 +200,9 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
 
     /**
      * Checks the ID for the location sensor
-     * 
+     *
      * @param deviceUuid
      * @param deviceType
-     * 
      * @return true if the sensor ID is found or created
      */
     private boolean checkLocationSensors(String deviceType, String deviceUuid) {
@@ -229,10 +226,9 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
 
     /**
      * Checks the IDs for the accelerometer, orientation, fall detector, motion energy sensors.
-     * 
+     *
      * @param deviceUuid
      * @param deviceType
-     * 
      * @return true if the sensor ID is found or created
      */
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
@@ -287,22 +283,21 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
                 success &= checkSensor(SensorNames.FALL_DETECTOR, "fall (demo)",
                         SenseDataTypes.BOOL, "demo fall", "true", deviceType, deviceUuid);
             }
-            
-            
+
 
             // match linear acceleration
             if (mainPrefs.getBoolean(Motion.LINEAR_ACCELERATION, true)) {
                 //check if actual linear accelerometer exists,
                 //if not we set burst-mode only
-                String processed ="";
+                String processed = "";
 
                 if (null != sm.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)) {
-                  success &= checkSensor(SensorNames.LIN_ACCELERATION,
-                          SensorNames.LIN_ACCELERATION, SenseDataTypes.JSON, sensor.getName(),
-                          "{\"x-axis\":1.0,\"y-axis\":1.0,\"z-axis\":1.0}", deviceType,
-                          deviceUuid);
-                }else {
-                  processed = "processed ";
+                    success &= checkSensor(SensorNames.LIN_ACCELERATION,
+                            SensorNames.LIN_ACCELERATION, SenseDataTypes.JSON, sensor.getName(),
+                            "{\"x-axis\":1.0,\"y-axis\":1.0,\"z-axis\":1.0}", deviceType,
+                            deviceUuid);
+                } else {
+                    processed = "processed ";
                 }
 
                 if (mainPrefs.getBoolean(Motion.BURSTMODE, false)) {
@@ -316,7 +311,6 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
         } else {
             // Log.v(TAG, "No accelerometer present!");
         }
-
 
 
         // match orientation
@@ -355,10 +349,9 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
     /**
      * Checks IDs for the battery, screen activity, proximity, cal state, connection type, service
      * state, signal strength sensors.
-     * 
+     *
      * @param deviceUuid
      * @param deviceType
-     * 
      * @return true if all of the sensor IDs were found or created
      */
     private boolean checkPhoneStateSensors(String deviceType, String deviceUuid) {
@@ -423,19 +416,19 @@ public class DefaultSensorRegistrator extends SensorRegistrator {
 
         // match data connection
         success &= checkSensor(SensorNames.DATA_CONN, SensorNames.DATA_CONN, SenseDataTypes.STRING,
-        		SensorNames.DATA_CONN, "string", deviceType, deviceUuid);
+                SensorNames.DATA_CONN, "string", deviceType, deviceUuid);
         // match data connection
         success &= checkSensor(SensorNames.DATA_CONN, SensorNames.DATA_CONN, SenseDataTypes.STRING,
-        		SensorNames.DATA_CONN, "string", deviceType, deviceUuid);
+                SensorNames.DATA_CONN, "string", deviceType, deviceUuid);
 
         // match installed apps sensor
         success &= checkSensor(SensorNames.APP_INSTALLED, "installed apps", SenseDataTypes.JSON,
-        		SensorNames.APP_INSTALLED, "{\"installed\":[]}", deviceType, deviceUuid);
+                SensorNames.APP_INSTALLED, "{\"installed\":[]}", deviceType, deviceUuid);
         // TODO figure out a better way to send an array of objects
 
         // match foreground app sensor
         success &= checkSensor(SensorNames.APP_FOREGROUND, "foreground app", SenseDataTypes.JSON,
-        		SensorNames.APP_FOREGROUND, "{\"label\":\"Sense app\",\"process\":\"nl.sense_os.app\",\"activity\":\"SenseMainActivity\"}", deviceType, deviceUuid);
+                SensorNames.APP_FOREGROUND, "{\"label\":\"Sense app\",\"process\":\"nl.sense_os.app\",\"activity\":\"SenseMainActivity\"}", deviceType, deviceUuid);
         return success;
     }
 

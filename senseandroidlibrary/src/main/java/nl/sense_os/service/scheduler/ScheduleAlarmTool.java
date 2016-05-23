@@ -1,10 +1,5 @@
 package nl.sense_os.service.scheduler;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-
-import nl.sense_os.service.scheduler.Scheduler.Task;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -12,8 +7,13 @@ import android.content.Intent;
 import android.os.SystemClock;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import nl.sense_os.service.scheduler.Scheduler.Task;
+
 /**
- * 
  * @author Kimon Tsitsikas <kimon@sense-os.nl>
  */
 public class ScheduleAlarmTool {
@@ -25,7 +25,7 @@ public class ScheduleAlarmTool {
 
     /**
      * Returns the greatest common divisor of p and q
-     * 
+     *
      * @param p
      * @param q
      */
@@ -38,7 +38,7 @@ public class ScheduleAlarmTool {
 
     /**
      * Factory method to get the singleton instance.
-     * 
+     *
      * @param context
      * @return instance
      */
@@ -58,7 +58,7 @@ public class ScheduleAlarmTool {
 
     /**
      * Constructor.
-     * 
+     *
      * @param context
      * @param tasksList
      * @see #getInstance(Context)
@@ -69,9 +69,8 @@ public class ScheduleAlarmTool {
 
     /**
      * Cancels the alarm
-     * 
-     * @param context
-     *            Context to access AlarmManager
+     *
+     * @param context Context to access AlarmManager
      */
     public void cancelDeterministicAlarm() {
 
@@ -104,7 +103,7 @@ public class ScheduleAlarmTool {
     /**
      * Calculates the next execution time and returns the batch of tasks that need to be executed at
      * that time.
-     * 
+     *
      * @return
      */
     private Runnable getBatchTask() {
@@ -212,7 +211,6 @@ public class ScheduleAlarmTool {
 
     /**
      * Schedules the next task to execute.
-     * 
      */
     public void schedule() {
 

@@ -3,21 +3,6 @@
  *************************************************************************************************/
 package nl.sense_os.service.push;
 
-import java.io.IOException;
-
-import nl.sense_os.service.R;
-import nl.sense_os.service.ServiceStateHelper;
-import nl.sense_os.service.commonsense.SenseApi;
-import nl.sense_os.service.configuration.ConfigurationService;
-import nl.sense_os.service.configuration.RequirementReceiver;
-import nl.sense_os.service.constants.SensePrefs;
-import nl.sense_os.service.constants.SensePrefs.Auth;
-import nl.sense_os.service.constants.SensePrefs.Status;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -32,6 +17,21 @@ import android.widget.Toast;
 
 import com.google.android.gcm.GCMBaseIntentService;
 import com.google.android.gcm.GCMRegistrar;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
+import nl.sense_os.service.R;
+import nl.sense_os.service.ServiceStateHelper;
+import nl.sense_os.service.commonsense.SenseApi;
+import nl.sense_os.service.configuration.ConfigurationService;
+import nl.sense_os.service.configuration.RequirementReceiver;
+import nl.sense_os.service.constants.SensePrefs;
+import nl.sense_os.service.constants.SensePrefs.Auth;
+import nl.sense_os.service.constants.SensePrefs.Status;
 
 /**
  * Class that handles new message received with Google Cloud Messaging.<br/>
@@ -62,7 +62,7 @@ public class GCMReceiver extends GCMBaseIntentService {
 
     /**
      * Broadcast new requirements
-     * 
+     *
      * @param context
      * @param req
      * @see ConfigurationService#onHandleIntent
@@ -75,7 +75,7 @@ public class GCMReceiver extends GCMBaseIntentService {
 
     /**
      * Called when an error occurs with GCM
-     * 
+     *
      * @param context
      * @param errorId
      * @see http://developer.android.com/google/gcm/gcm.html
@@ -101,7 +101,7 @@ public class GCMReceiver extends GCMBaseIntentService {
      * <li>update_configuration: null</li>
      * <li>use_configuration: "configuration_id" from commonSense</li>
      * </ul>
-     * 
+     *
      * @param context
      * @param intent
      */
@@ -136,7 +136,7 @@ public class GCMReceiver extends GCMBaseIntentService {
     /**
      * Called when the application receive the GCM id from Google. This function will sync the
      * registration ID to the CommonSense.
-     * 
+     *
      * @param context
      * @param registrationId
      */
@@ -162,7 +162,7 @@ public class GCMReceiver extends GCMBaseIntentService {
 
     /**
      * Called when the app receives unregister message from Google.
-     * 
+     *
      * @param context
      * @param registrationId
      */
@@ -180,11 +180,9 @@ public class GCMReceiver extends GCMBaseIntentService {
 
     /**
      * Shows a notification to user.
-     * 
-     * @param context
-     *            application context
-     * @param jsonContent
-     *            String representation of JSon object consist of {title, text}
+     *
+     * @param context     application context
+     * @param jsonContent String representation of JSon object consist of {title, text}
      */
     private void showNotification(Context context, String jsonContent) {
         JSONObject content_json = null;
@@ -213,7 +211,7 @@ public class GCMReceiver extends GCMBaseIntentService {
 
     /**
      * Starts or stops the Sense service
-     * 
+     *
      * @param context
      * @param toggle
      */
@@ -239,7 +237,7 @@ public class GCMReceiver extends GCMBaseIntentService {
 
     /**
      * Calls CommonSense API to get the new configuration
-     * 
+     *
      * @param context
      */
     private void updateConfiguration(Context context) {
@@ -256,10 +254,9 @@ public class GCMReceiver extends GCMBaseIntentService {
 
     /**
      * Calls CommonSense to get the specific configuration for a given configuration ID.
-     * 
+     *
      * @param context
-     * @param configurationId
-     *            Configuration ID from CommonSense
+     * @param configurationId Configuration ID from CommonSense
      */
     private void useConfiguration(Context context, String configurationId) {
         try {

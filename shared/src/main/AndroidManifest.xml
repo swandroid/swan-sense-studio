@@ -1,4 +1,3 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="interdroid.swan.sensordashboard.shared">
+<manifest package="interdroid.swan.sensordashboard.shared">
 
 </manifest>

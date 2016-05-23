@@ -3,20 +3,6 @@
  *************************************************************************************************/
 package nl.sense_os.service;
 
-import java.net.URLEncoder;
-import java.util.Map;
-import nl.sense_os.service.commonsense.SenseApi;
-import nl.sense_os.service.constants.SensePrefs;
-import nl.sense_os.service.constants.SensePrefs.Auth;
-import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
-import nl.sense_os.service.constants.SensePrefs.Status;
-import nl.sense_os.service.constants.SenseUrls;
-import nl.sense_os.service.ctrl.Controller;
-import nl.sense_os.service.provider.SNTP;
-import nl.sense_os.service.scheduler.ScheduleAlarmTool;
-
-import org.json.JSONObject;
-
 import android.app.Activity;
 import android.app.Notification;
 import android.app.Service;
@@ -32,6 +18,21 @@ import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
+import org.json.JSONObject;
+
+import java.net.URLEncoder;
+import java.util.Map;
+
+import nl.sense_os.service.commonsense.SenseApi;
+import nl.sense_os.service.constants.SensePrefs;
+import nl.sense_os.service.constants.SensePrefs.Auth;
+import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
+import nl.sense_os.service.constants.SensePrefs.Status;
+import nl.sense_os.service.constants.SenseUrls;
+import nl.sense_os.service.ctrl.Controller;
+import nl.sense_os.service.provider.SNTP;
+import nl.sense_os.service.scheduler.ScheduleAlarmTool;
+
 /**
  * Main Sense service class.<br/>
  * <br/>
@@ -45,7 +46,7 @@ import android.widget.Toast;
  * </ul>
  * When the {@link #toggleMain(boolean)} method is called to start the sensing, the service starts
  * itself and registers itself as a foreground service so it does not get easily killed by Android.
- * 
+ *
  * @author Steven Mulder <steven@sense-os.nl>
  */
 public class SenseService extends Service {
@@ -53,7 +54,7 @@ public class SenseService extends Service {
     /**
      * Class used for the client Binder. Because we know this service always runs in the same
      * process as its clients, we don't need to deal with IPC.
-     * 
+     *
      * @see http://developer.android.com/guide/components/bound-services.html
      */
     public class SenseBinder extends Binder {
@@ -69,9 +70,9 @@ public class SenseService extends Service {
      * Intent action to force a re-login attempt when the service is started.
      */
     public static final String EXTRA_RELOGIN = "relogin";
-    
+
     /**
-     * Intent action to notify that the service is started, 
+     * Intent action to notify that the service is started,
      * boolean extra for of the status changed broadcast  R.string.action_sense_service_broadcast.
      */
     public static final String EXTRA_SERVICE_STARTED = "service_started";
@@ -92,13 +93,11 @@ public class SenseService extends Service {
     /**
      * Changes login of the Sense service. Removes "private" data of the previous user from the
      * preferences. Can be called by Activities that are bound to the service.
-     * 
-     * @param username
-     *            Username
-     * @param password
-     *            Hashed password
+     *
+     * @param username Username
+     * @param password Hashed password
      * @return 0 if login completed successfully, -2 if login was forbidden, and -1 for any other
-     *         errors.
+     * errors.
      */
     int changeLogin(String username, String password) {
         Log.v(TAG, "Change login");
@@ -151,9 +150,9 @@ public class SenseService extends Service {
      * Tries to login using the username and password from the private preferences and updates the
      * {@link #isLoggedIn} status accordingly. Can also be called from Activities that are bound to
      * the service.
-     * 
+     *
      * @return 0 if login completed successfully, -2 if login was forbidden, and -1 for any other
-     *         errors.
+     * errors.
      */
     synchronized int login() {
 
@@ -193,20 +192,20 @@ public class SenseService extends Service {
 
         // handle the result
         switch (result) {
-        case 0: // logged in successfully
-            onLogIn();
-            break;
-        case -1: // error
-            Log.w(TAG, "Login failed!");
-            onLogOut();
-            break;
-        case -2: // forbidden
-            Log.w(TAG, "Login forbidden!");
-            onLogOut();
-            break;
-        default:
-            Log.e(TAG, "Unexpected login result: " + result);
-            onLogOut();
+            case 0: // logged in successfully
+                onLogIn();
+                break;
+            case -1: // error
+                Log.w(TAG, "Login failed!");
+                onLogOut();
+                break;
+            case -2: // forbidden
+                Log.w(TAG, "Login forbidden!");
+                onLogOut();
+                break;
+            default:
+                Log.e(TAG, "Unexpected login result: " + result);
+                onLogOut();
         }
 
         return result;
@@ -233,7 +232,7 @@ public class SenseService extends Service {
     /**
      * Does nothing except poop out a log message. The service is really started in onStart,
      * otherwise it would also start when an activity binds to it.
-     * 
+     * <p/>
      * {@inheritDoc}
      */
     @Override
@@ -244,7 +243,7 @@ public class SenseService extends Service {
 
     /**
      * Stops sensing, logs out, removes foreground status.
-     * 
+     * <p/>
      * {@inheritDoc}
      */
     @Override
@@ -272,13 +271,13 @@ public class SenseService extends Service {
         // update login status
         state.setLoggedIn(true);
         state.setStarted(true);
-        
+
         // store this login
         SharedPreferences prefs = getSharedPreferences(SensePrefs.MAIN_PREFS, MODE_PRIVATE);
         prefs.edit().putLong(SensePrefs.Main.LAST_LOGGED_IN, System.currentTimeMillis()).commit();
 
         checkVersion();
-        
+
         onSyncRateChange(); //called to start the scheduler
     }
 
@@ -309,16 +308,13 @@ public class SenseService extends Service {
     /**
      * Starts the Sense service. Tries to log in and start sensing; starts listening for network
      * connectivity broadcasts.
-     * 
-     * @param intent
-     *            The Intent supplied to {@link Activity#startService(Intent)}. This may be null if
-     *            the service is being restarted after its process has gone away.
-     * @param flags
-     *            Additional data about this start request. Currently either 0,
-     *            {@link Service#START_FLAG_REDELIVERY} , or {@link Service#START_FLAG_RETRY}.
-     * @param startId
-     *            A unique integer representing this specific request to start. Use with
-     *            {@link #stopSelfResult(int)}.
+     *
+     * @param intent  The Intent supplied to {@link Activity#startService(Intent)}. This may be null if
+     *                the service is being restarted after its process has gone away.
+     * @param flags   Additional data about this start request. Currently either 0,
+     *                {@link Service#START_FLAG_REDELIVERY} , or {@link Service#START_FLAG_RETRY}.
+     * @param startId A unique integer representing this specific request to start. Use with
+     *                {@link #stopSelfResult(int)}.
      */
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
@@ -386,10 +382,9 @@ public class SenseService extends Service {
      * Tries to register a new user using the username and password from the private preferences and
      * updates the {@link #isLoggedIn} status accordingly. Can also be called from Activities that
      * are bound to the service.
-     * 
+     *
      * @param username
-     * @param password
-     *            Hashed password
+     * @param password Hashed password
      * @param email
      * @param address
      * @param zipCode
@@ -398,10 +393,10 @@ public class SenseService extends Service {
      * @param surname
      * @param mobile
      * @return 0 if registration completed successfully, -2 if the user already exists, and -1 for
-     *         any other unexpected responses.
+     * any other unexpected responses.
      */
     synchronized int register(String username, String password, String email, String address,
-            String zipCode, String country, String name, String surname, String mobile) {
+                              String zipCode, String country, String name, String surname, String mobile) {
         Log.v(TAG, "Try to register new user");
 
         // log out before registering a new user
@@ -433,20 +428,20 @@ public class SenseService extends Service {
 
         // handle result
         switch (registered) {
-        case 0:
-            Log.i(TAG, "Successful registration for '" + username + "'");
-            login();
-            break;
-        case -1:
-            Log.w(TAG, "Registration failed");
-            state.setLoggedIn(false);
-            break;
-        case -2:
-            Log.w(TAG, "Registration failed: user already exists");
-            state.setLoggedIn(false);
-            break;
-        default:
-            Log.w(TAG, "Unexpected registration result: " + registered);
+            case 0:
+                Log.i(TAG, "Successful registration for '" + username + "'");
+                login();
+                break;
+            case -1:
+                Log.w(TAG, "Registration failed");
+                state.setLoggedIn(false);
+                break;
+            case -2:
+                Log.w(TAG, "Registration failed: user already exists");
+                state.setLoggedIn(false);
+                break;
+            default:
+                Log.w(TAG, "Unexpected registration result: " + registered);
         }
 
         return registered;
@@ -454,9 +449,8 @@ public class SenseService extends Service {
 
     /**
      * Displays a Toast message using the process's main Thread.
-     * 
-     * @param message
-     *            Toast message to display to the user
+     *
+     * @param message Toast message to display to the user
      */
     private void showToast(final String message) {
         toastHandler.post(new Runnable() {

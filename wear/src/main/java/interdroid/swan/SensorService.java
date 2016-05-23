@@ -16,31 +16,30 @@ import android.os.IBinder;
 import android.util.Log;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
-import interdroid.swan.R;
 import interdroid.swan.sensordashboard.shared.SensorConstants;
 
 
-class SensorContainer{
+class SensorContainer {
     public Sensor sensor;
-    public int    accuracy;
-    public int    count;
+    public int accuracy;
+    public int count;
 
-    public SensorContainer(){
+    public SensorContainer() {
         accuracy = -1;
     }
 
-    public SensorContainer(Sensor sensor, int accuracy, int count){
+    public SensorContainer(Sensor sensor, int accuracy, int count) {
         this.sensor = sensor;
         this.accuracy = accuracy;
         this.count = count;
     }
 }
+
 public class SensorService extends Service implements SensorEventListener {
     private static final String TAG = "Wear/SensorService";
 
@@ -82,20 +81,18 @@ public class SensorService extends Service implements SensorEventListener {
 
     SensorCommand sensorCommand = new SensorCommand();
 
-    private class SensorCommand extends BroadcastReceiver
-    {
+    private class SensorCommand extends BroadcastReceiver {
         @Override
-        public void onReceive(Context context, Intent intent)
-        {
+        public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if(action.equalsIgnoreCase(WearConstants.BROADCAST_ADD_SENSOR)){
+            if (action.equalsIgnoreCase(WearConstants.BROADCAST_ADD_SENSOR)) {
                 Bundle extra = intent.getExtras();
                 int sensorId = extra.getInt(SensorConstants.SENSOR_ID);
                 int accuracy = extra.getInt(SensorConstants.ACCURACY);
                 startSingleMeasurement(sensorId, accuracy);
             }
 
-            if(action.equalsIgnoreCase(WearConstants.BROADCAST_REMOVE_SENSOR)){
+            if (action.equalsIgnoreCase(WearConstants.BROADCAST_REMOVE_SENSOR)) {
                 int sensorId = intent.getExtras().getInt(SensorConstants.SENSOR_ID);
                 stopSingleMeasurement(sensorId);
             }
@@ -134,50 +131,51 @@ public class SensorService extends Service implements SensorEventListener {
     }
 
 
-    public  int onStartCommand (Intent intent, int flags, int startId) {
+    public int onStartCommand(Intent intent, int flags, int startId) {
 
         Log.d(TAG, intent.getExtras().toString());
 
 
-        return super.onStartCommand(intent,flags, startId);
+        return super.onStartCommand(intent, flags, startId);
     }
 
-    protected void startSingleMeasurement(int sensorId, int accuracy){
-        if(sensorId <= 0) {
+    protected void startSingleMeasurement(int sensorId, int accuracy) {
+        if (sensorId <= 0) {
             Log.w(TAG, "Bad sensor ID");
             return;
         }
 
-        if(mSensorManager == null){
+        if (mSensorManager == null) {
             mSensorManager = ((SensorManager) getSystemService(SENSOR_SERVICE));
         }
 
         Sensor sensor = mSensorManager.getDefaultSensor(sensorId);
 
-            if(sensor != null){
-                lock.lock();
-                if(activeSensors.containsKey(sensorId)){
-                    update_accuracy(sensorId, accuracy);
-                } else {
-                    activeSensors.put(sensorId, new SensorContainer(sensor, accuracy, 1));
-                    mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
-                }
-                update_notification();
-                lock.unlock();
+        if (sensor != null) {
+            lock.lock();
+            if (activeSensors.containsKey(sensorId)) {
+                update_accuracy(sensorId, accuracy);
             } else {
-                Log.w(TAG, "Sensor with id " + sensorId + " not found");
+                activeSensors.put(sensorId, new SensorContainer(sensor, accuracy, 1));
+                mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
             }
+            update_notification();
+            lock.unlock();
+        } else {
+            Log.w(TAG, "Sensor with id " + sensorId + " not found");
+        }
     }
 
     /**
      * If
+     *
      * @param sensorId
      * @param accuracy
      */
     private void update_accuracy(int sensorId, int accuracy) {
         SensorContainer container = activeSensors.get(sensorId);
 
-        if(accuracy < container.accuracy){
+        if (accuracy < container.accuracy) {
             container.accuracy = accuracy;
             mSensorManager.registerListener(this, container.sensor, accuracy);
         }
@@ -186,8 +184,8 @@ public class SensorService extends Service implements SensorEventListener {
         activeSensors.put(sensorId, container);
     }
 
-    protected void stopSingleMeasurement(int  sensorID){
-        if(!activeSensors.containsKey(sensorID)){
+    protected void stopSingleMeasurement(int sensorID) {
+        if (!activeSensors.containsKey(sensorID)) {
             Log.w(TAG, "Trying to stop an non-stated sensor");
             return;
         }
@@ -195,17 +193,17 @@ public class SensorService extends Service implements SensorEventListener {
         lock.lock();
         SensorContainer container = activeSensors.get(sensorID);
 
-        if(container.count == 1){
+        if (container.count == 1) {
             activeSensors.remove(sensorID);
             mSensorManager.unregisterListener(this, container.sensor);
         } else {
             container.count--;
-            activeSensors.put(sensorID,container);
+            activeSensors.put(sensorID, container);
         }
 
         update_notification();
 
-        if(activeSensors.isEmpty()){
+        if (activeSensors.isEmpty()) {
             stopSelf();
         }
         lock.unlock();
@@ -282,8 +280,8 @@ public class SensorService extends Service implements SensorEventListener {
             }
 
             if (mHeartrateSensor != null) {
-                final int measurementDuration   = 10;   // Seconds
-                final int measurementBreak      = 5;    // Seconds
+                final int measurementDuration = 10;   // Seconds
+                final int measurementBreak = 5;    // Seconds
 
                 mScheduler = Executors.newScheduledThreadPool(1);
                 mScheduler.scheduleAtFixedRate(
@@ -405,7 +403,7 @@ public class SensorService extends Service implements SensorEventListener {
     /**
      * Update active sensor count when add or remove sensor is called
      */
-    public void update_notification(){
+    public void update_notification() {
         notificationBuilder.setContentText("Active Sensors: " + activeSensors.size());
 
         NotificationManager nf = ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE));

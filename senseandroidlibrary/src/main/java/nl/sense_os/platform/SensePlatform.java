@@ -1,20 +1,5 @@
 package nl.sense_os.platform;
 
-import nl.sense_os.service.ISenseServiceCallback;
-import nl.sense_os.service.R;
-import nl.sense_os.service.SenseService.SenseBinder;
-import nl.sense_os.service.SenseServiceStub;
-import nl.sense_os.service.commonsense.SenseApi;
-import nl.sense_os.service.commonsense.SensorRegistrator;
-import nl.sense_os.service.constants.SenseDataTypes;
-import nl.sense_os.service.constants.SensePrefs;
-import nl.sense_os.service.constants.SensorData.DataPoint;
-import nl.sense_os.service.storage.LocalStorage;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -25,6 +10,21 @@ import android.net.Uri;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import nl.sense_os.service.ISenseServiceCallback;
+import nl.sense_os.service.R;
+import nl.sense_os.service.SenseService.SenseBinder;
+import nl.sense_os.service.SenseServiceStub;
+import nl.sense_os.service.commonsense.SenseApi;
+import nl.sense_os.service.commonsense.SensorRegistrator;
+import nl.sense_os.service.constants.SenseDataTypes;
+import nl.sense_os.service.constants.SensePrefs;
+import nl.sense_os.service.constants.SensorData.DataPoint;
+import nl.sense_os.service.storage.LocalStorage;
 
 /**
  * A proxy class that acts as a high-level interface to the sense Android library. By instantiating
@@ -75,31 +75,36 @@ public class SensePlatform {
 
     private static final String TAG = "SensePlatform";
 
-    /** Context of the enclosing application */
+    /**
+     * Context of the enclosing application
+     */
     private final Context mContext;
 
-    /** Interface for the SenseService. Gets instantiated by {@link #mServiceConnection}. */
+    /**
+     * Interface for the SenseService. Gets instantiated by {@link #mServiceConnection}.
+     */
     private SenseServiceStub mSenseService;
 
-    /** Keeps track of the service binding state */
+    /**
+     * Keeps track of the service binding state
+     */
     private boolean mServiceBound = false;
 
-    /** Callback for events for the binding with the Sense service */
+    /**
+     * Callback for events for the binding with the Sense service
+     */
     private final ServiceConnection mServiceConnection;
 
     /**
-     * @param context
-     *            Context that the Sense service will bind to
+     * @param context Context that the Sense service will bind to
      */
     public SensePlatform(Context context) {
         this(context, null);
     }
 
     /**
-     * @param context
-     *            Context that the Sense service will bind to.
-     * @param serviceConnection
-     *            ServiceConnection to receive callbacks about the binding with the service.
+     * @param context           Context that the Sense service will bind to.
+     * @param serviceConnection ServiceConnection to receive callbacks about the binding with the service.
      */
     public SensePlatform(Context context, ServiceConnection serviceConnection) {
         mServiceConnection = new SenseServiceConn(serviceConnection);
@@ -109,54 +114,39 @@ public class SensePlatform {
 
     /**
      * Convenience method to add a data point without specifying the device UUID
-     * 
-     * @param sensorName
-     *            Name of the sensor
-     * @param displayName
-     *            Display name of the sensor
-     * @param description
-     *            Description of the sensor, i.e. CommonSense "device_type"
-     * @param dataType
-     *            Data type, e.g. json, string, float, bool
-     * @param value
-     *            Data point value
-     * @param timestamp
-     *            Data point time stamp
+     *
+     * @param sensorName  Name of the sensor
+     * @param displayName Display name of the sensor
+     * @param description Description of the sensor, i.e. CommonSense "device_type"
+     * @param dataType    Data type, e.g. json, string, float, bool
+     * @param value       Data point value
+     * @param timestamp   Data point time stamp
      * @return true if the data point was sent to the Sense service
-     * @throws IllegalStateException
-     *             If the Sense service is not bound yet
+     * @throws IllegalStateException If the Sense service is not bound yet
      * @see #addDataPoint(String, String, String, String, String, String, long)
      */
     public boolean addDataPoint(String sensorName, String displayName, String description,
-            String dataType, Object value, long timestamp) throws IllegalStateException {
+                                String dataType, Object value, long timestamp) throws IllegalStateException {
         return addDataPoint(sensorName, displayName, description, dataType, null, value, timestamp);
     }
 
     /**
      * Adds a data point for a sensor at CommonSense. If the sensor does not exist yet, it will be
      * created.
-     * 
-     * @param sensorName
-     *            Name of the sensor
-     * @param displayName
-     *            Display name of the sensor
-     * @param description
-     *            Description of the sensor, i.e. CommonSense "device_type"
-     * @param dataType
-     *            Data type, e.g. json, string, float, bool
-     * @param deviceUuid
-     *            (Optional) Device UUID, set null to make sure the sensor is connected to the
-     *            current device
-     * @param value
-     *            Data point value
-     * @param timestamp
-     *            Data point time stamp
+     *
+     * @param sensorName  Name of the sensor
+     * @param displayName Display name of the sensor
+     * @param description Description of the sensor, i.e. CommonSense "device_type"
+     * @param dataType    Data type, e.g. json, string, float, bool
+     * @param deviceUuid  (Optional) Device UUID, set null to make sure the sensor is connected to the
+     *                    current device
+     * @param value       Data point value
+     * @param timestamp   Data point time stamp
      * @return true if the data point was sent to the Sense service
-     * @throws IllegalStateException
-     *             If the Sense service is not bound yet
+     * @throws IllegalStateException If the Sense service is not bound yet
      */
     public boolean addDataPoint(String sensorName, String displayName, String description,
-            String dataType, String deviceUuid, Object value, long timestamp)
+                                String dataType, String deviceUuid, Object value, long timestamp)
             throws IllegalStateException {
         checkSenseService();
 
@@ -211,7 +201,7 @@ public class SensePlatform {
             Log.v(TAG, "Try to bind to Sense Platform service");
 
             final Intent serviceIntent = new Intent(
-            		getContext(), nl.sense_os.service.SenseService.class);
+                    getContext(), nl.sense_os.service.SenseService.class);
             boolean bindResult = mContext.bindService(serviceIntent, mServiceConnection,
                     Context.BIND_AUTO_CREATE);
 
@@ -224,9 +214,8 @@ public class SensePlatform {
     /**
      * Check that the sense service is bound. This method is used for public methods to provide a
      * single check for the sense service.
-     * 
-     * @throws IllegalStateException
-     *             If the Sense service is not bound yet
+     *
+     * @throws IllegalStateException If the Sense service is not bound yet
      */
     private void checkSenseService() throws IllegalStateException {
         if (mSenseService == null) {
@@ -243,10 +232,9 @@ public class SensePlatform {
 
     /**
      * Flush data to CommonSense
-     * 
+     *
      * @return true if the flush task was successfully started
-     * @throws IllegalStateException
-     *             If the Sense service is not bound yet
+     * @throws IllegalStateException If the Sense service is not bound yet
      */
     public boolean flushData() throws IllegalStateException {
         checkSenseService();
@@ -257,9 +245,8 @@ public class SensePlatform {
 
     /**
      * Flush data to Common Sense, return after the flush is completed
-     * 
-     * @throws IllegalStateException
-     *             If the Sense service is not bound yet
+     *
+     * @throws IllegalStateException If the Sense service is not bound yet
      */
     public void flushDataAndBlock() throws IllegalStateException {
         checkSenseService();
@@ -273,17 +260,13 @@ public class SensePlatform {
 
     /**
      * Retrieve a number of values of a sensor from CommonSense.
-     * 
-     * @param sensorName
-     *            The name of the sensor to get data from
-     * @param onlyFromDevice
-     *            Whether or not to only look through sensors that are part of this device. Searches
-     *            all sensors, including those of this device, if set to NO
+     *
+     * @param sensorName     The name of the sensor to get data from
+     * @param onlyFromDevice Whether or not to only look through sensors that are part of this device. Searches
+     *                       all sensors, including those of this device, if set to NO
      * @return JSONArray of data points
-     * @throws IllegalStateException
-     *             If the Sense service is not bound yet
-     * @throws JSONException
-     *             If the response from CommonSense could not be parsed
+     * @throws IllegalStateException If the Sense service is not bound yet
+     * @throws JSONException         If the response from CommonSense could not be parsed
      */
     public JSONArray getData(String sensorName, boolean onlyFromDevice)
             throws IllegalStateException, JSONException {
@@ -292,19 +275,14 @@ public class SensePlatform {
 
     /**
      * Retrieve a number of values of a sensor from CommonSense.
-     * 
-     * @param sensorName
-     *            The name of the sensor to get data from
-     * @param onlyFromDevice
-     *            Whether or not to only look through sensors that are part of this device. Searches
-     *            all sensors, including those of this device, if set to NO
-     * @param limit
-     *            Maximum amount of data points.
+     *
+     * @param sensorName     The name of the sensor to get data from
+     * @param onlyFromDevice Whether or not to only look through sensors that are part of this device. Searches
+     *                       all sensors, including those of this device, if set to NO
+     * @param limit          Maximum amount of data points.
      * @return JSONArray of data points
-     * @throws IllegalStateException
-     *             If the Sense service is not bound yet
-     * @throws JSONException
-     *             If the response from CommonSense could not be parsed
+     * @throws IllegalStateException If the Sense service is not bound yet
+     * @throws JSONException         If the response from CommonSense could not be parsed
      */
     public JSONArray getData(String sensorName, boolean onlyFromDevice, int limit)
             throws IllegalStateException, JSONException {
@@ -324,17 +302,13 @@ public class SensePlatform {
 
     /**
      * Retrieve a number of values of a sensor from the local storage.
-     * 
-     * @param sensorName
-     *            The name of the sensor to get data from
-     * @param onlyFromDevice
-     *            Whether or not to only look through sensors that are part of this device. Searches
-     *            all sensors, including those of this device, if set to NO
+     *
+     * @param sensorName     The name of the sensor to get data from
+     * @param onlyFromDevice Whether or not to only look through sensors that are part of this device. Searches
+     *                       all sensors, including those of this device, if set to NO
      * @return JSONArray of data points
-     * @throws IllegalStateException
-     *             If the Sense service is not bound yet
-     * @throws JSONException
-     *             If the response from CommonSense could not be parsed
+     * @throws IllegalStateException If the Sense service is not bound yet
+     * @throws JSONException         If the response from CommonSense could not be parsed
      */
     public JSONArray getLocalData(String sensorName) throws IllegalStateException, JSONException {
         return getLocalData(sensorName, 100);
@@ -342,19 +316,14 @@ public class SensePlatform {
 
     /**
      * Retrieve a number of values of a sensor from the local storage.
-     * 
-     * @param sensorName
-     *            The name of the sensor to get data from
-     * @param onlyFromDevice
-     *            Whether or not to only look through sensors that are part of this device. Searches
-     *            all sensors, including those of this device, if set to NO
-     * @param limit
-     *            Maximum amount of data points.
+     *
+     * @param sensorName     The name of the sensor to get data from
+     * @param onlyFromDevice Whether or not to only look through sensors that are part of this device. Searches
+     *                       all sensors, including those of this device, if set to NO
+     * @param limit          Maximum amount of data points.
      * @return JSONArray of data points
-     * @throws IllegalStateException
-     *             If the Sense service is not bound yet
-     * @throws JSONException
-     *             If the response from CommonSense could not be parsed
+     * @throws IllegalStateException If the Sense service is not bound yet
+     * @throws JSONException         If the response from CommonSense could not be parsed
      */
     public JSONArray getLocalData(String sensorName, int limit) throws IllegalStateException,
             JSONException {
@@ -389,15 +358,11 @@ public class SensePlatform {
 
     /**
      * Gets array of values from the LocalStorage in <code>DESC</code> order.
-     * 
-     * @param sensorName
-     *            Name of the sensor to get values from.
-     * @param onlyFromDevice
-     *            If true this function only looks for sensors attached to this device.
-     * @param limit
-     *            Maximum amount of data points. Optional, use null to set the default limit (100).
-     * @param uri
-     *            The uri to get data from, can be either local or remote.
+     *
+     * @param sensorName     Name of the sensor to get values from.
+     * @param onlyFromDevice If true this function only looks for sensors attached to this device.
+     * @param limit          Maximum amount of data points. Optional, use null to set the default limit (100).
+     * @param uri            The uri to get data from, can be either local or remote.
      * @return JSONArray with values for the sensor with the selected name and device
      * @throws JSONException
      * @see #getValues(String, boolean, Integer, android.net.Uri, String)
@@ -410,28 +375,23 @@ public class SensePlatform {
 
     /**
      * Gets array of values from the LocalStorage
-     * 
-     * @param sensorName
-     *            Name of the sensor to get values from.
-     * @param onlyFromDevice
-     *            If true this function only looks for sensors attached to this device.
-     * @param limit
-     *            Maximum amount of data points. Optional, use null to set the default limit (100).
-     * @param uri
-     *            The uri to get data from, can be either local or remote.
-     * @param sortOrder
-     *            The sort order, one of <code>DESC</code> or <code>ASC</code>.
+     *
+     * @param sensorName     Name of the sensor to get values from.
+     * @param onlyFromDevice If true this function only looks for sensors attached to this device.
+     * @param limit          Maximum amount of data points. Optional, use null to set the default limit (100).
+     * @param uri            The uri to get data from, can be either local or remote.
+     * @param sortOrder      The sort order, one of <code>DESC</code> or <code>ASC</code>.
      * @return JSONArray with values for the sensor with the selected name and device
      * @throws JSONException
      */
     private JSONArray getValues(String sensorName, boolean onlyFromDevice, Integer limit, Uri uri,
-            String sortOrder) throws JSONException {
+                                String sortOrder) throws JSONException {
         Cursor cursor = null;
         JSONArray result = new JSONArray();
 
         String deviceUuid = onlyFromDevice ? SenseApi.getDefaultDeviceUuid(mContext) : null;
 
-        String[] projection = new String[] { DataPoint.TIMESTAMP, DataPoint.VALUE };
+        String[] projection = new String[]{DataPoint.TIMESTAMP, DataPoint.VALUE};
         String selection = DataPoint.SENSOR_NAME + " = '" + sensorName + "'";
         if (null != deviceUuid) {
             selection += " AND " + DataPoint.DEVICE_UUID + "='" + deviceUuid + "'";
@@ -469,15 +429,11 @@ public class SensePlatform {
     /**
      * Tries to log in at CommonSense using the supplied username and password. After login, the
      * service remembers the username and password.
-     * 
-     * @param username
-     *            Username for login
-     * @param pass
-     *            Hashed password for login
-     * @param callback
-     *            Interface to receive callback when login is completed
-     * @throws IllegalStateException
-     *             If the Sense service is not bound yet
+     *
+     * @param username Username for login
+     * @param pass     Hashed password for login
+     * @param callback Interface to receive callback when login is completed
+     * @throws IllegalStateException If the Sense service is not bound yet
      * @throws RemoteException
      */
     public void login(String user, String password, ISenseServiceCallback callback)
@@ -496,31 +452,21 @@ public class SensePlatform {
 
     /**
      * Registers a new user at CommonSense and logs in immediately.
-     * 
-     * @param username
-     *            Username for the new user
-     * @param password
-     *            Hashed password String for the new user
-     * @param email
-     *            Email address
-     * @param address
-     *            Street address (optional, null if not required)
-     * @param zipCode
-     *            ZIP code (optional, null if not required)
-     * @param country
-     *            Country
-     * @param firstName
-     *            First name (optional, null if not required)
-     * @param surname
-     *            Surname (optional, null if not required)
-     * @param mobileNumber
-     *            Phone number, preferably in E164 format (optional, null if not required)
-     * @param callback
-     *            Interface to receive callback when login is completed
+     *
+     * @param username     Username for the new user
+     * @param password     Hashed password String for the new user
+     * @param email        Email address
+     * @param address      Street address (optional, null if not required)
+     * @param zipCode      ZIP code (optional, null if not required)
+     * @param country      Country
+     * @param firstName    First name (optional, null if not required)
+     * @param surname      Surname (optional, null if not required)
+     * @param mobileNumber Phone number, preferably in E164 format (optional, null if not required)
+     * @param callback     Interface to receive callback when login is completed
      */
     public void registerUser(String username, String password, String email, String address,
-            String zipCode, String country, String firstName, String surname, String mobileNumber,
-            ISenseServiceCallback callback) throws IllegalStateException, RemoteException {
+                             String zipCode, String country, String firstName, String surname, String mobileNumber,
+                             ISenseServiceCallback callback) throws IllegalStateException, RemoteException {
         checkSenseService();
         mSenseService.register(username, password, email, address, zipCode, country, firstName,
                 surname, mobileNumber, callback);
@@ -539,51 +485,45 @@ public class SensePlatform {
         mSenseService = null;
         mServiceBound = false;
     }
-    
-    public void setPreferenceString(SharedPreferences sharedPreferences, String key){
-    	String defValue, retValue;
-    	if ( key.compareToIgnoreCase("storage") == 0){
-    		defValue = "Remote Storage";
-    		retValue = sharedPreferences.getString(key, defValue);
-    		mSenseService.setPrefString(SensePrefs.Main.Advanced.STORAGE, retValue);
-    	}
-    	else if ( key.compareToIgnoreCase("battery") == 0){
-    		defValue = "When battery level above threshold";
-    		retValue = sharedPreferences.getString(key, defValue);
-    		mSenseService.setPrefString(SensePrefs.Main.Advanced.BATTERY, retValue);
-    	}
-    	else if ( key.compareToIgnoreCase("battery_threshold") == 0){
-    		defValue = "60";
-    		retValue = sharedPreferences.getString(key, defValue);
-    		mSenseService.setPrefString(SensePrefs.Main.Advanced.BATTERY_THRESHOLD, retValue);
-    	}
-    	else if ( key.compareToIgnoreCase("sync_rate") == 0){
-    		defValue = "ECO";
-    		retValue = sharedPreferences.getString(key, defValue);
-    		mSenseService.setPrefString(SensePrefs.Main.SYNC_RATE, retValue);
-    	}
-    	else if ( key.compareToIgnoreCase("mobile_network") == 0){
-    		defValue = "WiFi";
-    		retValue = sharedPreferences.getString(key, defValue);
-    		mSenseService.setPrefString(SensePrefs.Main.Advanced.MOBILE_NETWORK_UPLOAD, retValue);
-    	}
-    	else if ( key.compareToIgnoreCase("mobile_network2") == 0){
-    		defValue = "WiFi";
-    		retValue = sharedPreferences.getString(key, defValue);
-    		mSenseService.setPrefString(SensePrefs.Main.Advanced.MOBILE_NETWORK_DOWNLOAD, retValue);
-    	}
-    	else {
-    		Log.d(TAG, "Unknown key");
-    		return;
-    	}
-    }	
-    
-    public void setDefaultPreference(){
-    	mSenseService.setPrefString(SensePrefs.Main.Advanced.STORAGE, "Remote storage");
-    	mSenseService.setPrefString(SensePrefs.Main.Advanced.BATTERY, "When battery level above threshold");
-    	mSenseService.setPrefString(SensePrefs.Main.Advanced.BATTERY_THRESHOLD, "60");
-    	mSenseService.setPrefString(SensePrefs.Main.SYNC_RATE, "1");
-    	mSenseService.setPrefString(SensePrefs.Main.Advanced.MOBILE_NETWORK_UPLOAD, "WiFi");
-    	mSenseService.setPrefString(SensePrefs.Main.Advanced.MOBILE_NETWORK_DOWNLOAD, "WiFi");
+
+    public void setPreferenceString(SharedPreferences sharedPreferences, String key) {
+        String defValue, retValue;
+        if (key.compareToIgnoreCase("storage") == 0) {
+            defValue = "Remote Storage";
+            retValue = sharedPreferences.getString(key, defValue);
+            mSenseService.setPrefString(SensePrefs.Main.Advanced.STORAGE, retValue);
+        } else if (key.compareToIgnoreCase("battery") == 0) {
+            defValue = "When battery level above threshold";
+            retValue = sharedPreferences.getString(key, defValue);
+            mSenseService.setPrefString(SensePrefs.Main.Advanced.BATTERY, retValue);
+        } else if (key.compareToIgnoreCase("battery_threshold") == 0) {
+            defValue = "60";
+            retValue = sharedPreferences.getString(key, defValue);
+            mSenseService.setPrefString(SensePrefs.Main.Advanced.BATTERY_THRESHOLD, retValue);
+        } else if (key.compareToIgnoreCase("sync_rate") == 0) {
+            defValue = "ECO";
+            retValue = sharedPreferences.getString(key, defValue);
+            mSenseService.setPrefString(SensePrefs.Main.SYNC_RATE, retValue);
+        } else if (key.compareToIgnoreCase("mobile_network") == 0) {
+            defValue = "WiFi";
+            retValue = sharedPreferences.getString(key, defValue);
+            mSenseService.setPrefString(SensePrefs.Main.Advanced.MOBILE_NETWORK_UPLOAD, retValue);
+        } else if (key.compareToIgnoreCase("mobile_network2") == 0) {
+            defValue = "WiFi";
+            retValue = sharedPreferences.getString(key, defValue);
+            mSenseService.setPrefString(SensePrefs.Main.Advanced.MOBILE_NETWORK_DOWNLOAD, retValue);
+        } else {
+            Log.d(TAG, "Unknown key");
+            return;
+        }
+    }
+
+    public void setDefaultPreference() {
+        mSenseService.setPrefString(SensePrefs.Main.Advanced.STORAGE, "Remote storage");
+        mSenseService.setPrefString(SensePrefs.Main.Advanced.BATTERY, "When battery level above threshold");
+        mSenseService.setPrefString(SensePrefs.Main.Advanced.BATTERY_THRESHOLD, "60");
+        mSenseService.setPrefString(SensePrefs.Main.SYNC_RATE, "1");
+        mSenseService.setPrefString(SensePrefs.Main.Advanced.MOBILE_NETWORK_UPLOAD, "WiFi");
+        mSenseService.setPrefString(SensePrefs.Main.Advanced.MOBILE_NETWORK_DOWNLOAD, "WiFi");
     }
 }

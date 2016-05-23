@@ -1,19 +1,20 @@
 package nl.sense_os.service;
 
-import nl.sense_os.service.commonsense.SenseApi;
-import nl.sense_os.service.constants.SensePrefs;
-import nl.sense_os.service.constants.SensePrefs.Auth;
-import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
-import nl.sense_os.service.constants.SensePrefs.Status;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Binder;
 import android.os.RemoteException;
 import android.util.Log;
 
+import nl.sense_os.service.commonsense.SenseApi;
+import nl.sense_os.service.constants.SensePrefs;
+import nl.sense_os.service.constants.SensePrefs.Auth;
+import nl.sense_os.service.constants.SensePrefs.Main.Advanced;
+import nl.sense_os.service.constants.SensePrefs.Status;
+
 /**
  * Implementation of the service's AIDL interface. Very closely linked with {@link SenseService}.
- * 
+ *
  * @author Steven Mulder <steven@sense-os.nl>
  */
 public class SenseServiceStub extends Binder {
@@ -31,7 +32,7 @@ public class SenseServiceStub extends Binder {
     }
 
     public void changeLogin(final String username, final String password,
-            final ISenseServiceCallback callback) {
+                            final ISenseServiceCallback callback) {
         // Log.v(TAG, "Change login");
 
         // perform login on separate thread and respond via callback
@@ -127,9 +128,9 @@ public class SenseServiceStub extends Binder {
             return defValue;
         }
     }
-    
+
     public String getCookie() throws IllegalAccessException {
-    	return SenseApi.getCookie(service);
+        return SenseApi.getCookie(service);
     }
 
     public String getSessionId() throws IllegalAccessException {
@@ -145,8 +146,8 @@ public class SenseServiceStub extends Binder {
     }
 
     public void register(final String username, final String password, final String email,
-            final String address, final String zipCode, final String country, final String name,
-            final String surname, final String mobile, final ISenseServiceCallback callback) {
+                         final String address, final String zipCode, final String country, final String name,
+                         final String surname, final String mobile, final ISenseServiceCallback callback) {
         // Log.v(TAG, "Register: '" + username + "'");
 
         // perform registration on separate thread and respond via callback

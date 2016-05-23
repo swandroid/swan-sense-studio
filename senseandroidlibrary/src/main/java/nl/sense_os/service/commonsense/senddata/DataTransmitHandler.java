@@ -1,18 +1,5 @@
 package nl.sense_os.service.commonsense.senddata;
 
-import java.lang.ref.WeakReference;
-import java.util.Map;
-
-import nl.sense_os.service.SenseService;
-import nl.sense_os.service.R;
-import nl.sense_os.service.commonsense.SenseApi;
-import nl.sense_os.service.constants.SensorData.DataPoint;
-import nl.sense_os.service.storage.LocalStorage;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -25,9 +12,22 @@ import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.util.Log;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.lang.ref.WeakReference;
+import java.util.Map;
+
+import nl.sense_os.service.R;
+import nl.sense_os.service.SenseService;
+import nl.sense_os.service.commonsense.SenseApi;
+import nl.sense_os.service.constants.SensorData.DataPoint;
+import nl.sense_os.service.storage.LocalStorage;
+
 /**
  * Handler for transmission of a simple JSONObject containing sensor data for one sensor.
- * 
+ *
  * @author Steven Mulder <steven@sense-os.nl>
  */
 public class DataTransmitHandler extends Handler {
@@ -91,7 +91,7 @@ public class DataTransmitHandler extends Handler {
 
                 // if un-authorized: relogin
                 if ((response != null) && response.get(SenseApi.RESPONSE_CODE).equals("403")) {
-                	Log.e(TAG, "You are not logged into sense. In order to use sense service, please login using SwanLake app");
+                    Log.e(TAG, "You are not logged into sense. In order to use sense service, please login using SwanLake app");
                     final Intent serviceIntent = new Intent(ctxRef.get().getString(
                             R.string.action_sense_service));
                     serviceIntent.putExtra(SenseService.EXTRA_RELOGIN, true);

@@ -1,8 +1,5 @@
 package nl.sense_os.service.storage;
 
-import java.util.ArrayList;
-
-import nl.sense_os.service.constants.SensorData.DataPoint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -10,15 +7,19 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
 
+import java.util.ArrayList;
+
+import nl.sense_os.service.constants.SensorData.DataPoint;
+
 /**
  * Class that manages a store for sensor data points in a persistent SQLite database. Helper class
  * for {@link LocalStorage}.
- * 
+ *
  * @author Steven Mulder <steven@sense-os.nl>
  */
 public class SQLiteStorage {
 
-	public static String TAG = "SQLiteStorage";
+    public static String TAG = "SQLiteStorage";
     /**
      * Limit for number of query results
      */
@@ -40,9 +41,8 @@ public class SQLiteStorage {
 
     /**
      * Efficiently inserts a collection of rows in the database
-     * 
-     * @param c
-     *            Cursor with rows of data points
+     *
+     * @param c Cursor with rows of data points
      * @return The number of data points that were inserted
      */
     public int bulkInsert(Cursor c) {
@@ -95,27 +95,26 @@ public class SQLiteStorage {
         return insertCount;
     }
 
-    
-    public int bulkInsert2(ArrayList<ContentValues> values){
-    	// get database
+
+    public int bulkInsert2(ArrayList<ContentValues> values) {
+        // get database
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         int insertCount = 0;
-        
-    	// do transaction
+
+        // do transaction
         try {
             db.beginTransaction();
-            if (null != values && values.size() > 0){
-            	for (int i = values.size()-1; i >= 0 ; i --){
-            		ContentValues val = values.remove(i);
-	            	if (null != val && val.size() > 0){
-		                db.insert(DbHelper.TABLE, null, val);
-		                insertCount++;
-	            	}
-	            	else 
-	            		Log.d(TAG, "null or empty");
-	            }
-            	Log.d(TAG, "Transaction successful");
-            	db.setTransactionSuccessful();
+            if (null != values && values.size() > 0) {
+                for (int i = values.size() - 1; i >= 0; i--) {
+                    ContentValues val = values.remove(i);
+                    if (null != val && val.size() > 0) {
+                        db.insert(DbHelper.TABLE, null, val);
+                        insertCount++;
+                    } else
+                        Log.d(TAG, "null or empty");
+                }
+                Log.d(TAG, "Transaction successful");
+                db.setTransactionSuccessful();
             }
         } finally {
             db.endTransaction();
@@ -123,9 +122,10 @@ public class SQLiteStorage {
 
         return insertCount;
     }
+
     /**
      * Deletes rows from the database
-     * 
+     *
      * @param where
      * @param selectionArgs
      * @return The number of rows affected
@@ -138,7 +138,7 @@ public class SQLiteStorage {
 
     /**
      * Inserts a row into the database.
-     * 
+     *
      * @param values
      * @return
      */
@@ -151,14 +151,13 @@ public class SQLiteStorage {
 
     /**
      * Query the database
-     * 
+     *
      * @param projection
      * @param where
      * @param selectionArgs
-     * @param orderBy
-     *            How to order the rows, formatted as an SQL ORDER BY clause (excluding the ORDER BY
-     *            itself). Passing null will use the default sort order, which orders by descending
-     *            timestamp.
+     * @param orderBy       How to order the rows, formatted as an SQL ORDER BY clause (excluding the ORDER BY
+     *                      itself). Passing null will use the default sort order, which orders by descending
+     *                      timestamp.
      * @return Cursor with the result set
      */
     public Cursor query(String[] projection, String where, String[] selectionArgs, String orderBy) {
@@ -186,7 +185,7 @@ public class SQLiteStorage {
 
     /**
      * Updates rows in the database
-     * 
+     *
      * @param newValues
      * @param where
      * @param selectionArgs

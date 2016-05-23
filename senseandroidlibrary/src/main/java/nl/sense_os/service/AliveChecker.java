@@ -3,8 +3,6 @@
  *************************************************************************************************/
 package nl.sense_os.service;
 
-import nl.sense_os.service.constants.SensePrefs;
-import nl.sense_os.service.constants.SensePrefs.Status;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -14,11 +12,14 @@ import android.content.SharedPreferences;
 import android.os.SystemClock;
 import android.util.Log;
 
+import nl.sense_os.service.constants.SensePrefs;
+import nl.sense_os.service.constants.SensePrefs.Status;
+
 /**
  * This class is responsible for checking if the {@link SenseService} is still alive when it should
  * be. It works by setting periodic alarm broadcasts that are received by this class. The Sense
  * service calls {@link #scheduleChecks(Context)} when it starts sensing.
- * 
+ *
  * @author Steven Mulder <steven@sense-os.nl>
  */
 public class AliveChecker extends BroadcastReceiver {
@@ -51,9 +52,8 @@ public class AliveChecker extends BroadcastReceiver {
 
     /**
      * Starts periodic checks on Sense Platform service's alive status.
-     * 
-     * @param context
-     *            Context to access AlarmManager
+     *
+     * @param context Context to access AlarmManager
      */
     public static void scheduleChecks(Context context) {
 
@@ -79,9 +79,8 @@ public class AliveChecker extends BroadcastReceiver {
 
     /**
      * Stops the periodic checks on Sense Platform service's alive status.
-     * 
-     * @param context
-     *            Context to access AlarmManager
+     *
+     * @param context Context to access AlarmManager
      */
     public static void stopChecks(Context context) {
         Intent intent = new Intent(context.getString(R.string.action_sense_alive_check_alarm));

@@ -3,13 +3,14 @@
  *************************************************************************************************/
 package nl.sense_os.service.provider;
 
-import nl.sense_os.service.constants.SensorData.DataPoint;
-import nl.sense_os.service.storage.LocalStorage;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
+
+import nl.sense_os.service.constants.SensorData.DataPoint;
+import nl.sense_os.service.storage.LocalStorage;
 
 /**
  * ContentProvider that encapsulates recent sensor data. The data is stored in the devices RAM
@@ -27,9 +28,8 @@ import android.util.Log;
  * <li>timestamp <= foo</li>
  * <li>combinations of a sensor_name and a timestamp selection</li>
  * </ul>
- * 
+ *
  * @author Steven Mulder <steven@sense-os.nl>
- * 
  * @see LocalStorage
  * @see DataPoint
  */
@@ -40,20 +40,20 @@ public class SensorDataProvider extends ContentProvider {
     @Override
     public int delete(Uri uri, String where, String[] selectionArgs) {
         //return LocalStorage.getInstance(getContext()).delete(uri, where, selectionArgs);
-    	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public String getType(Uri uri) {
 //        return LocalStorage.getInstance(getContext()).getType(uri);
-    	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Uri insert(Uri uri, ContentValues values) {
 //    	Log.d(TAG,"inser with c prov");
 //        return LocalStorage.getInstance(getContext()).insert(uri, values);
-    	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -64,15 +64,15 @@ public class SensorDataProvider extends ContentProvider {
 
     @Override
     public Cursor query(Uri uri, String[] projection, String where, String[] selectionArgs,
-            String sortOrder) {
+                        String sortOrder) {
 //        return LocalStorage.getInstance(getContext()).query(uri, projection, where, selectionArgs,
 //                sortOrder);
-    	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public int update(Uri uri, ContentValues newValues, String where, String[] selectionArgs) {
 //        return LocalStorage.getInstance(getContext()).update(uri, newValues, where, selectionArgs);
-    	throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
 }

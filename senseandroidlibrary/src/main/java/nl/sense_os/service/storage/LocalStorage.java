@@ -3,14 +3,6 @@
  *************************************************************************************************/
 package nl.sense_os.service.storage;
 
-import java.nio.BufferOverflowException;
-import java.util.ArrayList;
-
-import nl.sense_os.service.R;
-import nl.sense_os.service.constants.SensePrefs;
-import nl.sense_os.service.constants.SensePrefs.Main;
-import nl.sense_os.service.constants.SensorData.DataPoint;
-import nl.sense_os.service.provider.SNTP;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
@@ -20,14 +12,22 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 import android.util.Log;
 
+import java.nio.BufferOverflowException;
+import java.util.ArrayList;
+
+import nl.sense_os.service.R;
+import nl.sense_os.service.constants.SensePrefs;
+import nl.sense_os.service.constants.SensePrefs.Main;
+import nl.sense_os.service.constants.SensorData.DataPoint;
+import nl.sense_os.service.provider.SNTP;
+
 /**
  * Storage for recent sensor data. The data is initially stored in the device's RAM memory. In case
  * the memory becomes too full, the data is offloaded into a persistent database in the flash
  * memory. This process is hidden to the end user, so you do not have to worry about which data is
  * where.
- * 
+ *
  * @author Steven Mulder <steven@sense-os.nl>
- * 
  * @see ParserUtils
  * @see DataPoint
  */
@@ -42,10 +42,10 @@ public class LocalStorage {
     /**
      * Default projection for rows of data points
      */
-    private static final String[] DEFAULT_PROJECTION = new String[] { BaseColumns._ID,
-    		DataPoint.SENSOR_NAME, DataPoint.DISPLAY_NAME, DataPoint.SENSOR_DESCRIPTION, DataPoint.VALUE_PATH,
+    private static final String[] DEFAULT_PROJECTION = new String[]{BaseColumns._ID,
+            DataPoint.SENSOR_NAME, DataPoint.DISPLAY_NAME, DataPoint.SENSOR_DESCRIPTION, DataPoint.VALUE_PATH,
             DataPoint.DATA_TYPE, DataPoint.VALUE, DataPoint.TIMESTAMP, DataPoint.DEVICE_UUID,
-            DataPoint.TRANSMIT_STATE };
+            DataPoint.TRANSMIT_STATE};
 
     private static final int LOCAL_VALUES_URI = 1;
     private static final int REMOTE_VALUES_URI = 2;
@@ -57,14 +57,13 @@ public class LocalStorage {
     private static LocalStorage instance;
 
     /**
-     * @param context
-     *            Context for lazy creating the LocalStorage.
+     * @param context Context for lazy creating the LocalStorage.
      * @return Singleton instance of the LocalStorage
      */
     public static LocalStorage getInstance(Context context) {
         if (null == instance) {
-        	instance = new LocalStorage(context.getApplicationContext());
-        	Log.d(TAG, " Local storage has not been created yet");
+            instance = new LocalStorage(context.getApplicationContext());
+            Log.d(TAG, " Local storage has not been created yet");
         }
         return instance;
     }
@@ -83,20 +82,20 @@ public class LocalStorage {
 
     public int delete(Uri uri, String where, String[] selectionArgs) {
         switch (matchUri(uri)) {
-        case LOCAL_VALUES_URI:
-            int nrDeleted = 0;
-            nrDeleted += persisted.delete(where, selectionArgs);
-            return nrDeleted;
-        case REMOTE_VALUES_URI:
-            throw new IllegalArgumentException("Cannot delete values from CommonSense!");
-        default:
-            throw new IllegalArgumentException("Unknown URI " + uri);
+            case LOCAL_VALUES_URI:
+                int nrDeleted = 0;
+                nrDeleted += persisted.delete(where, selectionArgs);
+                return nrDeleted;
+            case REMOTE_VALUES_URI:
+                throw new IllegalArgumentException("Cannot delete values from CommonSense!");
+            default:
+                throw new IllegalArgumentException("Unknown URI " + uri);
         }
     }
 
     /**
      * Removes old data from the persistent storage.
-     * 
+     *
      * @return The number of data points deleted
      */
     private int deleteOldData() {
@@ -137,14 +136,14 @@ public class LocalStorage {
 
         // check the URI
         switch (matchUri(uri)) {
-        case LOCAL_VALUES_URI:
-            // implementation below
-            break;
-        case REMOTE_VALUES_URI:
-            throw new IllegalArgumentException(
-                    "Cannot insert into CommonSense through this ContentProvider");
-        default:
-            throw new IllegalArgumentException("Unknown URI " + uri);
+            case LOCAL_VALUES_URI:
+                // implementation below
+                break;
+            case REMOTE_VALUES_URI:
+                throw new IllegalArgumentException(
+                        "Cannot insert into CommonSense through this ContentProvider");
+            default:
+                throw new IllegalArgumentException("Unknown URI " + uri);
         }
 
         // insert in the database
@@ -168,10 +167,10 @@ public class LocalStorage {
         return rowUri;
     }
 
-    public int bulkInsert( ArrayList<ContentValues> values){
-    	return persisted.bulkInsert2(values);
+    public int bulkInsert(ArrayList<ContentValues> values) {
+        return persisted.bulkInsert2(values);
     }
-    
+
     private int matchUri(Uri uri) {
         if (DataPoint.CONTENT_URI_PATH.equals(uri.getPath())) {
             return LOCAL_VALUES_URI;
@@ -183,52 +182,52 @@ public class LocalStorage {
     }
 
     public Cursor query(Uri uri, String[] projection, String where, String[] selectionArgs,
-            String sortOrder) {
+                        String sortOrder) {
         return query(uri, projection, where, selectionArgs, DEFAULT_LIMIT, sortOrder);
     }
 
     public Cursor query(Uri uri, String[] projection, String where, String[] selectionArgs,
-            int limit, String sortOrder) {
+                        int limit, String sortOrder) {
         // check URI
         switch (matchUri(uri)) {
-        case LOCAL_VALUES_URI:
-            // implementation below
-            break;
-        case REMOTE_VALUES_URI:
-            try {
-                return commonSense.query(uri, projection, where, selectionArgs, limit, sortOrder);
-            } catch (Exception e) {
-                Log.e(TAG, "Failed to query the CommonSense data points", e);
-                return null;
-            }
-        default:
-            Log.e(TAG, "Unknown URI: " + uri);
-            throw new IllegalArgumentException("Unknown URI " + uri);
+            case LOCAL_VALUES_URI:
+                // implementation below
+                break;
+            case REMOTE_VALUES_URI:
+                try {
+                    return commonSense.query(uri, projection, where, selectionArgs, limit, sortOrder);
+                } catch (Exception e) {
+                    Log.e(TAG, "Failed to query the CommonSense data points", e);
+                    return null;
+                }
+            default:
+                Log.e(TAG, "Unknown URI: " + uri);
+                throw new IllegalArgumentException("Unknown URI " + uri);
         }
 
         // use default projection if needed
         if (projection == null) {
             projection = DEFAULT_PROJECTION;
         }
-        
+
         Cursor persistedCursor = persisted.query(projection, where, selectionArgs, sortOrder);
         if (persistedCursor.getCount() == 0) {
             persistedCursor.close();
             return null;
         }
-		return persistedCursor;
+        return persistedCursor;
     }
 
     public int update(Uri uri, ContentValues newValues, String where, String[] selectionArgs) {
 
         // check URI
         switch (matchUri(uri)) {
-	        case LOCAL_VALUES_URI:
-	        	return persisted.update(newValues, where, selectionArgs);
-	        case REMOTE_VALUES_URI:
-	            throw new IllegalArgumentException("Cannot update data points in CommonSense");
-	        default:
-	            throw new IllegalArgumentException("Unknown URI " + uri);
-        }   
+            case LOCAL_VALUES_URI:
+                return persisted.update(newValues, where, selectionArgs);
+            case REMOTE_VALUES_URI:
+                throw new IllegalArgumentException("Cannot update data points in CommonSense");
+            default:
+                throw new IllegalArgumentException("Unknown URI " + uri);
+        }
     }
 }

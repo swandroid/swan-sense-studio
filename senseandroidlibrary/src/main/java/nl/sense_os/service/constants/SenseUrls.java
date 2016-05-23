@@ -4,21 +4,30 @@ import nl.sense_os.service.commonsense.SenseApi;
 
 /**
  * Contains URL resources for communication with the CommonSense API
- * 
+ *
  * @author Steven Mulder <steven@sense-os.nl>
- * 
  * @see SenseApi
  */
 public class SenseUrls {
-    /** Host name of CommonSense Authentication API */
+    /**
+     * Host name of CommonSense Authentication API
+     */
     public static final String AUTH_API = "https://auth-api.sense-os.nl/v1/";
-    /** Host name of CommonSense Staging Authentication API */
+    /**
+     * Host name of CommonSense Staging Authentication API
+     */
     public static final String AUTH_STAGING_API = "http://auth-api.staging.sense-os.nl/v1/";
-    /** Host name of CommonSense API */
+    /**
+     * Host name of CommonSense API
+     */
     public static final String API = "https://api.sense-os.nl/";
-    /** Host name of CommonSense dev API */
+    /**
+     * Host name of CommonSense dev API
+     */
     public static final String API_DEV = "http://api.staging.sense-os.nl/";
-    /** Default page size for getting lists at CommonSense */
+    /**
+     * Default page size for getting lists at CommonSense
+     */
     public static final int PAGE_SIZE = 1000;
 
     public static final String ALL_SENSORS = API + "sensors" + "?per_page=" + PAGE_SIZE

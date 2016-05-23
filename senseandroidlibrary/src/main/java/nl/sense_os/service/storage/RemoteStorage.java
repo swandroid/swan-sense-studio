@@ -1,5 +1,15 @@
 package nl.sense_os.service.storage;
 
+import android.content.Context;
+import android.database.Cursor;
+import android.database.MatrixCursor;
+import android.net.Uri;
+import android.util.Log;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashSet;
@@ -13,20 +23,10 @@ import nl.sense_os.service.constants.SensePrefs.Auth;
 import nl.sense_os.service.constants.SenseUrls;
 import nl.sense_os.service.constants.SensorData.DataPoint;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import android.content.Context;
-import android.database.Cursor;
-import android.database.MatrixCursor;
-import android.net.Uri;
-import android.util.Log;
-
 /**
  * Class that manages the (read-only) store for sensor data points in the remote CommonSense
  * storage. Helper class for {@link LocalStorage}.
- * 
+ *
  * @author Steven Mulder <steven@sense-os.nl>
  */
 class RemoteStorage {
@@ -39,7 +39,7 @@ class RemoteStorage {
     }
 
     public Cursor query(Uri uri, String[] projection, String where, String[] selectionArgs,
-            int limit, String sortOrder) throws JSONException, URISyntaxException, IOException {
+                        int limit, String sortOrder) throws JSONException, URISyntaxException, IOException {
         // Log.v(TAG, "Query data points in CommonSense");
 
         // try to parse the selection criteria

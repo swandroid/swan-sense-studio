@@ -8,7 +8,7 @@ import android.util.Log;
 /**
  * This class is responsible for executing the batched tasks when the alarm for deterministic
  * execution is received.
- * 
+ *
  * @author Kimon Tsitsikas <kimon@sense-os.nl>
  */
 public class ExecutionAlarmReceiver extends BroadcastReceiver {
@@ -25,35 +25,34 @@ public class ExecutionAlarmReceiver extends BroadcastReceiver {
 
         int type = intent.getIntExtra(EXTRA_EXECUTION_TYPE, -1);
         switch (type) {
-        case DETERMINISTIC_TYPE:
-            // do nothing but wake up
-            break;
+            case DETERMINISTIC_TYPE:
+                // do nothing but wake up
+                break;
 
-        case OPPORTUNISTIC_TYPE:
+            case OPPORTUNISTIC_TYPE:
 
-            // run the batch of tasks
-            if (sBatchTask != null) {
-                sBatchTask.run();
-                sBatchTask = null;
-            }
+                // run the batch of tasks
+                if (sBatchTask != null) {
+                    sBatchTask.run();
+                    sBatchTask = null;
+                }
 
-            // cancel the deterministic execution
-            ScheduleAlarmTool scheduleTool = ScheduleAlarmTool.getInstance(context);
-            scheduleTool.cancelDeterministicAlarm();
+                // cancel the deterministic execution
+                ScheduleAlarmTool scheduleTool = ScheduleAlarmTool.getInstance(context);
+                scheduleTool.cancelDeterministicAlarm();
 
-            // do the next schedule
-            scheduleTool.schedule();
+                // do the next schedule
+                scheduleTool.schedule();
 
-            break;
+                break;
 
-        default:
-            Log.w(TAG, "Unexpected execution type: " + type);
+            default:
+                Log.w(TAG, "Unexpected execution type: " + type);
         }
     }
 
     /**
-     * @param task
-     *            The batched task to set
+     * @param task The batched task to set
      */
     public static void setBatchTask(Runnable task) {
         sBatchTask = task;

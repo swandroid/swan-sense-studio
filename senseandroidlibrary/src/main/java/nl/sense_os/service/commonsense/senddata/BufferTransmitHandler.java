@@ -1,32 +1,5 @@
 package nl.sense_os.service.commonsense.senddata;
 
-import java.io.IOException;
-import java.lang.ref.WeakReference;
-import java.net.MalformedURLException;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import nl.sense_os.service.SenseService;
-import nl.sense_os.service.MsgHandler;
-import nl.sense_os.service.R;
-import nl.sense_os.service.commonsense.SenseApi;
-import nl.sense_os.service.constants.SenseDataTypes;
-import nl.sense_os.service.constants.SensePrefs;
-import nl.sense_os.service.constants.SensePrefs.Main;
-import nl.sense_os.service.constants.SenseUrls;
-import nl.sense_os.service.constants.SensorData.DataPoint;
-import nl.sense_os.service.storage.LocalStorage;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -40,12 +13,39 @@ import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.util.Log;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.lang.ref.WeakReference;
+import java.net.MalformedURLException;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import nl.sense_os.service.MsgHandler;
+import nl.sense_os.service.R;
+import nl.sense_os.service.SenseService;
+import nl.sense_os.service.commonsense.SenseApi;
+import nl.sense_os.service.constants.SenseDataTypes;
+import nl.sense_os.service.constants.SensePrefs;
+import nl.sense_os.service.constants.SensePrefs.Main;
+import nl.sense_os.service.constants.SenseUrls;
+import nl.sense_os.service.constants.SensorData.DataPoint;
+import nl.sense_os.service.storage.LocalStorage;
+
 /**
  * Handler for transmit tasks of recently added data. Updates {@link DataPoint#TRANSMIT_STATE} of
  * the data points after the transmission is completed successfully. Note that this handler is
  * re-usable: every time the handler receives a message, it gets the latest data in a Cursor and
  * sends it to CommonSense.
- * 
+ *
  * @author Steven Mulder <steven@sense-os.nl>
  */
 public class BufferTransmitHandler extends Handler {
@@ -57,45 +57,45 @@ public class BufferTransmitHandler extends Handler {
         JSONArray data;
     }
 
-	private static final String TAG = "BatchDataTransmitHandler";
-	private static final int MAX_POST_DATA = 10000;
+    private static final String TAG = "BatchDataTransmitHandler";
+    private static final int MAX_POST_DATA = 10000;
     private final Uri contentUri;
     private final WeakReference<Context> ctxRef;
     private final WeakReference<LocalStorage> storageRef;
-	private final String url;
-	private final DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.ENGLISH);
-	private final NumberFormat dateFormatter = new DecimalFormat("##########.###", symbols);
+    private final String url;
+    private final DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.ENGLISH);
+    private final NumberFormat dateFormatter = new DecimalFormat("##########.###", symbols);
 
-	public BufferTransmitHandler(Context context, LocalStorage storage, Looper looper) {
-		super(looper);
-		this.ctxRef = new WeakReference<Context>(context);
-		this.storageRef = new WeakReference<LocalStorage>(storage);
+    public BufferTransmitHandler(Context context, LocalStorage storage, Looper looper) {
+        super(looper);
+        this.ctxRef = new WeakReference<Context>(context);
+        this.storageRef = new WeakReference<LocalStorage>(storage);
 
         contentUri = Uri.parse("content://" + context.getString(R.string.local_storage_authority)
                 + DataPoint.CONTENT_URI_PATH);
 
-		SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
-				Context.MODE_PRIVATE);
-		boolean devMode = mainPrefs.getBoolean(Main.Advanced.DEV_MODE, false);
-		url = devMode ? SenseUrls.SENSOR_DATA_MULTIPLE_DEV : SenseUrls.SENSOR_DATA_MULTIPLE;
-	}
+        SharedPreferences mainPrefs = context.getSharedPreferences(SensePrefs.MAIN_PREFS,
+                Context.MODE_PRIVATE);
+        boolean devMode = mainPrefs.getBoolean(Main.Advanced.DEV_MODE, false);
+        url = devMode ? SenseUrls.SENSOR_DATA_MULTIPLE_DEV : SenseUrls.SENSOR_DATA_MULTIPLE;
+    }
 
-	/**
-	 * Cleans up after transmission is over. Closes the Cursor with the data and releases the wake
-	 * lock. Should always be called after transmission, even if the attempt failed.
-	 * 
-	 * @param cursor
-	 */
-	private void cleanup(Cursor cursor, WakeLock wakeLock) {
-		if (null != cursor) {
-			cursor.close();
-			cursor = null;
-		}
-		if (null != wakeLock) {
-			wakeLock.release();
-			wakeLock = null;
-		}
-	}
+    /**
+     * Cleans up after transmission is over. Closes the Cursor with the data and releases the wake
+     * lock. Should always be called after transmission, even if the attempt failed.
+     *
+     * @param cursor
+     */
+    private void cleanup(Cursor cursor, WakeLock wakeLock) {
+        if (null != cursor) {
+            cursor.close();
+            cursor = null;
+        }
+        if (null != wakeLock) {
+            wakeLock.release();
+            wakeLock = null;
+        }
+    }
 
     private List<SensorDataEntry> getSensorDataList(Cursor cursor) throws IOException,
             JSONException {
@@ -180,9 +180,9 @@ public class BufferTransmitHandler extends Handler {
         return new ArrayList<BufferTransmitHandler.SensorDataEntry>(map.values());
     }
 
-	/**
-	 * @return Cursor with the data points that have to be sent to CommonSense.
-	 */
+    /**
+     * @return Cursor with the data points that have to be sent to CommonSense.
+     */
     private Cursor getUnsentData() {
         try {
             String where = DataPoint.TRANSMIT_STATE + "=0";
@@ -200,55 +200,54 @@ public class BufferTransmitHandler extends Handler {
         }
     }
 
-	@Override
-	public void handleMessage(Message msg) {
-		String cookie = msg.getData().getString("cookie");
+    @Override
+    public void handleMessage(Message msg) {
+        String cookie = msg.getData().getString("cookie");
 
-		// check if our references are still valid
-		if (null == ctxRef.get() || null == storageRef.get()) {
-			// parent service has died
-			return;
-		}
-		WakeLock wakeLock = null;
-		Cursor cursor = null;
-		try {
-			// make sure the device stays awake while transmitting
-			PowerManager powerMgr = (PowerManager) ctxRef.get().getSystemService(
-					Context.POWER_SERVICE);
-			wakeLock = powerMgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
-			wakeLock.acquire();
+        // check if our references are still valid
+        if (null == ctxRef.get() || null == storageRef.get()) {
+            // parent service has died
+            return;
+        }
+        WakeLock wakeLock = null;
+        Cursor cursor = null;
+        try {
+            // make sure the device stays awake while transmitting
+            PowerManager powerMgr = (PowerManager) ctxRef.get().getSystemService(
+                    Context.POWER_SERVICE);
+            wakeLock = powerMgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
+            wakeLock.acquire();
 
-			cursor = getUnsentData();
+            cursor = getUnsentData();
             if (null != cursor && cursor.moveToFirst()) {
-				transmit(cursor, cookie);
-			} else {
-				// nothing to transmit
-			}
+                transmit(cursor, cookie);
+            } else {
+                // nothing to transmit
+            }
 
-		} catch (Exception e) {
-			if (null != e.getMessage()) {
-				Log.e(TAG, "Exception sending buffered data: '" + e.getMessage()
-						+ "'. Data will be resent later.");
-			} else {
-				Log.e(TAG, "Exception sending cursor data. Data will be resent later.", e);
-			}
+        } catch (Exception e) {
+            if (null != e.getMessage()) {
+                Log.e(TAG, "Exception sending buffered data: '" + e.getMessage()
+                        + "'. Data will be resent later.");
+            } else {
+                Log.e(TAG, "Exception sending cursor data. Data will be resent later.", e);
+            }
 
-		} finally {
-			cleanup(cursor, wakeLock);
-		}
-	}
+        } finally {
+            cleanup(cursor, wakeLock);
+        }
+    }
 
     /**
      * Performs cleanup tasks after transmission was successfully completed. Should update the data
      * point records to show that they have been sent to CommonSense.
-     * 
-     * @param sensorDatas
-     *            List of data that was sent to CommonSense. Contains all the data points that were
-     *            transmitted.
+     *
+     * @param sensorDatas List of data that was sent to CommonSense. Contains all the data points that were
+     *                    transmitted.
      * @throws Exception
      */
     private void onTransmitSuccess(List<SensorDataEntry> sensorDatas)
-            throws JSONException{
+            throws JSONException {
         // log our great success
         Log.i(TAG, "Sent recent sensor data from the local storage!");
 
@@ -261,7 +260,7 @@ public class BufferTransmitHandler extends Handler {
             // get the name of the sensor, to use in the ContentResolver query
             String sensorName = sensorData.sensorName;
             String description = sensorData.sensorDescription;
-            
+
             // select points for this sensor, between the first and the last time stamp
             JSONArray dataPoints = sensorData.data;
             String frstTimeStamp = dataPoints.getJSONObject(0).getString("date");
@@ -277,8 +276,8 @@ public class BufferTransmitHandler extends Handler {
             try {
                 int updated = storageRef.get().update(contentUri, values, where, null);
                 if (updated == dataPoints.length()) {
-                     Log.v(TAG, "Updated all " + updated + " '" + sensorName
-                     + "' data points in the local storage");
+                    Log.v(TAG, "Updated all " + updated + " '" + sensorName
+                            + "' data points in the local storage");
                 } else {
                     Log.w(TAG, "Wrong number of '" + sensorName
                             + "' data points updated after transmission! " + updated + " vs. "
@@ -292,11 +291,9 @@ public class BufferTransmitHandler extends Handler {
 
     /**
      * POSTs the sensor data points to the main sensor data URL at CommonSense.
-     * 
+     *
      * @param cookie
-     * 
-     * @param transmission
-     *            JSON Object with data points for transmission
+     * @param transmission JSON Object with data points for transmission
      * @return true if successfully sent
      * @throws JSONException
      * @throws MalformedURLException
@@ -324,7 +321,7 @@ public class BufferTransmitHandler extends Handler {
 
             // if un-authorized: relogin
             if (statusCode.compareToIgnoreCase("403") == 0) {
-            	Log.e(TAG, "You are not logged into sense. In order to use sense service, please login using SwanLake app");
+                Log.e(TAG, "You are not logged into sense. In order to use sense service, please login using SwanLake app");
                 final Intent serviceIntent = new Intent(ctxRef.get().getString(
                         R.string.action_sense_service));
                 serviceIntent.putExtra(SenseService.EXTRA_RELOGIN, true);
@@ -346,8 +343,8 @@ public class BufferTransmitHandler extends Handler {
         return result;
     }
 
-	private void sendFile(String name, String description, String dataType, String deviceUuid,
-            String value, long timestamp) throws JSONException {
+    private void sendFile(String name, String description, String dataType, String deviceUuid,
+                          String value, long timestamp) throws JSONException {
 
         // create sensor data JSON object with only 1 data point
         JSONObject sensorData = new JSONObject();
@@ -367,10 +364,9 @@ public class BufferTransmitHandler extends Handler {
      * Transmits the data points from {@link #cursor} to CommonSense. Any "file" type data points
      * will be sent separately via
      * {@link MsgHandler#sendSensorData(String, String, String, JSONObject)}.
-     * 
+     *
      * @param cookie
      * @param cursor
-     * 
      * @throws JSONException
      * @throws IOException
      */
@@ -398,10 +394,10 @@ public class BufferTransmitHandler extends Handler {
             }
             JSONObject transmission = new JSONObject();
             transmission.put("sensors", sensors);
-            
+
             // perform the actual POST request
             boolean result = postData(cookie, transmission);
-            
+
             if (result) {
                 onTransmitSuccess(sensorDataList);
             } else {

@@ -21,13 +21,13 @@ public class RequirementReceiver extends BroadcastReceiver {
      * Key for Intent extra containing the requirements
      */
     public static final String EXTRA_REQUIREMENTS = "requirements";
-	
-	@Override
-	public void onReceive(Context context, Intent intent) {						
-		Intent reqsIntent = new Intent(context, ConfigurationService.class);
-		
-		//pass the requirement
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        Intent reqsIntent = new Intent(context, ConfigurationService.class);
+
+        //pass the requirement
         reqsIntent.putExtra(EXTRA_REQUIREMENTS, intent.getStringExtra(EXTRA_REQUIREMENTS));
-		context.startService(reqsIntent);
-	}
+        context.startService(reqsIntent);
+    }
 }

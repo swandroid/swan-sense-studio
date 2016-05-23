@@ -3,18 +3,18 @@
  *************************************************************************************************/
 package nl.sense_os.service.configuration;
 
-import nl.sense_os.service.R;
-import nl.sense_os.service.constants.SensePrefs;
-import nl.sense_os.service.constants.SensePrefs.Main;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
- 
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import nl.sense_os.service.R;
+import nl.sense_os.service.constants.SensePrefs;
+import nl.sense_os.service.constants.SensePrefs.Main;
+
 /**
  * IntentService to handle changes in the configuration. When the service is started, it will look
  * into the requirement and set the preferences accordingly.<br/>

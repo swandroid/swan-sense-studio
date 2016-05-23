@@ -1,15 +1,15 @@
 package nl.sense_os.service.scheduler;
 
-import java.util.concurrent.CopyOnWriteArrayList;
-
 import android.content.Context;
 import android.util.Log;
+
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * This class is responsible for scheduling the sampling tasks of the phone, as also the sensor data
  * transmission. It applies batch scheduling and opportunistic execution algorithms in order to
  * reduce the number of CPU wakeups and thus the energy consumption.
- * 
+ *
  * @author Kimon Tsitsikas <kimon@sense-os.nl>
  */
 public class Scheduler {
@@ -26,7 +26,7 @@ public class Scheduler {
 
     /**
      * Factory method to get the singleton instance.
-     * 
+     *
      * @param context
      * @return instance
      */
@@ -42,7 +42,7 @@ public class Scheduler {
 
     /**
      * Constructor.
-     * 
+     *
      * @param context
      */
     protected Scheduler(Context context) {
@@ -51,13 +51,10 @@ public class Scheduler {
 
     /**
      * Registers a new task to be scheduled with a given interval.
-     * 
-     * @param command
-     *            The runnable of the new task
-     * @param sensorInterval
-     *            Execution interval of the new task
-     * @param sensorFlexibility
-     *            Delay tolerance of task execution
+     *
+     * @param command           The runnable of the new task
+     * @param sensorInterval    Execution interval of the new task
+     * @param sensorFlexibility Delay tolerance of task execution
      */
     public synchronized void register(Runnable command, long sensorInterval, long sensorFlexibility) {
         Log.v(TAG, "Register new sample task at " + sensorInterval + "ms interval");
@@ -93,7 +90,7 @@ public class Scheduler {
 
     /**
      * Unregisters a task.
-     * 
+     *
      * @param command
      */
     public synchronized void unregister(Runnable command) {

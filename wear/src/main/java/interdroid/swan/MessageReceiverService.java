@@ -7,10 +7,6 @@ import android.net.Uri;
 import android.os.SystemClock;
 import android.util.Log;
 
-import interdroid.swan.sensordashboard.shared.ClientPaths;
-import interdroid.swan.sensordashboard.shared.DataMapKeys;
-import interdroid.swan.sensordashboard.shared.SensorConstants;
-
 import com.google.android.gms.wearable.DataEvent;
 import com.google.android.gms.wearable.DataEventBuffer;
 import com.google.android.gms.wearable.DataItem;
@@ -20,7 +16,10 @@ import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.WearableListenerService;
 
 import java.nio.ByteBuffer;
-import java.util.concurrent.locks.ReentrantLock;
+
+import interdroid.swan.sensordashboard.shared.ClientPaths;
+import interdroid.swan.sensordashboard.shared.DataMapKeys;
+import interdroid.swan.sensordashboard.shared.SensorConstants;
 
 public class MessageReceiverService extends WearableListenerService {
     private static final String TAG = "Wear/MessageReceiver";
@@ -63,7 +62,7 @@ public class MessageReceiverService extends WearableListenerService {
         int sensorId = bb.getInt();
         int accuracy = bb.getInt();
 
-        if(sensorId == 0)
+        if (sensorId == 0)
             Log.w(TAG, "Request to start an unknown sensor");
 
         if (messageEvent.getPath().compareTo(ClientPaths.START_MEASUREMENT) == 0) {
@@ -73,7 +72,7 @@ public class MessageReceiverService extends WearableListenerService {
             intent.putExtra(SensorConstants.ACCURACY, accuracy);
             startService(intent);
 
-            while(!isMyServiceRunning(SensorService.class)){
+            while (!isMyServiceRunning(SensorService.class)) {
                 SystemClock.sleep(100);
             }
 
@@ -96,14 +95,14 @@ public class MessageReceiverService extends WearableListenerService {
         return false;
     }
 
-    private void addSensor(int sensorId, int accuracy){
+    private void addSensor(int sensorId, int accuracy) {
         Intent i = new Intent(WearConstants.BROADCAST_ADD_SENSOR);
         i.putExtra(SensorConstants.SENSOR_ID, sensorId);
         i.putExtra(SensorConstants.ACCURACY, accuracy);
         getApplicationContext().sendBroadcast(i);
     }
 
-    private void removeSensor(int sensorId){
+    private void removeSensor(int sensorId) {
         Intent i = new Intent(WearConstants.BROADCAST_REMOVE_SENSOR);
         i.putExtra(SensorConstants.SENSOR_ID, sensorId);
         getApplicationContext().sendBroadcast(i);

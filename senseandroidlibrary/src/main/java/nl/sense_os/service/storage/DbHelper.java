@@ -1,11 +1,12 @@
 package nl.sense_os.service.storage;
 
-import nl.sense_os.service.constants.SensorData.DataPoint;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 import android.util.Log;
+
+import nl.sense_os.service.constants.SensorData.DataPoint;
 
 /**
  * Helper class that assist in creating, opening and managing the SQLite3 database for data points.
@@ -32,9 +33,8 @@ public class DbHelper extends SQLiteOpenHelper {
     /**
      * Constructor. The database is not actually created or opened until one of
      * {@link #getWritableDatabase()} or {@link #getReadableDatabase()} is called.
-     * 
-     * @param context
-     *            to use to open or create the database
+     *
+     * @param context to use to open or create the database
      */
     public DbHelper(Context context) {
         // if the database name is null, it will be created in-memory
@@ -45,7 +45,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         final StringBuilder sb = new StringBuilder("CREATE TABLE " + TABLE + "(");
         sb.append(BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT");
-        sb.append(", " + DataPoint.SENSOR_NAME + " TEXT");	//sensor name will be the table's name
+        sb.append(", " + DataPoint.SENSOR_NAME + " TEXT");    //sensor name will be the table's name
         sb.append(", " + DataPoint.DISPLAY_NAME + " TEXT");
         sb.append(", " + DataPoint.SENSOR_DESCRIPTION + " TEXT");
         sb.append(", " + DataPoint.VALUE_PATH + " TEXT");

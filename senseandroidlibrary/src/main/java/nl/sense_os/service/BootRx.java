@@ -3,8 +3,6 @@
  *************************************************************************************************/
 package nl.sense_os.service;
 
-import nl.sense_os.service.constants.SensePrefs;
-import nl.sense_os.service.constants.SensePrefs.Status;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -12,10 +10,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import nl.sense_os.service.constants.SensePrefs;
+import nl.sense_os.service.constants.SensePrefs.Status;
+
 /**
  * This class is responsible for automatically starting the Sense service when the phone boots up.
  * It receives the {@link Intent#ACTION_BOOT_COMPLETED} broadcast from the Android system.
- * 
+ *
  * @author Steven Mulder <steven@sense-os.nl>
  */
 public class BootRx extends BroadcastReceiver {

@@ -7,6 +7,6 @@ package interdroid.swan;
  */
 public class WearConstants {
 
-    public static final String BROADCAST_ADD_SENSOR   = "Add_Sensor";
+    public static final String BROADCAST_ADD_SENSOR = "Add_Sensor";
     public static final String BROADCAST_REMOVE_SENSOR = "Remove_Sensor";
 }

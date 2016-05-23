@@ -3,14 +3,14 @@
  *************************************************************************************************/
 package nl.sense_os.service.push;
 
-import nl.sense_os.service.R;
 import android.content.Context;
+
+import nl.sense_os.service.R;
 
 /**
  * This class is just Boilerplate to use GCM.
  *
  * @author Ahmy Yulrizka <ahmy@sense-os.nl>
- * 
  */
 public class GCMBroadcastReceiver extends com.google.android.gcm.GCMBroadcastReceiver {
 

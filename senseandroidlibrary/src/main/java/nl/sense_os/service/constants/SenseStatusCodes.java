@@ -6,12 +6,12 @@ package nl.sense_os.service.constants;
  * the system.<br/>
  * <br/>
  * Example:
- * 
+ * <p/>
  * <pre>
  * int status = ServiceStateHelper.getInstance(service).getStatusCode();
  * boolean ambience = (status &amp; SenseStatusCode.AMBIENCE) &gt; 0;
  * </pre>
- * 
+ *
  * @author Steven Mulder <steven@sense-os.nl>
  */
 public class SenseStatusCodes {
