@@ -21,6 +21,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
+import interdroid.swan.expression.ManageExpressions;
 import interdroid.swan.sensordashboard.shared.SensorConstants;
 
 
@@ -81,6 +82,8 @@ public class SensorService extends Service implements SensorEventListener {
 
     SensorCommand sensorCommand = new SensorCommand();
 
+    ManageExpressions exp;
+
     private class SensorCommand extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -113,10 +116,22 @@ public class SensorService extends Service implements SensorEventListener {
 
         registerReceiver(sensorCommand, new IntentFilter(WearConstants.BROADCAST_ADD_SENSOR));
         registerReceiver(sensorCommand, new IntentFilter(WearConstants.BROADCAST_REMOVE_SENSOR));
+
+        testSwanExpression();
+
         startForeground(1, notificationBuilder.build());
 
     }
 
+    private void testSwanExpression(){
+        exp = new ManageExpressions(getApplicationContext());
+        exp.registerValueExpression( "1234", "self@accelerometer:x{ANY, 1000}");
+    }
+
+    private void finishSwanExpression()
+    {
+        exp.unregisterSWANExpression("1234");
+    }
     @Override
     public void onDestroy() {
         unregisterReceiver(sensorCommand);
