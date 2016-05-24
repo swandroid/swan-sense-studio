@@ -5,18 +5,13 @@ import interdroid.swan.cuckoo_sensors.CuckooPoller;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpParams;
 
 /**
  * A sensor for news in the Netherlands
@@ -43,14 +38,11 @@ public class NewsPoller implements CuckooPoller {
 		String category = (String) configuration.get("category");
 		String suffix = category + ".rss";
 		String url = "http://nu.nl/feeds/rss/" + suffix;
-		HttpParams httpParams = new BasicHttpParams();
-		DefaultHttpClient httpClient = new DefaultHttpClient(httpParams);
-		HttpGet httpGet = new HttpGet(url);
 		try {
-			HttpResponse response = httpClient.execute(httpGet);
+			URLConnection connection = new URL(url).openConnection();
 			BufferedReader reader = new BufferedReader(new InputStreamReader(
-					response.getEntity().getContent()));
-			String line = null;
+					connection.getInputStream()));
+			String line;
 			String reply = "";
 			while ((line = reader.readLine()) != null) {
 				reply += line;
@@ -82,8 +74,6 @@ public class NewsPoller implements CuckooPoller {
 			}
 
 			result.put("recent", recent);
-		} catch (ClientProtocolException e) {
-			// ignore
 		} catch (IOException e) {
 			// ignore
 		}

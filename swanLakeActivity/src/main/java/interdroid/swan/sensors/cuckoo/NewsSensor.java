@@ -1,12 +1,9 @@
 package interdroid.swan.sensors.cuckoo;
 
-import interdroid.swan.cuckoo_news_sensor.R;
-
+import interdroid.swan.R;
 import interdroid.swan.sensors.AbstractConfigurationActivity;
 import interdroid.swan.sensors.AbstractCuckooSensor;
-import interdroid.vdb.content.avro.AvroContentProviderProxy; // link to android library: vdb-avro
 
-import android.content.ContentValues;
 import android.os.Bundle;
 import android.app.Activity;
 import android.util.Log;
@@ -48,36 +45,6 @@ public class NewsSensor extends AbstractCuckooSensor {
 	 */
 	public static final String RECENT_FIELD = "recent";
 
-	/**
-	 * The schema for this sensor.
-	 */
-	public static final String SCHEME = getSchema();
-
-	/**
-	 * The provider for this sensor.
-	 */
-	public static class Provider extends AvroContentProviderProxy {
-
-		/**
-		 * Construct the provider for this sensor.
-		 */
-		public Provider() {
-			super(SCHEME);
-		}
-
-	}
-
-	/**
-	 * @return the schema for this sensor.
-	 */
-	private static String getSchema() {
-		String scheme = "{'type': 'record', 'name': 'news', "
-				+ "'namespace': 'interdroid.swan.cuckoo_news_sensor.news',"
-				+ "\n'fields': [" + SCHEMA_TIMESTAMP_FIELDS + "\n{'name': '"
-				+ RECENT_FIELD + "', 'type': 'string'}" + "\n]" + "}";
-		return scheme.replace('\'', '"');
-	}
-
 	@Override
 	public final String[] getValuePaths() {
 		return new String[] { RECENT_FIELD };
@@ -88,11 +55,6 @@ public class NewsSensor extends AbstractCuckooSensor {
 		defaults.putString(CATEGORY_CONFIG, "algemeen");
 	}
 
-	@Override
-	public final String getScheme() {
-		return SCHEME;
-	}
-
 	/**
 	 * Data Storage Helper Method.
 	 * 
@@ -100,10 +62,7 @@ public class NewsSensor extends AbstractCuckooSensor {
 	 *            value for recent
 	 */
 	private void storeReading(String recent) {
-		long now = System.currentTimeMillis();
-		ContentValues values = new ContentValues();
-		values.put(RECENT_FIELD, recent);
-		putValues(values, now);
+		putValueTrimSize(RECENT_FIELD, null, System.currentTimeMillis(), recent);
 	}
 
 	/**
@@ -118,14 +77,12 @@ public class NewsSensor extends AbstractCuckooSensor {
 
 	@Override
 	public String getGCMSenderId() {
-		//throw new RuntimeException("EMPTY FOR GIT");
-		return "251697980958";
+		throw new RuntimeException("EMPTY FOR GIT");
 	}
 
 	@Override
 	public String getGCMApiKey() {
-		//throw new RuntimeException("EMPTY FOR GIT");
-		return "AIzaSyBg3755yXKGV_HIyeQcVQKKD-c0UBf0wK4";
+		throw new RuntimeException("EMPTY FOR GIT");
 	}
 
 	public void registerReceiver() {

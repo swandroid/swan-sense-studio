@@ -1,11 +1,11 @@
 package interdroid.swan.sensors.cuckoo;
 
+import interdroid.swan.R;
+import interdroid.swan.cuckoo_sensors.CuckooPoller;
 import interdroid.swan.sensors.AbstractConfigurationActivity;
 import interdroid.swan.sensors.AbstractCuckooSensor;
-import interdroid.vdb.content.avro.AvroContentProviderProxy;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -30,7 +30,7 @@ public class ServerSensor extends AbstractCuckooSensor {
 
 		@Override
 		public final int getPreferencesXML() {
-			return R.xml.server_preferences;
+			return R.xml.cuckoo_server_preferences;
 		}
 
 	}
@@ -50,36 +50,6 @@ public class ServerSensor extends AbstractCuckooSensor {
 	 */
 	public static final String HTTP_STATUS_FIELD = "http_status";
 
-	/**
-	 * The schema for this sensor.
-	 */
-	public static final String SCHEME = getSchema();
-
-	/**
-	 * The provider for this sensor.
-	 */
-	public static class Provider extends AvroContentProviderProxy {
-
-		/**
-		 * Construct the provider for this sensor.
-		 */
-		public Provider() {
-			super(SCHEME);
-		}
-
-	}
-
-	/**
-	 * @return the schema for this sensor.
-	 */
-	private static String getSchema() {
-		String scheme = "{'type': 'record', 'name': 'server', "
-				+ "'namespace': 'interdroid.swan.cuckoo_sensors.server',"
-				+ "\n'fields': [" + SCHEMA_TIMESTAMP_FIELDS + "\n{'name': '"
-				+ HTTP_STATUS_FIELD + "', 'type': 'long'}" + "\n]" + "}";
-		return scheme.replace('\'', '"');
-	}
-
 	@Override
 	public final String[] getValuePaths() {
 		return new String[] { HTTP_STATUS_FIELD };
@@ -90,11 +60,6 @@ public class ServerSensor extends AbstractCuckooSensor {
 		defaults.putLong(TIMEOUT_CONFIG, 1000);
 	}
 
-	@Override
-	public final String getScheme() {
-		return SCHEME;
-	}
-
 	/**
 	 * Data Storage Helper Method.
 	 * 
@@ -102,11 +67,7 @@ public class ServerSensor extends AbstractCuckooSensor {
 	 *            value for http_status
 	 */
 	private void storeReading(long http_status) {
-		long now = System.currentTimeMillis();
-		ContentValues values = new ContentValues();
-		values.put(HTTP_STATUS_FIELD, http_status);
-		System.out.println("badaboem! storing values!! " + values);
-		putValues(values, now);
+		putValueTrimSize(HTTP_STATUS_FIELD, null, System.currentTimeMillis(), http_status);
 	}
 
 	/**
@@ -121,14 +82,12 @@ public class ServerSensor extends AbstractCuckooSensor {
 
 	@Override
 	public String getGCMSenderId() {
-		//throw new RuntimeException("EMPTY FOR GIT");
-		return "251697980958";
+		throw new RuntimeException("EMPTY FOR GIT");
 	}
 
 	@Override
 	public String getGCMApiKey() {
-		//throw new RuntimeException("EMPTY FOR GIT");
-		return "AIzaSyBg3755yXKGV_HIyeQcVQKKD-c0UBf0wK4";
+		throw new RuntimeException("EMPTY FOR GIT");
 	}
 
 	public void registerReceiver() {

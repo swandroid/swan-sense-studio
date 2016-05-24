@@ -1,12 +1,9 @@
 package interdroid.swan.sensors.cuckoo;
 
-import interdroid.swan.cuckoo_station_sensor.R;
-
+import interdroid.swan.R;
 import interdroid.swan.sensors.AbstractConfigurationActivity;
 import interdroid.swan.sensors.AbstractCuckooSensor;
-import interdroid.vdb.content.avro.AvroContentProviderProxy; // link to android library: vdb-avro
 
-import android.content.ContentValues;
 import android.os.Bundle;
 import android.app.Activity;
 import android.util.Log;
@@ -63,36 +60,6 @@ public class TrainSensor extends AbstractCuckooSensor {
 	 */
 	public static final String DEPARTURE_FIELD = "departure";
 
-	/**
-	 * The schema for this sensor.
-	 */
-	public static final String SCHEME = getSchema();
-
-	/**
-	 * The provider for this sensor.
-	 */
-	public static class Provider extends AvroContentProviderProxy {
-
-		/**
-		 * Construct the provider for this sensor.
-		 */
-		public Provider() {
-			super(SCHEME);
-		}
-
-	}
-
-	/**
-	 * @return the schema for this sensor.
-	 */
-	private static String getSchema() {
-		String scheme = "{'type': 'record', 'name': 'train', "
-				+ "'namespace': 'interdroid.swan.cuckoo_station_sensor.train',"
-				+ "\n'fields': [" + SCHEMA_TIMESTAMP_FIELDS + "\n{'name': '"
-				+ DEPARTURE_FIELD + "', 'type': 'long'}" + "\n]" + "}";
-		return scheme.replace('\'', '"');
-	}
-
 	@Override
 	public final String[] getValuePaths() {
 		return new String[] { DEPARTURE_FIELD };
@@ -103,11 +70,6 @@ public class TrainSensor extends AbstractCuckooSensor {
 		defaults.putString(TYPE_CONFIG, "Intercity");
 	}
 
-	@Override
-	public final String getScheme() {
-		return SCHEME;
-	}
-
 	/**
 	 * Data Storage Helper Method.
 	 * 
@@ -115,10 +77,7 @@ public class TrainSensor extends AbstractCuckooSensor {
 	 *            value for departure
 	 */
 	private void storeReading(long departure) {
-		long now = System.currentTimeMillis();
-		ContentValues values = new ContentValues();
-		values.put(DEPARTURE_FIELD, departure);
-		putValues(values, now);
+		putValueTrimSize(DEPARTURE_FIELD, null, System.currentTimeMillis(), departure);
 	}
 
 	/**
@@ -133,14 +92,12 @@ public class TrainSensor extends AbstractCuckooSensor {
 
 	@Override
 	public String getGCMSenderId() {
-		//throw new java.lang.RuntimeException("<put your gcm project id here>");
-		return "251697980958";
+		throw new java.lang.RuntimeException("<put your gcm project id here>");
 	}
 
 	@Override
 	public String getGCMApiKey() {
-		//throw new java.lang.RuntimeException("<put your gcm api key here>");
-		return "AIzaSyBg3755yXKGV_HIyeQcVQKKD-c0UBf0wK4";
+		throw new java.lang.RuntimeException("<put your gcm api key here>");
 	}
 
 	public void registerReceiver() {

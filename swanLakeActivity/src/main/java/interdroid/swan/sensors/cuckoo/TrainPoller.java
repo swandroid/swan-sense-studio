@@ -5,21 +5,14 @@ import interdroid.swan.cuckoo_sensors.CuckooPoller;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpParams;
-
-import android.util.Log;
 
 /**
  * A sensor for departure times of trains in the Netherlands
@@ -61,8 +54,6 @@ public class TrainPoller implements CuckooPoller {
 		String fromStation = (String) configuration.get(FROM_CONFIG);
 		String toStation = (String) configuration.get(TO_CONFIG);
 		String time = (String) configuration.get(TIME_CONFIG);
-//		HttpParams httpParams = new BasicHttpParams();
-		DefaultHttpClient httpClient = new DefaultHttpClient();
 		String date = new SimpleDateFormat("dd-MM").format(new Date(System
 				.currentTimeMillis()));
 		
@@ -70,12 +61,11 @@ public class TrainPoller implements CuckooPoller {
 				+ "&to=" + toStation + "&date=" + date + "&time="
 				+ time + "&departure=true&planroute=Journey+advice"; 
 		System.out.println(url);
-		HttpGet httpGet = new HttpGet(url);
 		try {
-			HttpResponse response = httpClient.execute(httpGet);
+			URLConnection connection = new URL(url).openConnection();
 			BufferedReader reader = new BufferedReader(new InputStreamReader(
-					response.getEntity().getContent()));
-			String line = null;
+					connection.getInputStream()));
+			String line;
 			String departureTimeString = "";
 			int delay = 0;
 			while ((line = reader.readLine()) != null) {
@@ -102,8 +92,6 @@ public class TrainPoller implements CuckooPoller {
 					break;
 				}
 			}
-		} catch (ClientProtocolException e) {
-			// ignore
 		} catch (IOException e) {
 			// ignore
 		}

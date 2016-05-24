@@ -56,7 +56,6 @@ public class RainPoller implements CuckooPoller {
 		float mm = 0;
 		try {
 			URLConnection conn = new URL(url).openConnection();
-
 			BufferedReader r = new BufferedReader(new InputStreamReader(
 					conn.getInputStream()));
 			for (int i = 0; i < nrSamples; i++) {
@@ -96,8 +95,7 @@ public class RainPoller implements CuckooPoller {
 	}
 
 	private float convertValueToMM(int value, int minutes) {
-		float result = (float) ((Math.pow(10, (value - 109) / 32.0) / 60.0) * minutes);
-		return result;
+		return (float) ((Math.pow(10, (value - 109) / 32.0) / 60.0) * minutes);
 	}
 
 	@Override

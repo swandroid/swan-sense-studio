@@ -22,7 +22,7 @@
 		/>
 		<ListPreference
 			android:key="type"
-			android:entries="@array/types"
+			android:entries="@array/train_types"
 			android:entryValues="@array/types"
 			android:dialogTitle="Choose Type"
 			android:summary="Set Type"

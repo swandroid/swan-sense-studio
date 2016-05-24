@@ -3,7 +3,7 @@
 	<PreferenceCategory android:title="Value Path">
 		<ListPreference android:title="Value Path"
 			android:summary="Select a Value Path" android:key="valuepath"
-			android:entries="@array/server_valuepaths" android:entryValues="@array/server_valuepaths" />
+			android:entries="@array/cuckoo_server_valuepaths" android:entryValues="@array/cuckoo_server_valuepaths" />
 	</PreferenceCategory>
 	<PreferenceCategory android:title="Configuration">
 		<EditTextPreference

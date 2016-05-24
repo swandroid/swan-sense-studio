@@ -1,12 +1,9 @@
 package interdroid.swan.sensors.cuckoo;
 
-import interdroid.swan.cuckoo_rain_sensor.R;
-
+import interdroid.swan.R;
 import interdroid.swan.sensors.AbstractConfigurationActivity;
 import interdroid.swan.sensors.AbstractCuckooSensor;
-import interdroid.vdb.content.avro.AvroContentProviderProxy; // link to android library: vdb-avro
 
-import android.content.ContentValues;
 import android.os.Bundle;
 import android.app.Activity;
 import android.util.Log;
@@ -33,7 +30,7 @@ public class RainSensor extends AbstractCuckooSensor {
 
 		@Override
 		public final int getPreferencesXML() {
-			return R.xml.rain_preferences;
+			return R.xml.cuckoo_rain_preferences;
 		}
 
 	}
@@ -58,42 +55,6 @@ public class RainSensor extends AbstractCuckooSensor {
 	*/
 	public static final String EXPECTED_FIELD = "expected";
 
-	/**
-	* The schema for this sensor.
-	*/
-	public static final String SCHEME = getSchema();
-
-	/**
-	* The provider for this sensor.
-	*/
-	public static class Provider extends AvroContentProviderProxy {
-
-		/**
-		* Construct the provider for this sensor.
-		*/
-		public Provider() {
-			super(SCHEME);
-		}
-
-	}
-
-	/**
-	* @return the schema for this sensor.
-	*/
-	private static String getSchema() {
-		String scheme =
-			"{'type': 'record', 'name': 'rain', "
-			+ "'namespace': 'interdroid.swan.cuckoo_rain_sensor.rain',"
-			+ "\n'fields': ["
-			+ SCHEMA_TIMESTAMP_FIELDS
-			+ "\n{'name': '"
-			+ EXPECTED_FIELD
-			+ "', 'type': 'int'}"
-			+ "\n]"
-			+ "}";
-		return scheme.replace('\'', '"');
-	}
-
 	@Override
 	public final String[] getValuePaths() {
 		return new String[] { EXPECTED_FIELD };
@@ -103,21 +64,13 @@ public class RainSensor extends AbstractCuckooSensor {
 	public void initDefaultConfiguration(final Bundle defaults) {
 	}
 
-	@Override
-	public final String getScheme() {
-		return SCHEME;
-	}
-
 
 	/**
 	* Data Storage Helper Method.
 	* @param expected value for expected
 	*/
 	private void storeReading(int expected) {
-		long now = System.currentTimeMillis();
-		ContentValues values = new ContentValues();
-		values.put(EXPECTED_FIELD, expected);
-		putValues(values, now);
+		putValueTrimSize(EXPECTED_FIELD, null, System.currentTimeMillis(), expected);
 	}
 
 	/**
@@ -133,14 +86,12 @@ public class RainSensor extends AbstractCuckooSensor {
 
 	@Override
 	public String getGCMSenderId() {
-		//throw new java.lang.RuntimeException("<put your gcm project id here>");
-		return "251697980958";
+		throw new java.lang.RuntimeException("<put your gcm project id here>");
 	}
 
 	@Override
 	public String getGCMApiKey() {
-		//throw new java.lang.RuntimeException("<put your gcm api key here>");
-		return "AIzaSyBg3755yXKGV_HIyeQcVQKKD-c0UBf0wK4";
+		throw new java.lang.RuntimeException("<put your gcm api key here>");
 	}
 
 	public void registerReceiver() {
