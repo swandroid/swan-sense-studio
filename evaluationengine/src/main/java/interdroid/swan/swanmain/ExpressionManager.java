@@ -171,7 +171,7 @@ public class ExpressionManager {
         Intent queryIntent = new Intent("interdroid.swan.sensor.DISCOVER");
         List<ResolveInfo> discoveredSensors = pm.queryIntentActivities(
                 queryIntent, PackageManager.GET_META_DATA);
-        Log.d(TAG, "Found " + discoveredSensors.size() + " sensors");
+        Log.d(TAG, "Found " + discoveredSensors.size() + "interdroid/swan/sensors");
         for (ResolveInfo discoveredSensor : discoveredSensors) {
             try {
                 Drawable icon = new BitmapDrawable(

@@ -2,7 +2,6 @@ package interdroid.swan.engine;
 
 import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ContentValues;
 import android.content.Context;
@@ -11,17 +10,15 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.PriorityQueue;
 
 import interdroid.swan.swanmain.ExpressionManager;
-import interdroid.swan.R;
+//import interdroid.swan.R;
 import interdroid.swan.swanmain.SensorConfigurationException;
 import interdroid.swan.swanmain.SwanException;
 import interdroid.swan.crossdevice.Converter;
@@ -407,7 +404,7 @@ public class EvaluationEngineService extends Service {
 
     private Intent getActiveSensors() {
         Intent intent = new Intent(UPDATE_SENSORS);
-        intent.putExtra("sensors", mEvaluationManager.activeSensorsAsBundle());
+        intent.putExtra("interdroid/swan/sensors", mEvaluationManager.activeSensorsAsBundle());
         return intent;
     }
 

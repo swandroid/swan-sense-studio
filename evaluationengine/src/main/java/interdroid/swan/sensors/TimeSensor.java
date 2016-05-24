@@ -4,7 +4,7 @@ import android.os.Bundle;
 
 import java.util.Calendar;
 
-import interdroid.swan.R;
+//import interdroid.swan.R;
 import interdroid.swan.swansong.Comparator;
 import interdroid.swan.swansong.Result;
 import interdroid.swan.swansong.TriState;
