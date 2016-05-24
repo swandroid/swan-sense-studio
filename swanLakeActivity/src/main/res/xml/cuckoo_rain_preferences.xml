@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+	<PreferenceCategory android:title="Value Path">
+		<ListPreference android:title="Value Path"
+			android:summary="Select a Value Path" android:key="valuepath"
+			android:entries="@array/rain_valuepaths" android:entryValues="@array/rain_valuepaths" />
+	</PreferenceCategory>
+	<PreferenceCategory android:title="Configuration">
+		<EditTextPreference
+			android:key="lat"
+			android:inputType="number"
+			android:dialogTitle="Enter Latitude"
+			android:summary="Set Latitude"
+			android:title="Latitude"
+		/>
+		<EditTextPreference
+			android:key="lon"
+			android:inputType="number"
+			android:dialogTitle="Enter Longitude"
+			android:summary="Set Longitude"
+			android:title="Longitude"
+		/>
+		<EditTextPreference
+			android:key="window"
+			android:inputType="text"
+			android:dialogTitle="Enter Time (hh:mm)"
+			android:summary="Set Time (hh:mm)"
+			android:title="Time (hh:mm)"
+		/>
+	</PreferenceCategory>
+</PreferenceScreen>
