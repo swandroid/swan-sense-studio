@@ -1,4 +1,4 @@
-package interdroid.swan;
+package wear.interdroid.swan;
 
 import android.app.ActivityManager;
 import android.content.Context;
@@ -17,6 +17,7 @@ import com.google.android.gms.wearable.WearableListenerService;
 
 import java.nio.ByteBuffer;
 
+import wear.interdroid.swan.SensorService;
 import interdroid.swan.sensordashboard.shared.ClientPaths;
 import interdroid.swan.sensordashboard.shared.DataMapKeys;
 import interdroid.swan.sensordashboard.shared.SensorConstants;

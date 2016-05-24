@@ -1,4 +1,4 @@
-package interdroid.swan.expression;
+package wear.interdroid.swan.expression;
 
 import android.content.Context;
 import android.util.Log;
