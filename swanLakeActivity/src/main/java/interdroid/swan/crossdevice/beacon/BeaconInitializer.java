@@ -50,17 +50,17 @@ public class BeaconInitializer {
 
 //        // Alt beacon
         beaconManager.getBeaconParsers().add(new BeaconParser().
-                setBeaconLayout("m:2-3=beac,i:4-19,i:20-21,i:22-23,p:24-24,d:25-25"));
+                setBeaconLayout(BeaconParser.ALTBEACON_LAYOUT));
 
         // Detect the main identifier (UID) frame:
         beaconManager.getBeaconParsers().add(new BeaconParser().
-                setBeaconLayout("s:0-1=feaa,m:2-2=00,p:3-3:-41,i:4-13,i:14-19"));
+                setBeaconLayout(BeaconParser.EDDYSTONE_UID_LAYOUT));
         // Detect the telemetry (TLM) frame:
         beaconManager.getBeaconParsers().add(new BeaconParser().
-                setBeaconLayout("x,s:0-1=feaa,m:2-2=20,d:3-3,d:4-5,d:6-7,d:8-11,d:12-15"));
+                setBeaconLayout(BeaconParser.EDDYSTONE_TLM_LAYOUT));
         // Detect the URL frame:
         beaconManager.getBeaconParsers().add(new BeaconParser().
-                setBeaconLayout("s:0-1=feaa,m:2-2=10,p:3-3:-41,i:4-20v"));
+                setBeaconLayout(BeaconParser.EDDYSTONE_URL_LAYOUT));
 
 
         // Apple iBeacon
