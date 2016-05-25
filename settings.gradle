@@ -1,4 +1,4 @@
-include ':senseandroidlibrary', ':ttn-android-sdk', ':evaluationengine'
+include ':senseandroidlibrary', ':ttn-android-sdk', ':evaluationengine', ':evaluationengineapp'
 include ':swanLakeActivity'
 include ':wear'
 include ':shared'
