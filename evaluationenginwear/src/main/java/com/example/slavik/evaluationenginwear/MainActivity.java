@@ -3,6 +3,7 @@ package com.example.slavik.evaluationenginwear;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.wearable.view.WatchViewStub;
+import android.util.Log;
 import android.widget.TextView;
 
 import interdroid.swan.swanmain.ExpressionManager;
@@ -36,17 +37,18 @@ public class MainActivity extends Activity {
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
             @Override
             public void onLayoutInflated(WatchViewStub stub) {
-                mTextView = (TextView) stub.findViewById(R.id.text);
+                mTextView = (TextView) stub.findViewById(R.id.textView1);
+                initialize();
             }
         });
 
-        initialize();
+
     }
 
 
     public void initialize(){
 
-        mTextView = (TextView) findViewById(R.id.textView1);
+        //mTextView = (TextView) findViewById(R.id.textView1);
 
         try {
             swanSensor = ExpressionManager.getSensor(MainActivity.this, SENSOR_NAME);
@@ -96,6 +98,7 @@ public class MainActivity extends Activity {
     /* Unregister expression from SWAN */
     private void unregisterSWANSensor(){
 
+
         ExpressionManager.unregisterExpression(this, String.valueOf(REQUEST_CODE));
 
     }
@@ -104,6 +107,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
+        Log.d("WEAR", "++++++++++++++++++++++= On pause called");
         unregisterSWANSensor();
     }
 
@@ -111,6 +115,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Log.d("WEAR", "++++++++++++++++++++++= On destroy called");
         unregisterSWANSensor();
 
     }

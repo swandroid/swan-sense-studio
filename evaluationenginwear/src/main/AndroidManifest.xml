@@ -19,6 +19,36 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".MovementSensor$ConfigurationActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="interdroid.swan.sensor.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="movement" />
+            <meta-data
+                android:name="valuePaths"
+                android:value="x,y,z,total" />
+            <meta-data
+                android:name="accuracy"
+                android:value="3" />
+            <meta-data
+                android:name="delay"
+                android:value="200000" />
+            <meta-data
+                android:name="units"
+                android:value="m/s2,m/s2,m/s2,m/s2" />
+        </activity>
+
+        <service
+            android:name=".MovementSensor"
+            android:exported="true"
+            android:process=":movementsensor"></service>
+
     </application>
 
 </manifest>

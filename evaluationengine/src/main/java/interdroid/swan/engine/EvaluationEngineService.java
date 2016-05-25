@@ -19,6 +19,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.PriorityQueue;
 
+import interdroid.swan.R;
 import interdroid.swan.swanmain.ExpressionManager;
 //import interdroid.swan.R;
 import interdroid.swan.swanmain.SensorConfigurationException;
@@ -569,8 +570,8 @@ public class EvaluationEngineService extends Service {
 
         // TODO: Set swan icon later
         builder.setContentIntent(contentIntent)
-//                .setSmallIcon(hasRemote ? R.drawable.ic_stat_swan_warning
-//                        : R.drawable.ic_stat_swan)
+                .setSmallIcon(hasRemote ? R.drawable.ic_launcher
+                        : R.drawable.ic_launcher)
                 .setContentTitle("Swan Active")
                 .setContentText("number of expressions: " + mRegisteredExpressions.size());
 
