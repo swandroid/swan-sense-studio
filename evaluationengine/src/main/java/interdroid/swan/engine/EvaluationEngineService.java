@@ -2,6 +2,7 @@ package interdroid.swan.engine;
 
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ContentValues;
 import android.content.Context;
@@ -10,6 +11,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
@@ -553,28 +555,27 @@ public class EvaluationEngineService extends Service {
     @SuppressWarnings("deprecation")
     private void updateNotification() {
         // TODO: Port Expression Viewer Later
-//        Intent notificationIntent = new Intent(this,
-//                ExpressionViewerActivity.class);
-//        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-//                notificationIntent, 0);
-//        boolean hasRemote = false;
-//        for (String id : mRegisteredExpressions.keySet()) {
-//            if (id.contains(Expression.SEPARATOR)) {
-//                hasRemote = true;
-//                break;
-//            }
-//        }
-//        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-//
-//        // TODO: Set swan icon later
-//        builder.setContentIntent(contentIntent)
-////                .setSmallIcon(hasRemote ? R.drawable.ic_stat_swan_warning
-////                        : R.drawable.ic_stat_swan)
-//                .setContentTitle("Swan Active")
-//                .setContentText("number of expressions: " + mRegisteredExpressions.size());
-//
-//        mNotification = builder.build();
-//        mNotificationManager.notify(NOTIFICATION_ID, mNotification);
+        Intent notificationIntent = new Intent();
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
+                notificationIntent, 0);
+        boolean hasRemote = false;
+        for (String id : mRegisteredExpressions.keySet()) {
+            if (id.contains(Expression.SEPARATOR)) {
+                hasRemote = true;
+                break;
+            }
+        }
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+
+        // TODO: Set swan icon later
+        builder.setContentIntent(contentIntent)
+//                .setSmallIcon(hasRemote ? R.drawable.ic_stat_swan_warning
+//                        : R.drawable.ic_stat_swan)
+                .setContentTitle("Swan Active")
+                .setContentText("number of expressions: " + mRegisteredExpressions.size());
+
+        mNotification = builder.build();
+        mNotificationManager.notify(NOTIFICATION_ID, mNotification);
     }
 
     private void sendUpdate(QueuedExpression queued, Result result) {
