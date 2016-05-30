@@ -529,7 +529,7 @@ public class EvaluationEngineService extends Service {
     @Override
     public final void onCreate() {
         super.onCreate();
-        // initialize the proximity manager
+        // TODO: initialize the proximity manager
 //        mProximityManager = new BTManager(this);
 //        mProximityManager.init();
         // construct the sensor manager
@@ -555,7 +555,6 @@ public class EvaluationEngineService extends Service {
      */
     @SuppressWarnings("deprecation")
     private void updateNotification() {
-        // TODO: Port Expression Viewer Later
         Intent notificationIntent = new Intent();
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
                 notificationIntent, 0);
@@ -568,7 +567,6 @@ public class EvaluationEngineService extends Service {
         }
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
 
-        // TODO: Set swan icon later
         builder.setContentIntent(contentIntent)
                 .setSmallIcon(hasRemote ? R.drawable.ic_launcher
                         : R.drawable.ic_launcher)
