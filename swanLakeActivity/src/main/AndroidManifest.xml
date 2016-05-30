@@ -1388,7 +1388,7 @@
             android:exported="true"
             android:process=":wearlightsensor"></service>
 
-        <!-- Wear Movement Sensor-->
+        <!-- Wear Linear Acceleration Sensor-->
         <activity
             android:name="interdroid.swan.sensors.impl.wear.WearLinearAcceleration$ConfigurationActivity"
             android:exported="true"
