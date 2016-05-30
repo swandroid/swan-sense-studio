@@ -228,6 +228,28 @@
         <service
             android:name=".sensors.LinearAccelerationSensor" />
 
+        <!-- Heart Rate-->
+        <activity
+            android:name=".sensors.HeartRateSensor$ConfigurationActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="interdroid.swan.sensor.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="wear_heartrate" />
+            <meta-data
+                android:name="valuePaths"
+                android:value="heart_rate" />
+            <meta-data
+                android:name="units"
+                android:value="bpm" />
+        </activity>
+
+        <service
+            android:name=".sensors.HeartRateSensor" />
+
     </application>
 
 
