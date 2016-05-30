@@ -28,8 +28,9 @@ import interdroid.swan.swansong.TimestampedValue;
 //import retrofit.RetrofitError;
 //import retrofit.client.Response;
 
-public abstract class AbstractSwanSensor extends AbstractSensorBase {
-    public static String TAG = "Abstract Sensor";
+public abstract class AbstractSwanSensorBase extends AbstractSensorBase {
+    public static String TAG = "Abstract Sen" +
+            "sor";
 
     public static final String DELAY = "delay";
 
