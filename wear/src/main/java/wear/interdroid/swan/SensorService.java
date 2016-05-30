@@ -117,7 +117,7 @@ public class SensorService extends Service implements SensorEventListener {
         registerReceiver(sensorCommand, new IntentFilter(WearConstants.BROADCAST_ADD_SENSOR));
         registerReceiver(sensorCommand, new IntentFilter(WearConstants.BROADCAST_REMOVE_SENSOR));
 
-        testSwanExpression();
+       // testSwanExpression();
 
         startForeground(1, notificationBuilder.build());
 
@@ -125,7 +125,7 @@ public class SensorService extends Service implements SensorEventListener {
 
     private void testSwanExpression(){
         exp = new ManageExpressions(getApplicationContext());
-        exp.registerValueExpression( "1234", "self@accelerometer:x{ANY, 1000}");
+        exp.registerValueExpression( "1234", "self@movement:x{ANY, 1000}");
     }
 
     private void finishSwanExpression()
