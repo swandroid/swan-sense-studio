@@ -11,9 +11,8 @@ import android.widget.Toast;
 
 import java.util.List;
 
-import interdroid.swan.R;
-import interdroid.swan.sensors.AbstractConfigurationActivity;
-import interdroid.swan.sensors.AbstractSwanSensorBase;
+import interdroid.swancore.sensors.AbstractConfigurationActivity;
+import interdroid.swancore.sensors.AbstractSwanSensorBase;
 
 public class MovementSensor extends AbstractSwanSensorBase {
     public static final String TAG = "MovementSensor";

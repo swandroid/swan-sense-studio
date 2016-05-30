@@ -2,19 +2,16 @@ package com.example.slavik.evaluationengineapp;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.TextView;
 
-import interdroid.swan.swanmain.ExpressionManager;
-import interdroid.swan.swanmain.SensorInfo;
-import interdroid.swan.swanmain.SwanException;
-import interdroid.swan.swanmain.ValueExpressionListener;
-import interdroid.swan.swansong.ExpressionFactory;
-import interdroid.swan.swansong.ExpressionParseException;
-import interdroid.swan.swansong.TimestampedValue;
-import interdroid.swan.swansong.ValueExpression;
+import interdroid.swancore.swanmain.ExpressionManager;
+import interdroid.swancore.swanmain.SensorInfo;
+import interdroid.swancore.swanmain.SwanException;
+import interdroid.swancore.swanmain.ValueExpressionListener;
+import interdroid.swancore.swansong.ExpressionFactory;
+import interdroid.swancore.swansong.ExpressionParseException;
+import interdroid.swancore.swansong.TimestampedValue;
+import interdroid.swancore.swansong.ValueExpression;
 
 public class MainActivity extends AppCompatActivity {
 

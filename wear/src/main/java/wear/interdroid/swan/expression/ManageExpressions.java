@@ -3,13 +3,13 @@ package wear.interdroid.swan.expression;
 import android.content.Context;
 import android.util.Log;
 
-import interdroid.swan.swanmain.ExpressionManager;
-import interdroid.swan.swanmain.SwanException;
-import interdroid.swan.swanmain.ValueExpressionListener;
-import interdroid.swan.swansong.ExpressionFactory;
-import interdroid.swan.swansong.ExpressionParseException;
-import interdroid.swan.swansong.TimestampedValue;
-import interdroid.swan.swansong.ValueExpression;
+import interdroid.swancore.swanmain.ExpressionManager;
+import interdroid.swancore.swanmain.SwanException;
+import interdroid.swancore.swanmain.ValueExpressionListener;
+import interdroid.swancore.swansong.ExpressionFactory;
+import interdroid.swancore.swansong.ExpressionParseException;
+import interdroid.swancore.swansong.TimestampedValue;
+import interdroid.swancore.swansong.ValueExpression;
 
 /**
  * Created by Veaceslav Munteanu on 5/24/16.
