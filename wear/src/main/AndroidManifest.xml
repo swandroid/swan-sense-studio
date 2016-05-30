@@ -78,6 +78,36 @@
         <service
             android:name="sensors.GyroscopeSensor"></service>
 
+        <!-- Wear Light sensor-->
+        <activity
+            android:name="sensors.LightSensor$ConfigurationActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="interdroid.swan.sensor.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="wear_light" />
+            <meta-data
+                android:name="valuePaths"
+                android:value="lux" />
+            <meta-data
+                android:name="accuracy"
+                android:value="3" />
+            <meta-data
+                android:name="delay"
+                android:value="200000" />
+            <meta-data
+                android:name="units"
+                android:value="lux" />
+        </activity>
+
+        <service
+            android:name=".sensors.LightSensor"
+            android:exported="true"
+            android:process=":wearlightsensor"></service>
+
 
     </application>
 

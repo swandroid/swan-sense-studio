@@ -1352,7 +1352,7 @@
                 android:value="m/s2,m/s2,m/s2,m/s2" />
         </activity>
 
-        <!-- Wear Light Sensor-->
+        <!-- Wear Game Rotation Sensor-->
         <service
             android:name="interdroid.swan.sensors.impl.wear.WearGameRotationSensor"
             android:exported="true"
