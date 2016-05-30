@@ -136,6 +136,38 @@
 
         </service>
 
+        <!--Wear step counter -->
+        <activity
+            android:name=".sensors.StepCounterSensor$ConfigurationActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="interdroid.swan.sensor.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="wear_step_counter" />
+            <meta-data
+                android:name="valuePaths"
+                android:value="step_counter" />
+            <meta-data
+                android:name="delay"
+                android:value="200000" />
+            <meta-data
+                android:name="authority"
+                android:value="interdroid.context.sensor.step_counter" />
+            <meta-data
+                android:name="units"
+                android:value="steps" />
+        </activity>
+
+        <service
+            android:name=".sensors.StepCounterSensor"
+            android:exported="true"
+            android:process=":wearstepcountersensor">
+
+        </service>
+
 
     </application>
 
