@@ -32,7 +32,7 @@ import interdroid.swan.sensors.impl.wear.shared.data.SensorNames;
 import interdroid.swan.sensors.impl.wear.shared.data.WearSensor;
 
 public class RemoteSensorManager {
-    private static final String TAG = "Wear/RemoteSensorManager";
+    private static final String TAG = "RemoteSensorManager";
     private static final int CLIENT_CONNECTION_TIMEOUT = 15000;
 
     private static RemoteSensorManager instance;
@@ -186,6 +186,24 @@ public class RemoteSensorManager {
         });
     }
 
+    public void registerExpression(final String expression){
+        executorService.submit(new Runnable() {
+            @Override
+            public void run() {
+                controlMeasurementInBackground(ClientPaths.REGISTER_EXPRESSION, expression.getBytes());
+            }
+        });
+    }
+
+    public void unregisterExpression(final String expression){
+        executorService.submit(new Runnable() {
+            @Override
+            public void run() {
+                controlMeasurementInBackground(ClientPaths.UNREGISTER_EXPRESSION, expression.getBytes());
+            }
+        });
+    }
+
     public void getNodes(ResultCallback<NodeApi.GetConnectedNodesResult> pCallback) {
         Wearable.NodeApi.getConnectedNodes(googleApiClient).setResultCallback(pCallback);
     }
@@ -212,4 +230,5 @@ public class RemoteSensorManager {
             Log.w(TAG, "No connection possible");
         }
     }
+
 }
