@@ -1,0 +1,29 @@
+Tutorial Cuckoo in SWAN
+
+1. Bind to Cuckoo server
+To be able to offload tasks to a Cuckoo server you first have to connect your mobile device to a Cuckoo server. To do that, open SwanLake app and go to the 
+settings menu and press "Show Cuckoo resources". A list of all current connections will be shown. You can add more resources or share/delete existing ones.
+See the manual for more details.
+
+2. Computation Offloading
+In order to create a method to be executed on the Cuckoo server you need to add the local and remote implementations to both the local and remote services. The 
+CuckooServiceLocal service contains the implementation of the methods that will be executed locally on the device whereas the CuckooServiceRemote contains the
+implementation of the tasks that will be offloaded to a Cuckoo server (hence the code has to be written in pure JAVA). 
+
+Steps when adding an offloadable task in SWAN:
+- add method declaration in ICuckooService.aidl and remote/ICuckooService.java
+- write local implementation in CuckooServiceLocal
+- write remote implementation in remote/CuckooServiceRemote. Add necessary external libraries in the remote/external folder
+- create a CuckooCallback callback for handling results
+- add method call in CuckooManager
+- build with Apache ANT the files in the "remote" folder (there already exists a build.xml file for easy building). This will generate a JAR executable which will be transferred and used for method invocations on the Cuckoo server
+
+
+3. Communication Offloading
+Cuckoo sensors can be added in SWAN in the package interdroid.swan.sensors.cuckoo together with the already implemented networked sensors: server, train, weather, news and alarm sensors. 
+
+To plug a new sensor you have to add:
+- a sensor class that implements the AbstractCuckooSensor base class which handles the sensor registration with SWAN,
+- a class that implements CuckooPoller which handles the polling for new data. 
+
+Before running the app, the already built poller class should be moved to the "assets" folder from where it will be transferred and used on the Cuckoo server. The server will alert the client (using GCM's push notifications) every time a new value is received through polling. For that, each Cuckoo sensor has to first register with Google Cloud Messaging in order to be able to receive the results.

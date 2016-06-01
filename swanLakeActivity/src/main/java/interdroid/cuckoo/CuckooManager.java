@@ -72,10 +72,12 @@ public class CuckooManager {
 
                 } catch (Exception e) {
                     Log.e(TAG, e.toString());
+                    cuckooCallback.onFailure(e);
+                    return;
                 }
                 break;
         }
-        cuckooCallback.onComputationFinished(methodName, result);
+        cuckooCallback.onSuccess(methodName, result);
     }
 
     private void invokeMethodRemote(final String methodName, final Object[] parameters, final Class<?>[] parameterTypes, final CuckooCallback cuckooCallback) {
@@ -89,7 +91,7 @@ public class CuckooManager {
                             CuckooServiceRemote.class.getName(),
                             methodName, parameterTypes, new boolean[]{false},
                             parameters, Oracle.STRATEGY_ENERGY_SPEED, 1, parameters.length, 1, true);
-                    cuckooCallback.onComputationFinished(methodName, result);
+                    cuckooCallback.onSuccess(methodName, result);
                 } catch (Exception e) {
                     e.printStackTrace();
                     invokeMethodLocal(methodName, parameters, cuckooCallback);
@@ -99,6 +101,7 @@ public class CuckooManager {
     }
 
     public interface CuckooCallback{
-        void onComputationFinished(String methodName, Object response);
+        void onSuccess(String methodName, Object response);
+        void onFailure(Exception e);
     }
 }
