@@ -57,4 +57,10 @@
         android:orderInCategory="100"
         android:showAsAction="never"
         android:title="TTN" />
+
+    <!-- Cuckoo resources -->
+    <item
+        android:id="@+id/action_cuckoo_resources"
+        android:orderInCategory="100"
+        android:title="@string/action_cuckoo_resources"/>
 </menu>

@@ -1651,6 +1651,17 @@
             android:name="interdroid.swan.sensors.impl.BeaconTempSensor" >
         </service>
 
+        <!-- Cuckoo resources-->
+        <provider
+            android:name="interdroid.cuckoo.resourcemanager.ResourceManagerProvider"
+            android:authorities="interdroid.cuckoo.resourcemanager.ResourceManager"
+            android:exported="true" />
+
+        <activity
+            android:name="interdroid.cuckoo.resourcemanager.ResourcesActivity"
+            android:label="Resource Manager" >
+        </activity>
+
     </application>
 
 </manifest>
