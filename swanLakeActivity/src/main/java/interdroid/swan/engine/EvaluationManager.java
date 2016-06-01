@@ -19,7 +19,7 @@ import interdroid.swan.SensorConfigurationException;
 import interdroid.swan.SensorInfo;
 import interdroid.swan.SwanException;
 import interdroid.swan.crossdevice.Pusher;
-import interdroid.swan.crossdevice.Registry;
+import interdroid.swancore.crossdevice.Registry;
 import interdroid.swan.crossdevice.swanplus.ProximityManagerI;
 import interdroid.swan.sensors.Sensor;
 import interdroid.swan.sensors.TimeSensor;

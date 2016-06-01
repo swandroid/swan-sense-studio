@@ -24,7 +24,7 @@ import interdroid.swan.ExpressionManager;
 import interdroid.swan.R;
 import interdroid.swan.SensorConfigurationException;
 import interdroid.swan.SwanException;
-import interdroid.swan.crossdevice.Converter;
+import interdroid.swancore.crossdevice.Converter;
 import interdroid.swan.crossdevice.Pusher;
 import interdroid.swan.crossdevice.beacon.BeaconInitializer;
 import interdroid.swan.crossdevice.swanplus.ProximityManagerI;

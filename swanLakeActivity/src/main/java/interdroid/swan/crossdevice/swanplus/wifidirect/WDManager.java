@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import interdroid.swan.crossdevice.Registry;
+import interdroid.swancore.crossdevice.Registry;
 import interdroid.swan.crossdevice.swanplus.ProximityManagerI;
 import interdroid.swan.crossdevice.swanplus.SwanLakePlusActivity;
 import interdroid.swan.crossdevice.swanplus.SwanUser;

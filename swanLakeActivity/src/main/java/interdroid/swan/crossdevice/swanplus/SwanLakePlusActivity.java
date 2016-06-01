@@ -47,7 +47,7 @@ import interdroid.sense.LoginActivity;
 import interdroid.sense.RegistrationActivity;
 import interdroid.sense.SettingsActivity;
 import interdroid.swan.R;
-import interdroid.swan.crossdevice.Registry;
+import interdroid.swancore.crossdevice.Registry;
 import interdroid.swan.crossdevice.SwanGCMConstants;
 import interdroid.swan.crossdevice.swanplus.bluetooth.BTManager;
 import interdroid.swan.crossdevice.swanplus.run2gether.ActivityRun2gether;
