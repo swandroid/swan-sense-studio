@@ -2,10 +2,10 @@ package interdroid.swan.sensors.impl;
 
 import android.os.Bundle;
 
-import interdroid.swan.ExpressionManager;
+import interdroid.swancore.swanmain.ExpressionManager;
 import interdroid.swan.R;
-import interdroid.swan.SwanException;
-import interdroid.swan.ValueExpressionListener;
+import interdroid.swancore.swanmain.SwanException;
+import interdroid.swancore.swanmain.ValueExpressionListener;
 import interdroid.swancore.sensors.AbstractConfigurationActivity;
 import interdroid.swan.sensors.AbstractSwanSensor;
 import interdroid.swancore.swansong.Expression;

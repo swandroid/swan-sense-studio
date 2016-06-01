@@ -20,10 +20,10 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.PriorityQueue;
 
-import interdroid.swan.ExpressionManager;
+import interdroid.swancore.swanmain.ExpressionManager;
 import interdroid.swan.R;
-import interdroid.swan.SensorConfigurationException;
-import interdroid.swan.SwanException;
+import interdroid.swancore.swanmain.SensorConfigurationException;
+import interdroid.swancore.swanmain.SwanException;
 import interdroid.swancore.crossdevice.Converter;
 import interdroid.swan.crossdevice.Pusher;
 import interdroid.swan.crossdevice.beacon.BeaconInitializer;

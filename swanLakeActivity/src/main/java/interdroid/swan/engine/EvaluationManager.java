@@ -14,10 +14,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import interdroid.swan.ExpressionManager;
-import interdroid.swan.SensorConfigurationException;
-import interdroid.swan.SensorInfo;
-import interdroid.swan.SwanException;
+import interdroid.swancore.swanmain.ExpressionManager;
+import interdroid.swancore.swanmain.SensorConfigurationException;
+import interdroid.swancore.swanmain.SensorInfo;
+import interdroid.swancore.swanmain.SwanException;
 import interdroid.swan.crossdevice.Pusher;
 import interdroid.swancore.crossdevice.Registry;
 import interdroid.swan.crossdevice.swanplus.ProximityManagerI;

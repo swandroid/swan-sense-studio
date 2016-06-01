@@ -1,6 +1,6 @@
 package interdroid.swan.engine;
 
-import interdroid.swan.SwanException;
+import interdroid.swancore.swanmain.SwanException;
 
 /**
  * Thrown when a sensor fails to be setup properly.

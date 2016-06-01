@@ -13,11 +13,11 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import interdroid.swan.ExpressionManager;
+import interdroid.swancore.swanmain.ExpressionManager;
 import interdroid.swan.R;
-import interdroid.swan.SensorInfo;
-import interdroid.swan.SwanException;
-import interdroid.swan.ValueExpressionListener;
+import interdroid.swancore.swanmain.SensorInfo;
+import interdroid.swancore.swanmain.SwanException;
+import interdroid.swancore.swanmain.ValueExpressionListener;
 import interdroid.swan.crossdevice.swanplus.bluetooth.BTManager;
 import interdroid.swancore.swansong.ExpressionFactory;
 import interdroid.swancore.swansong.ExpressionParseException;
