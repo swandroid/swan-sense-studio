@@ -66,7 +66,7 @@ public class ServerSensor extends AbstractCuckooSensor {
 	 * @param http_status
 	 *            value for http_status
 	 */
-	private void storeReading(long http_status) {
+	private void storeReading(String http_status) {
 		putValueTrimSize(HTTP_STATUS_FIELD, null, System.currentTimeMillis(), http_status);
 	}
 
@@ -110,8 +110,8 @@ public class ServerSensor extends AbstractCuckooSensor {
 						.equals(messageType)) {
 					Log.d(TAG, "Messages were deleted at the server.");
 				} else {
-					storeReading((Long) makeTyped(intent
-							.getStringExtra(HTTP_STATUS_FIELD)));
+					storeReading(/*(Long) makeTyped(*/intent
+							.getStringExtra(HTTP_STATUS_FIELD));
 				}
 				setResultCode(Activity.RESULT_OK);
 			}

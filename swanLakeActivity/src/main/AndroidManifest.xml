@@ -1111,6 +1111,11 @@
 
         </service>
 
+        <!-- Cuckoo service for computation offloading-->
+        <service
+            android:name="interdroid.cuckoo.CuckooServiceLocal"
+            android:process=":remote"/>
+
         <service
             android:name=".sensors.impl.StepCounterSensor"
             android:exported="true"
@@ -1645,7 +1650,6 @@
         <service
             android:name="interdroid.swan.sensors.impl.BeaconTempSensor" >
         </service>
-
 
     </application>
 

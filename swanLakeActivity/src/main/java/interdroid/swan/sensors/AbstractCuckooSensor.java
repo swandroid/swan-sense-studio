@@ -57,6 +57,7 @@ public abstract class AbstractCuckooSensor extends AbstractSwanSensor {
     @Override
     public final synchronized void register(final String id,
                                             final String valuePath, Bundle configuration, Bundle httpConfiguration, Bundle extraConfiguration) { //throws IOException {
+        super.register(id, valuePath, configuration, httpConfiguration, extraConfiguration);
         final Map<String, Object> configAsMap = new HashMap<String, Object>();
         for (String key : configuration.keySet()) {
             // TODO: maybe short circuit if a value is not serializable
@@ -154,29 +155,29 @@ public abstract class AbstractCuckooSensor extends AbstractSwanSensor {
         }.start();
     }
 
-    public static Object makeTyped(String string) {
-        String[] components = string.split(":", 2);
-        String type = components[0];
-        String value = components[1];
-
-        if (type.equals("java.lang.Long")) {
-            return Long.parseLong(value);
-        } else if (type.equals("java.lang.String")) {
-            return value;
-        } else if (type.equals("java.lang.Integer")) {
-            return Integer.parseInt(value);
-        } else if (type.equals("java.lang.Boolean")) {
-            return Boolean.parseBoolean(value);
-        } else if (type.equals("java.lang.Character")) {
-            return value.charAt(0);
-        } else if (type.equals("java.lang.Float")) {
-            return Float.parseFloat(value);
-        } else if (type.equals("java.lang.Double")) {
-            return Double.parseDouble(value);
-        } else {
-            throw new RuntimeException("Please implement "
-                    + AbstractCuckooSensor.class
-                    + " makeTyped(String string) for type '" + type + "'");
-        }
-    }
+//    public static Object makeTyped(String string) {
+//        String[] components = string.split(":", 2);
+//        String type = components[0];
+//        String value = components[1];
+//
+//        if (type.equals("java.lang.Long")) {
+//            return Long.parseLong(value);
+//        } else if (type.equals("java.lang.String")) {
+//            return value;
+//        } else if (type.equals("java.lang.Integer")) {
+//            return Integer.parseInt(value);
+//        } else if (type.equals("java.lang.Boolean")) {
+//            return Boolean.parseBoolean(value);
+//        } else if (type.equals("java.lang.Character")) {
+//            return value.charAt(0);
+//        } else if (type.equals("java.lang.Float")) {
+//            return Float.parseFloat(value);
+//        } else if (type.equals("java.lang.Double")) {
+//            return Double.parseDouble(value);
+//        } else {
+//            throw new RuntimeException("Please implement "
+//                    + AbstractCuckooSensor.class
+//                    + " makeTyped(String string) for type '" + type + "'");
+//        }
+//    }
 }
