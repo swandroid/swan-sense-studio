@@ -60,10 +60,10 @@ package interdroid.swancore.engine;//package interdroid.swan.engine;
 //        });
 //        LocalBroadcastManager.getInstance(this).registerReceiver(
 //                mUpdateReceiver,
-//                new IntentFilter(EvaluationEngineService.UPDATE_SENSORS));
+//                new IntentFilter(EvaluationEngineServiceBase.UPDATE_SENSORS));
 //        // let the service know that we want to get updates...
-//        startService(new Intent(EvaluationEngineService.UPDATE_SENSORS)
-//                .setClass(this, EvaluationEngineService.class));
+//        startService(new Intent(EvaluationEngineServiceBase.UPDATE_SENSORS)
+//                .setClass(this, EvaluationEngineServiceBase.class));
 //        super.onResume();
 //    }
 //
@@ -84,8 +84,8 @@ package interdroid.swancore.engine;//package interdroid.swan.engine;
 //    public boolean onOptionsItemSelected(MenuItem item) {
 //        switch (item.getItemId()) {
 //            case R.id.action_refresh:
-//                startService(new Intent(EvaluationEngineService.UPDATE_SENSORS)
-//                        .setClass(this, EvaluationEngineService.class));
+//                startService(new Intent(EvaluationEngineServiceBase.UPDATE_SENSORS)
+//                        .setClass(this, EvaluationEngineServiceBase.class));
 //                break;
 //            case R.id.expression_viewer:
 //                this.finish();

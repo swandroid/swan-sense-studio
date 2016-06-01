@@ -256,7 +256,7 @@ public class EvaluationManager {
 //        if (resolvedLocation.equals(Expression.LOCATION_NEARBY) || mProximityManager.hasPeer(resolvedLocation)) {
 //            // get sensor info from nearby devices
 //            mProximityManager.registerExpression(id, toCrossDeviceString(expression, resolvedLocation),
-//                    resolvedLocation, EvaluationEngineService.ACTION_REGISTER_REMOTE);
+//                    resolvedLocation, EvaluationEngineServiceBase.ACTION_REGISTER_REMOTE);
 //        } else {
 //            // send a push message with 'register' instead of 'initialize',
 //            // disadvantage is that we will only later on get exceptions
@@ -276,7 +276,7 @@ public class EvaluationManager {
             // new location.
 
 //            Pusher.push(fromRegistrationId, toRegistrationId, id,
-//                    EvaluationEngineService.ACTION_REGISTER_REMOTE,
+//                    EvaluationEngineServiceBase.ACTION_REGISTER_REMOTE,
 //                    toCrossDeviceString(expression, toRegistrationId));
             // expression.toCrossDeviceString(mContext,
             // expression.getLocation()));
@@ -373,7 +373,7 @@ public class EvaluationManager {
 //        if (resolvedLocation.equals(Expression.LOCATION_NEARBY) || mProximityManager.hasPeer(resolvedLocation)) {
 //            // get sensor info from nearby devices
 //            mProximityManager.registerExpression(id, toCrossDeviceString(expression, resolvedLocation),
-//                    resolvedLocation, EvaluationEngineService.ACTION_UNREGISTER_REMOTE);
+//                    resolvedLocation, EvaluationEngineServiceBase.ACTION_UNREGISTER_REMOTE);
 //        } else {
 //            // for some reason this was set to null in the original version of swan, which made it impossible
 //            // to unregister remotely
@@ -395,7 +395,7 @@ public class EvaluationManager {
 //            // resolve all remote locations in the expression with respect to the
 //            // new location.
 //            Pusher.push(fromRegistrationId, toRegistrationId, id,
-//                    EvaluationEngineService.ACTION_UNREGISTER_REMOTE,
+//                    EvaluationEngineServiceBase.ACTION_UNREGISTER_REMOTE,
 //                    toCrossDeviceString(expression, toRegistrationId));
 //        }
     }

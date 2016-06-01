@@ -34,7 +34,7 @@ import interdroid.swancore.swansong.ExpressionFactory;
 import interdroid.swancore.swansong.Result;
 import interdroid.swancore.swansong.ValueExpression;
 
-public class EvaluationEngineService extends Service {
+public class EvaluationEngineServiceBase extends Service {
 
     private static final String TAG = "EvaluationEngine";
 

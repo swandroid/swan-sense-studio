@@ -122,10 +122,10 @@ package interdroid.swancore.engine;//package interdroid.swan.engine;
 //        });
 //        LocalBroadcastManager.getInstance(this).registerReceiver(
 //                mUpdateReceiver,
-//                new IntentFilter(EvaluationEngineService.UPDATE_EXPRESSIONS));
+//                new IntentFilter(EvaluationEngineServiceBase.UPDATE_EXPRESSIONS));
 //        // let the service know that we want to get updates...
-//        startService(new Intent(EvaluationEngineService.UPDATE_EXPRESSIONS)
-//                .setClass(this, EvaluationEngineService.class));
+//        startService(new Intent(EvaluationEngineServiceBase.UPDATE_EXPRESSIONS)
+//                .setClass(this, EvaluationEngineServiceBase.class));
 //    }
 //
 //    @Override
@@ -145,8 +145,8 @@ package interdroid.swancore.engine;//package interdroid.swan.engine;
 //    public boolean onOptionsItemSelected(MenuItem item) {
 //        switch (item.getItemId()) {
 //            case R.id.action_refresh:
-//                startService(new Intent(EvaluationEngineService.UPDATE_EXPRESSIONS)
-//                        .setClass(this, EvaluationEngineService.class));
+//                startService(new Intent(EvaluationEngineServiceBase.UPDATE_EXPRESSIONS)
+//                        .setClass(this, EvaluationEngineServiceBase.class));
 //                mExpandAllSelected = false;
 //                break;
 //            case R.id.menu_sort:

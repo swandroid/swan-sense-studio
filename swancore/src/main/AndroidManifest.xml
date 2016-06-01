@@ -20,7 +20,7 @@
         </receiver>
 
         <service
-            android:name="interdroid.swancore.engine.EvaluationEngineService"
+            android:name=".engine.EvaluationEngineServiceBase"
             android:exported="false" />
 
     </application>
