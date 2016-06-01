@@ -3,11 +3,11 @@ package interdroid.swan.engine;
 import android.content.Intent;
 import android.os.Bundle;
 
-import interdroid.swan.swansong.Expression;
-import interdroid.swan.swansong.Result;
-import interdroid.swan.swansong.TimestampedValue;
-import interdroid.swan.swansong.TriStateExpression;
-import interdroid.swan.swansong.ValueExpression;
+import interdroid.swancore.swansong.Expression;
+import interdroid.swancore.swansong.Result;
+import interdroid.swancore.swansong.TimestampedValue;
+import interdroid.swancore.swansong.TriStateExpression;
+import interdroid.swancore.swansong.ValueExpression;
 
 public class QueuedExpression implements Comparable<QueuedExpression> {
 

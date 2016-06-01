@@ -18,7 +18,7 @@ import java.util.Map;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import interdroid.swan.R;
-import interdroid.swan.sensors.AbstractConfigurationActivity;
+import interdroid.swancore.sensors.AbstractConfigurationActivity;
 import interdroid.swan.sensors.AbstractSwanSensor;
 
 /**

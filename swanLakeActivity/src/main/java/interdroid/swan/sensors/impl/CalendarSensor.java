@@ -29,7 +29,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import interdroid.swan.R;
-import interdroid.swan.sensors.AbstractConfigurationActivity;
+import interdroid.swancore.sensors.AbstractConfigurationActivity;
 import interdroid.swan.sensors.AbstractSwanSensor;
 import interdroid.swan.swansong.TimestampedValue;
 

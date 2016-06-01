@@ -74,7 +74,7 @@
                 <category android:name="interdroid.swan" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".crossdevice.Registry$Receiver">
+        <receiver android:name="interdroid.swancore.crossdevice.Registry$Receiver">
             <intent-filter>
                 <action android:name="interdroid.swan.GET_NAMES" />
             </intent-filter>

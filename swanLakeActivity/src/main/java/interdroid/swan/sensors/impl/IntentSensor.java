@@ -6,7 +6,7 @@ import interdroid.swan.ExpressionManager;
 import interdroid.swan.R;
 import interdroid.swan.SwanException;
 import interdroid.swan.ValueExpressionListener;
-import interdroid.swan.sensors.AbstractConfigurationActivity;
+import interdroid.swancore.sensors.AbstractConfigurationActivity;
 import interdroid.swan.sensors.AbstractSwanSensor;
 import interdroid.swan.swansong.Expression;
 import interdroid.swan.swansong.HistoryReductionMode;

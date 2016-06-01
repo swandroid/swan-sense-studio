@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import interdroid.swan.R;
-import interdroid.swan.sensors.AbstractConfigurationActivity;
+import interdroid.swancore.sensors.AbstractConfigurationActivity;
 import interdroid.swan.sensors.AbstractSwanSensor;
 
 /**

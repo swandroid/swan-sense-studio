@@ -29,11 +29,11 @@ import interdroid.swan.crossdevice.Pusher;
 import interdroid.swan.crossdevice.beacon.BeaconInitializer;
 import interdroid.swan.crossdevice.swanplus.ProximityManagerI;
 import interdroid.swan.crossdevice.swanplus.bluetooth.BTManager;
-import interdroid.swan.sensors.SensorInterface;
-import interdroid.swan.swansong.Expression;
-import interdroid.swan.swansong.ExpressionFactory;
-import interdroid.swan.swansong.Result;
-import interdroid.swan.swansong.ValueExpression;
+import interdroid.swancore.sensors.SensorInterface;
+import interdroid.swancore.swansong.Expression;
+import interdroid.swancore.swansong.ExpressionFactory;
+import interdroid.swancore.swansong.Result;
+import interdroid.swancore.swansong.ValueExpression;
 
 public class EvaluationEngineService extends Service {
 
