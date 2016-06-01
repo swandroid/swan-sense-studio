@@ -36,12 +36,12 @@ import interdroid.swancore.swansong.ValueExpression;
 
 public class EvaluationEngineServiceBase extends Service {
 
-    private static final String TAG = "EvaluationEngine";
+    protected static final String TAG = "EvaluationEngine";
 
-    private static final String DATABASE_NAME = "swan";
-    private static final String TABLE = "expressions";
-    private static final int DATABASE_VERSION = 1;
-    private static final int NOTIFICATION_ID = 1;
+    protected static final String DATABASE_NAME = "swan";
+    protected static final String TABLE = "expressions";
+    protected static final int DATABASE_VERSION = 1;
+    protected static final int NOTIFICATION_ID = 1;
 
     public static final String ACTION_REGISTER_REMOTE = "interdroid.swan.register_remote";
     public static final String ACTION_UNREGISTER_REMOTE = "interdroid.swan.unregister_remote";
@@ -60,11 +60,11 @@ public class EvaluationEngineServiceBase extends Service {
     /**
      * The context expressions, mapped by id.
      */
-    private final HashMap<String, QueuedExpression> mRegisteredExpressions = new HashMap<String, QueuedExpression>() {
+    protected final HashMap<String, QueuedExpression> mRegisteredExpressions = new HashMap<String, QueuedExpression>() {
         /**
          *
          */
-        private static final long serialVersionUID = -658408645837738007L;
+        protected static final long serialVersionUID = -658408645837738007L;
 
         @Override
         public QueuedExpression remove(final Object id) {
@@ -177,7 +177,7 @@ public class EvaluationEngineServiceBase extends Service {
     /**
      * @return all expressions saved in the database.
      */
-    private void restoreAfterBoot() {
+    protected void restoreAfterBoot() {
         SQLiteDatabase db = openDb();
 
         try {
@@ -242,7 +242,7 @@ public class EvaluationEngineServiceBase extends Service {
      * Delete's an expression from the database.
      *
      */
-    private void removeFromDb(final String id) {
+    protected void removeFromDb(final String id) {
         SQLiteDatabase db = openDb();
         try {
             db.execSQL("DELETE FROM " + TABLE + " WHERE expression_id = ?",
@@ -255,7 +255,7 @@ public class EvaluationEngineServiceBase extends Service {
     /**
      * Closes the expression database.
      */
-    private void closeDb(final SQLiteDatabase db) {
+    protected void closeDb(final SQLiteDatabase db) {
         if (db != null) {
             db.close();
         }
@@ -264,7 +264,7 @@ public class EvaluationEngineServiceBase extends Service {
     /**
      * @return an open database for expressions.
      */
-    private synchronized SQLiteDatabase openDb() {
+    protected synchronized SQLiteDatabase openDb() {
         File dbDir = getDir("databases", Context.MODE_PRIVATE);
         Log.d(TAG, "Created db dir: " + dbDir);
         SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(new File(dbDir,
@@ -285,7 +285,7 @@ public class EvaluationEngineServiceBase extends Service {
      * Stores an expression to the database.
      *
      */
-    private void storeToDb(final QueuedExpression queued) {
+    protected void storeToDb(final QueuedExpression queued) {
         SQLiteDatabase db = openDb();
         try {
             // Make sure it doesn't exist first in case we are reloading it.
@@ -405,13 +405,13 @@ public class EvaluationEngineServiceBase extends Service {
         return START_STICKY;
     }
 
-    private Intent getActiveSensors() {
+    protected Intent getActiveSensors() {
         Intent intent = new Intent(UPDATE_SENSORS);
         intent.putExtra("interdroid/swancore/sensors", mEvaluationManager.activeSensorsAsBundle());
         return intent;
     }
 
-    private void doRegister(final String id, final Expression expression,
+    protected void doRegister(final String id, final Expression expression,
                             final Intent onTrue, final Intent onFalse,
                             final Intent onUndefined, Intent onNewValues) {
         // handle registration
@@ -446,7 +446,7 @@ public class EvaluationEngineServiceBase extends Service {
 
     }
 
-    private Intent getRegisteredExpressions() {
+    protected Intent getRegisteredExpressions() {
         Intent intent = new Intent(UPDATE_EXPRESSIONS);
         Bundle[] expressions = new Bundle[mRegisteredExpressions.size()];
         int i = 0;
@@ -458,7 +458,7 @@ public class EvaluationEngineServiceBase extends Service {
         return intent;
     }
 
-    private void doUnregister(final String id) {
+    protected void doUnregister(final String id) {
         QueuedExpression expression = mRegisteredExpressions.get(id);
         if (expression == null) {
             // FAIL!
@@ -480,7 +480,7 @@ public class EvaluationEngineServiceBase extends Service {
     }
 
     // what we get back here are leaf ids of expressions.
-    private void doNotify(String[] ids) {
+    protected void doNotify(String[] ids) {
         if (ids == null) {
             return;
         }
@@ -554,7 +554,7 @@ public class EvaluationEngineServiceBase extends Service {
      * Update notification.
      */
     @SuppressWarnings("deprecation")
-    private void updateNotification() {
+    protected void updateNotification() {
         Intent notificationIntent = new Intent();
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
                 notificationIntent, 0);
@@ -577,7 +577,7 @@ public class EvaluationEngineServiceBase extends Service {
         mNotificationManager.notify(NOTIFICATION_ID, mNotification);
     }
 
-    private void sendUpdate(QueuedExpression queued, Result result) {
+    protected void sendUpdate(QueuedExpression queued, Result result) {
         // we know it has changed
         if (queued.getId().contains(Expression.SEPARATOR)) {
             sendUpdateToRemote(queued.getId().split(Expression.SEPARATOR)[0],
@@ -621,7 +621,7 @@ public class EvaluationEngineServiceBase extends Service {
         }
     }
 
-    private void sendUpdateToRemote(final String registrationId,
+    protected void sendUpdateToRemote(final String registrationId,
                                     final String expressionId, final Result result) {
         // TODO: Fix this for wear
         // pusher is async
@@ -640,7 +640,7 @@ public class EvaluationEngineServiceBase extends Service {
 
     // helper function to strip the suffixes for an expression generated by the
     // evaluation engine and retrieve the original user id (the root id)
-    private String getRootId(String id) {
+    protected String getRootId(String id) {
         for (String suffix : Expression.RESERVED_SUFFIXES) {
             if (id.endsWith(suffix)) {
                 return getRootId(id.substring(0, id.length() - suffix.length()));
