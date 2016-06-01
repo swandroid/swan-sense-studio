@@ -1,6 +1,6 @@
 package interdroid.swan.sensors;
 
-import interdroid.swan.swansong.TimestampedValue;
+import interdroid.swancore.swansong.TimestampedValue;
 
 interface Sensor {
 

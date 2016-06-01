@@ -4,7 +4,7 @@
         <java fork="true" dir="${basedir}" classname="org.antlr.Tool"
             classpath="libs/antlr-3.4-complete-no-antlrv2.jar">
             <arg
-                line="-o build/generated/source/aidl/debug/interdroid/swan/swansong/ SwanExpression.g" />
+                line="-o build/generated/source/aidl/debug/interdroid.swancore.swansong/ SwanExpression.g" />
         </java>
     </target>
 
@@ -12,7 +12,7 @@
         <java fork="true" dir="${basedir}" classname="org.antlr.Tool"
             classpath="libs/antlr-3.4-complete-no-antlrv2.jar">
             <arg
-                line="-Xwatchconversion -Xnfastates -o build/generated/source/aidl/debug/interdroid/swan/swansong/ SwanExpression.g" />
+                line="-Xwatchconversion -Xnfastates -o build/generated/source/aidl/debug/interdroid.swancore.swansong/ SwanExpression.g" />
         </java>
     </target>
 </project>

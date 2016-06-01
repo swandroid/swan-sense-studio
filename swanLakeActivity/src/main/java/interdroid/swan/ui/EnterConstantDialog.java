@@ -8,7 +8,7 @@ import android.widget.EditText;
 import android.widget.RadioGroup;
 
 import interdroid.swan.R;
-import interdroid.swan.swansong.ConstantValueExpression;
+import interdroid.swancore.swansong.ConstantValueExpression;
 
 public class EnterConstantDialog extends Activity {
 

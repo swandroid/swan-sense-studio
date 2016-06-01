@@ -10,7 +10,7 @@ import java.util.UUID;
 
 import interdroid.swancore.crossdevice.Converter;
 import interdroid.swan.engine.EvaluationEngineService;
-import interdroid.swan.swansong.Result;
+import interdroid.swancore.swansong.Result;
 
 /**
  * Created by vladimir on 4/7/16.

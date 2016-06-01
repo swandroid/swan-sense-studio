@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import interdroid.swan.crossdevice.swanplus.ProximityManagerI;
 import interdroid.swan.crossdevice.swanplus.SwanUser;
 import interdroid.swan.engine.EvaluationEngineService;
-import interdroid.swan.swansong.Expression;
+import interdroid.swancore.swansong.Expression;
 
 /**
  * Created by vladimir on 3/9/16.

@@ -19,10 +19,10 @@ import interdroid.swan.SensorInfo;
 import interdroid.swan.SwanException;
 import interdroid.swan.ValueExpressionListener;
 import interdroid.swan.crossdevice.swanplus.bluetooth.BTManager;
-import interdroid.swan.swansong.ExpressionFactory;
-import interdroid.swan.swansong.ExpressionParseException;
-import interdroid.swan.swansong.TimestampedValue;
-import interdroid.swan.swansong.ValueExpression;
+import interdroid.swancore.swansong.ExpressionFactory;
+import interdroid.swancore.swansong.ExpressionParseException;
+import interdroid.swancore.swansong.TimestampedValue;
+import interdroid.swancore.swansong.ValueExpression;
 
 public class TestActivity extends Activity {
 

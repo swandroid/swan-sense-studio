@@ -1,7 +1,7 @@
 package interdroid.swan;
 
-import interdroid.swan.swansong.Expression;
-import interdroid.swan.swansong.TriState;
+import interdroid.swancore.swansong.Expression;
+import interdroid.swancore.swansong.TriState;
 
 public interface TriStateExpressionListener {
 

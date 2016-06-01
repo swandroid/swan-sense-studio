@@ -1,7 +1,7 @@
 package interdroid.swan;
 
-import interdroid.swan.swansong.TriStateExpression;
-import interdroid.swan.swansong.ValueExpression;
+import interdroid.swancore.swansong.TriStateExpression;
+import interdroid.swancore.swansong.ValueExpression;
 
 /**
  * Generic listener for both {@link TriStateExpression} expressions and

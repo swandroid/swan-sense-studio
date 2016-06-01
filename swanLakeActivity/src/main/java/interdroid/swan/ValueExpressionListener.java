@@ -1,8 +1,8 @@
 package interdroid.swan;
 
-import interdroid.swan.swansong.HistoryReductionMode;
-import interdroid.swan.swansong.TimestampedValue;
-import interdroid.swan.swansong.ValueExpression;
+import interdroid.swancore.swansong.HistoryReductionMode;
+import interdroid.swancore.swansong.TimestampedValue;
+import interdroid.swancore.swansong.ValueExpression;
 
 public interface ValueExpressionListener {
 

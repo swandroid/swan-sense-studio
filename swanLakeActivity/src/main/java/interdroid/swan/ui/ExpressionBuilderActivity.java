@@ -22,12 +22,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import interdroid.swan.R;
-import interdroid.swan.swansong.Expression;
-import interdroid.swan.swansong.ExpressionFactory;
-import interdroid.swan.swansong.ExpressionParseException;
-import interdroid.swan.swansong.LogicExpression;
-import interdroid.swan.swansong.TriStateExpression;
-import interdroid.swan.swansong.UnaryLogicOperator;
+import interdroid.swancore.swansong.Expression;
+import interdroid.swancore.swansong.ExpressionFactory;
+import interdroid.swancore.swansong.ExpressionParseException;
+import interdroid.swancore.swansong.LogicExpression;
+import interdroid.swancore.swansong.TriStateExpression;
+import interdroid.swancore.swansong.UnaryLogicOperator;
 
 public class ExpressionBuilderActivity extends Activity {
 

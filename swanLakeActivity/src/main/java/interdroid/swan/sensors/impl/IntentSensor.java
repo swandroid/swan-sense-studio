@@ -8,10 +8,10 @@ import interdroid.swan.SwanException;
 import interdroid.swan.ValueExpressionListener;
 import interdroid.swancore.sensors.AbstractConfigurationActivity;
 import interdroid.swan.sensors.AbstractSwanSensor;
-import interdroid.swan.swansong.Expression;
-import interdroid.swan.swansong.HistoryReductionMode;
-import interdroid.swan.swansong.SensorValueExpression;
-import interdroid.swan.swansong.TimestampedValue;
+import interdroid.swancore.swansong.Expression;
+import interdroid.swancore.swansong.HistoryReductionMode;
+import interdroid.swancore.swansong.SensorValueExpression;
+import interdroid.swancore.swansong.TimestampedValue;
 
 public class IntentSensor extends AbstractSwanSensor {
 
