@@ -41,6 +41,8 @@ import interdroid.swancore.swansong.TriStateExpression;
 import interdroid.swancore.swansong.UnaryLogicOperator;
 import interdroid.swancore.swansong.ValueExpression;
 
+import interdroid.swancore.engine.SensorSetupFailedException;
+
 public class EvaluationManager {
 
     private static final String TAG = "EvaluationManager";

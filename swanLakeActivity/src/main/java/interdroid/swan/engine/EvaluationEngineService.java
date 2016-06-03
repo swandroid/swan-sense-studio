@@ -34,6 +34,8 @@ import interdroid.swancore.swansong.Expression;
 import interdroid.swancore.swansong.ExpressionFactory;
 import interdroid.swancore.swansong.Result;
 import interdroid.swancore.swansong.ValueExpression;
+import interdroid.swancore.engine.QueuedExpression;
+import interdroid.swancore.engine.SensorSetupFailedException;
 
 public class EvaluationEngineService extends Service {
 
