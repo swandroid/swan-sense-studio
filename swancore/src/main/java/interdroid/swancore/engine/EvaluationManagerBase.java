@@ -40,9 +40,9 @@ import interdroid.swancore.swansong.TriStateExpression;
 import interdroid.swancore.swansong.UnaryLogicOperator;
 import interdroid.swancore.swansong.ValueExpression;
 
-public class EvaluationManager {
+public class EvaluationManagerBase {
 
-    private static final String TAG = "EvaluationManager";
+    private static final String TAG = "EvaluationManagerBase";
 
     // time it takes to start up the remote sensor, this is a bit arbitrary
     // because we don't (and cannot) know when the push message arrives
@@ -75,7 +75,7 @@ public class EvaluationManager {
      */
     //ProximityManagerI mProximityManager;
 
-    public EvaluationManager(Context context/**,ProximityManagerI proximityManager */) {
+    public EvaluationManagerBase(Context context/**,ProximityManagerI proximityManager */) {
         mContext = context;
         //this.mProximityManager = proximityManager;
     }

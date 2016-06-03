@@ -170,9 +170,9 @@ public class EvaluationEngineServiceBase extends Service {
 
     NotificationManager mNotificationManager;
     Notification mNotification;
-    EvaluationManager mEvaluationManager;
+    EvaluationManagerBase mEvaluationManager;
     // Code commented for Wear
-    //ProximityManagerI mProximityManager; //TODO consider moving this to EvaluationManager class
+    //ProximityManagerI mProximityManager; //TODO consider moving this to EvaluationManagerBase class
 
     /**
      * @return all expressions saved in the database.
@@ -533,7 +533,7 @@ public class EvaluationEngineServiceBase extends Service {
 //        mProximityManager = new BTManager(this);
 //        mProximityManager.init();
         // construct the sensor manager
-        mEvaluationManager = new EvaluationManager(this/**, mProximityManager*/);
+        mEvaluationManager = new EvaluationManagerBase(this/**, mProximityManager*/);
         // kick off the evaluation thread
         mEvaluationThread.start();
         // init the notification stuff
