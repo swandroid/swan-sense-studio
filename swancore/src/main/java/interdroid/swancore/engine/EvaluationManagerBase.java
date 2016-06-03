@@ -66,7 +66,7 @@ public class EvaluationManagerBase {
     /**
      * The context (for launching new services).
      */
-    protected final Context mContext;
+    protected  Context mContext;
 
     protected final Map<String, Result> mCachedResults = new HashMap<String, Result>();
 

@@ -4,6 +4,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+
+// TODO: remove this class form the swan core, swanlake and swan wear can
+// use BroadcastReceiver
 public class EvaluationEngineReceiverBase extends BroadcastReceiver {
 
     /**

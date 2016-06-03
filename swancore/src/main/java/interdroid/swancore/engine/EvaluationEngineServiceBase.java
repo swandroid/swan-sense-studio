@@ -81,7 +81,7 @@ public class EvaluationEngineServiceBase extends Service {
 
     };
 
-    Thread mEvaluationThread = new Thread() {
+    protected Thread mEvaluationThread = new Thread() {
         public void run() {
             while (!interrupted()) {
                 QueuedExpression head = mEvaluationQueue.peek();
@@ -168,9 +168,9 @@ public class EvaluationEngineServiceBase extends Service {
         }
     };
 
-    NotificationManager mNotificationManager;
-    Notification mNotification;
-    EvaluationManagerBase mEvaluationManager;
+    protected NotificationManager mNotificationManager;
+    protected Notification mNotification;
+    protected EvaluationManagerBase mEvaluationManager;
     // Code commented for Wear
     //ProximityManagerI mProximityManager; //TODO consider moving this to EvaluationManagerBase class
 
@@ -527,7 +527,7 @@ public class EvaluationEngineServiceBase extends Service {
      */
     @SuppressWarnings("deprecation")
     @Override
-    public final void onCreate() {
+    public void onCreate() {
         super.onCreate();
         // TODO: initialize the proximity manager
 //        mProximityManager = new BTManager(this);
