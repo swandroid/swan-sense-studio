@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="battery_state_options">
+        <item>Only when charging</item>
+        <item>When battery level above threshold</item>
+        <item>Always</item>
+    </string-array>
+
+    <string-array name="mobile_network_options">
+        <item>WiFi</item>
+        <item>4G</item>
+        <item>3G</item>
+        <item>2G</item>
+        <item>Any</item>
+    </string-array>
+
+    <string-array name="sync_rate_options">
+        <item>ECO</item>
+        <item>RARELY</item>
+        <item>NORMAL</item>
+        <item>OFTEN</item>
+        <item>REAL TIME</item>
+    </string-array>
+
+    <string-array name="sync_rate_options_values">
+        <item>1</item>
+        <item>2</item>
+        <item>0</item>
+        <item>-1</item>
+        <item>-2</item>
+    </string-array>
+
+    <string-array name="storage_options">
+        <item>Remote storage</item>
+        <item>Local storage</item>
+        <item>None</item>
+    </string-array>
+    <!--
+        <string-array name="storage_options_values">
+            <item>1</item>
+            <item>2</item>
+            <item >3</item>
+        </string-array> -->
+
+    <!-- step sensor -->
+    <string-array name="stepdetector_valuepaths">
+        <item>is_step_detected</item>
+    </string-array>
+    <string-array name="stepcounter_valuepaths">
+        <item>step_counter</item>
+    </string-array>
+
+    <string-array name="time_units">
+        <item>milliseconds</item>
+        <item>seconds</item>
+        <item>minutes</item>
+        <item>hours</item>
+    </string-array>
+
+    <string-array name="time_units_values">
+        <item>ms</item>
+        <item>s</item>
+        <item>m</item>
+        <item>h</item>
+    </string-array>
+
+    <!-- history_reduction_modes -->
+    <string-array name="history_reduction_modes">
+        <item>ANY</item>
+        <item>ALL</item>
+        <item>MAX</item>
+        <item>MIN</item>
+        <item>MEAN</item>
+        <item>MEDIAN</item>
+    </string-array>
+
+    <string-array name="server_storage">
+        <item>FALSE</item>
+        <item>TRUE</item>
+    </string-array>
+
+    <string-array name="http_body_type">
+        <item>null</item>
+        <item>formdata</item>
+        <item>application/json</item>
+    </string-array>
+
+
+    <string-array name="http_method">
+        <item>GET</item>
+        <item>POST</item>
+        <item>PUT</item>
+        <item>DELETE</item>
+        <item>COPY</item>
+    </string-array>
+
+    <string-array name="http_authorization">
+        <item>NoAuth</item>
+        <item>BasicAuth</item>
+        <item>DigestAuth</item>
+        <item>0Auth1.0</item>
+        <item>0Auth2.0</item>
+    </string-array>
+
+    <string-array name="http_header">
+        <item>No Auth</item>
+        <item>Basic Auth</item>
+        <item>Digest Auth</item>
+        <item>0Auth 1.0</item>
+        <item>0Auth 2.0</item>
+    </string-array>
+
+
+    <!-- battery sensor -->
+    <string-array name="battery_valuepaths">
+        <item>level</item>
+        <item>voltage</item>
+        <item>temperature</item>
+        <item>plugged</item>
+        <item>status_text</item>
+    </string-array>
+
+    <!-- time sensor -->
+    <string-array name="time_valuepaths">
+        <item>hour_of_day</item>
+        <item>day_of_week</item>
+        <item>current</item>
+    </string-array>
+
+    <!-- train sensor -->
+    <string-array name="train_valuepaths">
+        <item>departure_time</item>
+        <item>arrival_time</item>
+    </string-array>
+
+    <!-- movement sensor -->
+    <string-array name="movement_valuepaths">
+        <item>x</item>
+        <item>y</item>
+        <item>z</item>
+        <item>total</item>
+    </string-array>
+
+    <!-- gyroscope sensor -->
+    <string-array name="gyroscope_valuepaths">
+        <item>x</item>
+        <item>y</item>
+        <item>z</item>
+    </string-array>
+
+    <!-- magnetometer sensor -->
+    <string-array name="magnetometer_valuepaths">
+        <item>x</item>
+        <item>y</item>
+        <item>z</item>
+        <item>total</item>
+    </string-array>
+
+    <!-- light sensor -->
+    <string-array name="light_valuepaths">
+        <item>lux</item>
+    </string-array>
+
+    <!-- proximity sensor -->
+    <string-array name="proximity_valuepaths">
+        <item>distance</item>
+    </string-array>
+
+    <!-- temperature sensor -->
+    <string-array name="temperature_valuepaths">
+        <item>temperature</item>
+    </string-array>
+
+    <!-- pressure sensor -->
+    <string-array name="pressure_valuepaths">
+        <item>pressure</item>
+    </string-array>
+
+    <!-- sound sensor -->
+    <string-array name="sound_valuepaths">
+        <item>rms</item>
+        <item>db</item>
+    </string-array>
+    <string-array name="sound_audio_source">
+        <item>Default</item>
+        <item>Microphone</item>
+        <item>Voice Uplink</item>
+        <item>Voice Downlink</item>
+        <item>Voice Call</item>
+        <item>Camcorder</item>
+        <item>Voice Recognition</item>
+    </string-array>
+    <string-array name="sound_audio_source_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+    </string-array>
+    <string-array name="sound_channel_config">
+        <item>Default</item>
+        <item>Mono</item>
+        <item>Stereo</item>
+    </string-array>
+    <string-array name="sound_channel_config_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+    <string-array name="sound_audio_format">
+        <item>Default</item>
+        <item>PCM 8-bit</item>
+        <item>PCM 16-bit</item>
+    </string-array>
+    <string-array name="sound_audio_format_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+    <!-- bluetooth sensor -->
+    <string-array name="bluetooth_valuepaths">
+        <item>name</item>
+        <item>address</item>
+        <item>bundled</item>
+    </string-array>
+
+    <!-- calendar sensor -->
+    <string-array name="calendar_valuepaths">
+        <item>start_time_next_event</item>
+    </string-array>
+
+    <!-- call sensor -->
+    <string-array name="call_valuepaths">
+        <item>call_state</item>
+        <item>phone_number</item>
+    </string-array>
+
+    <!-- gsm sensor -->
+    <string-array name="gsm_valuepaths">
+        <item>is_gsm</item>
+        <item>gsm_signal_strength</item>
+        <item>gsm_bit_error_rate</item>
+        <item>cdma_dbm</item>
+        <item>cdma_ecio</item>
+        <item>evdo_dbm</item>
+        <item>evdo_ecio</item>
+        <item>evdo_snr</item>
+    </string-array>
+
+    <!-- intent sensor -->
+    <string-array name="intent_valuepaths">
+        <item>started</item>
+    </string-array>
+
+    <!-- location sensor -->
+    <string-array name="location_valuepaths">
+        <item>location</item>
+        <item>latitude</item>
+        <item>longitude</item>
+        <item>altitude</item>
+        <item>speed</item>
+        <item>bearing</item>
+        <item>accuracy</item>
+    </string-array>
+    <string-array name="location_provider">
+        <item>gps</item>
+        <item>network</item>
+        <item>passive</item>
+    </string-array>
+
+    <!-- smart location sensor -->
+    <string-array name="smart_location_valuepaths">
+        <item>vicinity</item>
+        <item>within</item>
+    </string-array>
+    <string-array name="smart_location_provider">
+        <item>gps</item>
+        <item>network</item>
+        <item>passive</item>
+    </string-array>
+
+    <!-- logcat sensor -->
+    <string-array name="logcat_valuepaths">
+        <item>log</item>
+    </string-array>
+
+    <!-- rain sensor -->
+    <string-array name="rain_valuepaths">
+        <item>expected_mm</item>
+    </string-array>
+
+    <!-- fitness sensor -->
+    <string-array name="fitness_valuepaths">
+        <item>avg_speed</item>
+    </string-array>
+
+    <string-array name="ov_valuepaths">
+        <item>line</item>
+        <item>stopareacode</item>
+    </string-array>
+
+    <string-array name="server_valuepaths">
+        <item>url</item>
+    </string-array>
+
+    <!-- screen sensor -->
+    <string-array name="screen_valuepaths">
+        <item>is_screen_on</item>
+    </string-array>
+
+    <!-- serverstatus sensor -->
+    <string-array name="serverstatus_valuepaths">
+        <item>status</item>
+    </string-array>
+
+    <!-- twitter sensor -->
+    <string-array name="twitter_valuepaths">
+        <item>mentions</item>
+    </string-array>
+
+    <!-- wifi sensor -->
+    <string-array name="wifi_valuepaths">
+        <item>ssid</item>
+        <item>bssid</item>
+        <item>level</item>
+        <item>scanresult</item>
+    </string-array>
+
+    <!-- polar heart rate -->
+    <string-array name="hrm_valuepaths">
+        <item>bpm</item>
+        <item>status</item>
+        <item>index</item>
+        <item>rri</item>
+        <item>status_text</item>
+    </string-array>
+
+    <string-array name="accuracy">
+        <item>fastest</item>
+        <item>game</item>
+        <item>ui</item>
+        <item>normal</item>
+    </string-array>
+
+    <string-array name="accuracy_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+    <string-array name="wear_heartrate_valuepaths">
+        <item>heart_rate</item>
+    </string-array>
+
+    <string-array name="gravity_valuepaths">
+        <item>x</item>
+        <item>y</item>
+        <item>z</item>
+    </string-array>
+
+    <string-array name="run_levels_array">
+        <item>Beginner</item>
+        <item>Intermediate</item>
+        <item>Advanced</item>
+    </string-array>
+
+    <string-array name="run_styles_array">
+        <item>Recovery</item>
+        <item>Base run</item>
+        <item>Long run</item>
+        <item>Progression</item>
+        <item>Hill repeats</item>
+        <item>Tempo run</item>
+        <item>Intervals</item>
+    </string-array>
+
+    <string-array name="beacon_valuepaths">
+        <item>ibeaconuuid</item>
+        <item>eddystoneuid</item>
+        <item>altbeacon</item>
+        <item>estimotenearable</item>
+    </string-array>
+
+    <string-array name="beacon_distance_valuepaths">
+        <item>distance</item>
+    </string-array>
+
+    <string-array name="beacon_motion_valuepths">
+        <item>isMoving</item>
+        <item>currentMotionTime</item>
+        <item>previousMotionTime</item>
+    </string-array>
+
+</resources>
