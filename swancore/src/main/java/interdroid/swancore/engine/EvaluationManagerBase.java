@@ -42,33 +42,33 @@ import interdroid.swancore.swansong.ValueExpression;
 
 public class EvaluationManagerBase {
 
-    private static final String TAG = "EvaluationManagerBase";
+    protected static final String TAG = "EvaluationManagerBase";
 
     // time it takes to start up the remote sensor, this is a bit arbitrary
     // because we don't (and cannot) know when the push message arrives
-    private static final long START_UP_TIME_REMOTE_SENSOR = 60 * 1000;
+    protected static final long START_UP_TIME_REMOTE_SENSOR = 60 * 1000;
 
     /**
      * The sensor information.
      */
-    private List<SensorInfo> mSensorList = new ArrayList<SensorInfo>();
+    protected List<SensorInfo> mSensorList = new ArrayList<SensorInfo>();
 
     /**
      * The service connections.
      */
-    private final Map<String, ServiceConnection> mConnections = new HashMap<String, ServiceConnection>();
+    protected final Map<String, ServiceConnection> mConnections = new HashMap<String, ServiceConnection>();
 
     /**
      * The sensors proxies
      */
-    private final Map<String, Sensor> mSensors = new HashMap<String, Sensor>();
+    protected final Map<String, Sensor> mSensors = new HashMap<String, Sensor>();
 
     /**
      * The context (for launching new services).
      */
-    private final Context mContext;
+    protected final Context mContext;
 
-    private final Map<String, Result> mCachedResults = new HashMap<String, Result>();
+    protected final Map<String, Result> mCachedResults = new HashMap<String, Result>();
 
     /**
      * proximity manager for connecting to nearby devices
@@ -249,7 +249,7 @@ public class EvaluationManagerBase {
         return result;
     }
 
-    private void initializeRemote(String id, Expression expression,
+    protected void initializeRemote(String id, Expression expression,
                                   String resolvedLocation) throws SensorSetupFailedException {
 
         // TODO: Prepare for wear
@@ -283,7 +283,7 @@ public class EvaluationManagerBase {
     //    }
     }
 
-    private String toCrossDeviceString(Expression expression,
+    protected String toCrossDeviceString(Expression expression,
                                        String toRegistrationId) {
         String registrationId = Registry.get(mContext, expression.getLocation());
 
@@ -366,7 +366,7 @@ public class EvaluationManagerBase {
     }
 
     // send a push message with 'unregister'
-    private void stopRemote(String id, Expression expression) {
+    protected void stopRemote(String id, Expression expression) {
         // TODO: Fix this for wear
 //        String resolvedLocation = expression.getLocation();
 //
@@ -400,7 +400,7 @@ public class EvaluationManagerBase {
 //        }
     }
 
-    private boolean bindToSensor(final String id,
+    protected boolean bindToSensor(final String id,
                                  final SensorValueExpression expression, boolean discover)
             throws SensorConfigurationException, SensorSetupFailedException {
         if (discover) {
@@ -471,7 +471,7 @@ public class EvaluationManagerBase {
                 + expression);
     }
 
-    private void unbindFromSensor(final String id) {
+    protected void unbindFromSensor(final String id) {
         ServiceConnection conn = mConnections.remove(id);
         Sensor sensor = mSensors.remove(id);
         if (sensor != null) {
@@ -493,7 +493,7 @@ public class EvaluationManagerBase {
         }
     }
 
-    private boolean leftFirst(String id, LogicExpression expression, long now) {
+    protected boolean leftFirst(String id, LogicExpression expression, long now) {
         // For a binary logic operation it is important to make a clever
         // decision which of the involved expressions is evaluated first.
         // Depending on the result of this evaluation and the logic operator, it
@@ -576,7 +576,7 @@ public class EvaluationManagerBase {
         return true;
     }
 
-    private Result applyLogic(String id, LogicExpression expression, long now)
+    protected Result applyLogic(String id, LogicExpression expression, long now)
             throws SwanException {
         boolean leftFirst = leftFirst(id, expression, now);
 
@@ -624,7 +624,7 @@ public class EvaluationManagerBase {
     }
 
     @SuppressWarnings("rawtypes")
-    private Result doCompare(String id, ComparisonExpression expression,
+    protected Result doCompare(String id, ComparisonExpression expression,
                              long now) throws SwanException {
         Result right = evaluate(id + Expression.RIGHT_SUFFIX,
                 expression.getRight(), now);
@@ -705,7 +705,7 @@ public class EvaluationManagerBase {
         return comparatorResult;
     }
 
-    private class DeferUntilResult {
+    protected class DeferUntilResult {
         public long deferUntil;
         public boolean guaranteed;
 
@@ -716,7 +716,7 @@ public class EvaluationManagerBase {
 
     }
 
-    private Result doMath(String id, MathValueExpression expression, long now)
+    protected Result doMath(String id, MathValueExpression expression, long now)
             throws SwanException {
         Result left = evaluate(id + Expression.LEFT_SUFFIX,
                 expression.getLeft(), now);
@@ -752,7 +752,7 @@ public class EvaluationManagerBase {
         }
     }
 
-    private Result getFromSensor(String id, SensorValueExpression expression,
+    protected Result getFromSensor(String id, SensorValueExpression expression,
                                  long now) {
         if (mSensors.get(id) == null) {
             Log.d(TAG, "not yet bound for: " + id + ", " + expression);
@@ -803,7 +803,7 @@ public class EvaluationManagerBase {
         return null;
     }
 
-    private DeferUntilResult remainsValidUntil(ValueExpression expression,
+    protected DeferUntilResult remainsValidUntil(ValueExpression expression,
                                                long determiningValueTimestamp, long oldestValueTimestamp,
                                                Comparator comparator, TriState triState, boolean left) {
         if (expression instanceof MathValueExpression) {
@@ -924,7 +924,7 @@ public class EvaluationManagerBase {
         return new DeferUntilResult(0, false); // should not happen!
     }
 
-    private void sleepAndBeReady(final String id, final Expression expression,
+    protected void sleepAndBeReady(final String id, final Expression expression,
                                  final long readyTime) {
         if (expression instanceof LogicExpression) {
             sleepAndBeReady(id + Expression.LEFT_SUFFIX,
@@ -988,7 +988,7 @@ public class EvaluationManagerBase {
         }
     }
 
-    private boolean shortcut(LogicExpression expression, Result first) {
+    protected boolean shortcut(LogicExpression expression, Result first) {
         // Can we short circuit and don't evaluate the last expression?
         // FALSE && ?? -> FALSE
         // TRUE || ?? -> TRUE
@@ -1012,7 +1012,7 @@ public class EvaluationManagerBase {
         return false;
     }
 
-    private static Object promote(Object object) {
+    protected static Object promote(Object object) {
         if (object instanceof Integer) {
             return Long.valueOf((Integer) object);
         }
@@ -1093,7 +1093,7 @@ public class EvaluationManagerBase {
      * @return the timestamped values
      * @throws SwanException if someting goes wrong
      */
-    private TimestampedValue operate(final TimestampedValue left,
+    protected TimestampedValue operate(final TimestampedValue left,
                                      MathOperator operator, final TimestampedValue right)
             throws SwanException {
         if (left.getValue() instanceof Double
@@ -1128,7 +1128,7 @@ public class EvaluationManagerBase {
      * @return the combined value
      * @throws SwanException if something goes wrong.
      */
-    private Double operateDouble(final double left, MathOperator operator,
+    protected Double operateDouble(final double left, MathOperator operator,
                                  final double right) throws SwanException {
         Double ret;
         switch (operator) {
@@ -1161,7 +1161,7 @@ public class EvaluationManagerBase {
      * @return the combined value
      * @throws SwanException if something goes wrong.
      */
-    private Long operateLong(final long left, MathOperator operator,
+    protected Long operateLong(final long left, MathOperator operator,
                              final long right) throws SwanException {
         Long ret;
         switch (operator) {
@@ -1194,7 +1194,7 @@ public class EvaluationManagerBase {
      * @return the combined value
      * @throws SwanException if something goes wrong.
      */
-    private String operateString(final String left, MathOperator operator,
+    protected String operateString(final String left, MathOperator operator,
                                  final String right) throws SwanException {
         String ret;
         switch (operator) {
@@ -1216,7 +1216,7 @@ public class EvaluationManagerBase {
      * @return the combined value
      * @throws SwanException if something goes wrong.
      */
-    private Float operateLocation(final Location left, MathOperator operator,
+    protected Float operateLocation(final Location left, MathOperator operator,
                                   final Location right) throws SwanException {
         Float ret;
         switch (operator) {
