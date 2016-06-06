@@ -1,4 +1,4 @@
-package interdroid.swancore.swansong;
+package interdroid.swacore.swansong;
 
 /**
  * This class is designed to make enumerations safe to persist more easily

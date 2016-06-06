@@ -1,21 +1,17 @@
-package interdroid.swancore.swansong;
+package interdroid.swacore.swansong;
 
 
 /**
- * An enumeration which represents BinaryLogicalOperators.
+ * An enumeration which represents UnaryLogicalOperators.
  *
  * @author nick &lt;palmer@cs.vu.nl&gt;
  */
-public enum BinaryLogicOperator implements ParseableEnum<BinaryLogicOperator>,
+public enum UnaryLogicOperator implements ParseableEnum<UnaryLogicOperator>,
         LogicOperator {
     /**
-     * Logical AND.
+     * Logical NOT.
      */
-    AND(0, "&&"),
-    /**
-     * Logical OR.
-     */
-    OR(1, "||");
+    NOT(0, "!");
 
     /**
      * The converted value of this value.
@@ -28,12 +24,12 @@ public enum BinaryLogicOperator implements ParseableEnum<BinaryLogicOperator>,
     private String mName;
 
     /**
-     * Construct a BinaryLogical Operator.
+     * Construct a UnaryLogical Operator.
      *
      * @param value the converted value.
      * @param name  the name of the operator.
      */
-    private BinaryLogicOperator(final int value, final String name) {
+    private UnaryLogicOperator(final int value, final String name) {
         mValue = value;
         mName = name;
     }
@@ -44,9 +40,9 @@ public enum BinaryLogicOperator implements ParseableEnum<BinaryLogicOperator>,
     }
 
     @Override
-    public BinaryLogicOperator convertInt(final int val) {
-        BinaryLogicOperator ret = null;
-        for (BinaryLogicOperator op : BinaryLogicOperator.values()) {
+    public UnaryLogicOperator convertInt(final int val) {
+        UnaryLogicOperator ret = null;
+        for (UnaryLogicOperator op : UnaryLogicOperator.values()) {
             if (op.convert() == val) {
                 ret = op;
                 break;
@@ -56,14 +52,14 @@ public enum BinaryLogicOperator implements ParseableEnum<BinaryLogicOperator>,
     }
 
     /**
-     * Parses and returns a BinaryLogicOperator.
+     * Parses and returns a UnaryLogicOperator.
      *
      * @param val the string to parse
-     * @return the corresponding BinaryLogicOperator
+     * @return the corresponding UnaryLogicOperator
      */
-    public BinaryLogicOperator parseString(final String val) {
-        BinaryLogicOperator ret = null;
-        for (BinaryLogicOperator op : BinaryLogicOperator.values()) {
+    public UnaryLogicOperator parseString(final String val) {
+        UnaryLogicOperator ret = null;
+        for (UnaryLogicOperator op : UnaryLogicOperator.values()) {
             if (op.toParseString().equals(val)) {
                 ret = op;
                 break;
@@ -78,8 +74,8 @@ public enum BinaryLogicOperator implements ParseableEnum<BinaryLogicOperator>,
      * @param value the value to parse
      * @return the enum which matches the string.
      */
-    public static BinaryLogicOperator parse(final String value) {
-        return AND.parseString(value);
+    public static UnaryLogicOperator parse(final String value) {
+        return NOT.parseString(value);
     }
 
     /**
@@ -88,8 +84,8 @@ public enum BinaryLogicOperator implements ParseableEnum<BinaryLogicOperator>,
      * @param value the value to get the enumeration for
      * @return the enumeration matching this value
      */
-    public static BinaryLogicOperator convert(final int value) {
-        return AND.convertInt(value);
+    public static UnaryLogicOperator convert(final int value) {
+        return NOT.convertInt(value);
     }
 
     @Override
@@ -104,23 +100,15 @@ public enum BinaryLogicOperator implements ParseableEnum<BinaryLogicOperator>,
 
     @Override
     public TriState operate(TriState first, TriState last) {
+        // ignore last result, this is a unary operation
         if (mValue == 0) {
-            // AND
-            if (first == TriState.TRUE && last == TriState.TRUE) {
-                return TriState.TRUE;
-            } else if (first == TriState.UNDEFINED || last == TriState.UNDEFINED) {
-                return TriState.UNDEFINED;
-            } else {
+            // NOT
+            if (first == TriState.TRUE) {
                 return TriState.FALSE;
-            }
-        } else if (mValue == 1) {
-            // OR
-            if (first == TriState.UNDEFINED && last == TriState.UNDEFINED) {
-                return TriState.UNDEFINED;
-            } else if (first == TriState.TRUE || last == TriState.TRUE) {
+            } else if (first == TriState.FALSE) {
                 return TriState.TRUE;
             } else {
-                return TriState.FALSE;
+                return TriState.UNDEFINED;
             }
         } else {
             return TriState.UNDEFINED;

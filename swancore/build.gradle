@@ -20,5 +20,6 @@ android {
 
 dependencies {
     compile 'com.android.support:appcompat-v7:23.3.0'
-    compile files('libs/antlr-3.4-complete-no-antlrv2.jar')
+    compile project(':swansong')
+    //compile files('libs/antlr-3.4-complete-no-antlrv2.jar')
 }

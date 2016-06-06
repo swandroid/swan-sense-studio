@@ -1,4 +1,4 @@
-package interdroid.swancore.swansong;
+package interdroid.swacore.swansong;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -64,7 +64,7 @@ public class Result implements Comparable<Result>, Serializable {
                 + (mDeferUntil == 0 ? "NOW"
                 : (mDeferUntil == Long.MAX_VALUE ? "FOREVER" : ""
                 + new Date(mDeferUntil)
-                + "." + (System.currentTimeMillis() % 1000)));
+                + "" + (System.currentTimeMillis() % 1000)));
     }
 
     public long getTimestamp() {

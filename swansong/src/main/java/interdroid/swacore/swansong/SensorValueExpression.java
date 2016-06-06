@@ -1,4 +1,4 @@
-package interdroid.swancore.swansong;
+package interdroid.swacore.swansong;
 
 import android.os.Bundle;
 import android.util.Log;

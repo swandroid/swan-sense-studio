@@ -1,4 +1,4 @@
-package interdroid.swancore.swansong;
+package interdroid.swacore.swansong;
 
 /**
  * An interface marking an object as convertible to and from a string form.

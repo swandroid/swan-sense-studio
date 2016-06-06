@@ -1,6 +1,6 @@
 // $ANTLR 3.5.2 SwanExpression.g 2016-03-31 18:26:44
 
-package interdroid.swancore.swansong;
+package interdroid.swacore.swansong;
 
 
 import org.antlr.runtime.BaseRecognizer;
@@ -91,7 +91,7 @@ public class SwanExpressionLexer extends Lexer {
     public final void mT__40() throws RecognitionException {
         try {
             int _type = T__40;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // SwanExpression.g:11:7: ( '$' )
             // SwanExpression.g:11:9: '$'
             {
@@ -110,7 +110,7 @@ public class SwanExpressionLexer extends Lexer {
     public final void mT__41() throws RecognitionException {
         try {
             int _type = T__41;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // SwanExpression.g:12:7: ( '(' )
             // SwanExpression.g:12:9: '('
             {
@@ -129,7 +129,7 @@ public class SwanExpressionLexer extends Lexer {
     public final void mT__42() throws RecognitionException {
         try {
             int _type = T__42;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // SwanExpression.g:13:7: ( ')' )
             // SwanExpression.g:13:9: ')'
             {
@@ -148,7 +148,7 @@ public class SwanExpressionLexer extends Lexer {
     public final void mT__43() throws RecognitionException {
         try {
             int _type = T__43;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // SwanExpression.g:14:7: ( ',' )
             // SwanExpression.g:14:9: ','
             {
@@ -167,7 +167,7 @@ public class SwanExpressionLexer extends Lexer {
     public final void mT__44() throws RecognitionException {
         try {
             int _type = T__44;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // SwanExpression.g:15:7: ( '.' )
             // SwanExpression.g:15:9: '.'
             {
@@ -186,7 +186,7 @@ public class SwanExpressionLexer extends Lexer {
     public final void mT__45() throws RecognitionException {
         try {
             int _type = T__45;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // SwanExpression.g:16:7: ( ':' )
             // SwanExpression.g:16:9: ':'
             {
@@ -205,7 +205,7 @@ public class SwanExpressionLexer extends Lexer {
     public final void mT__46() throws RecognitionException {
         try {
             int _type = T__46;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // SwanExpression.g:17:7: ( '?' )
             // SwanExpression.g:17:9: '?'
             {
@@ -224,7 +224,7 @@ public class SwanExpressionLexer extends Lexer {
     public final void mT__47() throws RecognitionException {
         try {
             int _type = T__47;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // SwanExpression.g:18:7: ( '@' )
             // SwanExpression.g:18:9: '@'
             {
@@ -243,7 +243,7 @@ public class SwanExpressionLexer extends Lexer {
     public final void mT__48() throws RecognitionException {
         try {
             int _type = T__48;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // SwanExpression.g:19:7: ( '{' )
             // SwanExpression.g:19:9: '{'
             {
@@ -262,7 +262,7 @@ public class SwanExpressionLexer extends Lexer {
     public final void mT__49() throws RecognitionException {
         try {
             int _type = T__49;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // SwanExpression.g:20:7: ( '}' )
             // SwanExpression.g:20:9: '}'
             {
@@ -281,7 +281,7 @@ public class SwanExpressionLexer extends Lexer {
     public final void mTIME_UNIT() throws RecognitionException {
         try {
             int _type = TIME_UNIT;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // SwanExpression.g:342:5: ( 'h' | 'H' | 'm' | 'M' | 's' | 'S' | 'ms' )
             int alt1 = 7;
             switch (input.LA(1)) {
@@ -378,7 +378,7 @@ public class SwanExpressionLexer extends Lexer {
     public final void mOR() throws RecognitionException {
         try {
             int _type = OR;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // SwanExpression.g:345:7: ( '||' | 'or' | 'OR' )
             int alt2 = 3;
             switch (input.LA(1)) {
@@ -435,7 +435,7 @@ public class SwanExpressionLexer extends Lexer {
     public final void mAND() throws RecognitionException {
         try {
             int _type = AND;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // SwanExpression.g:346:7: ( '&&' | 'and' | 'AND' )
             int alt3 = 3;
             switch (input.LA(1)) {
@@ -492,7 +492,7 @@ public class SwanExpressionLexer extends Lexer {
     public final void mNOT() throws RecognitionException {
         try {
             int _type = NOT;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // SwanExpression.g:348:7: ( '!' | 'not' | 'NOT' )
             int alt4 = 3;
             switch (input.LA(1)) {
@@ -548,7 +548,7 @@ public class SwanExpressionLexer extends Lexer {
     public final void mCONFIG_IS() throws RecognitionException {
         try {
             int _type = CONFIG_IS;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // SwanExpression.g:352:5: ( '=' )
             // SwanExpression.g:352:9: '='
             {
@@ -567,7 +567,7 @@ public class SwanExpressionLexer extends Lexer {
     public final void mCONFIG_HASH() throws RecognitionException {
         try {
             int _type = CONFIG_HASH;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // SwanExpression.g:354:5: ( '#' )
             // SwanExpression.g:354:9: '#'
             {
@@ -586,7 +586,7 @@ public class SwanExpressionLexer extends Lexer {
     public final void mCONFIG_TILT() throws RecognitionException {
         try {
             int _type = CONFIG_TILT;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // SwanExpression.g:356:5: ( '~' )
             // SwanExpression.g:356:7: '~'
             {
@@ -605,7 +605,7 @@ public class SwanExpressionLexer extends Lexer {
     public final void mEQUALS() throws RecognitionException {
         try {
             int _type = EQUALS;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // SwanExpression.g:359:7: ( '==' | '=' )
             int alt5 = 2;
             int LA5_0 = input.LA(1);
@@ -651,7 +651,7 @@ public class SwanExpressionLexer extends Lexer {
     public final void mNOTEQUALS() throws RecognitionException {
         try {
             int _type = NOTEQUALS;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // SwanExpression.g:361:7: ( '!=' | '<>' )
             int alt6 = 2;
             int LA6_0 = input.LA(1);
@@ -694,7 +694,7 @@ public class SwanExpressionLexer extends Lexer {
     public final void mLT() throws RecognitionException {
         try {
             int _type = LT;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // SwanExpression.g:362:7: ( '<' )
             // SwanExpression.g:362:12: '<'
             {
@@ -713,7 +713,7 @@ public class SwanExpressionLexer extends Lexer {
     public final void mLTEQ() throws RecognitionException {
         try {
             int _type = LTEQ;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // SwanExpression.g:363:7: ( '<=' )
             // SwanExpression.g:363:12: '<='
             {
@@ -733,7 +733,7 @@ public class SwanExpressionLexer extends Lexer {
     public final void mGT() throws RecognitionException {
         try {
             int _type = GT;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // SwanExpression.g:364:7: ( '>' )
             // SwanExpression.g:364:12: '>'
             {
@@ -752,7 +752,7 @@ public class SwanExpressionLexer extends Lexer {
     public final void mGTEQ() throws RecognitionException {
         try {
             int _type = GTEQ;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // SwanExpression.g:365:7: ( '>=' )
             // SwanExpression.g:365:12: '>='
             {
@@ -772,7 +772,7 @@ public class SwanExpressionLexer extends Lexer {
     public final void mPLUS() throws RecognitionException {
         try {
             int _type = PLUS;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // SwanExpression.g:366:7: ( '+' )
             // SwanExpression.g:366:12: '+'
             {
@@ -791,7 +791,7 @@ public class SwanExpressionLexer extends Lexer {
     public final void mMINUS() throws RecognitionException {
         try {
             int _type = MINUS;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // SwanExpression.g:367:7: ( '-' )
             // SwanExpression.g:367:12: '-'
             {
@@ -810,7 +810,7 @@ public class SwanExpressionLexer extends Lexer {
     public final void mMULT() throws RecognitionException {
         try {
             int _type = MULT;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // SwanExpression.g:368:7: ( '*' )
             // SwanExpression.g:368:12: '*'
             {
@@ -829,7 +829,7 @@ public class SwanExpressionLexer extends Lexer {
     public final void mDIV() throws RecognitionException {
         try {
             int _type = DIV;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // SwanExpression.g:369:7: ( '/' )
             // SwanExpression.g:369:12: '/'
             {
@@ -848,7 +848,7 @@ public class SwanExpressionLexer extends Lexer {
     public final void mMOD() throws RecognitionException {
         try {
             int _type = MOD;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // SwanExpression.g:370:7: ( '%' )
             // SwanExpression.g:370:12: '%'
             {
@@ -867,7 +867,7 @@ public class SwanExpressionLexer extends Lexer {
     public final void mREGEX() throws RecognitionException {
         try {
             int _type = REGEX;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // SwanExpression.g:371:7: ( 'regex' | 'REGEX' )
             int alt7 = 2;
             int LA7_0 = input.LA(1);
@@ -910,7 +910,7 @@ public class SwanExpressionLexer extends Lexer {
     public final void mCONTAINS() throws RecognitionException {
         try {
             int _type = CONTAINS;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // SwanExpression.g:374:5: ( 'contains' | 'CONTAINS' )
             int alt8 = 2;
             int LA8_0 = input.LA(1);
@@ -953,7 +953,7 @@ public class SwanExpressionLexer extends Lexer {
     public final void mALL() throws RecognitionException {
         try {
             int _type = ALL;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // SwanExpression.g:377:9: ( ( 'ALL' | 'all' ) )
             // SwanExpression.g:377:13: ( 'ALL' | 'all' )
             {
@@ -1002,7 +1002,7 @@ public class SwanExpressionLexer extends Lexer {
     public final void mANY() throws RecognitionException {
         try {
             int _type = ANY;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // SwanExpression.g:378:5: ( ( 'ANY' | 'any' ) )
             // SwanExpression.g:378:9: ( 'ANY' | 'any' )
             {
@@ -1051,7 +1051,7 @@ public class SwanExpressionLexer extends Lexer {
     public final void mNONE() throws RecognitionException {
         try {
             int _type = NONE;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // SwanExpression.g:381:9: ( ( 'NONE' | 'none' ) )
             // SwanExpression.g:381:13: ( 'NONE' | 'none' )
             {
@@ -1100,7 +1100,7 @@ public class SwanExpressionLexer extends Lexer {
     public final void mMAX() throws RecognitionException {
         try {
             int _type = MAX;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // SwanExpression.g:382:5: ( ( 'MAX' | 'max' ) )
             // SwanExpression.g:382:9: ( 'MAX' | 'max' )
             {
@@ -1149,7 +1149,7 @@ public class SwanExpressionLexer extends Lexer {
     public final void mMIN() throws RecognitionException {
         try {
             int _type = MIN;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // SwanExpression.g:383:5: ( ( 'MIN' | 'min' ) )
             // SwanExpression.g:383:9: ( 'MIN' | 'min' )
             {
@@ -1198,7 +1198,7 @@ public class SwanExpressionLexer extends Lexer {
     public final void mMEAN() throws RecognitionException {
         try {
             int _type = MEAN;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // SwanExpression.g:384:9: ( ( 'MEAN' | 'mean' ) )
             // SwanExpression.g:384:13: ( 'MEAN' | 'mean' )
             {
@@ -1247,7 +1247,7 @@ public class SwanExpressionLexer extends Lexer {
     public final void mMEDIAN() throws RecognitionException {
         try {
             int _type = MEDIAN;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // SwanExpression.g:385:9: ( ( 'MEDIAN' | 'median' ) )
             // SwanExpression.g:385:13: ( 'MEDIAN' | 'median' )
             {
@@ -1296,7 +1296,7 @@ public class SwanExpressionLexer extends Lexer {
     public final void mID() throws RecognitionException {
         try {
             int _type = ID;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // SwanExpression.g:387:5: ( ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' )* )
             // SwanExpression.g:387:9: ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' )*
             {
@@ -1349,7 +1349,7 @@ public class SwanExpressionLexer extends Lexer {
     public final void mINT() throws RecognitionException {
         try {
             int _type = INT;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // SwanExpression.g:390:5: ( ( '-' )? ( '0' .. '9' )+ )
             // SwanExpression.g:390:9: ( '-' )? ( '0' .. '9' )+
             {
@@ -1415,7 +1415,7 @@ public class SwanExpressionLexer extends Lexer {
     public final void mFLOAT() throws RecognitionException {
         try {
             int _type = FLOAT;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // SwanExpression.g:394:5: ( ( '-' )? ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( EXPONENT )? | ( '-' )? '.' ( '0' .. '9' )+ ( EXPONENT )? | ( '-' )? ( '0' .. '9' )+ EXPONENT )
             int alt28 = 3;
             alt28 = dfa28.predict(input);
@@ -1659,7 +1659,7 @@ public class SwanExpressionLexer extends Lexer {
     public final void mWS() throws RecognitionException {
         try {
             int _type = WS;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // SwanExpression.g:399:5: ( ( ' ' | '\\t' | '\\r' | '\\n' ) )
             // SwanExpression.g:399:9: ( ' ' | '\\t' | '\\r' | '\\n' )
             {
@@ -1670,7 +1670,7 @@ public class SwanExpressionLexer extends Lexer {
                     recover(mse);
                     throw mse;
                 }
-                _channel = HIDDEN;
+                _channel = BaseRecognizer.HIDDEN;
             }
 
             state.type = _type;
@@ -1685,7 +1685,7 @@ public class SwanExpressionLexer extends Lexer {
     public final void mSTRING() throws RecognitionException {
         try {
             int _type = STRING;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             int normal;
 
             StringBuilder lBuf = new StringBuilder();
@@ -1948,7 +1948,7 @@ public class SwanExpressionLexer extends Lexer {
     public final void mCONFIG_VAL() throws RecognitionException {
         try {
             int _type = CONFIG_VAL;
-            int _channel = DEFAULT_TOKEN_CHANNEL;
+            int _channel = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
             // SwanExpression.g:436:5: ( '=' ( STRING | ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '/' | ':' | '=' | '&' | '_' | '\"' )* ) )
             // SwanExpression.g:436:9: '=' ( STRING | ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '/' | ':' | '=' | '&' | '_' | '\"' )* )
             {

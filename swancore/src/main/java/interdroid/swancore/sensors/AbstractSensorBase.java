@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import interdroid.swancore.sensors.Sensor;
 import interdroid.swancore.swansong.TimestampedValue;
 
 /**
