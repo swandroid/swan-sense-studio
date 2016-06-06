@@ -16,6 +16,8 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
+import interdroid.cuckoo.client.ResourceManager;
+
 /**
  * Provides access to a database of resources.
  */

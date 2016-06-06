@@ -1654,7 +1654,7 @@
         <!-- Cuckoo resources-->
         <provider
             android:name="interdroid.cuckoo.resourcemanager.ResourceManagerProvider"
-            android:authorities="interdroid.cuckoo.resourcemanager.ResourceManager"
+            android:authorities="interdroid.cuckoo.ResourceManager"
             android:exported="true" />
 
         <activity

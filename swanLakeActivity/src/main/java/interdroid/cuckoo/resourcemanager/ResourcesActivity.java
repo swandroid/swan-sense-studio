@@ -22,7 +22,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
-import interdroid.cuckoo.resourcemanager.ResourceManager.Resources;
+import interdroid.cuckoo.client.ResourceManager;
+import interdroid.cuckoo.client.ResourceManager.Resources;
 import interdroid.swan.R;
 
 public class ResourcesActivity extends ListActivity {
@@ -156,7 +157,7 @@ public class ResourcesActivity extends ListActivity {
 			return true;
 		case MENU_ITEM_DELETE_ALL:
 			// delete all
-			getContentResolver().delete(ResourceManager.Resources.CONTENT_URI,
+			getContentResolver().delete(Resources.CONTENT_URI,
 					"", new String[] {});
 			getContentResolver().delete(
 					ResourceManager.ResourceBindings.CONTENT_URI, "",
@@ -185,24 +186,24 @@ public class ResourcesActivity extends ListActivity {
 		if (contents.length < 9)
 			return;
 
-		values.put(ResourceManager.Resources.HOSTNAME, contents[0]);
-		values.put(ResourceManager.Resources.BSSIDS, contents[1]);
-		values.put(ResourceManager.Resources.UPLOAD,
+		values.put(Resources.HOSTNAME, contents[0]);
+		values.put(Resources.BSSIDS, contents[1]);
+		values.put(Resources.UPLOAD,
 				Float.parseFloat(contents[2]));
-		values.put(ResourceManager.Resources.UPLOAD_VARIANCE,
+		values.put(Resources.UPLOAD_VARIANCE,
 				Float.parseFloat(contents[3]));
-		values.put(ResourceManager.Resources.DOWNLOAD,
+		values.put(Resources.DOWNLOAD,
 				Float.parseFloat(contents[4]));
-		values.put(ResourceManager.Resources.DOWNLOAD_VARIANCE,
+		values.put(Resources.DOWNLOAD_VARIANCE,
 				Float.parseFloat(contents[5]));
-		values.put(ResourceManager.Resources.LOCATION_LATITUDE,
+		values.put(Resources.LOCATION_LATITUDE,
 				Float.parseFloat(contents[6].split(",")[0]));
-		values.put(ResourceManager.Resources.LOCATION_LONGITUDE,
+		values.put(Resources.LOCATION_LONGITUDE,
 				Float.parseFloat(contents[6].split(",")[1]));
-		values.put(ResourceManager.Resources.HUB_ADDRESS, contents[7]);
-		values.put(ResourceManager.Resources.IDENTIFIER, contents[8]);
+		values.put(Resources.HUB_ADDRESS, contents[7]);
+		values.put(Resources.IDENTIFIER, contents[8]);
 
-		getContentResolver().insert(ResourceManager.Resources.CONTENT_URI,
+		getContentResolver().insert(Resources.CONTENT_URI,
 				values);
 
 	}
