@@ -26,8 +26,8 @@ public class FitnessBroadcastReceiver extends BroadcastReceiver {
 
         if (FitnessSensor.ACTION_SEND_FITNESS_DATA.equals(action)) {
             String avgSpeed = intent.getStringExtra("avg_speed");
-            fitnessDataPoller.updateValues(avgSpeed);
             Log.d(TAG, "fitness receiver: " + avgSpeed);
+            fitnessDataPoller.updateValues(avgSpeed);
         }
     }
 }

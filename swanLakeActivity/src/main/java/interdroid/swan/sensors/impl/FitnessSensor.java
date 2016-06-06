@@ -46,6 +46,8 @@ public class FitnessSensor extends AbstractSwanSensor {
         }
 
         public void updateValues(String value) {
+            Log.d(TAG, "valuePath = " + valuePath);
+            Log.d(TAG, "value = " + value);
             putValueTrimSize(valuePath, id, System.currentTimeMillis(), value);
         }
 
@@ -78,6 +80,7 @@ public class FitnessSensor extends AbstractSwanSensor {
 
     @Override
     public void register(final String id, final String valuePath, Bundle configuration, final Bundle httpConfiguration, Bundle extraConfiguration) {
+        super.register(id, valuePath, configuration, httpConfiguration, extraConfiguration);
         FitnessDataPoller fdp = new FitnessDataPoller(id, valuePath, configuration);
         activeThreads.put(id, fdp);
         fdp.start();
