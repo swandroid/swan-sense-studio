@@ -100,7 +100,7 @@ public class SwanExpressionParser extends Parser {
 
     @Override
     public String getGrammarFileName() {
-        return "SwanExpression.g";
+        return "swanexpression.g";
     }
 
 
