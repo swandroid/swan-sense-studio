@@ -1,30 +1,13 @@
 package interdroid.swan.engine;
 
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.ServiceConnection;
-import android.location.Location;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.os.RemoteException;
-import android.util.Log;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import interdroid.swancore.engine.EvaluationEngineServiceBase;
 import interdroid.swancore.engine.EvaluationManagerBase;
-import interdroid.swancore.swanmain.ExpressionManager;
-import interdroid.swancore.swanmain.SensorConfigurationException;
-import interdroid.swancore.swanmain.SensorInfo;
-import interdroid.swancore.swanmain.SwanException;
 import interdroid.swan.crossdevice.Pusher;
 import interdroid.swancore.crossdevice.Registry;
 import interdroid.swan.crossdevice.swanplus.ProximityManagerI;
-import interdroid.swancore.sensors.Sensor;
-import interdroid.swancore.sensors.TimeSensor;
 import interdroid.swancore.swansong.BinaryLogicOperator;
 import interdroid.swancore.swansong.Comparator;
 import interdroid.swancore.swansong.ComparatorResult;

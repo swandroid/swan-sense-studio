@@ -10,7 +10,6 @@ import interdroid.swan.crossdevice.Pusher;
 import interdroid.swan.crossdevice.beacon.BeaconInitializer;
 import interdroid.swan.crossdevice.swanplus.ProximityManagerI;
 import interdroid.swan.crossdevice.swanplus.bluetooth.BTManager;
-import interdroid.swancore.engine.EvaluationManagerBase;
 import interdroid.swancore.swansong.Result;
 
 
