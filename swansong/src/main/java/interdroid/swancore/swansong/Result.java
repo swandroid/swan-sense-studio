@@ -1,4 +1,4 @@
-package interdroid.swacore.swansong;
+package interdroid.swancore.swansong;
 
 import java.io.Serializable;
 import java.util.Arrays;

@@ -1,4 +1,4 @@
-package interdroid.swacore.swansong;
+package interdroid.swancore.swansong;
 
 import android.os.Parcel;
 import android.os.Parcelable;

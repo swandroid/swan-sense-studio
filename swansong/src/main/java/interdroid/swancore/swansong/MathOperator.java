@@ -1,4 +1,4 @@
-package interdroid.swacore.swansong;
+package interdroid.swancore.swansong;
 
 /**
  * An enumeration which represents Mathematical Operators.

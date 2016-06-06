@@ -1,6 +1,6 @@
 // $ANTLR 3.5.2 SwanExpression.g 2016-03-31 18:26:44
 
-package interdroid.swacore.swansong;
+package interdroid.swancore.swansong;
 
 
 import org.antlr.runtime.BaseRecognizer;

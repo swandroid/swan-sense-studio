@@ -1,4 +1,4 @@
-package interdroid.swacore.swansong;
+package interdroid.swancore.swansong;
 
 
 public class MathValueExpression implements ValueExpression {
