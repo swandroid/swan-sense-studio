@@ -43,8 +43,10 @@ android {
 }
 
 dependencies {
-    compile project(':swansong')
-    compile 'com.android.support:appcompat-v7:23.3.0'
+    // NOTE: for jcenter export option, we set the swansong as dependecy here
+    // If you made local changes to the swansong, use:
+    // compile project(':swansong')
+    compile 'interdroid.swancore.swansong:swansong:1.0.0'
 }
 
 // Place it at the end of the file

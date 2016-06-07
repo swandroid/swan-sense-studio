@@ -44,7 +44,6 @@ android {
 
 dependencies {
     compile files('libs/antlr-3.4-complete-no-antlrv2.jar')
-    compile 'com.android.support:appcompat-v7:23.3.0'
 }
 
 // Place it at the end of the file
