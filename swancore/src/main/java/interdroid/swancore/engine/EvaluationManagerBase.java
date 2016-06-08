@@ -272,6 +272,7 @@ public class EvaluationManagerBase {
      * @param expression
      */
     protected void stopRemote(String id, Expression expression) {
+        throw new RuntimeException("stopRemote is not implemented. Are you sure you declared the correct service class in Android Manifest?");
     }
 
     protected boolean bindToSensor(final String id,
