@@ -186,7 +186,7 @@ public class RemoteSensorManager {
         });
     }
 
-    public void registerExpression(final String expression){
+    public void registerExpression(final String expression, final String id){
         executorService.submit(new Runnable() {
             @Override
             public void run() {
@@ -195,7 +195,7 @@ public class RemoteSensorManager {
         });
     }
 
-    public void unregisterExpression(final String expression){
+    public void unregisterExpression(final String expression, final String id){
         executorService.submit(new Runnable() {
             @Override
             public void run() {

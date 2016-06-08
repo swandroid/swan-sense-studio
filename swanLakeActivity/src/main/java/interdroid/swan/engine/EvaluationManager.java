@@ -3,6 +3,7 @@ package interdroid.swan.engine;
 import android.content.Context;
 import android.os.Bundle;
 
+import interdroid.swan.sensors.impl.wear.shared.RemoteSensorManager;
 import interdroid.swancore.engine.EvaluationEngineServiceBase;
 import interdroid.swancore.engine.EvaluationManagerBase;
 import interdroid.swan.crossdevice.Pusher;
@@ -38,7 +39,10 @@ public class EvaluationManager extends EvaluationManagerBase{
     @Override
     protected void initializeRemote(String id, Expression expression,
                                   String resolvedLocation) throws SensorSetupFailedException {
-        if (resolvedLocation.equals(Expression.LOCATION_NEARBY) || mProximityManager.hasPeer(resolvedLocation)) {
+
+        if(resolvedLocation.equals(Expression.LOCATION_WEAR)){
+            RemoteSensorManager.getInstance(mContext).registerExpression(toCrossDeviceString(expression, resolvedLocation), id);
+        } else if (resolvedLocation.equals(Expression.LOCATION_NEARBY) || mProximityManager.hasPeer(resolvedLocation)) {
             // get sensor info from nearby devices
             mProximityManager.registerExpression(id, toCrossDeviceString(expression, resolvedLocation),
                     resolvedLocation, EvaluationEngineService.ACTION_REGISTER_REMOTE);
@@ -74,6 +78,10 @@ public class EvaluationManager extends EvaluationManagerBase{
         // we check if we have a wildcard as location or if the remote device is in proximity
         if (registrationId == null) {
             if (mProximityManager.hasPeer(toRegistrationId) || toRegistrationId.equals(Expression.LOCATION_NEARBY)) {
+                registrationId = toRegistrationId;
+            }
+
+            if(toRegistrationId.equals(Expression.LOCATION_WEAR)){
                 registrationId = toRegistrationId;
             }
         }
@@ -153,7 +161,9 @@ public class EvaluationManager extends EvaluationManagerBase{
     protected void stopRemote(String id, Expression expression) {
         String resolvedLocation = expression.getLocation();
 
-        if (resolvedLocation.equals(Expression.LOCATION_NEARBY) || mProximityManager.hasPeer(resolvedLocation)) {
+        if(resolvedLocation.equals(Expression.LOCATION_WEAR)) {
+            RemoteSensorManager.getInstance(mContext).unregisterExpression(toCrossDeviceString(expression, resolvedLocation), id);
+        } else if (resolvedLocation.equals(Expression.LOCATION_NEARBY) || mProximityManager.hasPeer(resolvedLocation)) {
             // get sensor info from nearby devices
             mProximityManager.registerExpression(id, toCrossDeviceString(expression, resolvedLocation),
                     resolvedLocation, EvaluationEngineServiceBase.ACTION_UNREGISTER_REMOTE);

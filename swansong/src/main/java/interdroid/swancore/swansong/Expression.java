@@ -8,6 +8,7 @@ public interface Expression extends Parseable<Expression> {
      * used in expression ids.
      */
     public static final String SEPARATOR = "~REMOTE~";
+    public static final String WEAR_SEPARATOR = "~WEAR~";
 
     public static final String LEFT_SUFFIX = ".left";
     public static final String RIGHT_SUFFIX = ".right";
@@ -21,6 +22,7 @@ public interface Expression extends Parseable<Expression> {
     public static final String LOCATION_INDEPENDENT = "independent";
     public static final String LOCATION_INFER = "infer";
     public static final String LOCATION_NEARBY = "NEARBY";
+    public static final String LOCATION_WEAR   = "wear";
     public static final String REGID_PREFIX = "regid:";
 
     public void setInferredLocation(String location);

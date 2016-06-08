@@ -57,32 +57,38 @@ public class MessageReceiverService extends WearableListenerService {
     public void onMessageReceived(MessageEvent messageEvent) {
         Log.d(TAG, "Received message: " + messageEvent.getPath());
 
-        byte[] data = messageEvent.getData();
-        ByteBuffer bb = ByteBuffer.wrap(data);
+        if(messageEvent.getPath().equals(ClientPaths.START_MEASUREMENT)
+                || messageEvent.getPath().equals(ClientPaths.START_MEASUREMENT)) {
+            byte[] data = messageEvent.getData();
+            ByteBuffer bb = ByteBuffer.wrap(data);
 
-        int sensorId = bb.getInt();
-        int accuracy = bb.getInt();
+            int sensorId = bb.getInt();
+            int accuracy = bb.getInt();
 
-        if (sensorId == 0)
-            Log.w(TAG, "Request to start an unknown sensor");
+            if (sensorId == 0)
+                Log.w(TAG, "Request to start an unknown sensor");
 
-        if (messageEvent.getPath().compareTo(ClientPaths.START_MEASUREMENT) == 0) {
+            if (messageEvent.getPath().compareTo(ClientPaths.START_MEASUREMENT) == 0) {
 
-            Intent intent = new Intent(this, SensorService.class);
-            intent.putExtra(SensorConstants.SENSOR_ID, sensorId);
-            intent.putExtra(SensorConstants.ACCURACY, accuracy);
-            startService(intent);
+                Intent intent = new Intent(this, SensorService.class);
+                intent.putExtra(SensorConstants.SENSOR_ID, sensorId);
+                intent.putExtra(SensorConstants.ACCURACY, accuracy);
+                startService(intent);
 
-            while (!isMyServiceRunning(SensorService.class)) {
-                SystemClock.sleep(100);
+                while (!isMyServiceRunning(SensorService.class)) {
+                    SystemClock.sleep(100);
+                }
+
+                addSensor(sensorId, accuracy);
+
             }
 
-            addSensor(sensorId, accuracy);
-
-        }
-
-        if (messageEvent.getPath().compareTo(ClientPaths.STOP_MEASUREMENT) == 0) {
-            removeSensor(sensorId);
+            if (messageEvent.getPath().compareTo(ClientPaths.STOP_MEASUREMENT) == 0) {
+                removeSensor(sensorId);
+            }
+        } else {
+            String expression = new String(messageEvent.getData());
+            Log.d(TAG, "Got expression ++++++++++" + expression);
         }
     }
 
