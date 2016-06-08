@@ -7,7 +7,7 @@ import android.util.Log;
 
 import interdroid.swan.R;
 import interdroid.swan.sensordashboard.shared.SensorConstants;
-import interdroid.swan.sensors.AbstractConfigurationActivity;
+import interdroid.swancore.sensors.AbstractConfigurationActivity;
 import interdroid.swan.sensors.impl.wear.shared.AbstractWearSensor;
 
 /**

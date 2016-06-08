@@ -9,7 +9,7 @@ import java.util.Map;
 import interdroid.swan.R;
 import interdroid.swan.crossdevice.beacon.AbstractBeaconSensor;
 import interdroid.swan.crossdevice.beacon.BeaconUtils;
-import interdroid.swan.sensors.AbstractConfigurationActivity;
+import interdroid.swancore.sensors.AbstractConfigurationActivity;
 
 /**
  * Created by slavik on 4/13/16.

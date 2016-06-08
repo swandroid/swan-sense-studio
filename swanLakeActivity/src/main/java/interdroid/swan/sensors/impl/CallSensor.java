@@ -6,7 +6,7 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import interdroid.swan.R;
-import interdroid.swan.sensors.AbstractConfigurationActivity;
+import interdroid.swancore.sensors.AbstractConfigurationActivity;
 import interdroid.swan.sensors.AbstractSwanSensor;
 
 /**

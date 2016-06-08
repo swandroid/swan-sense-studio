@@ -14,14 +14,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import interdroid.swan.ExpressionManager;
+import interdroid.swancore.swanmain.ExpressionManager;
 import interdroid.swan.R;
-import interdroid.swan.SwanException;
-import interdroid.swan.ValueExpressionListener;
-import interdroid.swan.swansong.ExpressionFactory;
-import interdroid.swan.swansong.ExpressionParseException;
-import interdroid.swan.swansong.TimestampedValue;
-import interdroid.swan.swansong.ValueExpression;
+import interdroid.swancore.swanmain.SwanException;
+import interdroid.swancore.swanmain.ValueExpressionListener;
+import interdroid.swancore.swansong.ExpressionFactory;
+import interdroid.swancore.swansong.ExpressionParseException;
+import interdroid.swancore.swansong.TimestampedValue;
+import interdroid.swancore.swansong.ValueExpression;
 
 public class NearbyRunnersActivity extends ListActivity {
 

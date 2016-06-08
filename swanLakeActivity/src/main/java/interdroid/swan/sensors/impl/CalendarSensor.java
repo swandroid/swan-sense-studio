@@ -29,9 +29,9 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import interdroid.swan.R;
-import interdroid.swan.sensors.AbstractConfigurationActivity;
+import interdroid.swancore.sensors.AbstractConfigurationActivity;
 import interdroid.swan.sensors.AbstractSwanSensor;
-import interdroid.swan.swansong.TimestampedValue;
+import interdroid.swancore.swansong.TimestampedValue;
 
 public class CalendarSensor extends AbstractSwanSensor {
     public static final String TAG = "Calendar";

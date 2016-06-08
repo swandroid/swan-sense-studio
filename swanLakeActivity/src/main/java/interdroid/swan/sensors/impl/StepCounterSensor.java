@@ -14,7 +14,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import interdroid.swan.R;
-import interdroid.swan.sensors.AbstractConfigurationActivity;
+import interdroid.swancore.sensors.AbstractConfigurationActivity;
 import interdroid.swan.sensors.AbstractSwanSensor;
 
 @TargetApi(Build.VERSION_CODES.KITKAT)

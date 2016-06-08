@@ -47,11 +47,11 @@ import interdroid.sense.LoginActivity;
 import interdroid.sense.RegistrationActivity;
 import interdroid.sense.SettingsActivity;
 import interdroid.swan.R;
-import interdroid.swan.crossdevice.Registry;
+import interdroid.swancore.crossdevice.Registry;
 import interdroid.swan.crossdevice.SwanGCMConstants;
 import interdroid.swan.crossdevice.swanplus.bluetooth.BTManager;
 import interdroid.swan.crossdevice.swanplus.run2gether.ActivityRun2gether;
-import interdroid.swan.swansong.Expression;
+import interdroid.swancore.swansong.Expression;
 import interdroid.swan.ttn.TtnActivity;
 import nl.sense_os.service.constants.SensePrefs;
 

@@ -4,7 +4,7 @@ import android.hardware.Sensor;
 import android.os.Bundle;
 
 import interdroid.swan.R;
-import interdroid.swan.sensors.AbstractConfigurationActivity;
+import interdroid.swancore.sensors.AbstractConfigurationActivity;
 import interdroid.swan.sensors.impl.wear.shared.AbstractWearSensor;
 
 

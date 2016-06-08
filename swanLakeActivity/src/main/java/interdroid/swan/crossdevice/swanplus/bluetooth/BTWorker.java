@@ -10,7 +10,7 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
 
-import interdroid.swan.crossdevice.Converter;
+import interdroid.swancore.crossdevice.Converter;
 import interdroid.swan.engine.EvaluationEngineService;
 
 /**

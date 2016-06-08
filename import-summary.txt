@@ -106,7 +106,7 @@ In SwanLakeActivity:
 * res/ => swanLakeActivity/src/main/res/
 * src/ => swanLakeActivity/src/main/java/
 * src/interdroid/swan/sensors/Sensor.aidl => swanLakeActivity/src/main/aidl/interdroid/swan/sensors/Sensor.aidl
-* src/interdroid/swan/swansong/TimestampedValue.aidl => swanLakeActivity/src/main/aidl/interdroid/swan/swansong/TimestampedValue.aidl
+* src/interdroid.swancore.swansong/TimestampedValue.aidl => swanLakeActivity/src/main/aidl/interdroid.swancore.swansong/TimestampedValue.aidl
 
 Next Steps:
 -----------

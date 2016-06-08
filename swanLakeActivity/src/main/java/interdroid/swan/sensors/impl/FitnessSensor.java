@@ -11,7 +11,7 @@ import java.util.Map;
 
 import interdroid.swan.R;
 import interdroid.swan.crossdevice.swanplus.FitnessBroadcastReceiver;
-import interdroid.swan.sensors.AbstractConfigurationActivity;
+import interdroid.swancore.sensors.AbstractConfigurationActivity;
 import interdroid.swan.sensors.AbstractSwanSensor;
 
 /**

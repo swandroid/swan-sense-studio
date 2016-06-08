@@ -5,14 +5,14 @@ options {
 }
 
 @header {
-package interdroid.swan.swansong;
+package interdroid.swancore.swansong;
 
 import android.os.Bundle;
 import java.util.Stack;
 }
 
 @lexer::header {
-package interdroid.swan.swansong;
+package interdroid.swancore.swansong;
 }
 
 @members {

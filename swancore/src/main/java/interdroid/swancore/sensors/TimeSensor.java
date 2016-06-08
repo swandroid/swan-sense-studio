@@ -4,7 +4,7 @@ import android.os.Bundle;
 
 import java.util.Calendar;
 
-//import interdroid.swan.R;
+import interdroid.swancore.R;
 import interdroid.swancore.swansong.Comparator;
 import interdroid.swancore.swansong.Result;
 import interdroid.swancore.swansong.TriState;
@@ -28,9 +28,7 @@ public class TimeSensor {
 
         @Override
         public int getPreferencesXML() {
-            // TODO: Rewrite this part as wear
-            //return R.xml.time_preferences;
-            return 0;
+            return R.xml.time_preferences;
         }
 
     }

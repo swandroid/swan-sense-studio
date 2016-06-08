@@ -10,7 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import interdroid.swan.R;
-import interdroid.swan.swansong.MathOperator;
+import interdroid.swancore.swansong.MathOperator;
 
 public class SelectOperatorDialog extends Activity {
 
