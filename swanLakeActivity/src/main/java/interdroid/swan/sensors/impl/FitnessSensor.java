@@ -11,8 +11,8 @@ import java.util.Map;
 
 import interdroid.swan.R;
 import interdroid.swan.crossdevice.swanplus.FitnessBroadcastReceiver;
-import interdroid.swancore.sensors.AbstractConfigurationActivity;
 import interdroid.swan.sensors.AbstractSwanSensor;
+import interdroid.swancore.sensors.AbstractConfigurationActivity;
 
 /**
  * Created by vladimir on 1/27/16.
@@ -27,6 +27,7 @@ public class FitnessSensor extends AbstractSwanSensor {
     public static final String AVG_SPEED = "avg_speed";
 
     private Map<String, FitnessDataPoller> activeThreads = new HashMap<String, FitnessDataPoller>();
+    BroadcastReceiver fitnessBcastReceiver;
 
     public class FitnessDataPoller extends Thread {
 
@@ -39,7 +40,7 @@ public class FitnessSensor extends AbstractSwanSensor {
             this.configuration = configuration;
             this.valuePath = valuePath;
 
-            BroadcastReceiver fitnessBcastReceiver = new FitnessBroadcastReceiver(this);
+            fitnessBcastReceiver = new FitnessBroadcastReceiver(this);
             IntentFilter intentFilter = new IntentFilter();
             intentFilter.addAction(ACTION_SEND_FITNESS_DATA);
             registerReceiver(fitnessBcastReceiver, intentFilter);
@@ -52,7 +53,7 @@ public class FitnessSensor extends AbstractSwanSensor {
         }
 
         public void run() {
-            while (!isInterrupted()) {
+            while(true) {
                 Intent intent = new Intent();
                 intent.setAction(ACTION_REQ_FITNESS_DATA);
                 sendBroadcast(intent);
@@ -61,6 +62,7 @@ public class FitnessSensor extends AbstractSwanSensor {
                 try {
                     sleep(5000);
                 } catch (InterruptedException e) {
+                    break;
                 }
             }
         }
@@ -84,11 +86,15 @@ public class FitnessSensor extends AbstractSwanSensor {
         FitnessDataPoller fdp = new FitnessDataPoller(id, valuePath, configuration);
         activeThreads.put(id, fdp);
         fdp.start();
+
+        Log.d(TAG, "registering new FitnessDataPoller; active threads = " + activeThreads.size());
     }
 
     @Override
     public void unregister(String id) {
         activeThreads.remove(id).interrupt();
+        unregisterReceiver(fitnessBcastReceiver);
+        Log.d(TAG, "unregistering FitnessDataPoller; active threads = " + activeThreads.size());
     }
 
     @Override
