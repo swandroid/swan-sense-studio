@@ -92,8 +92,8 @@ public class TestActivity extends Activity {
             connectTo = "NEARBY";
         }
 
-//        mExpression = connectTo + "@light:lux";
-        mExpression = connectTo + "@fitness:avg_speed$server_storage=false{ANY,0}";
+        mExpression = connectTo + "@light:lux";
+//        mExpression = connectTo + "@fitness:avg_speed$server_storage=false{ANY,0}";
 
         if (!mRegistered) {
             registerSWANSensor(mExpression);
