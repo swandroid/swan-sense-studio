@@ -21,13 +21,9 @@ import java.util.PriorityQueue;
 
 import interdroid.swancore.R;
 import interdroid.swancore.swanmain.ExpressionManager;
-//import interdroid.swan.R;
 import interdroid.swancore.swanmain.SensorConfigurationException;
 import interdroid.swancore.swanmain.SwanException;
 import interdroid.swancore.crossdevice.Converter;
-//import interdroid.swan.crossdevice.beacon.BeaconInitializer;
-//import interdroid.swan.crossdevice.swanplus.ProximityManagerI;
-//import interdroid.swan.crossdevice.swanplus.bluetooth.BTManager;
 import interdroid.swancore.sensors.SensorInterface;
 import interdroid.swancore.swansong.Expression;
 import interdroid.swancore.swansong.ExpressionFactory;
