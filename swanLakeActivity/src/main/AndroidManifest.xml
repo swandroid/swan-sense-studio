@@ -1087,6 +1087,66 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name="interdroid.swan.sensors.cuckoo.FlightSensor$ConfigurationActivity"
+            android:exported="true"
+            android:icon="@drawable/add_icon">
+
+            <meta-data
+                android:name="entityId"
+                android:value="flight" />
+
+            <meta-data
+                android:name="valuePaths"
+                android:value="price" />
+
+            <meta-data
+                android:name="units"
+                android:value="" />
+
+            <meta-data
+                android:name="authority"
+                android:value="interdroid.swan.sensors.cuckoo.flight" />
+
+            <meta-data
+                android:name="source"
+                android:value="null" />
+
+            <meta-data
+                android:name="destination"
+                android:value="null" />
+
+            <meta-data
+                android:name="flight_date"
+                android:value="null" />
+
+            <meta-data
+                android:name="max_stops"
+                android:value="null" />
+
+            <meta-data
+                android:name="max_price"
+                android:value="null" />
+
+            <meta-data
+                android:name="max_connection_duration"
+                android:value="null" />
+
+            <meta-data
+                android:name="flight_cabin_type"
+                android:value="COACH" />
+
+            <intent-filter>
+                <action android:name="interdroid.swan.sensor.DISCOVER" />
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name="interdroid.swan.sensors.cuckoo.FlightSensor"
+            android:exported="true">
+            <!--android:process=":flightsensor">-->
+        </service>
+
         <service
             android:name="interdroid.swan.sensors.cuckoo.TrainSensor"
             android:exported="true"

@@ -65,4 +65,6 @@ dependencies {
     // material progress bar
     // https://github.com/lsjwzh/MaterialLoadingProgressBar
     compile('com.lsjwzh:materialloadingprogressbar:0.5.8-RELEASE')
+
+    compile 'com.google.apis:google-api-services-qpxExpress:v1-rev20-1.22.0'
 }

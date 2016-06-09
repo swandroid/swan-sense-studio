@@ -472,4 +472,15 @@
     <string-array name="cuckoo_server_valuepaths">
         <item>http_status</item>
     </string-array>
+
+    <string-array name="flight_valuepaths">
+        <item>price</item>
+    </string-array>
+
+    <string-array name="flight_cabin_types">
+        <item>COACH</item>
+        <item>PREMIUM_COACH</item>
+        <item>BUSINESS</item>
+        <item>FIRST</item>
+    </string-array>
 </resources>
