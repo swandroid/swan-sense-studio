@@ -21,6 +21,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
+import interdroid.swan.sensordashboard.shared.DataMapKeys;
 import wear.interdroid.swan.expression.ManageExpressions;
 import interdroid.swan.sensordashboard.shared.SensorConstants;
 
@@ -42,6 +43,12 @@ class SensorContainer {
 }
 
 public class SensorService extends Service implements SensorEventListener {
+
+
+    enum Measurement {
+        EXPRESSION,
+        SENSOR
+    }
     private static final String TAG = "Wear/SensorService";
 
     private final static int SENS_ACCELEROMETER = Sensor.TYPE_ACCELEROMETER;
@@ -78,6 +85,8 @@ public class SensorService extends Service implements SensorEventListener {
 
     private HashMap<Integer, SensorContainer> activeSensors = new HashMap<>();
 
+    private HashMap<String, String> expressionContainer = new HashMap<>();
+
     Notification.Builder notificationBuilder;
 
     SensorCommand sensorCommand = new SensorCommand();
@@ -92,12 +101,23 @@ public class SensorService extends Service implements SensorEventListener {
                 Bundle extra = intent.getExtras();
                 int sensorId = extra.getInt(SensorConstants.SENSOR_ID);
                 int accuracy = extra.getInt(SensorConstants.ACCURACY);
-                startSingleMeasurement(sensorId, accuracy);
+                startSingleMeasurement(sensorId, accuracy, Measurement.SENSOR, null , null);
             }
 
             if (action.equalsIgnoreCase(WearConstants.BROADCAST_REMOVE_SENSOR)) {
                 int sensorId = intent.getExtras().getInt(SensorConstants.SENSOR_ID);
-                stopSingleMeasurement(sensorId);
+                stopSingleMeasurement(sensorId, Measurement.SENSOR, null);
+            }
+
+            if(action.equalsIgnoreCase(WearConstants.BROADCAST_REGISTER_EXPR)){
+                String id = intent.getExtras().getString(DataMapKeys.EXPRESSION_ID);
+                String expr = intent.getExtras().getString(DataMapKeys.EXPRESSION);
+                startSingleMeasurement(0, 0, Measurement.EXPRESSION, expr, id);
+            }
+
+            if(action.equalsIgnoreCase(WearConstants.BROADCAST_UNREGISTER_EXPR)){
+                String id = intent.getExtras().getString(DataMapKeys.EXPRESSION_ID);
+                stopSingleMeasurement(0,Measurement.EXPRESSION, id);
             }
         }
     }
@@ -116,6 +136,9 @@ public class SensorService extends Service implements SensorEventListener {
 
         registerReceiver(sensorCommand, new IntentFilter(WearConstants.BROADCAST_ADD_SENSOR));
         registerReceiver(sensorCommand, new IntentFilter(WearConstants.BROADCAST_REMOVE_SENSOR));
+        registerReceiver(sensorCommand, new IntentFilter(WearConstants.BROADCAST_REGISTER_EXPR));
+        registerReceiver(sensorCommand, new IntentFilter(WearConstants.BROADCAST_UNREGISTER_EXPR));
+
 
        // testSwanExpression();
 
@@ -123,15 +146,22 @@ public class SensorService extends Service implements SensorEventListener {
 
     }
 
-    private void testSwanExpression(){
+    private void registerSwanExpression(String id, String expression){
+        lock.lock();
+        expressionContainer.put(id, expression);
         exp = new ManageExpressions(getApplicationContext());
-        exp.registerValueExpression( "1234", "self@movement:x{ANY, 1000}");
+        exp.registerValueExpression( id, expression);
+
+        lock.unlock();
     }
 
-    private void finishSwanExpression()
-    {
-        exp.unregisterSWANExpression("1234");
+    private void unregisterSwanExpression(String id) {
+        lock.lock();
+        exp.unregisterSWANExpression(id);
+
+        lock.unlock();
     }
+
     @Override
     public void onDestroy() {
         unregisterReceiver(sensorCommand);
@@ -154,30 +184,38 @@ public class SensorService extends Service implements SensorEventListener {
         return super.onStartCommand(intent, flags, startId);
     }
 
-    protected void startSingleMeasurement(int sensorId, int accuracy) {
-        if (sensorId <= 0) {
-            Log.w(TAG, "Bad sensor ID");
-            return;
-        }
+    protected void startSingleMeasurement(int sensorId, int accuracy, Measurement type, String expression, String expressionID) {
 
-        if (mSensorManager == null) {
-            mSensorManager = ((SensorManager) getSystemService(SENSOR_SERVICE));
-        }
-
-        Sensor sensor = mSensorManager.getDefaultSensor(sensorId);
-
-        if (sensor != null) {
-            lock.lock();
-            if (activeSensors.containsKey(sensorId)) {
-                update_accuracy(sensorId, accuracy);
-            } else {
-                activeSensors.put(sensorId, new SensorContainer(sensor, accuracy, 1));
-                mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+        lock.lock();
+        try {
+            if (type == Measurement.EXPRESSION) {
+                registerSwanExpression(expressionID, expression);
+                return;
             }
-            update_notification();
+            if (sensorId <= 0) {
+                Log.w(TAG, "Bad sensor ID");
+                return;
+            }
+
+            if (mSensorManager == null) {
+                mSensorManager = ((SensorManager) getSystemService(SENSOR_SERVICE));
+            }
+
+            Sensor sensor = mSensorManager.getDefaultSensor(sensorId);
+
+            if (sensor != null) {
+                if (activeSensors.containsKey(sensorId)) {
+                    update_accuracy(sensorId, accuracy);
+                } else {
+                    activeSensors.put(sensorId, new SensorContainer(sensor, accuracy, 1));
+                    mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+                }
+                update_notification();
+            } else {
+                Log.w(TAG, "Sensor with id " + sensorId + " not found");
+            }
+        } finally {
             lock.unlock();
-        } else {
-            Log.w(TAG, "Sensor with id " + sensorId + " not found");
         }
     }
 
@@ -199,29 +237,40 @@ public class SensorService extends Service implements SensorEventListener {
         activeSensors.put(sensorId, container);
     }
 
-    protected void stopSingleMeasurement(int sensorID) {
-        if (!activeSensors.containsKey(sensorID)) {
-            Log.w(TAG, "Trying to stop an non-stated sensor");
-            return;
-        }
-
+    protected void stopSingleMeasurement(int sensorID, Measurement type, String exprID) {
         lock.lock();
-        SensorContainer container = activeSensors.get(sensorID);
+        try {
 
-        if (container.count == 1) {
-            activeSensors.remove(sensorID);
-            mSensorManager.unregisterListener(this, container.sensor);
-        } else {
-            container.count--;
-            activeSensors.put(sensorID, container);
+            if(type == Measurement.EXPRESSION){
+                unregisterSwanExpression(exprID);
+                return;
+            } else {
+
+                if (!activeSensors.containsKey(sensorID)) {
+                    Log.w(TAG, "Trying to stop an non-stated sensor");
+                    return;
+                }
+
+
+                SensorContainer container = activeSensors.get(sensorID);
+
+                if (container.count == 1) {
+                    activeSensors.remove(sensorID);
+                    mSensorManager.unregisterListener(this, container.sensor);
+                } else {
+                    container.count--;
+                    activeSensors.put(sensorID, container);
+                }
+
+                update_notification();
+            }
+
+            if (activeSensors.isEmpty() && expressionContainer.isEmpty()) {
+                stopSelf();
+            }
+        } finally {
+            lock.unlock();
         }
-
-        update_notification();
-
-        if (activeSensors.isEmpty()) {
-            stopSelf();
-        }
-        lock.unlock();
 
     }
 

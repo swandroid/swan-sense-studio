@@ -44,6 +44,16 @@ public class MessageReceiverService extends WearableListenerService {
                 Uri uri = dataItem.getUri();
                 String path = uri.getPath();
 
+                if(path.startsWith(ClientPaths.REGISTER_EXPRESSION)){
+                    DataMap dataMap = DataMapItem.fromDataItem(dataItem).getDataMap();
+                    String id = dataMap.getString(DataMapKeys.EXPRESSION_ID);
+                    String expression = dataMap.getString(DataMapKeys.EXPRESSION);
+                }
+
+                if(path.startsWith(ClientPaths.UNREGISTER_EXPRESSION)){
+
+                }
+
                 if (path.startsWith("/filter")) {
                     DataMap dataMap = DataMapItem.fromDataItem(dataItem).getDataMap();
                     int filterById = dataMap.getInt(DataMapKeys.FILTER);
@@ -112,6 +122,13 @@ public class MessageReceiverService extends WearableListenerService {
     private void removeSensor(int sensorId) {
         Intent i = new Intent(WearConstants.BROADCAST_REMOVE_SENSOR);
         i.putExtra(SensorConstants.SENSOR_ID, sensorId);
+        getApplicationContext().sendBroadcast(i);
+    }
+
+    private void handleExpressions(String id, String expression, String broadcastType){
+        Intent i = new Intent(broadcastType);
+        i.putExtra(DataMapKeys.EXPRESSION_ID, id);
+        i.putExtra(DataMapKeys.EXPRESSION, expression);
         getApplicationContext().sendBroadcast(i);
     }
 }
