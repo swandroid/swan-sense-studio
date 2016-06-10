@@ -9,4 +9,8 @@ public class WearConstants {
 
     public static final String BROADCAST_ADD_SENSOR = "Add_Sensor";
     public static final String BROADCAST_REMOVE_SENSOR = "Remove_Sensor";
+
+    public static final String BROADCAST_REGISTER_EXPR = "Register_Expression";
+
+    public static final String BROADCAST_UNREGISTER_EXPR = "Unregister_Expression";
 }

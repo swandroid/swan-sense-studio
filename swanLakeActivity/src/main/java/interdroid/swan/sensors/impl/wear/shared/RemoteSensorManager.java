@@ -187,19 +187,24 @@ public class RemoteSensorManager {
     }
 
     public void registerExpression(final String expression, final String id){
-        executorService.submit(new Runnable() {
-            @Override
-            public void run() {
-                controlMeasurementInBackground(ClientPaths.REGISTER_EXPRESSION, expression.getBytes());
-            }
-        });
+        handleExpressions(ClientPaths.REGISTER_EXPRESSION, expression, id);
     }
 
-    public void unregisterExpression(final String expression, final String id){
-        executorService.submit(new Runnable() {
+    public void unregisterExpression( final String expression, final String id){
+        handleExpressions(ClientPaths.UNREGISTER_EXPRESSION, expression, id);
+    }
+
+    private void handleExpressions(final String path, final String expression, final String id) {
+        PutDataMapRequest dataMap = PutDataMapRequest.create(path);
+
+        dataMap.getDataMap().putString(DataMapKeys.EXPRESSION_ID, id);
+        dataMap.getDataMap().putString(DataMapKeys.EXPRESSION, expression);
+
+        PutDataRequest putDataRequest = dataMap.asPutDataRequest();
+        Wearable.DataApi.putDataItem(googleApiClient, putDataRequest).setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
             @Override
-            public void run() {
-                controlMeasurementInBackground(ClientPaths.UNREGISTER_EXPRESSION, expression.getBytes());
+            public void onResult(DataApi.DataItemResult dataItemResult) {
+                Log.d(TAG, "Sending new expession " + id + ": " + dataItemResult.getStatus().isSuccess());
             }
         });
     }
