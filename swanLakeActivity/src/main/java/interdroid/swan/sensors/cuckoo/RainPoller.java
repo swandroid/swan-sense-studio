@@ -3,6 +3,7 @@ package interdroid.swan.sensors.cuckoo;
 import interdroid.swan.cuckoo_sensors.CuckooPoller;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
@@ -54,9 +55,11 @@ public class RainPoller implements CuckooPoller {
 		float fractionOfLastSample = minutes % SAMPLE_LENGTH
 				/ (float) SAMPLE_LENGTH;
 		float mm = 0;
+		BufferedReader r = null;
+
 		try {
 			URLConnection conn = new URL(url).openConnection();
-			BufferedReader r = new BufferedReader(new InputStreamReader(
+			r = new BufferedReader(new InputStreamReader(
 					conn.getInputStream()));
 			for (int i = 0; i < nrSamples; i++) {
 				String line = r.readLine();
@@ -89,6 +92,14 @@ public class RainPoller implements CuckooPoller {
 			r.close();
 		} catch (Exception e) {
 			// ignore
+		} finally {
+			if (r != null) {
+				try {
+					r.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 		result.put(EXPECTED_FIELD, (int) mm);
 		return result;

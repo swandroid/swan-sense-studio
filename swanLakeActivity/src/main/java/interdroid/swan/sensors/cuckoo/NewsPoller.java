@@ -38,9 +38,11 @@ public class NewsPoller implements CuckooPoller {
 		String category = (String) configuration.get("category");
 		String suffix = category + ".rss";
 		String url = "http://nu.nl/feeds/rss/" + suffix;
+		BufferedReader reader = null;
+
 		try {
 			URLConnection connection = new URL(url).openConnection();
-			BufferedReader reader = new BufferedReader(new InputStreamReader(
+			reader = new BufferedReader(new InputStreamReader(
 					connection.getInputStream()));
 			String line;
 			String reply = "";
@@ -76,6 +78,14 @@ public class NewsPoller implements CuckooPoller {
 			result.put("recent", recent);
 		} catch (IOException e) {
 			// ignore
+		} finally {
+			if (reader != null) {
+				try {
+					reader.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 		return result;
 	}

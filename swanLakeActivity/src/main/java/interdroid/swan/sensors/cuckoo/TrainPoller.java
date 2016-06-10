@@ -61,15 +61,15 @@ public class TrainPoller implements CuckooPoller {
 				+ "&to=" + toStation + "&date=" + date + "&time="
 				+ time + "&departure=true&planroute=Journey+advice"; 
 		System.out.println(url);
+
+		BufferedReader reader = null;
 		try {
 			URLConnection connection = new URL(url).openConnection();
-			BufferedReader reader = new BufferedReader(new InputStreamReader(
-					connection.getInputStream()));
+			reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 			String line;
 			String departureTimeString = "";
 			int delay = 0;
 			while ((line = reader.readLine()) != null) {
-				System.out.println("response+ " + line);
 				if (line.contains("<b>D&#160;")) {
 					departureTimeString = line.substring("<b>D&#160;".length())
 							.replace("</b>", "");
@@ -94,6 +94,14 @@ public class TrainPoller implements CuckooPoller {
 			}
 		} catch (IOException e) {
 			// ignore
+		} finally {
+			if (reader != null) {
+				try {
+					reader.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 		return result;
 	}

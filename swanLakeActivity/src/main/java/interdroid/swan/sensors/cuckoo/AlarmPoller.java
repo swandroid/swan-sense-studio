@@ -57,9 +57,10 @@ public class AlarmPoller implements CuckooPoller {
 					+ "/" + type + ".rss";
 		}
 		String url = "http://alarmeringen.nl/feeds/" + suffix;
+		BufferedReader reader = null;
 		try {
 			URLConnection connection = new URL(url).openConnection();
-			BufferedReader reader = new BufferedReader(new InputStreamReader(
+			reader = new BufferedReader(new InputStreamReader(
 					connection.getInputStream()));
 			String line;
 			String reply = "";
@@ -75,6 +76,14 @@ public class AlarmPoller implements CuckooPoller {
 			result.put("recent", recent);
 		} catch (IOException e) {
 			// ignore
+		} finally {
+			if (reader != null) {
+				try {
+					reader.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 		return result;
 	}

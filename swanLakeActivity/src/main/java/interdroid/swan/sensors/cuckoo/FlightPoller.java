@@ -58,7 +58,7 @@ public class FlightPoller implements CuckooPoller {
 
         Pattern pattern = Pattern.compile("[A-Z]{3}\\d+(\\.\\d+)?");
         double minPrice = Integer.MAX_VALUE;
-        String minPriceCurrency = "";
+        String resultPrice = "There are no flights with this filter";
 
         try {
             NetHttpTransport httpTransport = new NetHttpTransport();
@@ -161,7 +161,7 @@ public class FlightPoller implements CuckooPoller {
                         String priceNumber = price.substring(3);
                         if (minPrice > Double.valueOf(priceNumber)) {
                             minPrice = Double.valueOf(priceNumber);
-                            minPriceCurrency = price;
+                            resultPrice = price;
                         }
                     }
                 }
@@ -171,16 +171,12 @@ public class FlightPoller implements CuckooPoller {
         } catch (Throwable t) {
             t.printStackTrace();
         }
-        result.put(PRICE, minPriceCurrency);
+        result.put(PRICE, resultPrice);
         return result;
     }
 
     @Override
     public long getInterval(Map<String, Object> map, boolean remote) {
-//        if (remote) {
-//            return 10000; // 10 sec
-//        } else {
-            return 288 * 6 * 1000; // every 28,8 mins (we are only allowed to do 50 requests per day)
-//        }
+        return 288 * 6 * 1000; // every 28,8 mins (we are only allowed to do 50 requests per day)
     }
 }
