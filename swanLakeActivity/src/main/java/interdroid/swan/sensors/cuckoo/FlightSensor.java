@@ -59,7 +59,7 @@ public class FlightSensor extends AbstractCuckooSensor {
         IntentFilter filter = new IntentFilter("com.google.android.c2dm.intent.RECEIVE");
         filter.addCategory(getPackageName());
 
-        registerReceiver(new BroadcastReceiver() {
+        registerReceiver(mReceiver = new BroadcastReceiver() {
             private static final String TAG = "flightSensorReceiver";
 
             @Override

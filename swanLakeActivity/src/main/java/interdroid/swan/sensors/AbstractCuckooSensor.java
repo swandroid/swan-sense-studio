@@ -1,5 +1,6 @@
 package interdroid.swan.sensors;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -31,6 +32,7 @@ public abstract class AbstractCuckooSensor extends AbstractSwanSensor {
     private SharedPreferences prefs;
 
     private boolean mRegistering = false;
+    protected BroadcastReceiver mReceiver;
 
     @Override
     public final synchronized void onConnected() {
@@ -50,14 +52,18 @@ public abstract class AbstractCuckooSensor extends AbstractSwanSensor {
     }
 
     @Override
-    public final void onDestroySensor() {
+    public void onDestroySensor() {
+        if (mReceiver != null)
+            unregisterReceiver(mReceiver);
         remoteResource = null;
+        super.onDestroySensor();
     }
 
     @Override
     public final synchronized void register(final String id,
                                             final String valuePath, Bundle configuration, Bundle httpConfiguration, Bundle extraConfiguration) { //throws IOException {
         super.register(id, valuePath, configuration, httpConfiguration, extraConfiguration);
+
         final Map<String, Object> configAsMap = new HashMap<String, Object>();
         for (String key : configuration.keySet()) {
             // TODO: maybe short circuit if a value is not serializable
@@ -103,18 +109,22 @@ public abstract class AbstractCuckooSensor extends AbstractSwanSensor {
     }
 
     @Override
-    public final void unregister(String id) {
+    public final void unregister(final String id) {
         if (remoteResource != null) {
-            try {
-                Cuckoo.unregister(this, remoteResource, id);
-                return;
-            } catch (NoResourceAvailableException e) {
-                // TODO: we lost connection to this resource, retry later with
-                // an alarm or so.
+            final Context context = this;
+            new Thread() {
+                public void run() {
+                    try {
+                        Cuckoo.unregister(context, remoteResource, id);
+                    } catch (NoResourceAvailableException e) {
+                        // TODO: we lost connection to this resource, retry later with
+                        // an alarm or so.
 
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
+            }.start();
         } else {
             Log.d(TAG, "unregistering sensor, interrupting monitor!");
             monitors.remove(id).shouldStop = true;
@@ -136,13 +146,10 @@ public abstract class AbstractCuckooSensor extends AbstractSwanSensor {
                 try {
                     Log.d(TAG, "getting a registration id for sender id: "
                             + getGCMSenderId());
-                    prefs.edit()
-                            .putString(
-                                    REGISTRATION_ID,
-                                    GoogleCloudMessaging.getInstance(
-                                            AbstractCuckooSensor.this)
+                    prefs.edit().putString(REGISTRATION_ID,
+                                    GoogleCloudMessaging.getInstance(AbstractCuckooSensor.this)
                                             .register(getGCMSenderId()))
-                            .commit();
+                            .apply();
                     Log.d(TAG,
                             "We did get a registration ID: "
                                     + prefs.getString(REGISTRATION_ID, null));

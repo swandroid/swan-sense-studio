@@ -95,7 +95,7 @@ public class ServerSensor extends AbstractCuckooSensor {
 				"com.google.android.c2dm.intent.RECEIVE");
 		filter.addCategory(getPackageName());
 
-		registerReceiver(new BroadcastReceiver() {
+		registerReceiver(mReceiver = new BroadcastReceiver() {
 
 			private static final String TAG = "ServerSensorReceiver";
 
