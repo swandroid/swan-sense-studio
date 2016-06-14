@@ -76,7 +76,7 @@ public class TrainSensor extends AbstractCuckooSensor {
 	 * @param departure
 	 *            value for departure
 	 */
-	private void storeReading(long departure) {
+	private void storeReading(String departure) {
 		putValueTrimSize(DEPARTURE_FIELD, null, System.currentTimeMillis(), departure);
 	}
 
@@ -119,7 +119,7 @@ public class TrainSensor extends AbstractCuckooSensor {
 					Log.d(TAG, "Messages were deleted at the server.");
 				} else {
 					if (intent.hasExtra(DEPARTURE_FIELD)) {
-						storeReading(intent.getExtras().getLong("departure"));
+						storeReading(intent.getExtras().getString("departure"));
 					}
 				}
 				setResultCode(Activity.RESULT_OK);

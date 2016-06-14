@@ -978,9 +978,6 @@
                 android:name="valuePaths"
                 android:value="departure" />
             <meta-data
-                android:name="units"
-                android:value="ms" />
-            <meta-data
                 android:name="authority"
                 android:value="interdroid.swan.sensors.cuckoo.train" />
             <meta-data

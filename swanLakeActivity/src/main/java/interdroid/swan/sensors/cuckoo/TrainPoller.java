@@ -48,23 +48,23 @@ public class TrainPoller implements CuckooPoller {
 	public static final String DEPARTURE_FIELD = "departure";
 
 	@Override
-	public Map<String, Object> poll(String valuePath,
-			Map<String, Object> configuration) {
-		Map<String, Object> result = new HashMap<String, Object>();
+	public Map<String, Object> poll(String valuePath, Map<String, Object> configuration) {
+		Map<String, Object> result = new HashMap<>();
 		String fromStation = (String) configuration.get(FROM_CONFIG);
 		String toStation = (String) configuration.get(TO_CONFIG);
 		String time = (String) configuration.get(TIME_CONFIG);
 		String date = new SimpleDateFormat("dd-MM").format(new Date(System
 				.currentTimeMillis()));
-		
+
 		String url = "http://mobiel.ns.nl/planner.action?from=" + fromStation
 				+ "&to=" + toStation + "&date=" + date + "&time="
-				+ time + "&departure=true&planroute=Journey+advice"; 
+				+ time + "&departure=true&planroute=Journey+advice";
 		System.out.println(url);
 
 		BufferedReader reader = null;
 		try {
 			URLConnection connection = new URL(url).openConnection();
+			connection.setConnectTimeout(5000);
 			reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 			String line;
 			String departureTimeString = "";
@@ -88,7 +88,7 @@ public class TrainPoller implements CuckooPoller {
 							Integer.parseInt(departureTimeString.split(":")[1]));
 					calendar.set(Calendar.MILLISECOND, 0);
 					calendar.roll(Calendar.MINUTE, delay);
-					result.put(DEPARTURE_FIELD, calendar.getTimeInMillis());
+					result.put(DEPARTURE_FIELD, departureTimeString);
 					break;
 				}
 			}

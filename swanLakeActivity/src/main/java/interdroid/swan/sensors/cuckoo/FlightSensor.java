@@ -46,12 +46,12 @@ public class FlightSensor extends AbstractCuckooSensor {
 
     @Override
     public String getGCMSenderId() {
-        return "251697980958";
+        throw new RuntimeException("<EMPTY FOR GIT>");
     }
 
     @Override
     public String getGCMApiKey() {
-        return "AIzaSyBg3755yXKGV_HIyeQcVQKKD-c0UBf0wK4";
+        throw new RuntimeException("<EMPTY FOR GIT>");
     }
 
     @Override
