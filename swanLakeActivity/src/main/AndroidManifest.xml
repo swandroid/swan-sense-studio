@@ -1029,21 +1029,21 @@
         </activity>
 
         <activity
-            android:name="interdroid.swan.sensors.cuckoo.RainSensor$ConfigurationActivity"
+            android:name=".sensors.cuckoo.CuckooRainSensor$ConfigurationActivity"
             android:exported="true"
-            android:icon="@drawable/ic_launcher" >
+            android:icon="@drawable/add_icon" >
             <meta-data
                 android:name="entityId"
-                android:value="rain" />
+                android:value="cuckoorain" />
             <meta-data
                 android:name="valuePaths"
-                android:value="expected" />
+                android:value="expected_mm" />
             <meta-data
                 android:name="units"
                 android:value="mm" />
             <meta-data
                 android:name="authority"
-                android:value="interdroid.swan.sensors.cuckoo.rain" />
+                android:value="interdroid.swan.sensors.cuckoo.cuckoorain" />
             <meta-data
                 android:name="lat"
                 android:value="null" />
@@ -1143,8 +1143,8 @@
 
         <service
             android:name="interdroid.swan.sensors.cuckoo.FlightSensor"
-            android:exported="true">
-            <!--android:process=":flightsensor">-->
+            android:exported="true"
+            android:process=":flightsensor">
         </service>
 
         <service
@@ -1159,7 +1159,7 @@
             android:process=":cuckooserversensor"/>
 
         <service
-            android:name="interdroid.swan.sensors.cuckoo.RainSensor"
+            android:name=".sensors.cuckoo.CuckooRainSensor"
             android:exported="true"
             android:process=":cuckoorainsensor">
         </service>
@@ -1168,7 +1168,6 @@
             android:name="interdroid.swan.sensors.cuckoo.NewsSensor"
             android:exported="true"
             android:process=":newssensor">
-
         </service>
 
         <!-- Cuckoo service for computation offloading-->

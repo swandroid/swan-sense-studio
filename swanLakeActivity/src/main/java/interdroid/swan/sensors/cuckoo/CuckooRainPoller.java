@@ -17,7 +17,7 @@ import java.util.HashMap;
  * @author roelof &lt;rkemp@cs.vu.nl&gt;
  * 
  */
-public class RainPoller implements CuckooPoller {
+public class CuckooRainPoller implements CuckooPoller {
 
 	/**
 	 * The lat configuration.
@@ -37,7 +37,7 @@ public class RainPoller implements CuckooPoller {
 	/**
 	 * The expected field.
 	 */
-	public static final String EXPECTED_FIELD = "expected";
+	public static final String EXPECTED_FIELD = "expected_mm";
 
 	private static final String BASE_URL = "http://gps.buienradar.nl/getrr.php?lat=%s&lon=%s";
 	private static final int SAMPLE_LENGTH = 5;
@@ -45,12 +45,12 @@ public class RainPoller implements CuckooPoller {
 	@Override
 	public Map<String, Object> poll(String valuePath,
 			Map<String, Object> configuration) {
-		Map<String, Object> result = new HashMap<String, Object>();
+		Map<String, Object> result = new HashMap<>();
 		String url = String.format(BASE_URL, configuration.get(LAT_CONFIG),
 				configuration.get(LON_CONFIG));
 		String window = (String) configuration.get(WINDOW_CONFIG);
-		int minutes = Integer.parseInt(window.split(":")[1]);
-		int hours = Integer.parseInt(window.split(":")[0]);
+		int minutes = window == null ? 0 : Integer.parseInt(window.split(":")[1]);
+		int hours = window == null ? 0 : Integer.parseInt(window.split(":")[0]);
 		int nrSamples = hours * 12 + minutes / SAMPLE_LENGTH;
 		float fractionOfLastSample = minutes % SAMPLE_LENGTH
 				/ (float) SAMPLE_LENGTH;
@@ -59,8 +59,7 @@ public class RainPoller implements CuckooPoller {
 
 		try {
 			URLConnection conn = new URL(url).openConnection();
-			r = new BufferedReader(new InputStreamReader(
-					conn.getInputStream()));
+			r = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 			for (int i = 0; i < nrSamples; i++) {
 				String line = r.readLine();
 				if (line == null) {
@@ -89,7 +88,6 @@ public class RainPoller implements CuckooPoller {
 							Integer.parseInt(line.substring(0, 3)), 5));
 				}
 			}
-			r.close();
 		} catch (Exception e) {
 			// ignore
 		} finally {
@@ -101,7 +99,7 @@ public class RainPoller implements CuckooPoller {
 				}
 			}
 		}
-		result.put(EXPECTED_FIELD, (int) mm);
+		result.put(EXPECTED_FIELD, mm);
 		return result;
 	}
 

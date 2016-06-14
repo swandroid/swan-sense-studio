@@ -8,14 +8,14 @@
 	<PreferenceCategory android:title="Configuration">
 		<EditTextPreference
 			android:key="lat"
-			android:inputType="number"
+			android:inputType="numberDecimal"
 			android:dialogTitle="Enter Latitude"
 			android:summary="Set Latitude"
 			android:title="Latitude"
 		/>
 		<EditTextPreference
 			android:key="lon"
-			android:inputType="number"
+			android:inputType="numberDecimal"
 			android:dialogTitle="Enter Longitude"
 			android:summary="Set Longitude"
 			android:title="Longitude"

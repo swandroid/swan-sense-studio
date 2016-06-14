@@ -20,7 +20,7 @@ import com.google.android.gms.gcm.GoogleCloudMessaging; // link to android libra
 * @author roelof &lt;rkemp@cs.vu.nl&gt;
 *
 */
-public class RainSensor extends AbstractCuckooSensor {
+public class CuckooRainSensor extends AbstractCuckooSensor {
 
 	/**
 	* The configuration activity for this sensor.
@@ -53,7 +53,7 @@ public class RainSensor extends AbstractCuckooSensor {
 	/**
 	* The expected field.
 	*/
-	public static final String EXPECTED_FIELD = "expected";
+	public static final String EXPECTED_FIELD = "expected_mm";
 
 	@Override
 	public final String[] getValuePaths() {
@@ -81,19 +81,19 @@ public class RainSensor extends AbstractCuckooSensor {
 
 	@Override
 	public final CuckooPoller getPoller() {
-		return new RainPoller();
+		return new CuckooRainPoller();
 	}
 
 	@Override
 	public String getGCMSenderId() {
-		throw new java.lang.RuntimeException("<put your gcm project id here>");
+		throw new RuntimeException("<EMPTY FOR GIT>");
 	}
 
 	@Override
 	public String getGCMApiKey() {
-		throw new java.lang.RuntimeException("<put your gcm api key here>");
+		throw new RuntimeException("<EMPTY FOR GIT>");
 	}
-
+	
 	public void registerReceiver() {
 		IntentFilter filter = new IntentFilter("com.google.android.c2dm.intent.RECEIVE");
 		filter.addCategory(getPackageName());
