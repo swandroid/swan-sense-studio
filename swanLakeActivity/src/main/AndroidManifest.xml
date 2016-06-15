@@ -971,12 +971,16 @@
             android:name="interdroid.swan.sensors.cuckoo.TrainSensor$ConfigurationActivity"
             android:exported="true"
             android:icon="@drawable/ic_launcher" >
+
             <meta-data
                 android:name="entityId"
                 android:value="train" />
             <meta-data
                 android:name="valuePaths"
                 android:value="departure" />
+            <meta-data
+                android:name="units"
+                android:value="" />
             <meta-data
                 android:name="authority"
                 android:value="interdroid.swan.sensors.cuckoo.train" />
