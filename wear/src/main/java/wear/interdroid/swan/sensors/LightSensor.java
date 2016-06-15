@@ -11,7 +11,6 @@ import android.widget.Toast;
 
 import java.util.List;
 
-import interdroid.swancore.R;
 import interdroid.swancore.sensors.AbstractConfigurationActivity;
 import interdroid.swancore.sensors.AbstractSwanSensorBase;
 

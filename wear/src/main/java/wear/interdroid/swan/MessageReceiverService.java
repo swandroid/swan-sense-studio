@@ -17,7 +17,6 @@ import com.google.android.gms.wearable.WearableListenerService;
 
 import java.nio.ByteBuffer;
 
-import wear.interdroid.swan.SensorService;
 import interdroid.swan.sensordashboard.shared.ClientPaths;
 import interdroid.swan.sensordashboard.shared.DataMapKeys;
 import interdroid.swan.sensordashboard.shared.SensorConstants;
@@ -44,11 +43,13 @@ public class MessageReceiverService extends WearableListenerService {
                 Uri uri = dataItem.getUri();
                 String path = uri.getPath();
 
+                Log.d(TAG, "Got path ++++++++++" + path);
                 if(path.startsWith(ClientPaths.REGISTER_EXPRESSION)){
                     DataMap dataMap = DataMapItem.fromDataItem(dataItem).getDataMap();
                     String id = dataMap.getString(DataMapKeys.EXPRESSION_ID);
                     String expression = dataMap.getString(DataMapKeys.EXPRESSION);
                 }
+
 
                 if(path.startsWith(ClientPaths.UNREGISTER_EXPRESSION)){
 
@@ -68,7 +69,7 @@ public class MessageReceiverService extends WearableListenerService {
         Log.d(TAG, "Received message: " + messageEvent.getPath());
 
         if(messageEvent.getPath().equals(ClientPaths.START_MEASUREMENT)
-                || messageEvent.getPath().equals(ClientPaths.START_MEASUREMENT)) {
+                || messageEvent.getPath().equals(ClientPaths.STOP_MEASUREMENT)) {
             byte[] data = messageEvent.getData();
             ByteBuffer bb = ByteBuffer.wrap(data);
 
@@ -85,9 +86,9 @@ public class MessageReceiverService extends WearableListenerService {
                 intent.putExtra(SensorConstants.ACCURACY, accuracy);
                 startService(intent);
 
-                while (!isMyServiceRunning(SensorService.class)) {
-                    SystemClock.sleep(100);
-                }
+                do {
+                    SystemClock.sleep(200);
+                } while (!isMyServiceRunning(SensorService.class));
 
                 addSensor(sensorId, accuracy);
 

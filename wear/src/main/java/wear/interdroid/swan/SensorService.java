@@ -101,11 +101,14 @@ public class SensorService extends Service implements SensorEventListener {
                 Bundle extra = intent.getExtras();
                 int sensorId = extra.getInt(SensorConstants.SENSOR_ID);
                 int accuracy = extra.getInt(SensorConstants.ACCURACY);
+                Log.d("TAG", "starting sensor+++++++" + sensorId);
                 startSingleMeasurement(sensorId, accuracy, Measurement.SENSOR, null , null);
             }
 
             if (action.equalsIgnoreCase(WearConstants.BROADCAST_REMOVE_SENSOR)) {
+
                 int sensorId = intent.getExtras().getInt(SensorConstants.SENSOR_ID);
+                Log.d("TAG", "stopping sensors+++++" + sensorId);
                 stopSingleMeasurement(sensorId, Measurement.SENSOR, null);
             }
 
@@ -147,19 +150,13 @@ public class SensorService extends Service implements SensorEventListener {
     }
 
     private void registerSwanExpression(String id, String expression){
-        lock.lock();
         expressionContainer.put(id, expression);
         exp = new ManageExpressions(getApplicationContext());
         exp.registerValueExpression( id, expression);
-
-        lock.unlock();
     }
 
     private void unregisterSwanExpression(String id) {
-        lock.lock();
         exp.unregisterSWANExpression(id);
-
-        lock.unlock();
     }
 
     @Override

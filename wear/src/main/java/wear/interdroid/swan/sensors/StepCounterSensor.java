@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
-import interdroid.swancore.R;
 import interdroid.swancore.sensors.AbstractConfigurationActivity;
 import interdroid.swancore.sensors.AbstractSwanSensorBase;
 
