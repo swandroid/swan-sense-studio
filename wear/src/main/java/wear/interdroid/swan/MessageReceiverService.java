@@ -38,22 +38,28 @@ public class MessageReceiverService extends WearableListenerService {
         super.onDataChanged(dataEvents);
 
         for (DataEvent dataEvent : dataEvents) {
+            Log.d(TAG, "Got pathx ++++++++++" + dataEvent.getDataItem().getUri().getPath());
             if (dataEvent.getType() == DataEvent.TYPE_CHANGED) {
                 DataItem dataItem = dataEvent.getDataItem();
                 Uri uri = dataItem.getUri();
                 String path = uri.getPath();
 
                 Log.d(TAG, "Got path ++++++++++" + path);
-                if(path.startsWith(ClientPaths.REGISTER_EXPRESSION)){
+                if(path.startsWith(ClientPaths.REGISTER_EXPRESSION)
+                        || path.startsWith(ClientPaths.UNREGISTER_EXPRESSION) ){
+                    Intent intent = new Intent(this, SensorService.class);
+                    startService(intent);
+
+                    do {
+                        SystemClock.sleep(200);
+                    } while (!isMyServiceRunning(SensorService.class));
+
                     DataMap dataMap = DataMapItem.fromDataItem(dataItem).getDataMap();
                     String id = dataMap.getString(DataMapKeys.EXPRESSION_ID);
                     String expression = dataMap.getString(DataMapKeys.EXPRESSION);
+                    handleExpressions(id, expression,path);
                 }
 
-
-                if(path.startsWith(ClientPaths.UNREGISTER_EXPRESSION)){
-
-                }
 
                 if (path.startsWith("/filter")) {
                     DataMap dataMap = DataMapItem.fromDataItem(dataItem).getDataMap();
@@ -127,7 +133,12 @@ public class MessageReceiverService extends WearableListenerService {
     }
 
     private void handleExpressions(String id, String expression, String broadcastType){
-        Intent i = new Intent(broadcastType);
+        Intent i;
+
+        if(broadcastType.equals(ClientPaths.REGISTER_EXPRESSION))
+            i = new Intent(WearConstants.BROADCAST_REGISTER_EXPR);
+        else
+            i = new Intent(WearConstants.BROADCAST_UNREGISTER_EXPR);
         i.putExtra(DataMapKeys.EXPRESSION_ID, id);
         i.putExtra(DataMapKeys.EXPRESSION, expression);
         getApplicationContext().sendBroadcast(i);

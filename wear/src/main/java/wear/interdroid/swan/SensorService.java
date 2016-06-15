@@ -113,13 +113,16 @@ public class SensorService extends Service implements SensorEventListener {
             }
 
             if(action.equalsIgnoreCase(WearConstants.BROADCAST_REGISTER_EXPR)){
+
                 String id = intent.getExtras().getString(DataMapKeys.EXPRESSION_ID);
                 String expr = intent.getExtras().getString(DataMapKeys.EXPRESSION);
+                Log.d("TAG", "starting expression+++++" + id + " Expr:" + expr);
                 startSingleMeasurement(0, 0, Measurement.EXPRESSION, expr, id);
             }
 
             if(action.equalsIgnoreCase(WearConstants.BROADCAST_UNREGISTER_EXPR)){
                 String id = intent.getExtras().getString(DataMapKeys.EXPRESSION_ID);
+                Log.d("TAG", "stopping expression+++++" + id);
                 stopSingleMeasurement(0,Measurement.EXPRESSION, id);
             }
         }
@@ -130,6 +133,8 @@ public class SensorService extends Service implements SensorEventListener {
         super.onCreate();
 
         client = DeviceClient.getInstance(this);
+
+        exp = new ManageExpressions(getApplicationContext());
 
 
         notificationBuilder = new Notification.Builder(this);
@@ -151,7 +156,6 @@ public class SensorService extends Service implements SensorEventListener {
 
     private void registerSwanExpression(String id, String expression){
         expressionContainer.put(id, expression);
-        exp = new ManageExpressions(getApplicationContext());
         exp.registerValueExpression( id, expression);
     }
 
@@ -174,9 +178,6 @@ public class SensorService extends Service implements SensorEventListener {
 
 
     public int onStartCommand(Intent intent, int flags, int startId) {
-
-        Log.d(TAG, intent.getExtras().toString());
-
 
         return super.onStartCommand(intent, flags, startId);
     }
@@ -240,7 +241,6 @@ public class SensorService extends Service implements SensorEventListener {
 
             if(type == Measurement.EXPRESSION){
                 unregisterSwanExpression(exprID);
-                return;
             } else {
 
                 if (!activeSensors.containsKey(sensorID)) {
