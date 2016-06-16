@@ -9,8 +9,10 @@ import interdroid.swancore.swanmain.ValueExpressionListener;
 import interdroid.swancore.swansong.Expression;
 import interdroid.swancore.swansong.ExpressionFactory;
 import interdroid.swancore.swansong.ExpressionParseException;
+import interdroid.swancore.swansong.Result;
 import interdroid.swancore.swansong.TimestampedValue;
 import interdroid.swancore.swansong.ValueExpression;
+import wear.interdroid.swan.DeviceClient;
 
 /**
  * Created by Veaceslav Munteanu on 5/24/16.
@@ -42,7 +44,10 @@ public class ManageExpressions {
                         public void onNewValues(String id,
                                                 TimestampedValue[] arg1) {
                             if (arg1 != null && arg1.length > 0) {
+
+                                DeviceClient.getInstance(context).sendExpressionData(id,new Result(arg1, 0));
                                 String value = arg1[0].getValue().toString();
+
                                 //tv.setText("Value = "+value);
                                 Log.d("Wear","Got value+++++++++++" + value);
                             }

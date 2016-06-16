@@ -11,16 +11,19 @@ import com.google.android.gms.wearable.DataMapItem;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.WearableListenerService;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 import interdroid.swan.sensordashboard.shared.DataMapKeys;
+import interdroid.swancore.crossdevice.Converter;
+import interdroid.swancore.swansong.TimestampedValue;
 
 //import interdroid.swan.sensordashboard.database.DataEntry;
 
 //import io.realm.Realm;
 
 public class SensorReceiverService extends WearableListenerService {
-    private static final String TAG = "Swan_Wear/SensorReceiverService";
+    private static final String TAG = "SensorReceiverService";
 
     private RemoteSensorManager sensorManager;
 
@@ -61,6 +64,10 @@ public class SensorReceiverService extends WearableListenerService {
                             DataMapItem.fromDataItem(dataItem).getDataMap()
                     );
                 }
+
+                if(path.startsWith("/expressionData/")){
+                    unpackExpressionData(DataMapItem.fromDataItem(dataItem).getDataMap());
+                }
             }
         }
     }
@@ -73,5 +80,11 @@ public class SensorReceiverService extends WearableListenerService {
         Log.d(TAG, "Received sensor data " + sensorType + " = " + Arrays.toString(values));
 
         sensorManager.addSensorData(sensorType, accuracy, timestamp, values);
+    }
+
+    private void unpackExpressionData(DataMap dataMap){
+        String id = dataMap.getString(DataMapKeys.EXPRESSION_ID);
+        String data = dataMap.getString(DataMapKeys.VALUES);
+        sensorManager.addExpressionData(id,data);
     }
 }

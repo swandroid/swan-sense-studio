@@ -156,7 +156,8 @@ public class SensorService extends Service implements SensorEventListener {
 
     private void registerSwanExpression(String id, String expression){
         expressionContainer.put(id, expression);
-        exp.registerValueExpression( id, expression);
+        //TODO: Change this after we solve bug with invalid expressions
+        exp.registerValueExpression( id, "self@movement:x{ANY,100}");
     }
 
     private void unregisterSwanExpression(String id) {

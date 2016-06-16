@@ -12,12 +12,15 @@ import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import interdroid.swan.sensordashboard.shared.DataMapKeys;
+import interdroid.swancore.crossdevice.Converter;
+import interdroid.swancore.swansong.Result;
 
 public class DeviceClient {
     private static final String TAG = "Wear/DeviceClient";
@@ -96,6 +99,28 @@ public class DeviceClient {
 
         PutDataRequest putDataRequest = dataMap.asPutDataRequest();
         send(putDataRequest);
+    }
+
+    public void sendExpressionData(final String exprId, final Result value){
+        executorService.submit(new Runnable() {
+            @Override
+            public void run() {
+                sendExpressionDataInBackground(exprId, value);
+            }
+        });
+    }
+
+    private void sendExpressionDataInBackground(String exprId, Result value){
+        PutDataMapRequest dataMap = PutDataMapRequest.create("/expressionData/");
+
+        dataMap.getDataMap().putString(DataMapKeys.EXPRESSION_ID, exprId);
+        try {
+            dataMap.getDataMap().putString(DataMapKeys.VALUES, Converter.objectToString(value));
+        } catch (IOException e) {
+            Log.e(TAG, "Error, unable to put expression Object as a string");
+        }
+
+        send(dataMap.asPutDataRequest());
     }
 
     private boolean validateConnection() {

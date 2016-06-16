@@ -24,12 +24,14 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import interdroid.swan.engine.EvaluationEngineService;
 import interdroid.swan.sensordashboard.shared.ClientPaths;
 import interdroid.swan.sensordashboard.shared.DataMapKeys;
 import interdroid.swan.sensordashboard.shared.SensorConstants;
 import interdroid.swan.sensors.impl.wear.shared.data.SensorDataPoint;
 import interdroid.swan.sensors.impl.wear.shared.data.SensorNames;
 import interdroid.swan.sensors.impl.wear.shared.data.WearSensor;
+import interdroid.swancore.swansong.TimestampedValue;
 
 public class RemoteSensorManager {
     private static final String TAG = "RemoteSensorManager";
@@ -112,6 +114,16 @@ public class RemoteSensorManager {
         i.putExtra(SensorConstants.SENSOR_OBJECT, sensor);
         i.putExtra(SensorConstants.SENSOR_DATA, dataPoint);
         context.sendBroadcast(i);
+    }
+
+    public synchronized void addExpressionData(String id, String data){
+
+        Log.d(TAG, "Got data for id: " + id);
+        Intent i = new Intent(EvaluationEngineService.ACTION_NEW_RESULT_REMOTE);
+        i.setClass(context, EvaluationEngineService.class);
+        i.putExtra("id", id);
+        i.putExtra("data", data);
+        context.startService(i);
     }
 
     private boolean validateConnection() {
