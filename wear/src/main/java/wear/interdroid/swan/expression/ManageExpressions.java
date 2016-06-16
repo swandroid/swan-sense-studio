@@ -6,6 +6,7 @@ import android.util.Log;
 import interdroid.swancore.swanmain.ExpressionManager;
 import interdroid.swancore.swanmain.SwanException;
 import interdroid.swancore.swanmain.ValueExpressionListener;
+import interdroid.swancore.swansong.Expression;
 import interdroid.swancore.swansong.ExpressionFactory;
 import interdroid.swancore.swansong.ExpressionParseException;
 import interdroid.swancore.swansong.TimestampedValue;
@@ -26,7 +27,12 @@ public class ManageExpressions {
 
     public void registerValueExpression(String id, String expression){
 
+        Log.d("fsfd", "registering Expression" + expression);
         try {
+            ValueExpression exp = (ValueExpression)ExpressionFactory.parse(expression);
+            if(exp == null){
+                Log.d("Error", "This should not happen");
+            }
             ExpressionManager.registerValueExpression(context, id,
                     (ValueExpression) ExpressionFactory.parse(expression),
                     new ValueExpressionListener() {
@@ -47,6 +53,7 @@ public class ManageExpressions {
             e.printStackTrace();
         } catch (ExpressionParseException e) {
             // TODO Auto-generated catch block
+            Log.d("Expression", "Expression Parser exception");
             e.printStackTrace();
         }
 
