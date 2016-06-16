@@ -187,20 +187,48 @@ public class RemoteSensorManager {
     }
 
     public void registerExpression(final String expression, final String id){
+        byte[] expressionBytes = expression.getBytes();
+        byte[] idBytes = id.getBytes();
+
+        ByteBuffer bb = ByteBuffer.allocate(expressionBytes.length + idBytes.length + 2*Integer.SIZE);
+
+        bb.putInt(expressionBytes.length);
+        bb.putInt(idBytes.length);
+        bb.put(expressionBytes);
+        bb.put(idBytes);
+
+        final byte[] bytesTosend = bb.array();
+
         executorService.submit(new Runnable() {
             @Override
             public void run() {
-                handleExpressions(ClientPaths.REGISTER_EXPRESSION, expression, id);
+
+                //handleExpressions(ClientPaths.REGISTER_EXPRESSION, expression, id);
+                controlMeasurementInBackground(ClientPaths.REGISTER_EXPRESSION, bytesTosend);
             }
         });
     }
 
     public void unregisterExpression( final String expression, final String id){
+
+        byte[] expressionBytes = expression.getBytes();
+        byte[] idBytes = id.getBytes();
+
+        ByteBuffer bb = ByteBuffer.allocate(expressionBytes.length + idBytes.length + 2*Integer.SIZE);
+
+        bb.putInt(expressionBytes.length);
+        bb.putInt(idBytes.length);
+        bb.put(expressionBytes);
+        bb.put(idBytes);
+
+        final byte[] bytesTosend = bb.array();
+
         executorService.submit(new Runnable() {
             @Override
             public void run() {
 
-                handleExpressions(ClientPaths.UNREGISTER_EXPRESSION, expression, id);
+                //handleExpressions(ClientPaths.UNREGISTER_EXPRESSION, expression, id);
+                controlMeasurementInBackground(ClientPaths.UNREGISTER_EXPRESSION, bytesTosend);
             }
         });
     }

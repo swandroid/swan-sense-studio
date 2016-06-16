@@ -104,8 +104,28 @@ public class MessageReceiverService extends WearableListenerService {
                 removeSensor(sensorId);
             }
         } else {
-            String expression = new String(messageEvent.getData());
-            Log.d(TAG, "Got expression ++++++++++" + expression);
+            //String expression = new String(messageEvent.getData());
+
+            Intent intent = new Intent(this, SensorService.class);
+            startService(intent);
+
+            do {
+                SystemClock.sleep(200);
+            } while (!isMyServiceRunning(SensorService.class));
+
+            ByteBuffer bb = ByteBuffer.wrap(messageEvent.getData());
+            int exprSize = bb.getInt();
+            int idSize = bb.getInt();
+
+            byte expressionBytes[] = new byte[exprSize];
+            byte idBytes[] = new byte[idSize];
+
+            bb.get(expressionBytes);
+            bb.get(idBytes);
+
+            handleExpressions(new String(idBytes), new String(expressionBytes), messageEvent.getPath());
+
+            Log.d(TAG, "Got expression ++++++++++" + new String(expressionBytes) + " " +new String(idBytes));
         }
     }
 
