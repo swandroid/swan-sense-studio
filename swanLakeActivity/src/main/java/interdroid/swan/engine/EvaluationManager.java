@@ -165,7 +165,7 @@ public class EvaluationManager extends EvaluationManagerBase{
             RemoteSensorManager.getInstance(mContext).unregisterExpression(toCrossDeviceString(expression, resolvedLocation), id);
         } else if (resolvedLocation.equals(Expression.LOCATION_NEARBY) || mProximityManager.hasPeer(resolvedLocation)) {
             // get sensor info from nearby devices
-            mProximityManager.registerExpression(id, toCrossDeviceString(expression, resolvedLocation),
+            mProximityManager.unregisterExpression(id, toCrossDeviceString(expression, resolvedLocation),
                     resolvedLocation, EvaluationEngineServiceBase.ACTION_UNREGISTER_REMOTE);
         } else {
             // for some reason this was set to null in the original version of swan, which made it impossible

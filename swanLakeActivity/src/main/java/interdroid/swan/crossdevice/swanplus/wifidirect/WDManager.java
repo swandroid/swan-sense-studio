@@ -240,6 +240,11 @@ public class WDManager implements ProximityManagerI {
         // TODO implement me
     }
 
+    @Override
+    public void unregisterExpression(String id, String expression, String resolvedLocation, String action) {
+        // TODO implement me
+    }
+
     /**
      * returns true if the sending thread from Pusher has to wait for getting the IP of user
      */

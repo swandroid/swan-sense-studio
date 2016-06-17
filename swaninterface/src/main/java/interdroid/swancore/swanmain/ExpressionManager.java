@@ -401,6 +401,7 @@ public class ExpressionManager {
                                            Expression expression, Intent onTrue, Intent onFalse,
                                            Intent onUndefined, Intent onNewValues) {
         Intent intent = new Intent(ACTION_REGISTER);
+        intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
         intent.putExtra("expressionId", id);
         intent.putExtra("expression", expression.toParseString());
         intent.putExtra("onTrue", onTrue);
