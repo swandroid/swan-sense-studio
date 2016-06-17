@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        registerSWANSensor("self@movement:x{ANY,1000}");
+        registerSWANSensor("self@movement:x?delay='200000'{ANY,1000}");
 
     }
 

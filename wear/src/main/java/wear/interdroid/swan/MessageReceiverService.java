@@ -17,7 +17,6 @@ import com.google.android.gms.wearable.WearableListenerService;
 
 import java.nio.ByteBuffer;
 
-import wear.interdroid.swan.SensorService;
 import interdroid.swan.sensordashboard.shared.ClientPaths;
 import interdroid.swan.sensordashboard.shared.DataMapKeys;
 import interdroid.swan.sensordashboard.shared.SensorConstants;
@@ -39,20 +38,28 @@ public class MessageReceiverService extends WearableListenerService {
         super.onDataChanged(dataEvents);
 
         for (DataEvent dataEvent : dataEvents) {
+            Log.d(TAG, "Got pathx ++++++++++" + dataEvent.getDataItem().getUri().getPath());
             if (dataEvent.getType() == DataEvent.TYPE_CHANGED) {
                 DataItem dataItem = dataEvent.getDataItem();
                 Uri uri = dataItem.getUri();
                 String path = uri.getPath();
 
-                if(path.startsWith(ClientPaths.REGISTER_EXPRESSION)){
+                Log.d(TAG, "Got path ++++++++++" + path);
+                if(path.startsWith(ClientPaths.REGISTER_EXPRESSION)
+                        || path.startsWith(ClientPaths.UNREGISTER_EXPRESSION) ){
+                    Intent intent = new Intent(this, SensorService.class);
+                    startService(intent);
+
+                    do {
+                        SystemClock.sleep(200);
+                    } while (!isMyServiceRunning(SensorService.class));
+
                     DataMap dataMap = DataMapItem.fromDataItem(dataItem).getDataMap();
                     String id = dataMap.getString(DataMapKeys.EXPRESSION_ID);
                     String expression = dataMap.getString(DataMapKeys.EXPRESSION);
+                    handleExpressions(id, expression,path);
                 }
 
-                if(path.startsWith(ClientPaths.UNREGISTER_EXPRESSION)){
-
-                }
 
                 if (path.startsWith("/filter")) {
                     DataMap dataMap = DataMapItem.fromDataItem(dataItem).getDataMap();
@@ -68,7 +75,7 @@ public class MessageReceiverService extends WearableListenerService {
         Log.d(TAG, "Received message: " + messageEvent.getPath());
 
         if(messageEvent.getPath().equals(ClientPaths.START_MEASUREMENT)
-                || messageEvent.getPath().equals(ClientPaths.START_MEASUREMENT)) {
+                || messageEvent.getPath().equals(ClientPaths.STOP_MEASUREMENT)) {
             byte[] data = messageEvent.getData();
             ByteBuffer bb = ByteBuffer.wrap(data);
 
@@ -85,9 +92,9 @@ public class MessageReceiverService extends WearableListenerService {
                 intent.putExtra(SensorConstants.ACCURACY, accuracy);
                 startService(intent);
 
-                while (!isMyServiceRunning(SensorService.class)) {
-                    SystemClock.sleep(100);
-                }
+                do {
+                    SystemClock.sleep(200);
+                } while (!isMyServiceRunning(SensorService.class));
 
                 addSensor(sensorId, accuracy);
 
@@ -97,8 +104,28 @@ public class MessageReceiverService extends WearableListenerService {
                 removeSensor(sensorId);
             }
         } else {
-            String expression = new String(messageEvent.getData());
-            Log.d(TAG, "Got expression ++++++++++" + expression);
+            //String expression = new String(messageEvent.getData());
+
+            Intent intent = new Intent(this, SensorService.class);
+            startService(intent);
+
+            do {
+                SystemClock.sleep(200);
+            } while (!isMyServiceRunning(SensorService.class));
+
+            ByteBuffer bb = ByteBuffer.wrap(messageEvent.getData());
+            int exprSize = bb.getInt();
+            int idSize = bb.getInt();
+
+            byte expressionBytes[] = new byte[exprSize];
+            byte idBytes[] = new byte[idSize];
+
+            bb.get(expressionBytes);
+            bb.get(idBytes);
+
+            handleExpressions(new String(idBytes), new String(expressionBytes), messageEvent.getPath());
+
+            Log.d(TAG, "Got expression ++++++++++" + new String(expressionBytes) + " " +new String(idBytes));
         }
     }
 
@@ -126,7 +153,12 @@ public class MessageReceiverService extends WearableListenerService {
     }
 
     private void handleExpressions(String id, String expression, String broadcastType){
-        Intent i = new Intent(broadcastType);
+        Intent i;
+
+        if(broadcastType.equals(ClientPaths.REGISTER_EXPRESSION))
+            i = new Intent(WearConstants.BROADCAST_REGISTER_EXPR);
+        else
+            i = new Intent(WearConstants.BROADCAST_UNREGISTER_EXPR);
         i.putExtra(DataMapKeys.EXPRESSION_ID, id);
         i.putExtra(DataMapKeys.EXPRESSION, expression);
         getApplicationContext().sendBroadcast(i);

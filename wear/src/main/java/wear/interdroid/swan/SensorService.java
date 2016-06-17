@@ -101,22 +101,28 @@ public class SensorService extends Service implements SensorEventListener {
                 Bundle extra = intent.getExtras();
                 int sensorId = extra.getInt(SensorConstants.SENSOR_ID);
                 int accuracy = extra.getInt(SensorConstants.ACCURACY);
+                Log.d("TAG", "starting sensor+++++++" + sensorId);
                 startSingleMeasurement(sensorId, accuracy, Measurement.SENSOR, null , null);
             }
 
             if (action.equalsIgnoreCase(WearConstants.BROADCAST_REMOVE_SENSOR)) {
+
                 int sensorId = intent.getExtras().getInt(SensorConstants.SENSOR_ID);
+                Log.d("TAG", "stopping sensors+++++" + sensorId);
                 stopSingleMeasurement(sensorId, Measurement.SENSOR, null);
             }
 
             if(action.equalsIgnoreCase(WearConstants.BROADCAST_REGISTER_EXPR)){
+
                 String id = intent.getExtras().getString(DataMapKeys.EXPRESSION_ID);
                 String expr = intent.getExtras().getString(DataMapKeys.EXPRESSION);
+                Log.d("TAG", "starting expression+++++" + id + " Expr:" + expr);
                 startSingleMeasurement(0, 0, Measurement.EXPRESSION, expr, id);
             }
 
             if(action.equalsIgnoreCase(WearConstants.BROADCAST_UNREGISTER_EXPR)){
                 String id = intent.getExtras().getString(DataMapKeys.EXPRESSION_ID);
+                Log.d("TAG", "stopping expression+++++" + id);
                 stopSingleMeasurement(0,Measurement.EXPRESSION, id);
             }
         }
@@ -127,6 +133,8 @@ public class SensorService extends Service implements SensorEventListener {
         super.onCreate();
 
         client = DeviceClient.getInstance(this);
+
+        exp = new ManageExpressions(getApplicationContext());
 
 
         notificationBuilder = new Notification.Builder(this);
@@ -147,19 +155,13 @@ public class SensorService extends Service implements SensorEventListener {
     }
 
     private void registerSwanExpression(String id, String expression){
-        lock.lock();
         expressionContainer.put(id, expression);
-        exp = new ManageExpressions(getApplicationContext());
-        exp.registerValueExpression( id, expression);
-
-        lock.unlock();
+        //TODO: Change this after we solve bug with invalid expressions
+        exp.registerValueExpression( id, "self@movement:x{ANY,100}");
     }
 
     private void unregisterSwanExpression(String id) {
-        lock.lock();
         exp.unregisterSWANExpression(id);
-
-        lock.unlock();
     }
 
     @Override
@@ -177,9 +179,6 @@ public class SensorService extends Service implements SensorEventListener {
 
 
     public int onStartCommand(Intent intent, int flags, int startId) {
-
-        Log.d(TAG, intent.getExtras().toString());
-
 
         return super.onStartCommand(intent, flags, startId);
     }
@@ -243,7 +242,6 @@ public class SensorService extends Service implements SensorEventListener {
 
             if(type == Measurement.EXPRESSION){
                 unregisterSwanExpression(exprID);
-                return;
             } else {
 
                 if (!activeSensors.containsKey(sensorID)) {

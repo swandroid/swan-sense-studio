@@ -24,12 +24,14 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import interdroid.swan.engine.EvaluationEngineService;
 import interdroid.swan.sensordashboard.shared.ClientPaths;
 import interdroid.swan.sensordashboard.shared.DataMapKeys;
 import interdroid.swan.sensordashboard.shared.SensorConstants;
 import interdroid.swan.sensors.impl.wear.shared.data.SensorDataPoint;
 import interdroid.swan.sensors.impl.wear.shared.data.SensorNames;
 import interdroid.swan.sensors.impl.wear.shared.data.WearSensor;
+import interdroid.swancore.swansong.TimestampedValue;
 
 public class RemoteSensorManager {
     private static final String TAG = "RemoteSensorManager";
@@ -114,6 +116,16 @@ public class RemoteSensorManager {
         context.sendBroadcast(i);
     }
 
+    public synchronized void addExpressionData(String id, String data){
+
+        Log.d(TAG, "Got data for id: " + id);
+        Intent i = new Intent(EvaluationEngineService.ACTION_NEW_RESULT_REMOTE);
+        i.setClass(context, EvaluationEngineService.class);
+        i.putExtra("id", id);
+        i.putExtra("data", data);
+        context.startService(i);
+    }
+
     private boolean validateConnection() {
         if (googleApiClient.isConnected()) {
             return true;
@@ -187,26 +199,69 @@ public class RemoteSensorManager {
     }
 
     public void registerExpression(final String expression, final String id){
-        handleExpressions(ClientPaths.REGISTER_EXPRESSION, expression, id);
+        byte[] expressionBytes = expression.getBytes();
+        byte[] idBytes = id.getBytes();
+
+        ByteBuffer bb = ByteBuffer.allocate(expressionBytes.length + idBytes.length + 2*Integer.SIZE);
+
+        bb.putInt(expressionBytes.length);
+        bb.putInt(idBytes.length);
+        bb.put(expressionBytes);
+        bb.put(idBytes);
+
+        final byte[] bytesTosend = bb.array();
+
+        executorService.submit(new Runnable() {
+            @Override
+            public void run() {
+
+                //handleExpressions(ClientPaths.REGISTER_EXPRESSION, expression, id);
+                controlMeasurementInBackground(ClientPaths.REGISTER_EXPRESSION, bytesTosend);
+            }
+        });
     }
 
     public void unregisterExpression( final String expression, final String id){
-        handleExpressions(ClientPaths.UNREGISTER_EXPRESSION, expression, id);
+
+        byte[] expressionBytes = expression.getBytes();
+        byte[] idBytes = id.getBytes();
+
+        ByteBuffer bb = ByteBuffer.allocate(expressionBytes.length + idBytes.length + 2*Integer.SIZE);
+
+        bb.putInt(expressionBytes.length);
+        bb.putInt(idBytes.length);
+        bb.put(expressionBytes);
+        bb.put(idBytes);
+
+        final byte[] bytesTosend = bb.array();
+
+        executorService.submit(new Runnable() {
+            @Override
+            public void run() {
+
+                //handleExpressions(ClientPaths.UNREGISTER_EXPRESSION, expression, id);
+                controlMeasurementInBackground(ClientPaths.UNREGISTER_EXPRESSION, bytesTosend);
+            }
+        });
     }
 
     private void handleExpressions(final String path, final String expression, final String id) {
-        PutDataMapRequest dataMap = PutDataMapRequest.create(path);
+        if(validateConnection()) {
+            PutDataMapRequest dataMap = PutDataMapRequest.create(path);
 
-        dataMap.getDataMap().putString(DataMapKeys.EXPRESSION_ID, id);
-        dataMap.getDataMap().putString(DataMapKeys.EXPRESSION, expression);
+            dataMap.getDataMap().putString(DataMapKeys.EXPRESSION_ID, id);
+            dataMap.getDataMap().putString(DataMapKeys.EXPRESSION, expression);
+            dataMap.getDataMap().putLong("Time",System.currentTimeMillis());
 
-        PutDataRequest putDataRequest = dataMap.asPutDataRequest();
-        Wearable.DataApi.putDataItem(googleApiClient, putDataRequest).setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
-            @Override
-            public void onResult(DataApi.DataItemResult dataItemResult) {
-                Log.d(TAG, "Sending new expession " + id + ": " + dataItemResult.getStatus().isSuccess());
-            }
-        });
+            PutDataRequest putDataRequest = dataMap.asPutDataRequest();
+            putDataRequest.setUrgent();
+            Wearable.DataApi.putDataItem(googleApiClient, putDataRequest).setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
+                @Override
+                public void onResult(DataApi.DataItemResult dataItemResult) {
+                    Log.d(TAG, "Sending new expession ++++++++" + path +" " + id + ": " + dataItemResult.getStatus().isSuccess());
+                }
+            });
+        }
     }
 
     public void getNodes(ResultCallback<NodeApi.GetConnectedNodesResult> pCallback) {
