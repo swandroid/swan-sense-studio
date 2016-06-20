@@ -486,7 +486,7 @@
                 android:value="interdroid.context.sensor.battery" />
             <meta-data
                 android:name="units"
-                android:value="percent,mV,Celsius,,mAh,mWh" />
+                android:value="percent,mV,Celsius,,,mAh,mWh" />
         </activity>
         <activity
             android:name=".sensors.impl.BluetoothSensor$ConfigurationActivity"
