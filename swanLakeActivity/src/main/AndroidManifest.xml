@@ -480,13 +480,13 @@
                 android:value="battery" />
             <meta-data
                 android:name="valuePaths"
-                android:value="level,voltage,temperature,plugged,status_text" />
+                android:value="level,voltage,temperature,plugged,status_text,discharge_current,discharge_power" />
             <meta-data
                 android:name="authority"
                 android:value="interdroid.context.sensor.battery" />
             <meta-data
                 android:name="units"
-                android:value="percent,mV,Celsius,," />
+                android:value="percent,mV,Celsius,,mAh,mWh" />
         </activity>
         <activity
             android:name=".sensors.impl.BluetoothSensor$ConfigurationActivity"

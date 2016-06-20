@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.BatteryManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -58,6 +59,17 @@ public class BatterySensor extends AbstractSwanSensor {
     public static final String STATUS_TEXT_FIELD = "status_text";
 
     /**
+     * The discharge current level in miliamps
+     */
+    public static final String DISCHARGE_CURRENT_FIELD = "discharge_current";
+
+    /**
+     * The discharge power level in miliwats
+     */
+
+    public static final String DISCHARGE_POWER_FIELD = "discharge_power";
+
+    /**
      * The receiver for battery events.
      */
     private BroadcastReceiver batteryReceiver = new BroadcastReceiver() {
@@ -71,9 +83,24 @@ public class BatterySensor extends AbstractSwanSensor {
 
                 putValueTrimSize(LEVEL_FIELD, null, now, intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0));
                 putValueTrimSize(TEMPERATURE_FIELD, null, now, intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0));
-                putValueTrimSize(VOLTAGE_FIELD, null, now, intent.getIntExtra(BatteryManager.EXTRA_VOLTAGE, 0));
+
+                int voltage = intent.getIntExtra(BatteryManager.EXTRA_VOLTAGE, 0);
+                putValueTrimSize(VOLTAGE_FIELD, null, now, voltage);
                 putValueTrimSize(PLUGGED_FIELD, null, now, intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0));
                 putValueTrimSize(STATUS_TEXT_FIELD, null, now, intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0));
+
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    BatteryManager mBatteryManager =
+                            (BatteryManager)getApplicationContext().getSystemService(Context.BATTERY_SERVICE);
+                    Integer energy =
+                            mBatteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW);
+                    putValueTrimSize(DISCHARGE_CURRENT_FIELD, null, now , energy);
+
+                    float power = ((float)energy*(float)voltage)/1000;
+                    putValueTrimSize(DISCHARGE_POWER_FIELD, null, now, power);
+
+                }
+
             }
         }
     };
@@ -81,7 +108,7 @@ public class BatterySensor extends AbstractSwanSensor {
     @Override
     public final String[] getValuePaths() {
         return new String[]{TEMPERATURE_FIELD, LEVEL_FIELD, VOLTAGE_FIELD,
-                PLUGGED_FIELD, STATUS_TEXT_FIELD};
+                PLUGGED_FIELD, STATUS_TEXT_FIELD, DISCHARGE_CURRENT_FIELD, DISCHARGE_POWER_FIELD};
     }
 
     @Override
@@ -97,6 +124,7 @@ public class BatterySensor extends AbstractSwanSensor {
     public final void register(final String id, final String valuePath,
                                final Bundle configuration, final Bundle httpConfiguration, Bundle extraConfiguration) {
         super.register(id, valuePath, configuration, httpConfiguration, extraConfiguration);
+
 
         if (registeredConfigurations.size() == 1) {
             registerReceiver(batteryReceiver, new IntentFilter(
