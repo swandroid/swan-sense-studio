@@ -153,8 +153,7 @@ public class EvaluationManagerBase {
         if (!location.equals(Expression.LOCATION_SELF)
                 && !location.equals(Expression.LOCATION_INDEPENDENT)) {
             stopRemote(id, expression);
-        }
-        if (expression instanceof LogicExpression) {
+        } else if (expression instanceof LogicExpression) {
             stop(id + Expression.LEFT_SUFFIX,
                     ((LogicExpression) expression).getLeft());
             stop(id + Expression.RIGHT_SUFFIX,
