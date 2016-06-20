@@ -101,6 +101,11 @@ public class EvaluationManager extends EvaluationManagerBase{
                             + config.getString(key);
                     first = false;
                 }
+
+                if(first == false) { // we have at least 1 parameter
+                    result += "$server_storage=FALSE";
+
+                }
             }
             result += "{"
                     + ((SensorValueExpression) expression)

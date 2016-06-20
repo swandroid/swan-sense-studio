@@ -208,7 +208,7 @@ public abstract class AbstractSwanSensorBase extends AbstractSensorBase {
                                           final String id, final long now, final Object value /*, final int historySize*/) {
         updateReadings(now);
 
-        if (registeredValuepath.contains(valuePath)) {
+//        if (registeredValuepath.contains(valuePath)) {
             // TODO: Wear removed functionality
 //            if (serverConnection != null) {
 //                HashMap<String, Object> serverData = new HashMap<String, Object>();
@@ -222,10 +222,10 @@ public abstract class AbstractSwanSensorBase extends AbstractSensorBase {
 //                serverData.put("time", now);
 //                serverConnection.useHttpMethod(serverData, cb);
 //            }
-        } else {
-            Log.e("Roshan", "registeredValuepath does not contain " + valuePath +
-                    "; id " + id + " value " + value);
-        }
+//        } else {
+//            Log.e("Roshan", "registeredValuepath does not contain " + valuePath +
+//                    "; id " + id + " value " + value);
+//        }
 
         try {
             getValues().get(valuePath).add(new TimestampedValue(value, now));
