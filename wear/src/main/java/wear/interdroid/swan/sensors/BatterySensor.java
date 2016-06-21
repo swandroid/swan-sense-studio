@@ -9,6 +9,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
+import java.util.HashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import interdroid.swancore.sensors.AbstractConfigurationActivity;
 import interdroid.swancore.sensors.AbstractSwanSensorBase;
 
@@ -20,6 +24,12 @@ import interdroid.swancore.sensors.AbstractSwanSensorBase;
 public class BatterySensor extends AbstractSwanSensorBase {
 
     public static final String TAG = "BatterySensor";
+
+    ExecutorService executorService = Executors.newCachedThreadPool();
+
+    int numberOfPowerSensors = 0;
+
+    HashMap<String, String> idToValuePath = new HashMap<>();
 
     /**
      * The configuration activity for this sensor.
@@ -88,21 +98,22 @@ public class BatterySensor extends AbstractSwanSensorBase {
                 putValueTrimSize(PLUGGED_FIELD, null, now, intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0));
                 putValueTrimSize(STATUS_TEXT_FIELD, null, now, intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0));
 
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    BatteryManager mBatteryManager =
-                            (BatteryManager)getApplicationContext().getSystemService(Context.BATTERY_SERVICE);
-                    Integer energy =
-                            mBatteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW);
-                    putValueTrimSize(DISCHARGE_CURRENT_FIELD, null, now , energy);
-
-                    float power = ((float)energy*(float)voltage)/1000;
-                    putValueTrimSize(DISCHARGE_POWER_FIELD, null, now, power);
-
-                }
+//                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                    BatteryManager mBatteryManager =
+//                            (BatteryManager)getApplicationContext().getSystemService(Context.BATTERY_SERVICE);
+//                    Integer energy =
+//                            mBatteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW);
+//                    putValueTrimSize(DISCHARGE_CURRENT_FIELD, null, now , energy);
+//
+//                    float power = ((float)energy*(float)voltage)/1000;
+//                    putValueTrimSize(DISCHARGE_POWER_FIELD, null, now, power);
+//
+//                }
 
             }
         }
     };
+
 
     @Override
     public final String[] getValuePaths() {
@@ -119,6 +130,40 @@ public class BatterySensor extends AbstractSwanSensorBase {
         SENSOR_NAME = "Battery Sensor";
     }
 
+
+    public void updateAccuracy(){
+        if(numberOfPowerSensors ==1){
+            executorService.submit(new Runnable() {
+                @Override
+                public void run() {
+                    while(true) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+                            int voltage = 4;
+                            BatteryManager mBatteryManager =
+                                    (BatteryManager) getApplicationContext().getSystemService(Context.BATTERY_SERVICE);
+                            Integer energy =
+                                    mBatteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW);
+                            putValueTrimSize(DISCHARGE_CURRENT_FIELD, null, System.currentTimeMillis(), energy/1000);
+
+                            Log.d(TAG, "Battery current " + energy);
+                            float power = ((float) energy * (float) voltage) / 1000;
+                            putValueTrimSize(DISCHARGE_POWER_FIELD, null, System.currentTimeMillis(), power);
+                        }
+                        try {
+                            Thread.sleep(getSensorDelay());
+                        } catch (InterruptedException e) {
+                            break;
+                        }
+                    }
+                }
+            });
+        } else if(numberOfPowerSensors == 0){
+            executorService.shutdownNow();
+        }
+
+    }
+
     @Override
     public final void register(final String id, final String valuePath,
                                final Bundle configuration, final Bundle httpConfiguration, Bundle extraConfiguration) {
@@ -129,12 +174,28 @@ public class BatterySensor extends AbstractSwanSensorBase {
             registerReceiver(batteryReceiver, new IntentFilter(
                     Intent.ACTION_BATTERY_CHANGED));
         }
+
+        if(valuePath.equals(DISCHARGE_POWER_FIELD) || valuePath.equals(DISCHARGE_CURRENT_FIELD)){
+            numberOfPowerSensors++;
+            idToValuePath.put(id,valuePath);
+            updateAccuracy();
+        }
     }
 
     @Override
     public final void unregister(final String id) {
         if (registeredConfigurations.size() == 0) {
             unregisterReceiver(batteryReceiver);
+        }
+
+        if(idToValuePath.containsKey(id)) {
+            String valuePath = idToValuePath.get(id);
+            if (valuePath.equals(DISCHARGE_POWER_FIELD) || valuePath.equals(DISCHARGE_CURRENT_FIELD)) {
+                numberOfPowerSensors++;
+                updateAccuracy();
+            }
+
+            idToValuePath.remove(id);
         }
     }
 
