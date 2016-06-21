@@ -485,6 +485,12 @@
                 android:name="authority"
                 android:value="interdroid.context.sensor.battery" />
             <meta-data
+                android:name="accuracy"
+                android:value="3" />
+            <meta-data
+                android:name="delay"
+                android:value="20000" />
+            <meta-data
                 android:name="units"
                 android:value="percent,mV,Celsius,,,mAh,mWh" />
         </activity>
