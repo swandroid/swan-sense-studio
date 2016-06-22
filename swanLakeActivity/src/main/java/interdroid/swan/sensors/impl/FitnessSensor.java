@@ -1,6 +1,7 @@
 package interdroid.swan.sensors.impl;
 
 import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -10,7 +11,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import interdroid.swan.R;
-import interdroid.swan.crossdevice.swanplus.FitnessBroadcastReceiver;
 import interdroid.swan.sensors.AbstractSwanSensor;
 import interdroid.swancore.sensors.AbstractConfigurationActivity;
 
@@ -28,6 +28,26 @@ public class FitnessSensor extends AbstractSwanSensor {
 
     private Map<String, FitnessDataPoller> activeThreads = new HashMap<String, FitnessDataPoller>();
     BroadcastReceiver fitnessBcastReceiver;
+
+    public class FitnessBroadcastReceiver extends BroadcastReceiver {
+
+        FitnessSensor.FitnessDataPoller fitnessDataPoller;
+
+        public FitnessBroadcastReceiver(FitnessSensor.FitnessDataPoller fitnessDataPoller) {
+            this.fitnessDataPoller = fitnessDataPoller;
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+
+            if (FitnessSensor.ACTION_SEND_FITNESS_DATA.equals(action)) {
+                String avgSpeed = intent.getStringExtra("avg_speed");
+                Log.d(TAG, "fitness receiver: " + avgSpeed);
+                fitnessDataPoller.updateValues(avgSpeed);
+            }
+        }
+    }
 
     public class FitnessDataPoller extends Thread {
 

@@ -8,7 +8,7 @@ import interdroid.swancore.engine.EvaluationEngineServiceBase;
 import interdroid.swancore.engine.EvaluationManagerBase;
 import interdroid.swan.crossdevice.Pusher;
 import interdroid.swancore.crossdevice.Registry;
-import interdroid.swan.crossdevice.swanplus.ProximityManagerI;
+import interdroid.swan.crossdevice.ProximityManagerI;
 import interdroid.swancore.swansong.ComparisonExpression;
 import interdroid.swancore.swansong.ConstantValueExpression;
 import interdroid.swancore.swansong.Expression;

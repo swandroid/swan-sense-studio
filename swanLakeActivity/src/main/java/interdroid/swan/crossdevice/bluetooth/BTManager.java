@@ -1,4 +1,4 @@
-package interdroid.swan.crossdevice.swanplus.bluetooth;
+package interdroid.swan.crossdevice.bluetooth;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -20,8 +20,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import interdroid.swan.crossdevice.swanplus.ProximityManagerI;
-import interdroid.swan.crossdevice.swanplus.SwanUser;
+import interdroid.swan.crossdevice.ProximityManagerI;
+import interdroid.swan.crossdevice.wifidirect.WDSwanDevice;
 import interdroid.swan.engine.EvaluationEngineService;
 import interdroid.swancore.swansong.Expression;
 
@@ -31,12 +31,10 @@ import interdroid.swancore.swansong.Expression;
  * TODO remove users from the list when they go out of range
  * TODO handle properly the cases when BT is switched on/off during usage
  * TODO stop client workers that are blocked waiting for results
- * TODO try and test with devices close to each other and far from each other (see if there are interference issues)
  */
 public class BTManager implements ProximityManagerI {
 
     private static final String TAG = "BTManager";
-    //    protected final static UUID SERVICE_UUID = UUID.fromString("e2035693-b335-403f-b921-537e5ce2d27d");
     protected final static UUID[] SERVICE_UUIDS = {
             UUID.fromString("e2035693-b335-403f-b921-537e5ce2d27d"),
 //            UUID.fromString("b0ec7a42-2e19-438e-a091-d6954b999225"),
@@ -47,14 +45,14 @@ public class BTManager implements ProximityManagerI {
 //            UUID.fromString("94192877-54e0-43a3-abc5-fbf9bbc43137")
     };
     protected final static String SERVICE_NAME = "swanlake";
-    public static final String ACTION_NEARBY_DEVICE_FOUND = "interdroid.swan.crossdevice.swanplus.bluetooth.ACTION_NEARBY_DEVICE_FOUND";
-    public static final String ACTION_LOG_MESSAGE = "interdroid.swan.crossdevice.swanplus.bluetooth.ACTION_LOG_MESSAGE";
+    public static final String ACTION_NEARBY_DEVICE_FOUND = "interdroid.swan.crossdevice.bluetooth.ACTION_NEARBY_DEVICE_FOUND";
+    public static final String ACTION_LOG_MESSAGE = "interdroid.swan.crossdevice.bluetooth.ACTION_LOG_MESSAGE";
+    /* this should be configurable */
+    public static final int TIME_BETWEEN_REQUESTS = 4000;
     private final int BLOCKED_WORKERS_CHECKING_INTERVAL = 5000;
-    private final int MIN_BETWEEN_CONNECTIONS_TIMEOUT = 1500;
     private final int PEER_DISCOVERY_INTERVAL = 40000;
 
     private Context context;
-    //    private BTReceiver btReceiver;
     private List<BTReceiver> btReceivers = new ArrayList<>();
     private BluetoothAdapter btAdapter;
     private ConcurrentLinkedQueue<Object> evalQueue;
@@ -62,10 +60,9 @@ public class BTManager implements ProximityManagerI {
     private boolean discovering = false;
 
     private List<BTClientWorker> clientWorkers = new ArrayList<>();
-    private List<BTClientWorker> waitingWorkers = new ArrayList<>();
     private List<BTServerWorker> serverWorkers = new ArrayList<>();
-
-    private List<BluetoothDevice> nearbyDevices = new ArrayList<>();
+    private List<BTClientWorker> waitingWorkers = new ArrayList<>();
+    private List<BTSwanDevice> nearbyDevices = new ArrayList<>();
     /**
      * IMPORTANT the order of items in this list matters! (see SwanLakePlus)
      */
@@ -79,20 +76,17 @@ public class BTManager implements ProximityManagerI {
 
             discoverPeers();
             setDiscovering(true);
+            scheduleQueueItem(nearbyPeersChecker, PEER_DISCOVERY_INTERVAL);
+        }
 
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    addToQueue(nearbyPeersChecker);
-                    synchronized (evalThread) {
-                        evalThread.notify();
-                    }
-                }
-            }, PEER_DISCOVERY_INTERVAL);
+        @Override
+        public String toString() {
+            return "DiscoveryEvent";
         }
     };
 
     /* we check periodically that client threads are not blocked in connect() */
+    @Deprecated
     Runnable blockedWorkersChecker = new Runnable() {
         public void run() {
             List<BTClientWorker> blockedWorkers = new ArrayList<>();
@@ -139,13 +133,28 @@ public class BTManager implements ProximityManagerI {
                         }
                     }
 
-                    sleep(MIN_BETWEEN_CONNECTIONS_TIMEOUT + new Random().nextInt(1500));
+//                    sleep(MIN_BETWEEN_CONNECTIONS_TIMEOUT + new Random().nextInt(1500));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     };
+
+    private void scheduleQueueItem(final Object item, int timeout) {
+        Log.d(TAG, "scheduled item " + item + " in " + timeout + "ms");
+
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                addToQueue(item);
+                synchronized (evalThread) {
+                    evalThread.notify();
+                }
+            }
+        }, timeout);
+    }
+
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -156,7 +165,7 @@ public class BTManager implements ProximityManagerI {
 
                 if (device.getName() != null && device.getName().contains("SWAN")) {
                     Log.d(TAG, "found nearby device " + device.getName());
-                    addNearbyDevice(device);
+                    addNearbyDevice(new BTSwanDevice(device));
 
                     // code below is used by SwanLakePlus
                     Intent deviceFoundIntent = new Intent();
@@ -168,13 +177,12 @@ public class BTManager implements ProximityManagerI {
 
                 if (connState == BluetoothAdapter.STATE_ON) {
                     Log.d(TAG, "bluetooth connected, starting receiver thread...");
-//                    btReceiver.start();
                     for (BTReceiver receiver : btReceivers) {
                         receiver.start();
                     }
                 }
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
-                Log.d(TAG, "discovery finished");
+                Log.i(TAG, "discovery finished");
                 bcastLogMessage("discovery finished");
                 setDiscovering(false);
 
@@ -196,7 +204,6 @@ public class BTManager implements ProximityManagerI {
 
         evalQueue = new ConcurrentLinkedQueue<Object>();
         handler = new Handler();
-//        btReceiver = new BTReceiver(this, context, SERVICE_UUID);
 
         for (UUID uuid : SERVICE_UUIDS) {
             btReceivers.add(new BTReceiver(this, context, uuid));
@@ -227,7 +234,6 @@ public class BTManager implements ProximityManagerI {
         evalThread.start();
 
         if (btAdapter.isEnabled()) {
-//            btReceiver.start();
             for (BTReceiver receiver : btReceivers) {
                 receiver.start();
             }
@@ -283,6 +289,7 @@ public class BTManager implements ProximityManagerI {
     }
 
     public void registerExpression(String id, String expression, String resolvedLocation, String action) {
+        Log.d(TAG, "registering expression " + id + ": " + expression);
         boolean addedExpr = false;
 
         if(!action.equals(EvaluationEngineService.ACTION_REGISTER_REMOTE)) {
@@ -293,16 +300,16 @@ public class BTManager implements ProximityManagerI {
         if (resolvedLocation.equals(Expression.LOCATION_NEARBY)) {
             registeredExpressions.put(id, expression);
 
-            for (BluetoothDevice device : nearbyDevices) {
-                BTRemoteExpression remoteExpr = new BTRemoteExpression(id, device, expression, action);
+            for (BTSwanDevice device : nearbyDevices) {
+                BTRemoteExpression remoteExpr = new BTRemoteExpression(id, device.getBtDevice(), expression, action);
                 addToQueue(remoteExpr);
                 addedExpr = true;
             }
         } else {
-            BluetoothDevice device = getNearbyDeviceByName(resolvedLocation);
+            BTSwanDevice device = getNearbyDeviceByName(resolvedLocation);
 
             if (device != null) {
-                BTRemoteExpression remoteExpr = new BTRemoteExpression(id, device, expression, action);
+                BTRemoteExpression remoteExpr = new BTRemoteExpression(id, device.getBtDevice(), expression, action);
                 addToQueue(remoteExpr);
                 addedExpr = true;
             } else {
@@ -319,8 +326,10 @@ public class BTManager implements ProximityManagerI {
 
     @Override
     public void unregisterExpression(String id, String expression, String resolvedLocation, String action) {
+        Log.d(TAG, "unregistering expression " + id + ": " + expression);
         registeredExpressions.remove(id);
 
+        // terminate workers assigned to expression
         for(BTClientWorker clientWorker : clientWorkers) {
             BTRemoteExpression remoteExpression = clientWorker.getRemoteExpression();
 
@@ -339,11 +348,15 @@ public class BTManager implements ProximityManagerI {
 
         if(item instanceof BTRemoteExpression) {
             BTRemoteExpression remoteExpr = (BTRemoteExpression) item;
+            BTSwanDevice swanDevice = getNearbyDeviceByName(remoteExpr.getRemoteDevice().getName());
 
             if (remoteExpr.getAction().equals(EvaluationEngineService.ACTION_REGISTER_REMOTE)) {
-                BTClientWorker clientWorker = new BTClientWorker(this, remoteExpr);
-                clientWorkers.add(clientWorker);
-                clientWorker.start();
+                // if the expression is still registered, process it
+                if(registeredExpressions.containsKey(remoteExpr.getBaseId())) {
+                    BTClientWorker clientWorker = new BTClientWorker(this, remoteExpr, swanDevice);
+                    clientWorkers.add(clientWorker);
+                    clientWorker.start();
+                }
             } else {
                 send(remoteExpr.getRemoteDevice().getName(), remoteExpr.getId(),
                         remoteExpr.getAction(), remoteExpr.getExpression());
@@ -412,8 +425,8 @@ public class BTManager implements ProximityManagerI {
         return item;
     }
 
-    protected BluetoothDevice getNearbyDeviceByName(String deviceName) {
-        for (BluetoothDevice device : nearbyDevices) {
+    protected BTSwanDevice getNearbyDeviceByName(String deviceName) {
+        for (BTSwanDevice device : nearbyDevices) {
             if (device.getName().equals(deviceName)) {
                 return device;
             }
@@ -421,7 +434,7 @@ public class BTManager implements ProximityManagerI {
         return null;
     }
 
-    protected void addNearbyDevice(BluetoothDevice device) {
+    protected BTSwanDevice addNearbyDevice(BTSwanDevice device) {
         if (!hasPeer(device.getName())) {
             Log.d(TAG, "added new device " + device.getName());
             bcastLogMessage("nearby device found " + device.getName());
@@ -430,13 +443,14 @@ public class BTManager implements ProximityManagerI {
         } else {
             Log.d(TAG, "device " + device.getName() + " already present, won't add");
         }
+        return getNearbyDeviceByName(device.getName());
     }
 
-    private void registerRemoteDevice(BluetoothDevice device) {
+    private void registerRemoteDevice(BTSwanDevice device) {
         boolean addedExpr = false;
 
         for (Map.Entry<String, String> entry : registeredExpressions.entrySet()) {
-            BTRemoteExpression remoteExpr = new BTRemoteExpression(entry.getKey(), device,
+            BTRemoteExpression remoteExpr = new BTRemoteExpression(entry.getKey(), device.getBtDevice(),
                     entry.getValue(), EvaluationEngineService.ACTION_REGISTER_REMOTE);
             addToQueue(remoteExpr);
             addedExpr = true;
@@ -455,14 +469,15 @@ public class BTManager implements ProximityManagerI {
         return nearbyDevices.size();
     }
 
+    /** temporary fix */
     @Override
-    public SwanUser getPeerAt(int position) {
-        return new SwanUser(nearbyDevices.get(position).getName(), nearbyDevices.get(position).getName());
+    public WDSwanDevice getPeerAt(int position) {
+        return new WDSwanDevice(nearbyDevices.get(position).getName(), nearbyDevices.get(position).getName());
     }
 
     @Override
     public boolean hasPeer(String deviceName) {
-        for (BluetoothDevice device : nearbyDevices) {
+        for (BTSwanDevice device : nearbyDevices) {
             if (device.getName().equals(deviceName)) {
                 return true;
             }
@@ -474,45 +489,83 @@ public class BTManager implements ProximityManagerI {
         return btAdapter;
     }
 
+    private String getMacAddress() {
+        return android.provider.Settings.Secure.getString(context.getContentResolver(), "bluetooth_address");
+    }
+
     /**
      * we have to synchronize the methods dealing with workers, as it may happen that send() is called
      * by EvaluationEngineService right before a worker is removed
      */
-    protected synchronized void workerDone(Thread worker) {
-        if (worker instanceof BTClientWorker) {
-            BTClientWorker clientWorker = (BTClientWorker) worker;
-            BTRemoteExpression remoteExpression = clientWorker.getRemoteExpression();
+    protected synchronized void clientWorkerDone(BTClientWorker clientWorker) {
+        clientWorkerDone(clientWorker, 0);
+    }
 
-            if (remoteExpression.getAction().equals(EvaluationEngineService.ACTION_REGISTER_REMOTE)) {
-                Log.d(TAG, "client worker " + worker + "finished processing");
+    protected synchronized void clientWorkerDone(BTClientWorker clientWorker, int remoteTimeToNextReq) {
+        BTRemoteExpression remoteExpression = clientWorker.getRemoteExpression();
 
-                // if the expression is still registered, add it back at the end of queue
-                if(registeredExpressions.containsKey(remoteExpression.getBaseId())) {
-                    addToQueue(new BTRemoteExpression(remoteExpression));
-                }
+        if (remoteExpression.getAction().equals(EvaluationEngineService.ACTION_REGISTER_REMOTE)) {
+            Log.d(TAG, "client worker done " + clientWorker);
 
-                clientWorkers.remove(clientWorker);
+            // if the expression is still registered, add it back at the end of queue
+            if(registeredExpressions.containsKey(remoteExpression.getBaseId())) {
+                BTSwanDevice swanDevice = clientWorker.getSwanDevice();
+                final BTRemoteExpression remoteExpr = new BTRemoteExpression(remoteExpression);
+                int timeToNextReq = TIME_BETWEEN_REQUESTS;
 
-                synchronized (evalThread) {
-                    evalThread.notify();
+                Log.d(TAG, "timeToNextReq = " + timeToNextReq);
+                Log.d(TAG, "remoteTimeToNextReq = " + remoteTimeToNextReq);
+
+                // remoteTimeToNextReq is 0 if an error occurs or if the remote device doesn't want
+                // to register any expression on this device
+                if(remoteTimeToNextReq > 0) {
+                    if (timeToNextReq == remoteTimeToNextReq) {
+                        if (getMacAddress().compareTo(swanDevice.getBtDevice().getAddress()) > 0) {
+                            timeToNextReq++;
+                        } else {
+                            remoteTimeToNextReq++;
+                        }
+                    }
+
+                    if (timeToNextReq > remoteTimeToNextReq) {
+                        swanDevice.setPendingItem(new BTPendingItem(remoteExpr, timeToNextReq - remoteTimeToNextReq));
+                        Log.d(TAG, "set pending item " + swanDevice.getPendingItem() + " for device " + swanDevice);
+                    } else {
+                        scheduleQueueItem(remoteExpr, timeToNextReq);
+                    }
+                } else {
+                    scheduleQueueItem(remoteExpr, timeToNextReq);
                 }
             }
-        } else if (worker instanceof BTServerWorker) {
-            Log.d(TAG, "server worker done " + worker);
-            BTServerWorker serverWorker = (BTServerWorker) worker;
-            serverWorkers.remove(serverWorker);
 
-//            synchronized (btReceiver) {
-//                btReceiver.notify();
-//            }
+            clientWorkers.remove(clientWorker);
+            synchronized (evalThread) {
+                evalThread.notify();
+            }
+        }
+    }
 
-            for (BTReceiver receiver : btReceivers) {
-                if (receiver.getSocket() != null && receiver.getSocket().equals(serverWorker.getBtSocket())) {
-                    synchronized (receiver) {
-                        receiver.notify();
-                    }
-                    break;
+    /**
+     * we have to synchronize the methods dealing with workers, as it may happen that send() is called
+     * by EvaluationEngineService right before a worker is removed
+     */
+    protected synchronized void serverWorkerDone(BTServerWorker serverWorker) {
+        Log.d(TAG, "server worker done " + serverWorker);
+        BTSwanDevice swanDevice = serverWorker.getSwanDevice();
+        serverWorkers.remove(serverWorker);
+
+        if(swanDevice.getPendingItem() != null) {
+            final BTPendingItem pendingItem = swanDevice.getPendingItem();
+            scheduleQueueItem(pendingItem.getItem(), pendingItem.getTimeout());
+            swanDevice.setPendingItem(null);
+        }
+
+        for (BTReceiver receiver : btReceivers) {
+            if (receiver.getSocket() != null && receiver.getSocket().equals(serverWorker.getBtSocket())) {
+                synchronized (receiver) {
+                    receiver.notify();
                 }
+                break;
             }
         }
     }

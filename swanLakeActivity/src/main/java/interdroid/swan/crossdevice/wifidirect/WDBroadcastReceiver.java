@@ -1,4 +1,4 @@
-package interdroid.swan.crossdevice.swanplus.wifidirect;
+package interdroid.swan.crossdevice.wifidirect;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

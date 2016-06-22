@@ -1,4 +1,4 @@
-package interdroid.swan.crossdevice.swanplus.bluetooth;
+package interdroid.swan.crossdevice.bluetooth;
 
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
@@ -40,9 +40,10 @@ public class BTReceiver extends Thread {
                     Log.d(TAG, "receiver paused for uuid " + uuid);
                     serverSocket.close();
 
-                    BTServerWorker serverWorker = new BTServerWorker(btManager, socket);
                     // we add the device in the nearby devices list in case it wasn't discovered already
-                    btManager.addNearbyDevice(socket.getRemoteDevice());
+                    BTSwanDevice swanDevice = btManager.addNearbyDevice(new BTSwanDevice(socket.getRemoteDevice()));
+
+                    BTServerWorker serverWorker = new BTServerWorker(btManager, socket, swanDevice);
                     btManager.addServerWorker(serverWorker);
                     serverWorker.start();
 

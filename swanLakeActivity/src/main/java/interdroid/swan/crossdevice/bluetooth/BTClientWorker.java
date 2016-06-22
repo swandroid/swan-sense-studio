@@ -1,4 +1,4 @@
-package interdroid.swan.crossdevice.swanplus.bluetooth;
+package interdroid.swan.crossdevice.bluetooth;
 
 import android.bluetooth.BluetoothDevice;
 import android.util.Log;
@@ -22,9 +22,10 @@ public class BTClientWorker extends BTWorker {
     private BTRemoteExpression remoteExpression;
     private boolean connected = false;
 
-    public BTClientWorker(BTManager btManager, BTRemoteExpression remoteExpression) {
+    public BTClientWorker(BTManager btManager, BTRemoteExpression remoteExpression, BTSwanDevice swanDevice) {
         this.btManager = btManager;
         this.remoteExpression = remoteExpression;
+        this.swanDevice = swanDevice;
     }
 
     @Override
@@ -39,17 +40,16 @@ public class BTClientWorker extends BTWorker {
                 send(remoteExpression.getId(), remoteExpression.getAction(), remoteExpression.getExpression());
                 manageClientConnection();
             } else {
-                btManager.workerDone(this);
+                btManager.clientWorkerDone(this);
             }
         } catch (Exception e) {
             Log.e(TAG, this + " crashed", e);
-            btManager.workerDone(this);
+            btManager.clientWorkerDone(this);
         }
     }
 
     // blocking call; use only in a separate thread
     protected void connect(BluetoothDevice device) {
-//        btAdapter.cancelDiscovery();
         int uuidIdx = new Random().nextInt(BTManager.SERVICE_UUIDS.length);
         UUID uuid = BTManager.SERVICE_UUIDS[uuidIdx];
         Log.i(TAG, this + " connecting to " + device.getName() + " on port " + uuidIdx + "...");
@@ -76,6 +76,8 @@ public class BTClientWorker extends BTWorker {
     }
 
     protected void manageClientConnection() {
+        int remoteTimeToNextRequest = 0;
+
         try {
             while (true) {
                 HashMap<String, String> dataMap = (HashMap<String, String>) inStream.readObject();
@@ -84,6 +86,7 @@ public class BTClientWorker extends BTWorker {
                 String exprSource = dataMap.get("source");
                 String exprId = dataMap.get("id");
                 String exprData = dataMap.get("data");
+                String timeToNextReq = dataMap.get("timeToNextReq");
 
                 if (exprAction.equals(EvaluationEngineService.ACTION_NEW_RESULT_REMOTE)) {
                     Result result = exprData != null ? (Result) Converter.stringToObject(exprData) : null;
@@ -91,6 +94,9 @@ public class BTClientWorker extends BTWorker {
 
                     if (exprId.equals(remoteExpression.getId())) {
                         if (result != null && result.getValues().length > 0) {
+                            if(timeToNextReq != null) {
+                                remoteTimeToNextRequest = Integer.parseInt(timeToNextReq);
+                            }
                             btManager.sendExprForEvaluation(remoteExpression.getBaseId(), exprAction, exprSource, exprData);
                             send(exprId, EvaluationEngineService.ACTION_UNREGISTER_REMOTE, null);
                         }
@@ -106,7 +112,7 @@ public class BTClientWorker extends BTWorker {
             Log.e(TAG, this + " disconnected: " + e.getMessage());
 
             try {
-                btManager.workerDone(this);
+                btManager.clientWorkerDone(this, remoteTimeToNextRequest);
                 btSocket.close();
             } catch (IOException e1) {
                 Log.e(TAG, this + " couldn't close socket", e1);

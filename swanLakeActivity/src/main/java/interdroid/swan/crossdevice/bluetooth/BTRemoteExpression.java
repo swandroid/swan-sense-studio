@@ -1,4 +1,4 @@
-package interdroid.swan.crossdevice.swanplus.bluetooth;
+package interdroid.swan.crossdevice.bluetooth;
 
 import android.bluetooth.BluetoothDevice;
 

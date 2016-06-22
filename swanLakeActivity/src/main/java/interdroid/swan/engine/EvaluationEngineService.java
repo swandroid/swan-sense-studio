@@ -8,8 +8,8 @@ import interdroid.swancore.engine.EvaluationEngineServiceBase;
 import interdroid.swancore.crossdevice.Converter;
 import interdroid.swan.crossdevice.Pusher;
 import interdroid.swan.crossdevice.beacon.BeaconInitializer;
-import interdroid.swan.crossdevice.swanplus.ProximityManagerI;
-import interdroid.swan.crossdevice.swanplus.bluetooth.BTManager;
+import interdroid.swan.crossdevice.ProximityManagerI;
+import interdroid.swan.crossdevice.bluetooth.BTManager;
 import interdroid.swancore.swansong.Result;
 
 

@@ -14,7 +14,7 @@
  *    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package interdroid.swan.crossdevice.swanplus.wifidirect;
+package interdroid.swan.crossdevice.wifidirect;
 
 import android.content.Context;
 import android.net.wifi.p2p.WifiP2pConfig;

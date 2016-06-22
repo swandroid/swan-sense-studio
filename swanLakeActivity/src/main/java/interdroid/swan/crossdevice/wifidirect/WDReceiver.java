@@ -1,4 +1,4 @@
-package interdroid.swan.crossdevice.swanplus.wifidirect;
+package interdroid.swan.crossdevice.wifidirect;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,7 +12,6 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.HashMap;
 
-import interdroid.swan.crossdevice.swanplus.SwanUser;
 import interdroid.swan.engine.EvaluationEngineService;
 
 /**
@@ -66,7 +65,7 @@ public class WDReceiver extends AsyncTask<Void, String, Void> {
                 String source = dataMap.get("source");
 
                 if (source != null) {
-                    SwanUser user = wdManager.getPeerByRegId(source);
+                    WDSwanDevice user = wdManager.getPeerByRegId(source);
                     if (user != null) {
                         user.setIp(remoteIp);
                     }

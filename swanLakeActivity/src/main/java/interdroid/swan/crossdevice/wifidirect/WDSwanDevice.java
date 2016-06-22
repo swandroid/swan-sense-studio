@@ -1,4 +1,4 @@
-package interdroid.swan.crossdevice.swanplus;
+package interdroid.swan.crossdevice.wifidirect;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -10,7 +10,7 @@ import java.net.InetAddress;
 /**
  * Created by vladimir on 11/3/15.
  */
-public class SwanUser {
+public class WDSwanDevice {
 
     String username;
     String regId;
@@ -21,19 +21,19 @@ public class SwanUser {
 
     ObjectOutputStream oos;
 
-    public SwanUser(String username, String regId, WifiP2pDevice device) {
+    public WDSwanDevice(String username, String regId, WifiP2pDevice device) {
         this.username = username;
         this.regId = regId;
         this.device = device;
     }
 
-    public SwanUser(String username, String regId, BluetoothDevice btDevice) {
+    public WDSwanDevice(String username, String regId, BluetoothDevice btDevice) {
         this.username = username;
         this.regId = regId;
         this.btDevice = btDevice;
     }
 
-    public SwanUser(String username, String regId) {
+    public WDSwanDevice(String username, String regId) {
         this.username = username;
         this.regId = regId;
     }
@@ -88,7 +88,7 @@ public class SwanUser {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        SwanUser swanUser = (SwanUser) o;
+        WDSwanDevice swanUser = (WDSwanDevice) o;
 
         return username.equals(swanUser.username);
 

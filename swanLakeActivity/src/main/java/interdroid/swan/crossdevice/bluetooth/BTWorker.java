@@ -1,4 +1,4 @@
-package interdroid.swan.crossdevice.swanplus.bluetooth;
+package interdroid.swan.crossdevice.bluetooth;
 
 import android.bluetooth.BluetoothSocket;
 import android.util.Log;
@@ -21,6 +21,7 @@ public class BTWorker extends Thread {
     private static final String TAG = "BTWorker";
 
     protected BTManager btManager;
+    protected BTSwanDevice swanDevice;
 
     protected BluetoothSocket btSocket;
     protected ObjectOutputStream outStream;
@@ -49,6 +50,7 @@ public class BTWorker extends Thread {
         dataMap.put("id", expressionId);
         dataMap.put("action", expressionAction);
         dataMap.put("data", expressionData);
+        dataMap.put("timeToNextReq", getTimeToNextRequest() + "");
 
         synchronized (outStream) {
             outStream.writeObject(dataMap);
@@ -56,6 +58,14 @@ public class BTWorker extends Thread {
 
         Log.w(getTag(), this + " successfully sent " + expressionAction + ": "
                 + toPrintableData(expressionData, expressionAction));
+    }
+
+    protected int getTimeToNextRequest() {
+        if(swanDevice.getPendingItem() != null) {
+            return swanDevice.getPendingItem().getTimeout();
+        } else {
+            return BTManager.TIME_BETWEEN_REQUESTS;
+        }
     }
 
     private String toPrintableData(String data, String action) {
@@ -95,5 +105,9 @@ public class BTWorker extends Thread {
 
     public BluetoothSocket getBtSocket() {
         return btSocket;
+    }
+
+    public BTSwanDevice getSwanDevice() {
+        return swanDevice;
     }
 }

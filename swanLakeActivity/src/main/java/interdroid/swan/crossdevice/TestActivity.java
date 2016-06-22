@@ -1,4 +1,4 @@
-package interdroid.swan.crossdevice.swanplus;
+package interdroid.swan.crossdevice;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -18,7 +18,7 @@ import interdroid.swan.R;
 import interdroid.swancore.swanmain.SensorInfo;
 import interdroid.swancore.swanmain.SwanException;
 import interdroid.swancore.swanmain.ValueExpressionListener;
-import interdroid.swan.crossdevice.swanplus.bluetooth.BTManager;
+import interdroid.swan.crossdevice.bluetooth.BTManager;
 import interdroid.swancore.swansong.ExpressionFactory;
 import interdroid.swancore.swansong.ExpressionParseException;
 import interdroid.swancore.swansong.TimestampedValue;
@@ -60,6 +60,7 @@ public class TestActivity extends Activity {
 
         IntentFilter intentFilter = new IntentFilter(BTManager.ACTION_LOG_MESSAGE);
         registerReceiver(mReceiver, intentFilter);
+
 //        initialize();
 //        testSensor();
     }

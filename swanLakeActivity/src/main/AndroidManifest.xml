@@ -99,10 +99,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".crossdevice.swanplus.SwanLakePlusActivity"
+            android:name=".crossdevice.SwanLakePlusActivity"
             android:label="SwanLake+"
             android:screenOrientation="portrait">
-            <intent-filter>
+            <!--<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -113,28 +113,11 @@
                 <category android:name="android.intent.category.DEFAULT" />
 
                 <data android:scheme="swan" />
-            </intent-filter>
+            </intent-filter>-->
         </activity>
         <activity
-            android:name=".crossdevice.swanplus.TestActivity"
-            android:label="SwanLakeTest+"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.nfc.action.NDEF_DISCOVERED" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <data android:scheme="swan" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".crossdevice.swanplus.run2gether.ActivityRun2gether"
-            android:label="Run2gether"
+            android:name=".crossdevice.TestActivity"
+            android:label="SwanLakeTest"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -1113,9 +1096,6 @@
             android:exported="true"
             android:process=":fitnesssensor"></service>
         <service
-            android:name=".crossdevice.swanplus.TestIntentService"
-            android:exported="false"></service>
-        <service
             android:name=".sensors.impl.FitnessSensor$MessengerService"
             android:exported="false"></service>
         <service
@@ -1482,9 +1462,6 @@
             android:exported="true"
             android:process=":weargravitysensor"></service>
         <!-- android:multiprocess="true" /> -->
-        <activity
-            android:name=".crossdevice.swanplus.run2gether.NearbyRunnersActivity"
-            android:label="@string/title_activity_nearby_runners"></activity>
 
         <activity
             android:name="interdroid.swan.sensors.impl.BeaconDiscoverySensor$ConfigurationActivity"

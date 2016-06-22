@@ -1,4 +1,6 @@
-package interdroid.swan.crossdevice.swanplus;
+package interdroid.swan.crossdevice;
+
+import interdroid.swan.crossdevice.wifidirect.WDSwanDevice;
 
 /**
  * Created by vladimir on 3/10/16.
@@ -7,7 +9,7 @@ public interface ProximityManagerI {
 
     public int getPeerCount();
 
-    public SwanUser getPeerAt(int position);
+    public WDSwanDevice getPeerAt(int position);
 
     public boolean hasPeer(String username);
 

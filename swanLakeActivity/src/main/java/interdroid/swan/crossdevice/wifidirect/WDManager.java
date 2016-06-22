@@ -1,4 +1,4 @@
-package interdroid.swan.crossdevice.swanplus.wifidirect;
+package interdroid.swan.crossdevice.wifidirect;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -26,9 +26,8 @@ import java.util.List;
 import java.util.Map;
 
 import interdroid.swancore.crossdevice.Registry;
-import interdroid.swan.crossdevice.swanplus.ProximityManagerI;
-import interdroid.swan.crossdevice.swanplus.SwanLakePlusActivity;
-import interdroid.swan.crossdevice.swanplus.SwanUser;
+import interdroid.swan.crossdevice.ProximityManagerI;
+import interdroid.swan.crossdevice.SwanLakePlusActivity;
 import interdroid.swancore.swansong.Expression;
 
 /**
@@ -43,7 +42,7 @@ public class WDManager implements ProximityManagerI {
     /**
      * IMPORTANT the order of items in this list matters!
      */
-    private List<SwanUser> nearbyPeers = new ArrayList<SwanUser>();
+    private List<WDSwanDevice> nearbyPeers = new ArrayList<WDSwanDevice>();
     //    private WDManager instance;
     private SwanLakePlusActivity slpActivity;
 
@@ -60,7 +59,7 @@ public class WDManager implements ProximityManagerI {
      * TODO temporary solution
      */
     private Thread waitingThread;
-    private SwanUser waitingUser;
+    private WDSwanDevice waitingUser;
 
     private boolean connected = false;
 
@@ -143,7 +142,7 @@ public class WDManager implements ProximityManagerI {
         WifiP2pManager.DnsSdTxtRecordListener txtListener = new WifiP2pManager.DnsSdTxtRecordListener() {
             @Override
             public void onDnsSdTxtRecordAvailable(String fullDomain, Map<String, String> userAttribMap, WifiP2pDevice device) {
-                final SwanUser nearbyUser = new SwanUser(userAttribMap.get("name"), userAttribMap.get("regId"), device);
+                final WDSwanDevice nearbyUser = new WDSwanDevice(userAttribMap.get("name"), userAttribMap.get("regId"), device);
 
                 if (!hasPeer(nearbyUser.getUsername())) {
                     addPeer(nearbyUser);
@@ -248,7 +247,7 @@ public class WDManager implements ProximityManagerI {
     /**
      * returns true if the sending thread from Pusher has to wait for getting the IP of user
      */
-    public boolean connect(SwanUser user, Thread thread) {
+    public boolean connect(WDSwanDevice user, Thread thread) {
         if (user.getDevice() == null) {
             return false;
         }
@@ -358,16 +357,16 @@ public class WDManager implements ProximityManagerI {
         return nearbyPeers.size();
     }
 
-    public void addPeer(SwanUser peer) {
+    public void addPeer(WDSwanDevice peer) {
         nearbyPeers.add(peer);
     }
 
-    public SwanUser getPeerAt(int position) {
+    public WDSwanDevice getPeerAt(int position) {
         return nearbyPeers.get(position);
     }
 
-    public SwanUser getPeer(String username) {
-        for (SwanUser peer : nearbyPeers) {
+    public WDSwanDevice getPeer(String username) {
+        for (WDSwanDevice peer : nearbyPeers) {
             if (peer.getUsername().equals(username)) {
                 return peer;
             }
@@ -375,8 +374,8 @@ public class WDManager implements ProximityManagerI {
         return null;
     }
 
-    public SwanUser getPeerByRegId(String regId) {
-        for (SwanUser peer : nearbyPeers) {
+    public WDSwanDevice getPeerByRegId(String regId) {
+        for (WDSwanDevice peer : nearbyPeers) {
             if (peer.getRegId().equals(regId)) {
                 return peer;
             }
@@ -385,7 +384,7 @@ public class WDManager implements ProximityManagerI {
     }
 
     public boolean hasPeer(String username) {
-        for (SwanUser peer : nearbyPeers) {
+        for (WDSwanDevice peer : nearbyPeers) {
             if (peer.getUsername().equals(username)) {
                 return true;
             }
@@ -393,8 +392,8 @@ public class WDManager implements ProximityManagerI {
         return false;
     }
 
-    public boolean updatePeer(SwanUser newPeer) {
-        SwanUser peer = getPeer(newPeer.getUsername());
+    public boolean updatePeer(WDSwanDevice newPeer) {
+        WDSwanDevice peer = getPeer(newPeer.getUsername());
         boolean updated = false;
 
         if (peer != null) {
@@ -412,7 +411,7 @@ public class WDManager implements ProximityManagerI {
     }
 
     public void resetPeers() {
-        for (SwanUser peer : nearbyPeers) {
+        for (WDSwanDevice peer : nearbyPeers) {
             peer.setIp(null);
         }
     }

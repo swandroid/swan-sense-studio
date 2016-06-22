@@ -1,4 +1,4 @@
-package interdroid.swan.crossdevice.swanplus;
+package interdroid.swan.crossdevice;
 
 import android.app.ActionBar;
 import android.app.AlertDialog;
@@ -47,10 +47,9 @@ import interdroid.sense.LoginActivity;
 import interdroid.sense.RegistrationActivity;
 import interdroid.sense.SettingsActivity;
 import interdroid.swan.R;
+import interdroid.swan.crossdevice.wifidirect.WDSwanDevice;
 import interdroid.swancore.crossdevice.Registry;
-import interdroid.swan.crossdevice.SwanGCMConstants;
-import interdroid.swan.crossdevice.swanplus.bluetooth.BTManager;
-import interdroid.swan.crossdevice.swanplus.run2gether.ActivityRun2gether;
+import interdroid.swan.crossdevice.bluetooth.BTManager;
 import interdroid.swancore.swansong.Expression;
 import interdroid.swan.ttn.TtnActivity;
 import nl.sense_os.service.constants.SensePrefs;
@@ -58,7 +57,7 @@ import nl.sense_os.service.constants.SensePrefs;
 
 /**
  * Created by vladimir on 9/8/15.
- * <p/>
+ *
  * TODO implement mechanism from removing nearby nodes when they are no longer around
  * TODO if peers are already connected when starting the app, they should request user details from each other
  * TODO if disconnected, attempting to unregister from remote will fail
@@ -165,7 +164,7 @@ public class SwanLakePlusActivity extends FragmentActivity implements ActionBar.
                             ProximityManagerI proximityManager = activity.getProximityManager();
 
                             for (int i = 0; i < proximityManager.getPeerCount(); i++) {
-                                final SwanUser neighbor = proximityManager.getPeerAt(i);
+                                final WDSwanDevice neighbor = proximityManager.getPeerAt(i);
 
                                 if (array.get(i)) {
                                     if (!Registry.add(getActivity(), neighbor.getUsername(), neighbor.getRegId())) {
@@ -514,9 +513,6 @@ public class SwanLakePlusActivity extends FragmentActivity implements ActionBar.
                 break;
             case R.id.action_test:
                 startActivity(new Intent(this, TestActivity.class));
-                break;
-            case R.id.action_r2g:
-                startActivity(new Intent(this, ActivityRun2gether.class));
                 break;
             case R.id.action_ttn:
                 startActivity(new Intent(this, TtnActivity.class));

@@ -13,7 +13,7 @@ ext {
     siteUrl = 'https://github.com/swandroid/swan-sense-studio'
     gitUrl = 'https://github.com/swandroid/swan-sense-studio.git'
 
-    libraryVersion = '1.0.0'
+    libraryVersion = '1.0.1'
 
     developerId = 'swan'
     developerName = 'Swan Project'
@@ -32,7 +32,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 23
         versionCode 1
-        versionName "1.0.0"
+        versionName "1.0.1"
     }
     buildTypes {
         release {

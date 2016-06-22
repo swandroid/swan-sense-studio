@@ -1,4 +1,4 @@
-package interdroid.swan.crossdevice.swanplus.bluetooth;
+package interdroid.swan.crossdevice.bluetooth;
 
 import android.bluetooth.BluetoothSocket;
 import android.util.Log;
@@ -17,9 +17,10 @@ public class BTServerWorker extends BTWorker {
 
     private String expressionId = null;
 
-    public BTServerWorker(BTManager btManager, BluetoothSocket btSocket) {
+    public BTServerWorker(BTManager btManager, BluetoothSocket btSocket, BTSwanDevice swanDevice) {
         this.btManager = btManager;
         this.btSocket = btSocket;
+        this.swanDevice = swanDevice;
     }
 
     @Override
@@ -65,7 +66,7 @@ public class BTServerWorker extends BTWorker {
             //TODO unregister expression
 
             try {
-                btManager.workerDone(this);
+                btManager.serverWorkerDone(this);
                 btSocket.close();
             } catch (IOException e1) {
                 Log.e(TAG, this + " couldn't close socket", e1);
