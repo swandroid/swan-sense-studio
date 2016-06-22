@@ -45,11 +45,9 @@ public class ManageExpressions {
                                                 TimestampedValue[] arg1) {
                             if (arg1 != null && arg1.length > 0) {
 
-                                DeviceClient.getInstance(context).sendExpressionData(id,new Result(arg1, 0));
+                                DeviceClient.getInstance(context).sendExpressionData(id,new Result(arg1,
+                                        arg1[arg1.length-1].getTimestamp()));
                                 String value = arg1[0].getValue().toString();
-
-                                //tv.setText("Value = "+value);
-                                Log.d("Wear","Got value+++++++++++" + value);
                             }
                         }
                     });

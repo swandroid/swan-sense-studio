@@ -269,6 +269,30 @@
         <service
             android:name=".sensors.HeartRateSensor" />
 
+        <activity
+            android:name=".sensors.BatterySensor$ConfigurationActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="interdroid.swan.sensor.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="battery" />
+            <meta-data
+                android:name="valuePaths"
+                android:value="level,voltage,temperature,plugged,status_text,discharge_current,remaining_power" />
+            <meta-data
+                android:name="authority"
+                android:value="interdroid.context.sensor.battery" />
+            <meta-data
+                android:name="units"
+                android:value="percent,mV,Celsius,,,mAh,nWh" />
+        </activity>
+
+        <service
+            android:name=".sensors.BatterySensor" />
+
     </application>
 
 

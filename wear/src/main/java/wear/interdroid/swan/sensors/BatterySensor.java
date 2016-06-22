@@ -1,4 +1,4 @@
-package interdroid.swan.sensors.impl;
+package wear.interdroid.swan.sensors;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -13,16 +13,15 @@ import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import interdroid.swan.R;
 import interdroid.swancore.sensors.AbstractConfigurationActivity;
-import interdroid.swan.sensors.AbstractSwanSensor;
+import interdroid.swancore.sensors.AbstractSwanSensorBase;
 
 /**
  * A sensor for battery temperature, level and voltage.
  *
  * @author nick &lt;palmer@cs.vu.nl&gt;
  */
-public class BatterySensor extends AbstractSwanSensor {
+public class BatterySensor extends AbstractSwanSensorBase {
 
     public static final String TAG = "BatterySensor";
 
@@ -42,7 +41,7 @@ public class BatterySensor extends AbstractSwanSensor {
 
         @Override
         public final int getPreferencesXML() {
-            return R.xml.battery_preferences;
+            return 1;
         }
     }
 
@@ -99,7 +98,6 @@ public class BatterySensor extends AbstractSwanSensor {
                 putValueTrimSize(PLUGGED_FIELD, null, now, intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0));
                 putValueTrimSize(STATUS_TEXT_FIELD, null, now, intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0));
 
-
             }
         }
     };
@@ -128,6 +126,8 @@ public class BatterySensor extends AbstractSwanSensor {
                 public void run() {
                     while(true) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+                            int voltage = 4;
                             BatteryManager mBatteryManager =
                                     (BatteryManager) getApplicationContext().getSystemService(Context.BATTERY_SERVICE);
                             Integer energy =

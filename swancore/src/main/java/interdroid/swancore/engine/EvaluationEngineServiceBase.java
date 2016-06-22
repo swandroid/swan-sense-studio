@@ -557,10 +557,9 @@ public class EvaluationEngineServiceBase extends Service {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
 
         builder.setContentIntent(contentIntent)
-                .setSmallIcon(hasRemote ? R.drawable.ic_launcher
-                        : R.drawable.ic_launcher)
                 .setContentTitle("Swan Active")
-                .setContentText("number of expressions: " + mRegisteredExpressions.size());
+                .setContentText("number of expressions: " + mRegisteredExpressions.size())
+                .setSmallIcon(R.drawable.ic_launcher);
 
         mNotification = builder.build();
         mNotificationManager.notify(NOTIFICATION_ID, mNotification);
