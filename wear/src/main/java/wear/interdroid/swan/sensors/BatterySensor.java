@@ -98,18 +98,6 @@ public class BatterySensor extends AbstractSwanSensorBase {
                 putValueTrimSize(PLUGGED_FIELD, null, now, intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0));
                 putValueTrimSize(STATUS_TEXT_FIELD, null, now, intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0));
 
-//                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//                    BatteryManager mBatteryManager =
-//                            (BatteryManager)getApplicationContext().getSystemService(Context.BATTERY_SERVICE);
-//                    Integer energy =
-//                            mBatteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW);
-//                    putValueTrimSize(DISCHARGE_CURRENT_FIELD, null, now , energy);
-//
-//                    float power = ((float)energy*(float)voltage)/1000;
-//                    putValueTrimSize(DISCHARGE_POWER_FIELD, null, now, power);
-//
-//                }
-
             }
         }
     };
@@ -146,9 +134,10 @@ public class BatterySensor extends AbstractSwanSensorBase {
                                     mBatteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW);
                             putValueTrimSize(DISCHARGE_CURRENT_FIELD, null, System.currentTimeMillis(), energy/1000);
 
-                            Log.d(TAG, "Battery current " + energy);
-                            float power = ((float) energy * (float) voltage) / 1000;
-                            putValueTrimSize(DISCHARGE_POWER_FIELD, null, System.currentTimeMillis(), power);
+                            Long energyinWatts =
+                                    mBatteryManager.getLongProperty(BatteryManager.BATTERY_PROPERTY_ENERGY_COUNTER);
+                            Log.i(TAG, "Remaining energy = " + energy + "nWh");
+                            putValueTrimSize(DISCHARGE_POWER_FIELD, null, System.currentTimeMillis(), energyinWatts);
                         }
                         try {
                             Thread.sleep(getSensorDelay());
