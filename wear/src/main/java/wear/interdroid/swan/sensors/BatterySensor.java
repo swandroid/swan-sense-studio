@@ -76,7 +76,7 @@ public class BatterySensor extends AbstractSwanSensorBase {
      * The discharge power level in miliwats
      */
 
-    public static final String DISCHARGE_POWER_FIELD = "discharge_power";
+    public static final String REMAINING_POWER_FIELD = "remaining_power";
 
     /**
      * The receiver for battery events.
@@ -106,7 +106,7 @@ public class BatterySensor extends AbstractSwanSensorBase {
     @Override
     public final String[] getValuePaths() {
         return new String[]{TEMPERATURE_FIELD, LEVEL_FIELD, VOLTAGE_FIELD,
-                PLUGGED_FIELD, STATUS_TEXT_FIELD, DISCHARGE_CURRENT_FIELD, DISCHARGE_POWER_FIELD};
+                PLUGGED_FIELD, STATUS_TEXT_FIELD, DISCHARGE_CURRENT_FIELD, REMAINING_POWER_FIELD};
     }
 
     @Override
@@ -137,7 +137,7 @@ public class BatterySensor extends AbstractSwanSensorBase {
                             Long energyinWatts =
                                     mBatteryManager.getLongProperty(BatteryManager.BATTERY_PROPERTY_ENERGY_COUNTER);
                             Log.i(TAG, "Remaining energy = " + energy + "nWh");
-                            putValueTrimSize(DISCHARGE_POWER_FIELD, null, System.currentTimeMillis(), energyinWatts);
+                            putValueTrimSize(REMAINING_POWER_FIELD, null, System.currentTimeMillis(), energyinWatts);
                         }
                         try {
                             Thread.sleep(getSensorDelay());
@@ -164,7 +164,7 @@ public class BatterySensor extends AbstractSwanSensorBase {
                     Intent.ACTION_BATTERY_CHANGED));
         }
 
-        if(valuePath.equals(DISCHARGE_POWER_FIELD) || valuePath.equals(DISCHARGE_CURRENT_FIELD)){
+        if(valuePath.equals(REMAINING_POWER_FIELD) || valuePath.equals(DISCHARGE_CURRENT_FIELD)){
             numberOfPowerSensors++;
             idToValuePath.put(id,valuePath);
             updateAccuracy();
@@ -179,7 +179,7 @@ public class BatterySensor extends AbstractSwanSensorBase {
 
         if(idToValuePath.containsKey(id)) {
             String valuePath = idToValuePath.get(id);
-            if (valuePath.equals(DISCHARGE_POWER_FIELD) || valuePath.equals(DISCHARGE_CURRENT_FIELD)) {
+            if (valuePath.equals(REMAINING_POWER_FIELD) || valuePath.equals(DISCHARGE_CURRENT_FIELD)) {
                 numberOfPowerSensors++;
                 updateAccuracy();
             }

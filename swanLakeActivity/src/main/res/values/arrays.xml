@@ -119,7 +119,7 @@
         <item>plugged</item>
         <item>status_text</item>
         <item>discharge_current</item>
-        <item>discharge_power</item>
+        <item>remaining_power</item>
     </string-array>
 
     <!-- time sensor -->

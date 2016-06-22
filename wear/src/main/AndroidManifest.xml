@@ -281,7 +281,7 @@
                 android:value="battery" />
             <meta-data
                 android:name="valuePaths"
-                android:value="level,voltage,temperature,plugged,status_text,discharge_current,discharge_power" />
+                android:value="level,voltage,temperature,plugged,status_text,discharge_current,remaining_power" />
             <meta-data
                 android:name="authority"
                 android:value="interdroid.context.sensor.battery" />
