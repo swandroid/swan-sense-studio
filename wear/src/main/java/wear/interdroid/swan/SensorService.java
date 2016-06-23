@@ -162,6 +162,7 @@ public class SensorService extends Service implements SensorEventListener {
 
     private void unregisterSwanExpression(String id) {
         exp.unregisterSWANExpression(id);
+        expressionContainer.remove(id);
     }
 
     @Override
@@ -237,6 +238,7 @@ public class SensorService extends Service implements SensorEventListener {
     }
 
     protected void stopSingleMeasurement(int sensorID, Measurement type, String exprID) {
+
         lock.lock();
         try {
 
