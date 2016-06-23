@@ -263,10 +263,11 @@ public class SensorService extends Service implements SensorEventListener {
                 update_notification();
             }
 
+
+        } finally {
             if (activeSensors.isEmpty() && expressionContainer.isEmpty()) {
                 stopSelf();
             }
-        } finally {
             lock.unlock();
         }
 
