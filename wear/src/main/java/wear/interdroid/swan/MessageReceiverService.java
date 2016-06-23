@@ -38,13 +38,11 @@ public class MessageReceiverService extends WearableListenerService {
         super.onDataChanged(dataEvents);
 
         for (DataEvent dataEvent : dataEvents) {
-            Log.d(TAG, "Got pathx ++++++++++" + dataEvent.getDataItem().getUri().getPath());
             if (dataEvent.getType() == DataEvent.TYPE_CHANGED) {
                 DataItem dataItem = dataEvent.getDataItem();
                 Uri uri = dataItem.getUri();
                 String path = uri.getPath();
 
-                Log.d(TAG, "Got path ++++++++++" + path);
                 if(path.startsWith(ClientPaths.REGISTER_EXPRESSION)
                         || path.startsWith(ClientPaths.UNREGISTER_EXPRESSION) ){
                     Intent intent = new Intent(this, SensorService.class);

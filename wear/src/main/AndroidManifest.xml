@@ -283,6 +283,9 @@
                 android:name="valuePaths"
                 android:value="level,voltage,temperature,plugged,status_text,discharge_current,remaining_power" />
             <meta-data
+                android:name="delay"
+                android:value="20000" />
+            <meta-data
                 android:name="authority"
                 android:value="interdroid.context.sensor.battery" />
             <meta-data

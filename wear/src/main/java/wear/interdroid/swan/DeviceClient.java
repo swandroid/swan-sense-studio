@@ -41,7 +41,6 @@ public class DeviceClient {
     private ExecutorService executorService;
     private int filterId;
 
-    private SparseLongArray lastSensorData;
 
     private DeviceClient(Context context) {
         this.context = context;
@@ -49,7 +48,6 @@ public class DeviceClient {
         googleApiClient = new GoogleApiClient.Builder(context).addApi(Wearable.API).build();
 
         executorService = Executors.newCachedThreadPool();
-        lastSensorData = new SparseLongArray();
     }
 
     public void setSensorFilter(int filterId) {
@@ -61,20 +59,6 @@ public class DeviceClient {
     public void sendSensorData(final int sensorType, final int accuracy, final long timestamp, final float[] values) {
         long t = System.currentTimeMillis();
 
-        long lastTimestamp = lastSensorData.get(sensorType);
-        long timeAgo = t - lastTimestamp;
-
-        if (lastTimestamp != 0) {
-            if (filterId == sensorType && timeAgo < 100) {
-                return;
-            }
-
-            if (filterId != sensorType && timeAgo < 3000) {
-                return;
-            }
-        }
-
-        lastSensorData.put(sensorType, t);
 
         executorService.submit(new Runnable() {
             @Override
@@ -85,19 +69,21 @@ public class DeviceClient {
     }
 
     private void sendSensorDataInBackground(int sensorType, int accuracy, long timestamp, float[] values) {
-        if (sensorType == filterId) {
-            Log.i(TAG, "Sensor " + sensorType + " = " + Arrays.toString(values));
-        } else {
-            Log.d(TAG, "Sensor " + sensorType + " = " + Arrays.toString(values));
-        }
+//        if (sensorType == filterId) {
+//            Log.i(TAG, "Sensor " + sensorType + " = " + Arrays.toString(values));
+//        } else {
+//            Log.d(TAG, "Sensor " + sensorType + " = " + Arrays.toString(values));
+//        }
 
         PutDataMapRequest dataMap = PutDataMapRequest.create("/sensors/" + sensorType);
 
-        dataMap.getDataMap().putInt(DataMapKeys.ACCURACY, accuracy);
+       // dataMap.getDataMap().putInt(DataMapKeys.ACCURACY, accuracy);
         dataMap.getDataMap().putLong(DataMapKeys.TIMESTAMP, timestamp);
         dataMap.getDataMap().putFloatArray(DataMapKeys.VALUES, values);
 
+
         PutDataRequest putDataRequest = dataMap.asPutDataRequest();
+
         send(putDataRequest);
     }
 

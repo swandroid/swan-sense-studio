@@ -101,7 +101,7 @@ public class SensorService extends Service implements SensorEventListener {
                 Bundle extra = intent.getExtras();
                 int sensorId = extra.getInt(SensorConstants.SENSOR_ID);
                 int accuracy = extra.getInt(SensorConstants.ACCURACY);
-                Log.d("TAG", "starting sensor+++++++" + sensorId);
+                Log.d("TAG", "starting sensor+++++++" + sensorId + " " + accuracy);
                 startSingleMeasurement(sensorId, accuracy, Measurement.SENSOR, null , null);
             }
 
@@ -208,7 +208,8 @@ public class SensorService extends Service implements SensorEventListener {
                     update_accuracy(sensorId, accuracy);
                 } else {
                     activeSensors.put(sensorId, new SensorContainer(sensor, accuracy, 1));
-                    mSensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+                    Log.d(TAG,"Registering sensor with accuracy" + accuracy);
+                    mSensorManager.registerListener(this, sensor, accuracy);
                 }
                 update_notification();
             } else {
@@ -456,6 +457,7 @@ public class SensorService extends Service implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
+        //Log.d(TAG,"Sensor event!+++++++++++++++");
         client.sendSensorData(event.sensor.getType(), event.accuracy, event.timestamp, event.values);
     }
 
