@@ -28,6 +28,8 @@ public class DeviceClient {
 
     public static DeviceClient instance;
 
+    private SparseLongArray lastSensorData;
+
     public static DeviceClient getInstance(Context context) {
         if (instance == null) {
             instance = new DeviceClient(context.getApplicationContext());
@@ -46,8 +48,7 @@ public class DeviceClient {
         this.context = context;
 
         googleApiClient = new GoogleApiClient.Builder(context).addApi(Wearable.API).build();
-
-        executorService = Executors.newCachedThreadPool();
+        lastSensorData = new SparseLongArray();
     }
 
     public void setSensorFilter(int filterId) {
@@ -56,10 +57,32 @@ public class DeviceClient {
         this.filterId = filterId;
     }
 
+    public void initExecutor(){
+        executorService = Executors.newCachedThreadPool();
+    }
+    public void shutDown(){
+        executorService.shutdownNow();
+    }
+
     public void sendSensorData(final int sensorType, final int accuracy, final long timestamp, final float[] values) {
+
+       // Log.d(TAG, "Send Sensor Data in Main Thread");
         long t = System.currentTimeMillis();
 
+        long lastTimestamp = lastSensorData.get(sensorType);
+        long timeAgo = t - lastTimestamp;
 
+        if (lastTimestamp != 0) {
+            if (timeAgo < 100) {
+                return;
+            }
+
+//            if (filterId != sensorType && timeAgo < 3000) {
+//                return;
+//            }
+        }
+
+        lastSensorData.put(sensorType, t);
         executorService.submit(new Runnable() {
             @Override
             public void run() {
@@ -124,7 +147,7 @@ public class DeviceClient {
             Wearable.DataApi.putDataItem(googleApiClient, putDataRequest).setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
                 @Override
                 public void onResult(DataApi.DataItemResult dataItemResult) {
-                    Log.v(TAG, "Sending sensor data: " + dataItemResult.getStatus().isSuccess());
+                   // Log.v(TAG, "Sending sensor data: " + dataItemResult.getStatus().isSuccess());
                 }
             });
         }

@@ -128,6 +128,7 @@ public class SensorService extends Service implements SensorEventListener {
         super.onCreate();
 
         client = DeviceClient.getInstance(this);
+        client.initExecutor();
 
         exp = new ManageExpressions(getApplicationContext());
 
@@ -162,6 +163,7 @@ public class SensorService extends Service implements SensorEventListener {
     @Override
     public void onDestroy() {
         unregisterReceiver(sensorCommand);
+        client.shutDown();
         stopMeasurement();
         super.onDestroy();
 
