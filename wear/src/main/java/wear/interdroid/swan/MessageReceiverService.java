@@ -58,12 +58,31 @@ public class MessageReceiverService extends WearableListenerService {
                     handleExpressions(id, expression,path);
                 }
 
+                if(path.startsWith(ClientPaths.START_MEASUREMENT)){
+                    Intent intent = new Intent(this, SensorService.class);
+                    startService(intent);
 
-                if (path.startsWith("/filter")) {
+                    do {
+                        SystemClock.sleep(200);
+                    } while (!isMyServiceRunning(SensorService.class));
+
                     DataMap dataMap = DataMapItem.fromDataItem(dataItem).getDataMap();
-                    int filterById = dataMap.getInt(DataMapKeys.FILTER);
-                    deviceClient.setSensorFilter(filterById);
+
+                    int sensorId = dataMap.getInt(SensorConstants.SENSOR_ID);
+                    int accuracy =  dataMap.getInt(SensorConstants.ACCURACY);
+
+                    addSensor(sensorId,accuracy);
                 }
+
+                if(path.startsWith(ClientPaths.STOP_MEASUREMENT)){
+                    DataMap dataMap = DataMapItem.fromDataItem(dataItem).getDataMap();
+
+                    int sensorId = dataMap.getInt(SensorConstants.SENSOR_ID);
+
+                    removeSensor(sensorId);
+                }
+
+
             }
         }
     }
