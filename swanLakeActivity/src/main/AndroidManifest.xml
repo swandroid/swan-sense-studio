@@ -73,7 +73,7 @@
                 <category android:name="interdroid.swan" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".crossdevice.Registry$Receiver">
+        <receiver android:name="interdroid.swancore.crossdevice.Registry$Receiver">
             <intent-filter>
                 <action android:name="interdroid.swan.GET_NAMES" />
             </intent-filter>
@@ -98,10 +98,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".crossdevice.swanplus.SwanLakePlusActivity"
+            android:name=".crossdevice.SwanLakePlusActivity"
             android:label="SwanLake+"
             android:screenOrientation="portrait">
-            <intent-filter>
+            <!--<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -112,28 +112,11 @@
                 <category android:name="android.intent.category.DEFAULT" />
 
                 <data android:scheme="swan" />
-            </intent-filter>
+            </intent-filter>-->
         </activity>
         <activity
-            android:name=".crossdevice.swanplus.TestActivity"
-            android:label="SwanLakeTest+"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.nfc.action.NDEF_DISCOVERED" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <data android:scheme="swan" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".crossdevice.swanplus.run2gether.ActivityRun2gether"
-            android:label="Run2gether"
+            android:name=".crossdevice.TestActivity"
+            android:label="SwanLakeTest"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -479,13 +462,19 @@
                 android:value="battery" />
             <meta-data
                 android:name="valuePaths"
-                android:value="level,voltage,temperature,plugged,status_text" />
+                android:value="level,voltage,temperature,plugged,status_text,discharge_current,discharge_power" />
             <meta-data
                 android:name="authority"
                 android:value="interdroid.context.sensor.battery" />
             <meta-data
+                android:name="accuracy"
+                android:value="3" />
+            <meta-data
+                android:name="delay"
+                android:value="20000" />
+            <meta-data
                 android:name="units"
-                android:value="percent,mV,Celsius,," />
+                android:value="percent,mV,Celsius,,,mAh,mWh" />
         </activity>
         <activity
             android:name=".sensors.impl.BluetoothSensor$ConfigurationActivity"
@@ -1276,9 +1265,8 @@
             android:process=":fitnesssensor"/>
 
         <service
-            android:name=".crossdevice.swanplus.TestIntentService"
-            android:exported="false"/>
-
+            android:name=".sensors.impl.FitnessSensor$MessengerService"
+            android:exported="false"></service>
         <service
             android:name="interdroid.swan.sensors.impl.OVSensor"
             android:exported="true"
@@ -1514,7 +1502,7 @@
                 android:value="m/s2,m/s2,m/s2,m/s2" />
         </activity>
 
-        <!-- Wear Light Sensor-->
+        <!-- Wear Game Rotation Sensor-->
         <service
             android:name="interdroid.swan.sensors.impl.wear.WearGameRotationSensor"
             android:exported="true"
@@ -1552,7 +1540,7 @@
             android:process=":wearlightsensor" >
         </service>
 
-        <!-- Wear Movement Sensor-->
+        <!-- Wear Linear Acceleration Sensor-->
         <activity
             android:name="interdroid.swan.sensors.impl.wear.WearLinearAcceleration$ConfigurationActivity"
             android:exported="true"
@@ -1678,9 +1666,7 @@
                 android:value="" />
         </activity>
 
-        <service
-            android:name="interdroid.swan.sensors.impl.BeaconDiscoverySensor" >
-        </service>
+        <service android:name="interdroid.swan.sensors.impl.BeaconDiscoverySensor"></service>
 
         <activity
             android:name=".sensors.impl.BeaconTempSensor$ConfigurationActivity"
@@ -1707,9 +1693,7 @@
                 android:value="C" />
         </activity>
 
-        <service
-            android:name="interdroid.swan.sensors.impl.BeaconTempSensor" >
-        </service>
+        <service android:name="interdroid.swan.sensors.impl.BeaconTempSensor"></service>
 
         <!-- Cuckoo resources-->
         <provider
@@ -1717,10 +1701,95 @@
             android:authorities="interdroid.cuckoo.ResourceManager"
             android:exported="true" />
 
-        <activity
+ 		<activity
             android:name="interdroid.cuckoo.resourcemanager.ResourcesActivity"
             android:label="Resource Manager" >
         </activity>
+
+
+        <activity
+            android:name=".sensors.impl.BeaconDistanceSensor$ConfigurationActivity"
+            android:exported="true"
+            android:icon="@drawable/temperature_icon">
+            <intent-filter>
+                <action android:name="interdroid.swan.sensor.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="beaconDistance" />
+            <meta-data
+                android:name="valuePaths"
+                android:value="distance" />
+            <meta-data
+                android:name="accuracy"
+                android:value="3" />
+            <meta-data
+                android:name="delay"
+                android:value="200000" />
+            <meta-data
+                android:name="units"
+                android:value="m" />
+        </activity>
+
+        <service android:name="interdroid.swan.sensors.impl.BeaconDistanceSensor"></service>
+
+        <activity
+            android:name="interdroid.swan.sensors.impl.BeaconMovementSensor$ConfigurationActivity"
+            android:exported="true"
+            android:icon="@drawable/movement_icon">
+            <intent-filter>
+                <action android:name="interdroid.swan.sensor.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="beacon_movement" />
+            <meta-data
+                android:name="valuePaths"
+                android:value="x,y,z,total" />
+            <meta-data
+                android:name="delay"
+                android:value="200000" />
+            <meta-data
+                android:name="accuracy"
+                android:value="3" />
+            <meta-data
+                android:name="units"
+                android:value="m/s2,m/s2,m/s2,m/s2" />
+        </activity>
+
+        <service android:name="interdroid.swan.sensors.impl.BeaconMovementSensor"></service>
+
+
+        <activity
+            android:name="interdroid.swan.sensors.impl.BeaconMotionSensor$ConfigurationActivity"
+            android:exported="true"
+            android:icon="@drawable/movement_icon">
+            <intent-filter>
+                <action android:name="interdroid.swan.sensor.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="beacon_motion" />
+            <meta-data
+                android:name="valuePaths"
+                android:value="isMoving,currentMotionTime,previousMotionTime" />
+            <meta-data
+                android:name="delay"
+                android:value="200000" />
+            <meta-data
+                android:name="accuracy"
+                android:value="3" />
+            <meta-data
+                android:name="units"
+                android:value="s,s,s" />
+        </activity>
+
+        <service android:name="interdroid.swan.sensors.impl.BeaconMotionSensor"></service>
+
+        <service android:name="interdroid.swan.crossdevice.beacon.BeaconSingleton"></service>
 
     </application>
 

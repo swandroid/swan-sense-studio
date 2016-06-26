@@ -11,9 +11,9 @@ import android.widget.ListView;
 
 import java.util.List;
 
-import interdroid.swan.ExpressionManager;
+import interdroid.swancore.swanmain.ExpressionManager;
 import interdroid.swan.R;
-import interdroid.swan.SensorInfo;
+import interdroid.swancore.swanmain.SensorInfo;
 
 public class SelectSensorDialog extends Activity {
 

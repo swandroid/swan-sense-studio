@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="interdroid.swan">
+    package="wear.interdroid.swan">
 
     <uses-feature android:name="android.hardware.type.watch" />
     <uses-permission android:name="android.permission.BODY_SENSORS" />
@@ -14,13 +14,289 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <service android:name="interdroid.swan.MessageReceiverService">
+        <service android:name="wear.interdroid.swan.MessageReceiverService">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.BIND_LISTENER" />
             </intent-filter>
         </service>
 
-        <service android:name="interdroid.swan.SensorService" />
+        <service android:name="wear.interdroid.swan.SensorService" />
+
+        <!-- engine stuff -->
+        <receiver
+            android:name="interdroid.swancore.engine.EvaluationEngineReceiverBase"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="interdroid.swan.REGISTER" />
+                <action android:name="interdroid.swan.UNREGISTER" />
+                <action android:name="interdroid.swan.NOTIFY" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name="interdroid.swancore.engine.EvaluationEngineServiceBase"
+            android:exported="false" />
+
+
+        <!--Movement Sensor -->
+        <activity
+            android:name=".sensors.MovementSensor$ConfigurationActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="interdroid.swan.sensor.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="movement" />
+            <meta-data
+                android:name="valuePaths"
+                android:value="x,y,z,total" />
+            <meta-data
+                android:name="accuracy"
+                android:value="3" />
+            <meta-data
+                android:name="delay"
+                android:value="200000" />
+            <meta-data
+                android:name="units"
+                android:value="m/s2,m/s2,m/s2,m/s2" />
+        </activity>
+
+        <service
+            android:name=".sensors.MovementSensor"></service>
+
+        <!-- Wear Gyroscope Sensor-->
+        <activity
+            android:name=".sensors.GyroscopeSensor$ConfigurationActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="interdroid.swan.sensor.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="wear_gyroscope" />
+            <meta-data
+                android:name="valuePaths"
+                android:value="x,y,z" />
+            <meta-data
+                android:name="accuracy"
+                android:value="3" />
+            <meta-data
+                android:name="delay"
+                android:value="200000" />
+            <meta-data
+                android:name="units"
+                android:value="Degrees,Degrees,Degrees" />
+        </activity>
+
+        <service
+            android:name="sensors.GyroscopeSensor"></service>
+
+        <!-- Wear Light sensor-->
+        <activity
+            android:name="sensors.LightSensor$ConfigurationActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="interdroid.swan.sensor.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="wear_light" />
+            <meta-data
+                android:name="valuePaths"
+                android:value="lux" />
+            <meta-data
+                android:name="accuracy"
+                android:value="3" />
+            <meta-data
+                android:name="delay"
+                android:value="200000" />
+            <meta-data
+                android:name="units"
+                android:value="lux" />
+        </activity>
+
+        <service
+            android:name=".sensors.LightSensor"></service>
+
+        <!-- Wear  Gravity Sensor-->
+        <activity
+            android:name=".sensors.GravitySensor$ConfigurationActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="interdroid.swan.sensor.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="wear_gravity" />
+            <meta-data
+                android:name="valuePaths"
+                android:value="x,y,z" />
+            <meta-data
+                android:name="accuracy"
+                android:value="3" />
+            <meta-data
+                android:name="delay"
+                android:value="200000" />
+            <meta-data
+                android:name="units"
+                android:value="m/s2,m/s2,m/s2,m/s2" />
+        </activity>
+
+        <service
+            android:name=".sensors.GravitySensor">
+
+        </service>
+
+        <!--Wear step counter -->
+        <activity
+            android:name=".sensors.StepCounterSensor$ConfigurationActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="interdroid.swan.sensor.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="wear_step_counter" />
+            <meta-data
+                android:name="valuePaths"
+                android:value="step_counter" />
+            <meta-data
+                android:name="delay"
+                android:value="200000" />
+            <meta-data
+                android:name="authority"
+                android:value="interdroid.context.sensor.step_counter" />
+            <meta-data
+                android:name="units"
+                android:value="steps" />
+        </activity>
+
+        <service
+            android:name=".sensors.StepCounterSensor"
+            android:exported="true"
+            android:process=":wearstepcountersensor">
+
+        </service>
+
+
+        <!-- Wear Game Rotation Sensor-->
+        <activity
+            android:name=".sensors.GameRotationSensor$ConfigurationActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="interdroid.swan.sensor.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="wear_gamerotation" />
+            <meta-data
+                android:name="valuePaths"
+                android:value="x,y,z,total" />
+            <meta-data
+                android:name="accuracy"
+                android:value="3" />
+            <meta-data
+                android:name="delay"
+                android:value="200000" />
+            <meta-data
+                android:name="units"
+                android:value="m/s2,m/s2,m/s2,m/s2" />
+        </activity>
+
+        <!-- Wear Game Rotation Sensor-->
+        <service
+            android:name=".sensors.GameRotationSensor" />
+
+
+
+        <!-- Wear Linear Acceleration Sensor-->
+        <activity
+            android:name=".sensors.LinearAccelerationSensor$ConfigurationActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="interdroid.swan.sensor.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="wear_linearacceleration" />
+            <meta-data
+                android:name="valuePaths"
+                android:value="x,y,z,total" />
+            <meta-data
+                android:name="accuracy"
+                android:value="3" />
+            <meta-data
+                android:name="delay"
+                android:value="200000" />
+            <meta-data
+                android:name="units"
+                android:value="m/s2,m/s2,m/s2,m/s2" />
+        </activity>
+
+        <service
+            android:name=".sensors.LinearAccelerationSensor" />
+
+        <!-- Heart Rate-->
+        <activity
+            android:name=".sensors.HeartRateSensor$ConfigurationActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="interdroid.swan.sensor.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="wear_heartrate" />
+            <meta-data
+                android:name="valuePaths"
+                android:value="heart_rate" />
+            <meta-data
+                android:name="units"
+                android:value="bpm" />
+        </activity>
+
+        <service
+            android:name=".sensors.HeartRateSensor" />
+
+        <activity
+            android:name=".sensors.BatterySensor$ConfigurationActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="interdroid.swan.sensor.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="battery" />
+            <meta-data
+                android:name="valuePaths"
+                android:value="level,voltage,temperature,plugged,status_text,discharge_current,remaining_power" />
+            <meta-data
+                android:name="delay"
+                android:value="20000" />
+            <meta-data
+                android:name="authority"
+                android:value="interdroid.context.sensor.battery" />
+            <meta-data
+                android:name="units"
+                android:value="percent,mV,Celsius,,,mAh,nWh" />
+        </activity>
+
+        <service
+            android:name=".sensors.BatterySensor" />
+
     </application>
+
 
 </manifest>

@@ -16,7 +16,8 @@ import java.util.List;
 import java.util.Map;
 
 import interdroid.swan.sensors.impl.ServerConnection;
-import interdroid.swan.swansong.TimestampedValue;
+import interdroid.swancore.swansong.TimestampedValue;
+import interdroid.swancore.sensors.AbstractSensorBase;
 import nl.sense_os.platform.TrivialSensorRegistrator;
 import nl.sense_os.service.R;
 import nl.sense_os.service.commonsense.SensorRegistrator;

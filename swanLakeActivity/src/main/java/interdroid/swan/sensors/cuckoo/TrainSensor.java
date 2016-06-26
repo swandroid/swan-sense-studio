@@ -1,13 +1,14 @@
 package interdroid.swan.sensors.cuckoo;
 
 import interdroid.swan.R;
-import interdroid.swan.sensors.AbstractConfigurationActivity;
 import interdroid.swan.sensors.AbstractCuckooSensor;
 
 import android.os.Bundle;
 import android.app.Activity;
 import android.util.Log;
 import interdroid.swan.cuckoo_sensors.CuckooPoller;
+import interdroid.swancore.sensors.AbstractConfigurationActivity;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;

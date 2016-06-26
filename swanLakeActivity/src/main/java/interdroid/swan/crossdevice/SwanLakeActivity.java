@@ -43,8 +43,9 @@ import interdroid.sense.LoginActivity;
 import interdroid.sense.RegistrationActivity;
 import interdroid.sense.SettingsActivity;
 import interdroid.swan.R;
-import interdroid.swan.swansong.Expression;
+import interdroid.swancore.swansong.Expression;
 import interdroid.swan.ttn.TtnActivity;
+import interdroid.swancore.crossdevice.Registry;
 import nl.sense_os.service.constants.SensePrefs;
 
 /**

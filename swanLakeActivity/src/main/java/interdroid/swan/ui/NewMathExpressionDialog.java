@@ -8,13 +8,13 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import interdroid.swan.R;
-import interdroid.swan.swansong.Expression;
-import interdroid.swan.swansong.ExpressionFactory;
-import interdroid.swan.swansong.ExpressionParseException;
-import interdroid.swan.swansong.HistoryReductionMode;
-import interdroid.swan.swansong.MathOperator;
-import interdroid.swan.swansong.MathValueExpression;
-import interdroid.swan.swansong.ValueExpression;
+import interdroid.swancore.swansong.Expression;
+import interdroid.swancore.swansong.ExpressionFactory;
+import interdroid.swancore.swansong.ExpressionParseException;
+import interdroid.swancore.swansong.HistoryReductionMode;
+import interdroid.swancore.swansong.MathOperator;
+import interdroid.swancore.swansong.MathValueExpression;
+import interdroid.swancore.swansong.ValueExpression;
 
 public class NewMathExpressionDialog extends Activity {
 

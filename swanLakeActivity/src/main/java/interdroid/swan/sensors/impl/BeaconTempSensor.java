@@ -12,7 +12,7 @@ import interdroid.swan.R;
 import interdroid.swan.crossdevice.beacon.AbstractBeaconSensor;
 import interdroid.swan.crossdevice.beacon.BeaconTypes;
 import interdroid.swan.crossdevice.beacon.BeaconUtils;
-import interdroid.swan.sensors.AbstractConfigurationActivity;
+import interdroid.swancore.sensors.AbstractConfigurationActivity;
 
 /**
  * Created by Veaceslav Munteanu on 5/3/16.

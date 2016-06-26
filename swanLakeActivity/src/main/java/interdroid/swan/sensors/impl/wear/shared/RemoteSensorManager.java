@@ -24,15 +24,17 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import interdroid.swan.engine.EvaluationEngineService;
 import interdroid.swan.sensordashboard.shared.ClientPaths;
 import interdroid.swan.sensordashboard.shared.DataMapKeys;
 import interdroid.swan.sensordashboard.shared.SensorConstants;
 import interdroid.swan.sensors.impl.wear.shared.data.SensorDataPoint;
 import interdroid.swan.sensors.impl.wear.shared.data.SensorNames;
 import interdroid.swan.sensors.impl.wear.shared.data.WearSensor;
+import interdroid.swancore.swansong.TimestampedValue;
 
 public class RemoteSensorManager {
-    private static final String TAG = "Wear/RemoteSensorManager";
+    private static final String TAG = "RemoteSensorManager";
     private static final int CLIENT_CONNECTION_TIMEOUT = 15000;
 
     private static RemoteSensorManager instance;
@@ -114,6 +116,16 @@ public class RemoteSensorManager {
         context.sendBroadcast(i);
     }
 
+    public synchronized void addExpressionData(String id, String data){
+
+        Log.d(TAG, "Got data for id: " + id);
+        Intent i = new Intent(EvaluationEngineService.ACTION_NEW_RESULT_REMOTE);
+        i.setClass(context, EvaluationEngineService.class);
+        i.putExtra("id", id);
+        i.putExtra("data", data);
+        context.startService(i);
+    }
+
     private boolean validateConnection() {
         if (googleApiClient.isConnected()) {
             return true;
@@ -154,7 +166,7 @@ public class RemoteSensorManager {
         }
     }
 
-    public void startMeasurement(Bundle config) {
+    public void startMeasurement(final Bundle config) {
 
         ByteBuffer byteBuffer = ByteBuffer.allocate(12);
 
@@ -167,23 +179,83 @@ public class RemoteSensorManager {
         executorService.submit(new Runnable() {
             @Override
             public void run() {
-                controlMeasurementInBackground(ClientPaths.START_MEASUREMENT, data);
+                handleSensors(ClientPaths.START_MEASUREMENT,
+                        config.getInt(SensorConstants.SENSOR_ID),
+                        config.getInt(SensorConstants.ACCURACY));
             }
         });
     }
 
-    public void stopMeasurement(Bundle config) {
+    public void stopMeasurement(final Bundle config) {
 
-        ByteBuffer byteBuffer = ByteBuffer.allocate(12);
-        byteBuffer.putInt(config.getInt(SensorConstants.SENSOR_ID));
-        final byte[] data = byteBuffer.array();
 
         executorService.submit(new Runnable() {
             @Override
             public void run() {
-                controlMeasurementInBackground(ClientPaths.STOP_MEASUREMENT, data);
+                handleSensors(ClientPaths.STOP_MEASUREMENT,config.getInt(SensorConstants.SENSOR_ID),0);
             }
         });
+    }
+
+    public void registerExpression(final String expression, final String id){
+
+        executorService.submit(new Runnable() {
+            @Override
+            public void run() {
+
+                handleExpressions(ClientPaths.REGISTER_EXPRESSION, expression, id);
+            }
+        });
+    }
+
+    public void unregisterExpression( final String expression, final String id){
+
+
+        executorService.submit(new Runnable() {
+            @Override
+            public void run() {
+
+                handleExpressions(ClientPaths.UNREGISTER_EXPRESSION, expression, id);
+            }
+        });
+    }
+
+    private void handleExpressions(final String path, final String expression, final String id) {
+        if(validateConnection()) {
+            PutDataMapRequest dataMap = PutDataMapRequest.create(path);
+
+            dataMap.getDataMap().putString(DataMapKeys.EXPRESSION_ID, id);
+            dataMap.getDataMap().putString(DataMapKeys.EXPRESSION, expression);
+            dataMap.getDataMap().putLong("Time",System.currentTimeMillis());
+
+            PutDataRequest putDataRequest = dataMap.asPutDataRequest();
+            putDataRequest = putDataRequest.setUrgent();
+            Wearable.DataApi.putDataItem(googleApiClient, putDataRequest).setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
+                @Override
+                public void onResult(DataApi.DataItemResult dataItemResult) {
+                    Log.d(TAG, "Sending new expession ++++++++" + path +" " + id + ": " + dataItemResult.getStatus().isSuccess());
+                }
+            });
+        }
+    }
+
+    private void handleSensors(final String path, final int sensorID, final int acuracy) {
+        if(validateConnection()) {
+            PutDataMapRequest dataMap = PutDataMapRequest.create(path);
+
+            dataMap.getDataMap().putInt(SensorConstants.SENSOR_ID, sensorID);
+            dataMap.getDataMap().putInt(SensorConstants.ACCURACY, acuracy);
+            dataMap.getDataMap().putLong("Time",System.currentTimeMillis());
+
+            PutDataRequest putDataRequest = dataMap.asPutDataRequest();
+            putDataRequest = putDataRequest.setUrgent();
+            Wearable.DataApi.putDataItem(googleApiClient, putDataRequest).setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
+                @Override
+                public void onResult(DataApi.DataItemResult dataItemResult) {
+                    Log.d(TAG, "Sending new sensor ++++++++" + path +" " + sensorID + ": " + dataItemResult.getStatus().isSuccess());
+                }
+            });
+        }
     }
 
     public void getNodes(ResultCallback<NodeApi.GetConnectedNodesResult> pCallback) {
@@ -212,4 +284,5 @@ public class RemoteSensorManager {
             Log.w(TAG, "No connection possible");
         }
     }
+
 }

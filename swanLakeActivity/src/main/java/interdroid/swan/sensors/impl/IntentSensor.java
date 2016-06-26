@@ -2,16 +2,16 @@ package interdroid.swan.sensors.impl;
 
 import android.os.Bundle;
 
-import interdroid.swan.ExpressionManager;
+import interdroid.swancore.swanmain.ExpressionManager;
 import interdroid.swan.R;
-import interdroid.swan.SwanException;
-import interdroid.swan.ValueExpressionListener;
-import interdroid.swan.sensors.AbstractConfigurationActivity;
+import interdroid.swancore.swanmain.SwanException;
+import interdroid.swancore.swanmain.ValueExpressionListener;
+import interdroid.swancore.sensors.AbstractConfigurationActivity;
 import interdroid.swan.sensors.AbstractSwanSensor;
-import interdroid.swan.swansong.Expression;
-import interdroid.swan.swansong.HistoryReductionMode;
-import interdroid.swan.swansong.SensorValueExpression;
-import interdroid.swan.swansong.TimestampedValue;
+import interdroid.swancore.swansong.Expression;
+import interdroid.swancore.swansong.HistoryReductionMode;
+import interdroid.swancore.swansong.SensorValueExpression;
+import interdroid.swancore.swansong.TimestampedValue;
 
 public class IntentSensor extends AbstractSwanSensor {
 

@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<project name="swan" default="jars">
+    <target name="jars" depends="api-jar,sensor-jar"></target>
+    <target name="api-jar">
+        <mkdir dir="swan-in-your-app" />
+        <copy todir="swan-in-your-app">
+            <fileset dir="libs">
+                <include name="antlr*.jar" />
+            </fileset>
+        </copy>
+        <jar destfile="swan-in-your-app/swan.jar" includes="**/swancore/swanmain/*.class,**/swancore/util/*.class"
+            excludes="**/R.class,**/BuildConfig.class"
+            basedir="build/intermediates/classes/debug" />
+        <jar destfile="swan-in-your-app/swan-song.jar" includes="**/swansong/*.class"
+            basedir="build/intermediates/classes/debug" />
+    </target>
+    <target name="sensor-jar">
+        <mkdir dir="swan-sensor-in-your-app" />
+        <jar destfile="swan-sensor-in-your-app/swan-sensor.jar" includes="**/swan/sensors/*.class"
+            basedir="build/intermediates/classes/debug" />
+        <jar destfile="swan-sensor-in-your-app/swan-song.jar" includes="**/swansong/*.class"
+            basedir="build/intermediates/classes/debug" />
+    </target>
+</project>

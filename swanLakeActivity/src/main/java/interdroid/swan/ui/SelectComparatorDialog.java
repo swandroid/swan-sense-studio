@@ -10,7 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import interdroid.swan.R;
-import interdroid.swan.swansong.Comparator;
+import interdroid.swancore.swansong.Comparator;
 
 public class SelectComparatorDialog extends Activity {
 

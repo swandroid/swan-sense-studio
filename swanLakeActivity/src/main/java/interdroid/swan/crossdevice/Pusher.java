@@ -14,9 +14,8 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.util.HashMap;
 
-import interdroid.swan.crossdevice.swanplus.SwanLakePlusActivity;
-import interdroid.swan.crossdevice.swanplus.SwanUser;
-import interdroid.swan.crossdevice.swanplus.wifidirect.WDManager;
+import interdroid.swan.crossdevice.wifidirect.WDSwanDevice;
+import interdroid.swan.crossdevice.wifidirect.WDManager;
 
 public class Pusher {
 
@@ -47,7 +46,7 @@ public class Pusher {
                 try {
                     WDManager wdManager = (WDManager) SwanLakePlusActivity.getProximityManager();
 
-                    SwanUser user = wdManager.getPeerByRegId(toRegistrationId);
+                    WDSwanDevice user = wdManager.getPeerByRegId(toRegistrationId);
                     if (user != null) {
                         if (wdManager.connect(user, this)) {
                             synchronized (this) {
