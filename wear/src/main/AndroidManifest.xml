@@ -16,7 +16,15 @@
 
         <service android:name="wear.interdroid.swan.MessageReceiverService">
             <intent-filter>
-                <action android:name="com.google.android.gms.wearable.BIND_LISTENER" />
+                <!-- listeners receive events that match the action and data filters -->
+                <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
+                <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
+                <action android:name="com.google.android.gms.wearable.CAPABILITY_CHANGED" />
+                <action android:name="com.google.android.gms.wearable.CHANNEL_EVENT" />
+                <data android:scheme="wear" android:host="*" android:pathPrefix="/start" />
+                <data android:scheme="wear" android:host="*" android:pathPrefix="/stop" />
+                <data android:scheme="wear" android:host="*" android:pathPrefix="/register_expression" />
+                <data android:scheme="wear" android:host="*" android:pathPrefix="/unregister_expression" />
             </intent-filter>
         </service>
 

@@ -20,14 +20,10 @@ android {
         }
     }
 
-    dexOptions {
-        javaMaxHeapSize "1g"
-        preDexLibraries = false
-    }
 }
 
 dependencies {
-    compile 'com.google.android.gms:play-services-wearable:7.5.0'
+    compile 'com.google.android.gms:play-services-wearable:8.3.0'
 
     compile project(':shared')
     compile project(':swancore')
