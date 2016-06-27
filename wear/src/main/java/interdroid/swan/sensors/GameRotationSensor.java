@@ -1,4 +1,4 @@
-package wear.interdroid.swan.sensors;
+package interdroid.swan.sensors;
 
 import android.content.Context;
 import android.hardware.Sensor;
@@ -14,7 +14,7 @@ import java.util.List;
 import interdroid.swancore.sensors.AbstractConfigurationActivity;
 import interdroid.swancore.sensors.AbstractSwanSensorBase;
 
-public class LinearAccelerationSensor extends AbstractSwanSensorBase {
+public class GameRotationSensor extends AbstractSwanSensorBase {
     public static final String TAG = "MovementSensor";
 
     /**
@@ -47,13 +47,13 @@ public class LinearAccelerationSensor extends AbstractSwanSensorBase {
     private SensorEventListener sensorEventListener = new SensorEventListener() {
 
         public void onAccuracyChanged(Sensor sensor, int accuracy) {
-            if (sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
+            if (sensor.getType() == Sensor.TYPE_GAME_ROTATION_VECTOR) {
                 currentConfiguration.putInt(ACCURACY, accuracy);
             }
         }
 
         public void onSensorChanged(SensorEvent event) {
-            if (event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
+            if (event.sensor.getType() == Sensor.TYPE_GAME_ROTATION_VECTOR) {
                 long now = acceptSensorReading();
                 if (now >= 0) {
                     Log.d(TAG, "onSensorChanged: " + now + " val " +
@@ -90,7 +90,7 @@ public class LinearAccelerationSensor extends AbstractSwanSensorBase {
     public void onConnected() {
         SENSOR_NAME = "Movement Sensor";
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        List<Sensor> sensorList = sensorManager.getSensorList(Sensor.TYPE_LINEAR_ACCELERATION);
+        List<Sensor> sensorList = sensorManager.getSensorList(Sensor.TYPE_GAME_ROTATION_VECTOR);
         if (sensorList.size() > 0) {
             accelerometer = sensorList.get(0);
         } else {

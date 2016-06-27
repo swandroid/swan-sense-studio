@@ -1,4 +1,4 @@
-package wear.interdroid.swan.sensors;
+package interdroid.swan.sensors;
 
 import android.content.Context;
 import android.hardware.Sensor;
@@ -14,8 +14,8 @@ import java.util.List;
 import interdroid.swancore.sensors.AbstractConfigurationActivity;
 import interdroid.swancore.sensors.AbstractSwanSensorBase;
 
-public class HeartRateSensor extends AbstractSwanSensorBase {
-    public static final String TAG = "HeartRateSensor";
+public class MovementSensor extends AbstractSwanSensorBase {
+    public static final String TAG = "MovementSensor";
 
     /**
      * The configuration activity for this sensor.
@@ -27,7 +27,7 @@ public class HeartRateSensor extends AbstractSwanSensorBase {
 
         @Override
         public final int getPreferencesXML() {
-            return 1;
+            return 1;//R.xml.movement_preferences;
         }
 
     }
@@ -37,24 +37,39 @@ public class HeartRateSensor extends AbstractSwanSensorBase {
      */
     public static final String ACCURACY = "accuracy";
 
-    public static final String HEARTRATE_FIELD = "heart_rate";
+    public static final String X_FIELD = "x";
+    public static final String Y_FIELD = "y";
+    public static final String Z_FIELD = "z";
+    public static final String TOTAL_FIELD = "total";
 
-    private Sensor heartrateSensor;
+    private Sensor accelerometer;
     private SensorManager sensorManager;
     private SensorEventListener sensorEventListener = new SensorEventListener() {
 
         public void onAccuracyChanged(Sensor sensor, int accuracy) {
-            if (sensor.getType() == Sensor.TYPE_LIGHT) {
+            if (sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
                 currentConfiguration.putInt(ACCURACY, accuracy);
             }
         }
 
         public void onSensorChanged(SensorEvent event) {
-            if (event.sensor.getType() == Sensor.TYPE_LIGHT) {
+            if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
                 long now = acceptSensorReading();
                 if (now >= 0) {
-                    Log.d(TAG, "onSensorChanged: " + now + " val " + event.values[0]);
-                    putValueTrimSize(HEARTRATE_FIELD, null, now, event.values[0]);
+                    Log.d(TAG, "onSensorChanged: " + now + " val " +
+                            event.values[0] + " " + event.values[1] + " " +
+                            event.values[2]);
+
+                    for (int i = 0; i < 3; i++) {
+                        putValueTrimSize(VALUE_PATHS[i], null, now,
+                                (double) event.values[i]);
+                    }
+                    double len2 = (double) Math.sqrt(
+                            event.values[0] * event.values[0] +
+                                    event.values[1] * event.values[1] +
+                                    event.values[2] * event.values[2]);
+
+                    putValueTrimSize(TOTAL_FIELD, null, now, len2);
                 }
             }
         }
@@ -62,7 +77,7 @@ public class HeartRateSensor extends AbstractSwanSensorBase {
 
     @Override
     public String[] getValuePaths() {
-        return new String[]{ HEARTRATE_FIELD };
+        return new String[]{X_FIELD, Y_FIELD, Z_FIELD, TOTAL_FIELD};
     }
 
     @Override
@@ -73,14 +88,14 @@ public class HeartRateSensor extends AbstractSwanSensorBase {
 
     @Override
     public void onConnected() {
-        SENSOR_NAME = "Light Sensor";
+        SENSOR_NAME = "Movement Sensor";
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        List<Sensor> sensorList = sensorManager.getSensorList(Sensor.TYPE_HEART_RATE);
+        List<Sensor> sensorList = sensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER);
         if (sensorList.size() > 0) {
-            heartrateSensor = sensorList.get(0);
+            accelerometer = sensorList.get(0);
         } else {
-            Toast.makeText(getApplicationContext(), "No heartrate Sensor found on device!", Toast.LENGTH_SHORT).show();
-            Log.d(TAG, "No heartrateSensor found on device!");
+            Toast.makeText(getApplicationContext(), "No accelerometer found on device!", Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "No accelerometer found on device!");
         }
     }
 
@@ -92,10 +107,9 @@ public class HeartRateSensor extends AbstractSwanSensorBase {
 
     private void updateDelay() {
         sensorManager.unregisterListener(sensorEventListener);
-
         int delay = getSensorDelay();
         if (delay >= 0) {
-            sensorManager.registerListener(sensorEventListener, heartrateSensor, delay);
+            sensorManager.registerListener(sensorEventListener, accelerometer, delay);
             Log.d(TAG, "delay set to " + delay);
         }
 
@@ -114,6 +128,6 @@ public class HeartRateSensor extends AbstractSwanSensorBase {
 
     @Override
     public float getCurrentMilliAmpere() {
-        return heartrateSensor.getPower();
+        return accelerometer.getPower();
     }
 }

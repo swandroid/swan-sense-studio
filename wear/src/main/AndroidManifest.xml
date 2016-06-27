@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="wear.interdroid.swan">
+    package="interdroid.swan">
 
     <uses-feature android:name="android.hardware.type.watch" />
     <uses-permission android:name="android.permission.BODY_SENSORS" />
@@ -14,7 +14,7 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <service android:name="wear.interdroid.swan.MessageReceiverService">
+        <service android:name="interdroid.swan.MessageReceiverService">
             <intent-filter>
                 <!-- listeners receive events that match the action and data filters -->
                 <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
@@ -28,7 +28,7 @@
             </intent-filter>
         </service>
 
-        <service android:name="wear.interdroid.swan.SensorService" />
+        <service android:name="interdroid.swan.SensorService" />
 
         <!-- engine stuff -->
         <receiver

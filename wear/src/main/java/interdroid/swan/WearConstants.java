@@ -1,4 +1,4 @@
-package wear.interdroid.swan;
+package interdroid.swan;
 
 /**
  * Created by Veaceslav Munteanu on 3/24/16.

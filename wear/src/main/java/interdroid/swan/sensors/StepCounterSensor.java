@@ -1,4 +1,4 @@
-package wear.interdroid.swan.sensors;
+package interdroid.swan.sensors;
 
 import android.annotation.TargetApi;
 import android.app.AlarmManager;

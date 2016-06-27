@@ -1,4 +1,4 @@
-package wear.interdroid.swan.expression;
+package interdroid.swan.expression;
 
 import android.content.Context;
 import android.util.Log;
@@ -12,7 +12,7 @@ import interdroid.swancore.swansong.ExpressionParseException;
 import interdroid.swancore.swansong.Result;
 import interdroid.swancore.swansong.TimestampedValue;
 import interdroid.swancore.swansong.ValueExpression;
-import wear.interdroid.swan.DeviceClient;
+import interdroid.swan.DeviceClient;
 
 /**
  * Created by Veaceslav Munteanu on 5/24/16.

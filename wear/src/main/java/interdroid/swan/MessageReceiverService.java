@@ -1,4 +1,4 @@
-package wear.interdroid.swan;
+package interdroid.swan;
 
 import android.app.ActivityManager;
 import android.content.Context;

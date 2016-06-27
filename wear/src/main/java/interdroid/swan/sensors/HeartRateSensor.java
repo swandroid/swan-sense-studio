@@ -1,4 +1,4 @@
-package wear.interdroid.swan.sensors;
+package interdroid.swan.sensors;
 
 import android.content.Context;
 import android.hardware.Sensor;
@@ -14,8 +14,8 @@ import java.util.List;
 import interdroid.swancore.sensors.AbstractConfigurationActivity;
 import interdroid.swancore.sensors.AbstractSwanSensorBase;
 
-public class LightSensor extends AbstractSwanSensorBase {
-    public static final String TAG = "LightSensor";
+public class HeartRateSensor extends AbstractSwanSensorBase {
+    public static final String TAG = "HeartRateSensor";
 
     /**
      * The configuration activity for this sensor.
@@ -37,9 +37,9 @@ public class LightSensor extends AbstractSwanSensorBase {
      */
     public static final String ACCURACY = "accuracy";
 
-    public static final String LUX_FIELD = "lux";
+    public static final String HEARTRATE_FIELD = "heart_rate";
 
-    private Sensor lightSensor;
+    private Sensor heartrateSensor;
     private SensorManager sensorManager;
     private SensorEventListener sensorEventListener = new SensorEventListener() {
 
@@ -54,7 +54,7 @@ public class LightSensor extends AbstractSwanSensorBase {
                 long now = acceptSensorReading();
                 if (now >= 0) {
                     Log.d(TAG, "onSensorChanged: " + now + " val " + event.values[0]);
-                    putValueTrimSize(LUX_FIELD, null, now, event.values[0]);
+                    putValueTrimSize(HEARTRATE_FIELD, null, now, event.values[0]);
                 }
             }
         }
@@ -62,7 +62,7 @@ public class LightSensor extends AbstractSwanSensorBase {
 
     @Override
     public String[] getValuePaths() {
-        return new String[]{LUX_FIELD};
+        return new String[]{ HEARTRATE_FIELD };
     }
 
     @Override
@@ -75,12 +75,12 @@ public class LightSensor extends AbstractSwanSensorBase {
     public void onConnected() {
         SENSOR_NAME = "Light Sensor";
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        List<Sensor> sensorList = sensorManager.getSensorList(Sensor.TYPE_LIGHT);
+        List<Sensor> sensorList = sensorManager.getSensorList(Sensor.TYPE_HEART_RATE);
         if (sensorList.size() > 0) {
-            lightSensor = sensorList.get(0);
+            heartrateSensor = sensorList.get(0);
         } else {
-            Toast.makeText(getApplicationContext(), "No lightSensor found on device!", Toast.LENGTH_SHORT).show();
-            Log.d(TAG, "No lightSensor found on device!");
+            Toast.makeText(getApplicationContext(), "No heartrate Sensor found on device!", Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "No heartrateSensor found on device!");
         }
     }
 
@@ -95,7 +95,7 @@ public class LightSensor extends AbstractSwanSensorBase {
 
         int delay = getSensorDelay();
         if (delay >= 0) {
-            sensorManager.registerListener(sensorEventListener, lightSensor, delay);
+            sensorManager.registerListener(sensorEventListener, heartrateSensor, delay);
             Log.d(TAG, "delay set to " + delay);
         }
 
@@ -114,6 +114,6 @@ public class LightSensor extends AbstractSwanSensorBase {
 
     @Override
     public float getCurrentMilliAmpere() {
-        return lightSensor.getPower();
+        return heartrateSensor.getPower();
     }
 }

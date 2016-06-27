@@ -1,4 +1,4 @@
-package wear.interdroid.swan;
+package interdroid.swan;
 
 import android.content.Context;
 import android.util.Log;
@@ -13,7 +13,6 @@ import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;

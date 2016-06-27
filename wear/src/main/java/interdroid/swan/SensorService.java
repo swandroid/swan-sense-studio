@@ -1,4 +1,4 @@
-package wear.interdroid.swan;
+package interdroid.swan;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -20,7 +20,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.locks.ReentrantLock;
 
 import interdroid.swan.sensordashboard.shared.DataMapKeys;
-import wear.interdroid.swan.expression.ManageExpressions;
+import interdroid.swan.expression.ManageExpressions;
 import interdroid.swan.sensordashboard.shared.SensorConstants;
 
 

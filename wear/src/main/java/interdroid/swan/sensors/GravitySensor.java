@@ -1,4 +1,4 @@
-package wear.interdroid.swan.sensors;
+package interdroid.swan.sensors;
 
 import android.content.Context;
 import android.hardware.Sensor;
