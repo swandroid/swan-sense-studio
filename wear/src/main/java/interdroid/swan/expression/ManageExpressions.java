@@ -6,7 +6,6 @@ import android.util.Log;
 import interdroid.swancore.swanmain.ExpressionManager;
 import interdroid.swancore.swanmain.SwanException;
 import interdroid.swancore.swanmain.ValueExpressionListener;
-import interdroid.swancore.swansong.Expression;
 import interdroid.swancore.swansong.ExpressionFactory;
 import interdroid.swancore.swansong.ExpressionParseException;
 import interdroid.swancore.swansong.Result;

@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.SystemClock;
 import android.util.Log;
 
+import com.google.android.gms.common.data.FreezableUtils;
 import com.google.android.gms.wearable.DataEvent;
 import com.google.android.gms.wearable.DataEventBuffer;
 import com.google.android.gms.wearable.DataItem;
@@ -16,6 +17,7 @@ import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.WearableListenerService;
 
 import java.nio.ByteBuffer;
+import java.util.List;
 
 import interdroid.swan.sensordashboard.shared.ClientPaths;
 import interdroid.swan.sensordashboard.shared.DataMapKeys;
@@ -35,9 +37,13 @@ public class MessageReceiverService extends WearableListenerService {
 
     @Override
     public void onDataChanged(DataEventBuffer dataEvents) {
-        super.onDataChanged(dataEvents);
+        //super.onDataChanged(dataEvents);
 
-        for (DataEvent dataEvent : dataEvents) {
+        final List<DataEvent> events = FreezableUtils
+                .freezeIterable(dataEvents);
+
+
+        for (DataEvent dataEvent : events) {
             if (dataEvent.getType() == DataEvent.TYPE_CHANGED) {
                 DataItem dataItem = dataEvent.getDataItem();
                 Uri uri = dataItem.getUri();

@@ -136,7 +136,7 @@ public class BatterySensor extends AbstractSwanSensorBase {
 
                             Long energyinWatts =
                                     mBatteryManager.getLongProperty(BatteryManager.BATTERY_PROPERTY_ENERGY_COUNTER);
-                            Log.i(TAG, "Remaining energy = " + energy + "nWh");
+                            Log.i(TAG, "Remaining energy = " + energyinWatts + "nWh");
                             putValueTrimSize(REMAINING_POWER_FIELD, null, System.currentTimeMillis(), energyinWatts);
                         }
                         try {
