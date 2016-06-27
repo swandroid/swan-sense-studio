@@ -87,7 +87,7 @@
 
             <meta-data
                 android:name="entityId"
-                android:value="wear_gyroscope" />
+                android:value="gyroscope" />
             <meta-data
                 android:name="valuePaths"
                 android:value="x,y,z" />
@@ -115,7 +115,7 @@
 
             <meta-data
                 android:name="entityId"
-                android:value="wear_light" />
+                android:value="light" />
             <meta-data
                 android:name="valuePaths"
                 android:value="lux" />
@@ -143,7 +143,7 @@
 
             <meta-data
                 android:name="entityId"
-                android:value="wear_gravity" />
+                android:value="gravity" />
             <meta-data
                 android:name="valuePaths"
                 android:value="x,y,z" />
@@ -173,7 +173,7 @@
 
             <meta-data
                 android:name="entityId"
-                android:value="wear_step_counter" />
+                android:value="step_counter" />
             <meta-data
                 android:name="valuePaths"
                 android:value="step_counter" />
@@ -206,7 +206,7 @@
 
             <meta-data
                 android:name="entityId"
-                android:value="wear_gamerotation" />
+                android:value="gamerotation" />
             <meta-data
                 android:name="valuePaths"
                 android:value="x,y,z,total" />
@@ -237,7 +237,7 @@
 
             <meta-data
                 android:name="entityId"
-                android:value="wear_linearacceleration" />
+                android:value="linearacceleration" />
             <meta-data
                 android:name="valuePaths"
                 android:value="x,y,z,total" />
@@ -265,7 +265,7 @@
 
             <meta-data
                 android:name="entityId"
-                android:value="wear_heartrate" />
+                android:value="heartrate" />
             <meta-data
                 android:name="valuePaths"
                 android:value="heart_rate" />
