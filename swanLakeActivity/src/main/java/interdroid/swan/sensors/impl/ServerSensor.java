@@ -141,12 +141,12 @@ public class ServerSensor extends AbstractSwanSensor {
 
 
                 } else if (requestType.equalsIgnoreCase("get")) {
-                    Log.e("Roshan", url);
+
 
                     eventResultsAdapter.create(ServerAPI.class).getInfo(new Callback<String>() {
                         @Override
                         public void success(String result, Response response) {
-                            Log.e("Roshan", result);
+
                         }
 
                         @Override

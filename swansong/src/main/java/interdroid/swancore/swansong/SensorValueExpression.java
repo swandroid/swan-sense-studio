@@ -27,11 +27,8 @@ public class SensorValueExpression implements ValueExpression {
         mHistoryLength = historyLength;
         mHttpConfig = httpConfig;
         if (mHttpConfig == null) {
-            Log.e("Roshan", "Wierd: SensorValueExpression mHttpConfig is null");
             mHttpConfig = new Bundle();
         }
-
-        Log.e("Roshan", "SensorValueExpression constructor called; entity " + entity + " valuePath " + valuePath);
 
     }
 
@@ -65,7 +62,6 @@ public class SensorValueExpression implements ValueExpression {
                 //if (mHttpConfig.get(key) instanceof String) {
                 //	value = "'" + value + "'";
                 //}
-                Log.e("Roshan-SVExpression", "key " + key + " value " + value);
                 result += (first ? "$" : "~") + key + "=" + value;
                 first = false;
             }
