@@ -1403,6 +1403,9 @@
                 android:name="entityId"
                 android:value="wear_heartrate" />
             <meta-data
+                android:name="delay"
+                android:value="2000" />
+            <meta-data
                 android:name="valuePaths"
                 android:value="heart_rate" />
             <meta-data

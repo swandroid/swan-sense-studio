@@ -8,7 +8,7 @@ android {
         applicationId "interdroid.swan"
         minSdkVersion 16
         targetSdkVersion 23
-        multiDexEnabled false
+        multiDexEnabled true
     }
 
     buildTypes {
@@ -48,7 +48,6 @@ dependencies {
     compile 'com.google.android.gms:play-services-wearable:9.0.2'
     compile 'org.altbeacon:android-beacon-library:2.8.1'
 
-    //compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:recyclerview-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
 
@@ -65,4 +64,7 @@ dependencies {
     compile('com.lsjwzh:materialloadingprogressbar:0.5.8-RELEASE')
 
     compile 'com.google.apis:google-api-services-qpxExpress:v1-rev20-1.22.0'
+
+    compile 'com.android.support:multidex:1.0.0'
+
 }
