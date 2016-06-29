@@ -1,5 +1,6 @@
 package interdroid.swan.sensors;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -31,6 +32,7 @@ public abstract class AbstractCuckooSensor extends AbstractSwanSensor {
     private SharedPreferences prefs;
 
     private boolean mRegistering = false;
+    protected BroadcastReceiver mReceiver;
 
     @Override
     public final synchronized void onConnected() {
@@ -50,13 +52,18 @@ public abstract class AbstractCuckooSensor extends AbstractSwanSensor {
     }
 
     @Override
-    public final void onDestroySensor() {
+    public void onDestroySensor() {
+        if (mReceiver != null)
+            unregisterReceiver(mReceiver);
         remoteResource = null;
+        super.onDestroySensor();
     }
 
     @Override
     public final synchronized void register(final String id,
                                             final String valuePath, Bundle configuration, Bundle httpConfiguration, Bundle extraConfiguration) { //throws IOException {
+        super.register(id, valuePath, configuration, httpConfiguration, extraConfiguration);
+
         final Map<String, Object> configAsMap = new HashMap<String, Object>();
         for (String key : configuration.keySet()) {
             // TODO: maybe short circuit if a value is not serializable
@@ -102,18 +109,22 @@ public abstract class AbstractCuckooSensor extends AbstractSwanSensor {
     }
 
     @Override
-    public final void unregister(String id) {
+    public final void unregister(final String id) {
         if (remoteResource != null) {
-            try {
-                Cuckoo.unregister(this, remoteResource, id);
-                return;
-            } catch (NoResourceAvailableException e) {
-                // TODO: we lost connection to this resource, retry later with
-                // an alarm or so.
+            final Context context = this;
+            new Thread() {
+                public void run() {
+                    try {
+                        Cuckoo.unregister(context, remoteResource, id);
+                    } catch (NoResourceAvailableException e) {
+                        // TODO: we lost connection to this resource, retry later with
+                        // an alarm or so.
 
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
+            }.start();
         } else {
             Log.d(TAG, "unregistering sensor, interrupting monitor!");
             monitors.remove(id).shouldStop = true;
@@ -135,13 +146,10 @@ public abstract class AbstractCuckooSensor extends AbstractSwanSensor {
                 try {
                     Log.d(TAG, "getting a registration id for sender id: "
                             + getGCMSenderId());
-                    prefs.edit()
-                            .putString(
-                                    REGISTRATION_ID,
-                                    GoogleCloudMessaging.getInstance(
-                                            AbstractCuckooSensor.this)
+                    prefs.edit().putString(REGISTRATION_ID,
+                                    GoogleCloudMessaging.getInstance(AbstractCuckooSensor.this)
                                             .register(getGCMSenderId()))
-                            .commit();
+                            .apply();
                     Log.d(TAG,
                             "We did get a registration ID: "
                                     + prefs.getString(REGISTRATION_ID, null));
@@ -154,29 +162,29 @@ public abstract class AbstractCuckooSensor extends AbstractSwanSensor {
         }.start();
     }
 
-    public static Object makeTyped(String string) {
-        String[] components = string.split(":", 2);
-        String type = components[0];
-        String value = components[1];
-
-        if (type.equals("java.lang.Long")) {
-            return Long.parseLong(value);
-        } else if (type.equals("java.lang.String")) {
-            return value;
-        } else if (type.equals("java.lang.Integer")) {
-            return Integer.parseInt(value);
-        } else if (type.equals("java.lang.Boolean")) {
-            return Boolean.parseBoolean(value);
-        } else if (type.equals("java.lang.Character")) {
-            return value.charAt(0);
-        } else if (type.equals("java.lang.Float")) {
-            return Float.parseFloat(value);
-        } else if (type.equals("java.lang.Double")) {
-            return Double.parseDouble(value);
-        } else {
-            throw new RuntimeException("Please implement "
-                    + AbstractCuckooSensor.class
-                    + " makeTyped(String string) for type '" + type + "'");
-        }
-    }
+//    public static Object makeTyped(String string) {
+//        String[] components = string.split(":", 2);
+//        String type = components[0];
+//        String value = components[1];
+//
+//        if (type.equals("java.lang.Long")) {
+//            return Long.parseLong(value);
+//        } else if (type.equals("java.lang.String")) {
+//            return value;
+//        } else if (type.equals("java.lang.Integer")) {
+//            return Integer.parseInt(value);
+//        } else if (type.equals("java.lang.Boolean")) {
+//            return Boolean.parseBoolean(value);
+//        } else if (type.equals("java.lang.Character")) {
+//            return value.charAt(0);
+//        } else if (type.equals("java.lang.Float")) {
+//            return Float.parseFloat(value);
+//        } else if (type.equals("java.lang.Double")) {
+//            return Double.parseDouble(value);
+//        } else {
+//            throw new RuntimeException("Please implement "
+//                    + AbstractCuckooSensor.class
+//                    + " makeTyped(String string) for type '" + type + "'");
+//        }
+//    }
 }

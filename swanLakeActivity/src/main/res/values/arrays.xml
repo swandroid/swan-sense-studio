@@ -131,8 +131,14 @@
 
     <!-- train sensor -->
     <string-array name="train_valuepaths">
-        <item>departure_time</item>
-        <item>arrival_time</item>
+        <item>departure</item>
+    </string-array>
+
+    <!-- types -->
+    <string-array name="train_types" >
+        <item>Intercity</item>
+        <item>Sprinter</item>
+        <item>Fyra</item>
     </string-array>
 
     <!-- movement sensor -->
@@ -397,4 +403,86 @@
         <item>previousMotionTime</item>
     </string-array>
 
+    <!-- alarm sensor -->
+    <string-array name="alarm_valuepaths">
+        <item>recent</item>
+    </string-array>
+
+    <!-- alarm sensor regions -->
+    <string-array name="regions" >
+        <item>all</item>
+        <item>Amsterdam-Amstelland</item>
+        <item>Brabant-Noord</item>
+        <item>Brabant-Zuidoost</item>
+        <item>Drenthe</item>
+        <item>Flevoland</item>
+        <item>Friesland</item>
+        <item>Gelderland-Midden</item>
+        <item>Gelderland-Zuid</item>
+        <item>Gooi en Vechtstreek</item>
+        <item>Groningen</item>
+        <item>Haaglanden</item>
+        <item>Hollands Midden</item>
+        <item>IJsselland</item>
+        <item>Kennemerland</item>
+        <item>Limburg Noord</item>
+        <item>Limburg Zuid</item>
+        <item>Midden- en West-Brabant</item>
+        <item>Noord en Oost-Gelderland</item>
+        <item>Noord-Holland Noord</item>
+        <item>Rotterdam-Rijnmond</item>
+        <item>Twente</item>
+        <item>Utrecht</item>
+        <item>Zaanstreek-Waterland</item>
+        <item>Zeeland</item>
+        <item>Zuid-Holland Zuid</item>
+    </string-array>
+
+    <!-- alarm sensor types -->
+    <string-array name="types" >
+        <item>all</item>
+        <item>Fire Brigade</item>
+        <item>Police</item>
+        <item>Paramedic</item>
+        <item>Rescue Brigade</item>
+        <item>Trauma Heli</item>
+    </string-array>
+
+    <!-- alarm sensor type_values -->
+    <string-array name="type_values" >
+        <item>brandweer</item>
+        <item>politie</item>
+        <item>ambulance</item>
+        <item>knrm</item>
+        <item>trauma</item>
+    </string-array>
+
+    <!-- news sensor -->
+    <string-array name="news_valuepaths">
+        <item>recent</item>
+    </string-array>
+
+    <!-- categories -->
+    <string-array name="categories">
+        <item>algemeen</item>
+        <item>internet</item>
+        <item>sport</item>
+        <item>achterklap</item>
+    </string-array>
+
+    <!-- server sensor -->
+    <string-array name="cuckoo_server_valuepaths">
+        <item>http_status</item>
+    </string-array>
+
+    <string-array name="flight_valuepaths">
+        <item>price</item>
+    </string-array>
+
+    <string-array name="flight_cabin_types">
+        <item>COACH</item>
+        <item>PREMIUM_COACH</item>
+        <item>BUSINESS</item>
+        <item>FIRST</item>
+    </string-array>
 </resources>

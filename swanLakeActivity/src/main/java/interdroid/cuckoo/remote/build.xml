@@ -1,0 +1,46 @@
+<project name="Cuckoo" basedir="." default="build">
+    <description>Create JAR to run on the Cuckoo server</description>
+    <property name="src" location="." />
+    <property name="tmp" location="tmp" />
+    <property name="lib" location="..\..\..\..\assets" />
+    <target name="build" depends="clean,CuckooService" description="rebuild" />
+    <mkdir dir="${lib}\interdroid.cuckoo.remote.CuckooServiceRemote" />
+    <target name="CuckooService">
+        <mkdir dir="${tmp}" />
+        <javac destdir="${tmp}" srcdir=".">
+            <classpath>
+                <fileset dir=".">
+                    <include name="*.java" />
+                </fileset>
+                <fileset dir="external">
+                    <include name="*.jar" />
+                </fileset>
+                <!--<fileset dir="${src}/../libs">-->
+                    <!--<include name="*.jar" />-->
+                <!--</fileset>-->
+                <!-- <pathelement
+                    location="D:\Tools\adt-bundle-windows-x86_64-20140702\adt-bundle-windows-x86_64-20140702\sdk\platforms\android-20\android.jar" />-->
+            </classpath>
+        </javac>
+
+        <copy todir="${lib}\interdroid.cuckoo.remote.CuckooServiceRemote">
+            <fileset dir="external">
+                <include name="*.*" />
+            </fileset>
+        </copy>
+
+        <jar basedir="${tmp}"  includes="**"
+            jarfile="${lib}\interdroid.cuckoo.remote.CuckooServiceRemote\interdroid.cuckoo.remote.CuckooServiceRemote.jar"/>
+
+        <delete dir="${tmp}" />
+    </target>
+
+    <target name="clean" description="clean up">
+        <delete dir="${tmp}" />
+        <delete>
+            <fileset dir="${lib}">
+                <include name="*.jar" />
+            </fileset>
+        </delete>
+    </target>
+</project>

@@ -96,11 +96,9 @@ public class OVSensor extends AbstractSwanSensor {
 
                 String url = API_BASE_URL + valuePath + "/" + configuration.get(VALUE);
 
-                Log.e("Roshan", valuePath + " " + id);
                 try {
                     JSONObject data = JsonReader.readJsonFromUrl(url);
 
-                    //Log.e("Roshan", data.toString());
                     putValueTrimSize(valuePath, id, start, data.toString());
 
                 } catch (IOException e) {

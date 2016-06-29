@@ -106,17 +106,16 @@ public abstract class AbstractSwanSensorBase extends AbstractSensorBase {
 
         for (String key : httpConfiguration.keySet()) {
             Object obj = httpConfiguration.get(key);   //later parse it as per your required type
-            Log.e("Roshan", "bundle data in register " + obj.toString());
+            Log.d(TAG, "bundle data in register " + obj.toString());
 
         }
 
         registeredValuepath = valuePath;
 
-        String server_storage = httpConfiguration.getString("server_storage", "BLAH");
+        String serverStorage = httpConfiguration.getString("serverStorage", "FALSE");
 
-        Log.e("Roshan", "Server Storage is " + server_storage);
-        if (server_storage.equals("TRUE")) {
-            Log.e("Roshan", "Server Storage is true");
+        Log.d(TAG, "Server Storage is " + serverStorage);
+        if (serverStorage.equals("TRUE")) {
             // TODO: Wear removed functionality
             //serverConnection = new ServerConnection(httpConfiguration);
         }
@@ -213,8 +212,7 @@ public abstract class AbstractSwanSensorBase extends AbstractSensorBase {
 //            if (serverConnection != null) {
 //                HashMap<String, Object> serverData = new HashMap<String, Object>();
 //
-//                Log.e("Roshan", "server connection is not null; set id " +
-//                        id + "valuePath " + valuePath + " to " + value);
+//
 //                serverData.clear();
 //                serverData.put("id", id);
 //                //serverData.put("channel",valuePath);
@@ -223,7 +221,7 @@ public abstract class AbstractSwanSensorBase extends AbstractSensorBase {
 //                serverConnection.useHttpMethod(serverData, cb);
 //            }
 //        } else {
-//            Log.e("Roshan", "registeredValuepath does not contain " + valuePath +
+//            Log.e(TAG, "registeredValuepath does not contain " + valuePath +
 //                    "; id " + id + " value " + value);
 //        }
 

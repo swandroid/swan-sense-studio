@@ -1,37 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="Value Path">
-        <ListPreference
-            android:title="Value Path"
-            android:summary="Select a Value Path"
-            android:key="valuepath"
-            android:entries="@array/train_valuepaths"
-            android:entryValues="@array/train_valuepaths" />
-    </PreferenceCategory>
-    <PreferenceCategory android:title="Configuration">
-        <interdroid.swan.util.SeekBarPreference
-            android:text=" seconds"
-            android:max="3600"
-            android:defaultValue="300"
-            android:title="Sample Interval"
-            android:key="sample_interval"
-            android:persistent="false" />
-        <EditTextPreference
-            android:key="from_station"
-            android:title="Departure Station"
-            android:summary="Select a Railway Station"
-            android:dialogTitle="Enter Departure Railway Station" />
-        <EditTextPreference
-            android:key="to_station"
-            android:title="Destination Station"
-            android:summary="Select a Railway Station"
-            android:dialogTitle="Enter Destination Railway Station" />
-        <interdroid.swan.util.TimePreference
-            android:persistent="false"
-            android:key="departure_time"
-            android:title="Departure Time"
-            android:summary="Departure time of the train"
-            android:dialogTitle="Pick Departure Time" />
-    </PreferenceCategory>
+	<PreferenceCategory android:title="Value Path">
+		<ListPreference android:title="Value Path"
+			android:summary="Select a Value Path" android:key="valuepath"
+			android:entries="@array/train_valuepaths" android:entryValues="@array/train_valuepaths" />
+	</PreferenceCategory>
+	<PreferenceCategory android:title="Configuration">
+		<EditTextPreference
+			android:key="from"
+			android:inputType="text"
+			android:dialogTitle="Enter Departure Station"
+			android:summary="Set Departure Station"
+			android:title="Departure Station"
+		/>
+		<EditTextPreference
+			android:key="to"
+			android:inputType="text"
+			android:dialogTitle="Enter Destination Station"
+			android:summary="Set Destination Station"
+			android:title="Destination Station"
+		/>
+		<ListPreference
+			android:key="type"
+			android:entries="@array/train_types"
+			android:entryValues="@array/types"
+			android:dialogTitle="Choose Type"
+			android:summary="Set Type"
+			android:title="Type"
+		/>
+		<EditTextPreference
+			android:key="time"
+			android:inputType="text"
+			android:dialogTitle="Enter Time (hh:mm)"
+			android:summary="Set Time (hh:mm)"
+			android:title="Time (hh:mm)"
+		/>
+	</PreferenceCategory>
 </PreferenceScreen>
-

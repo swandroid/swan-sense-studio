@@ -38,6 +38,7 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import java.io.IOException;
 import java.util.List;
 
+import interdroid.cuckoo.resourcemanager.ResourcesActivity;
 import interdroid.sense.LoginActivity;
 import interdroid.sense.RegistrationActivity;
 import interdroid.sense.SettingsActivity;
@@ -253,12 +254,14 @@ public class SwanLakeActivity extends ListActivity {
             case R.id.action_ttn:
                 startActivity(new Intent(this, TtnActivity.class));
                 break;
+            case R.id.action_cuckoo_resources:
+                startActivity(new Intent(this, ResourcesActivity.class));
+                break;
             default:
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
-
 
     @SuppressWarnings("deprecation")
     private void updateNFC() {

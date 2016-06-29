@@ -28,7 +28,6 @@ public class ServerConnection {
 
     Gson gson;
     RestAdapter eventResultsAdapter;
-    private ServerCallbackInterface serverCallbackInterface;
     String serverStorage;
     String serverUrl;
     String serverHttpMethod;
@@ -131,7 +130,7 @@ public class ServerConnection {
         // }
 
 
-        Log.e("Roshan", " serverUrl " + serverUrl + " serverHttpMethod " + serverHttpMethod);
+
 
     }
 
@@ -149,7 +148,7 @@ public class ServerConnection {
         hashData.putAll(httpBody);
 
         for (String key : hashData.keySet()) {
-            Log.e("Roshan", "final hashData " + key + ":" + hashData.get(key));
+
         }
 
 

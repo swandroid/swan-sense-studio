@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="menu_delete">Delete</string>
+    <string name="menu_share">Share</string>
+    <string name="menu_insert">Add resource</string>
+    <string name="menu_revert">Revert</string>
+    <string name="menu_discard">Discard</string>
+
+    <string name="resolve_edit">Edit resource</string>
+    <string name="resolve_title">Edit title</string>
+
+    <string name="title_create">Create resource</string>
+    <string name="title_edit">Edit note</string>
+    <string name="title_notes_list">Note pad</string>
+    <string name="title_note">Note</string>
+    <string name="title_edit_title">Note title:</string>
+
+    <string name="app_name">Resource Manager</string>
+
+    <string name="button_ok">OK</string>
+
+    <string name="error_title">Error</string>
+    <string name="error_message">Error loading note</string>
+
+    <string name="action_cuckoo_add">Add resource</string>
+    <string name="action_cuckoo_add_manually">Add resource manually</string>
+    <string name="action_cuckoo_delete_all">Delete All</string>
+    <string name="action_cuckoo_resources">Show Cuckoo resources</string>
+</resources>

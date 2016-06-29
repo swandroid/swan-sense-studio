@@ -325,7 +325,7 @@ public abstract class AbstractConfigurationActivity extends PreferenceActivity
         }
 
         String entityId = getIntent().getStringExtra("entityId");
-        //Log.e("Roshan",entityId);
+
         Bundle configuration = new Bundle();
         for (String key : keys) {
             if (map.containsKey(key)) {
@@ -335,7 +335,7 @@ public abstract class AbstractConfigurationActivity extends PreferenceActivity
 
         for (String key : httpConfiguration.keySet()) {
             String value = "" + httpConfiguration.get(key);
-            Log.e("Roshan", "AbstractConfigurationActivity key " + key + " value " + value);
+            Log.e(TAG, "httpConfiguration key :" + key + " value :" + value);
 
         }
 

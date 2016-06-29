@@ -80,6 +80,7 @@ public abstract class AbstractWearSensor extends AbstractSwanSensor {
         sensor_name = SensorNames.getInstance().getName(sensorId);
 
         configuration.putInt(SensorConstants.SENSOR_ID, sensorId);
+        configuration.putInt(SensorConstants.ACCURACY, getSensorDelay());
 
 
         lock.lock();

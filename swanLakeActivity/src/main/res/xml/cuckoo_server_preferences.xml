@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+	<PreferenceCategory android:title="Value Path">
+		<ListPreference android:title="Value Path"
+			android:summary="Select a Value Path" android:key="valuepath"
+			android:entries="@array/cuckoo_server_valuepaths" android:entryValues="@array/cuckoo_server_valuepaths" />
+	</PreferenceCategory>
+	<PreferenceCategory android:title="Configuration">
+		<EditTextPreference
+			android:key="url"
+			android:inputType="textUri"
+			android:dialogTitle="Enter Server URL"
+			android:summary="Set Server URL"
+			android:title="Server URL"
+		/>
+		<EditTextPreference
+			android:key="timeout"
+			android:inputType="number"
+			android:dialogTitle="Enter connection time out (ms)"
+			android:summary="Set connection time out"
+			android:title="Time out (ms)"
+		/>
+	</PreferenceCategory>
+</PreferenceScreen>

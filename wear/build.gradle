@@ -15,21 +15,15 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 
-    dexOptions {
-        javaMaxHeapSize "1g"
-        preDexLibraries = false
-    }
 }
 
 dependencies {
-    compile 'com.google.android.support:wearable:1.1.0'
-    compile 'com.google.android.gms:play-services-wearable:7.5.0'
-    //compile files('libs/antlr-3.4-complete-no-antlrv2.jar')
+    compile 'com.google.android.gms:play-services-wearable:8.3.0'
 
     compile project(':shared')
     compile project(':swancore')

@@ -106,17 +106,17 @@ public abstract class AbstractSwanSensor extends AbstractSensorBase {
 
         for (String key : httpConfiguration.keySet()) {
             Object obj = httpConfiguration.get(key);   //later parse it as per your required type
-            Log.e("Roshan", "bundle data in register " + obj.toString());
+            Log.d(TAG, "bundle data in register " + obj.toString());
 
         }
 
         registeredValuepath = valuePath;
 
-        String server_storage = httpConfiguration.getString("server_storage", "BLAH");
+        String serverStorage = httpConfiguration.getString("server_storage", "FALSE");
 
-        Log.e("Roshan", "Server Storage is " + server_storage);
-        if (server_storage.equals("TRUE")) {
-            Log.e("Roshan", "Server Storage is true");
+        Log.d(TAG, "Server Storage is " + serverStorage);
+
+        if (serverStorage.equals("TRUE")) {
             serverConnection = new ServerConnection(httpConfiguration);
         }
     }
@@ -202,7 +202,7 @@ public abstract class AbstractSwanSensor extends AbstractSensorBase {
      * @param valuePath   the value path
      * @param now         the current time
      * @param value       the value
-     * @param historySize the history size
+     *
      */
     protected final void putValueTrimSize(final String valuePath,
                                           final String id, final long now, final Object value /*, final int historySize*/) {
@@ -212,8 +212,7 @@ public abstract class AbstractSwanSensor extends AbstractSensorBase {
             if (serverConnection != null) {
                 HashMap<String, Object> serverData = new HashMap<String, Object>();
 
-                Log.e("Roshan", "server connection is not null; set id " +
-                        id + "valuePath " + valuePath + " to " + value);
+
                 serverData.clear();
                 serverData.put("id", id);
                 //serverData.put("channel",valuePath);
@@ -222,8 +221,7 @@ public abstract class AbstractSwanSensor extends AbstractSensorBase {
                 serverConnection.useHttpMethod(serverData, cb);
             }
         } else {
-            Log.e("Roshan", "registeredValuepath does not contain " + valuePath +
-                    "; id " + id + " value " + value);
+            Log.d(TAG,"No valupath registered");
         }
 
         try {

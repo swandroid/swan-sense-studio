@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="Value Path">
+        <ListPreference android:title="Value Path"
+            android:summary="Select a Value Path"
+            android:key="valuepath"
+            android:entries="@array/flight_valuepaths"
+            android:entryValues="@array/flight_valuepaths" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Configuration">
+
+        <EditTextPreference
+            android:key="source"
+            android:inputType="text"
+            android:dialogTitle="Enter Departure Airport"
+            android:summary="Set Departure Airport"
+            android:title="Departure Airport"/>
+
+        <EditTextPreference
+            android:key="destination"
+            android:inputType="text"
+            android:dialogTitle="Enter Destination Airport"
+            android:summary="Set Destination Airport"
+            android:title="Destination Airport"/>
+
+        <EditTextPreference
+            android:key="flight_date"
+            android:inputType="text"
+            android:dialogTitle="Enter Date (yyyy-mm-dd)"
+            android:summary="Departure date in YYYY-MM-DD format."
+            android:title="Departure Date"/>
+
+        <EditTextPreference
+            android:key="max_stops"
+            android:inputType="numberDecimal"
+            android:dialogTitle="Maximum stops"
+            android:summary="The maximum number of stops the passenger(s) are willing to accept"
+            android:title="Maximum stops"/>
+
+        <EditTextPreference
+            android:key="max_price"
+            android:inputType="text"
+            android:summary="Do not return solutions that cost more than this price (in the currency of the country of origin)."
+            android:title="Maximum price"/>
+
+        <EditTextPreference
+            android:key="max_connection_duration"
+            android:inputType="numberDecimal"
+            android:summary="The longest connection between two legs, in minutes, the passenger(s) are willing to accept."
+            android:title="Maximum connection duration "/>
+
+        <ListPreference
+            android:key="flight_cabin_type"
+            android:entries="@array/flight_cabin_types"
+            android:entryValues="@array/flight_cabin_types"
+            android:dialogTitle="Choose cabin type"
+            android:summary="Set cabin type"
+            android:title="Cabin Type" />
+    </PreferenceCategory>
+</PreferenceScreen>
