@@ -54,6 +54,7 @@ public abstract class AbstractConfigurationActivity extends PreferenceActivity
             List<String> names = intent.getStringArrayListExtra("names");
             names.add(0, "self");
             names.add(1, "wear");
+            names.add(2, "NEARBY");
             ((ListPreference) findPreference("swan_location")).setEntries(names
                     .toArray(new String[names.size()]));
             ((ListPreference) findPreference("swan_location"))

@@ -23,9 +23,9 @@ public interface ProximityManagerI {
 
     public void discoverPeers();
 
-    public void registerExpression(String id, String expression, String resolvedLocation, String action);
+    public void registerExpression(String id, String expression, String resolvedLocation);
 
-    public void unregisterExpression(String id, String expression, String resolvedLocation, String action);
+    public void unregisterExpression(String id, String expression, String resolvedLocation);
 
     public void send(String toPeerName, String expressionId, String action, String data);
 }

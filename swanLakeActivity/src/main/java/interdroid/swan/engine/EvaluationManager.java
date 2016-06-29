@@ -44,8 +44,7 @@ public class EvaluationManager extends EvaluationManagerBase{
             RemoteSensorManager.getInstance(mContext).registerExpression(toCrossDeviceString(expression, resolvedLocation), id);
         } else if (resolvedLocation.equals(Expression.LOCATION_NEARBY) || mProximityManager.hasPeer(resolvedLocation)) {
             // get sensor info from nearby devices
-            mProximityManager.registerExpression(id, toCrossDeviceString(expression, resolvedLocation),
-                    resolvedLocation, EvaluationEngineService.ACTION_REGISTER_REMOTE);
+            mProximityManager.registerExpression(id, toCrossDeviceString(expression, resolvedLocation), resolvedLocation);
         } else {
             // send a push message with 'register' instead of 'initialize',
             // disadvantage is that we will only later on get exceptions
@@ -170,8 +169,7 @@ public class EvaluationManager extends EvaluationManagerBase{
             RemoteSensorManager.getInstance(mContext).unregisterExpression(toCrossDeviceString(expression, resolvedLocation), id);
         } else if (resolvedLocation.equals(Expression.LOCATION_NEARBY) || mProximityManager.hasPeer(resolvedLocation)) {
             // get sensor info from nearby devices
-            mProximityManager.unregisterExpression(id, toCrossDeviceString(expression, resolvedLocation),
-                    resolvedLocation, EvaluationEngineServiceBase.ACTION_UNREGISTER_REMOTE);
+            mProximityManager.unregisterExpression(id, toCrossDeviceString(expression, resolvedLocation), resolvedLocation);
         } else {
             // for some reason this was set to null in the original version of swan, which made it impossible
             // to unregister remotely
