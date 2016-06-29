@@ -44,13 +44,13 @@ public class HeartRateSensor extends AbstractSwanSensorBase {
     private SensorEventListener sensorEventListener = new SensorEventListener() {
 
         public void onAccuracyChanged(Sensor sensor, int accuracy) {
-            if (sensor.getType() == Sensor.TYPE_LIGHT) {
+            if (sensor.getType() == Sensor.TYPE_HEART_RATE) {
                 currentConfiguration.putInt(ACCURACY, accuracy);
             }
         }
 
         public void onSensorChanged(SensorEvent event) {
-            if (event.sensor.getType() == Sensor.TYPE_LIGHT) {
+            if (event.sensor.getType() == Sensor.TYPE_HEART_RATE) {
                 long now = acceptSensorReading();
                 if (now >= 0) {
                     Log.d(TAG, "onSensorChanged: " + now + " val " + event.values[0]);
