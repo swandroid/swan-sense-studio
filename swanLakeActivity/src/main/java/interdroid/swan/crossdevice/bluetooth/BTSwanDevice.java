@@ -2,6 +2,9 @@ package interdroid.swan.crossdevice.bluetooth;
 
 import android.bluetooth.BluetoothDevice;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by vladimir on 6/21/16.
  */
@@ -10,9 +13,7 @@ public class BTSwanDevice {
     private BluetoothDevice btDevice;
     private BTPendingItem pendingItem;
 
-    public void setBtDevice(BluetoothDevice btDevice) {
-        this.btDevice = btDevice;
-    }
+    private Map<String, String> registeredExpressions = new HashMap<String, String>();
 
     public BTSwanDevice(BluetoothDevice btDevice) {
         this.btDevice = btDevice;
@@ -32,6 +33,18 @@ public class BTSwanDevice {
 
     public void setPendingItem(BTPendingItem pendingItem) {
         this.pendingItem = pendingItem;
+    }
+
+    public void registerExpression(String id, String expression) {
+        registeredExpressions.put(id, expression);
+    }
+
+    public void unregisterExpression(String id) {
+        registeredExpressions.remove(id);
+    }
+
+    public Map<String, String> getRegisteredExpressions() {
+        return registeredExpressions;
     }
 
     @Override

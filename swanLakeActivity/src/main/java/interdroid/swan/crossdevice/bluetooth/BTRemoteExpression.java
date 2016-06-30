@@ -10,22 +10,15 @@ public class BTRemoteExpression {
     private static int exprCounter = 0;
 
     private String id;
-    private BluetoothDevice remoteDevice;
     private String expression;
-    private String action;
 
-    public BTRemoteExpression(String baseId, BluetoothDevice remoteDevice, String expression, String action) {
+    public BTRemoteExpression(String baseId, String expression) {
         this.id = getNewId(baseId);
-        this.remoteDevice = remoteDevice;
         this.expression = expression;
-        this.action = action;
     }
 
-    public BTRemoteExpression(BTRemoteExpression expr) {
-        this.id = getNewId(expr.getBaseId());
-        this.remoteDevice = expr.getRemoteDevice();
-        this.expression = expr.getExpression();
-        this.action = expr.getAction();
+    public void renewId() {
+        id = getNewId(getBaseId());
     }
 
     /**
@@ -55,25 +48,14 @@ public class BTRemoteExpression {
         return expression;
     }
 
-    public String getAction() {
-        return action;
-    }
-
-    public void setAction(String action) {
-        this.action = action;
-    }
-
     public void setExpression(String expression) {
         this.expression = expression;
     }
 
-    public BluetoothDevice getRemoteDevice() {
-        return remoteDevice;
-    }
 
     @Override
     public String toString() {
-        return "RemoteExpr[" + id + ", " + remoteDevice.getName() + ", " + expression + ", " + action + "]";
+        return "RemoteExpr[" + id + ", " + expression + "]";
     }
 
     @Override

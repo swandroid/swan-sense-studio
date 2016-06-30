@@ -87,7 +87,7 @@
 
             <meta-data
                 android:name="entityId"
-                android:value="wear_gyroscope" />
+                android:value="gyroscope" />
             <meta-data
                 android:name="valuePaths"
                 android:value="x,y,z" />
@@ -96,14 +96,16 @@
                 android:value="3" />
             <meta-data
                 android:name="delay"
-                android:value="200000" />
+                android:value="2000" />
             <meta-data
                 android:name="units"
                 android:value="Degrees,Degrees,Degrees" />
         </activity>
 
         <service
-            android:name="sensors.GyroscopeSensor"></service>
+            android:name=".sensors.GyroscopeSensor"
+            android:exported="true"
+            android:process=":gyroscopesensor"/>
 
         <!-- Wear Light sensor-->
         <activity
@@ -115,7 +117,7 @@
 
             <meta-data
                 android:name="entityId"
-                android:value="wear_light" />
+                android:value="light" />
             <meta-data
                 android:name="valuePaths"
                 android:value="lux" />
@@ -131,7 +133,9 @@
         </activity>
 
         <service
-            android:name=".sensors.LightSensor"></service>
+            android:name=".sensors.LightSensor"
+            android:exported="true"
+            android:process=":lightsensor"></service>
 
         <!-- Wear  Gravity Sensor-->
         <activity
@@ -143,7 +147,7 @@
 
             <meta-data
                 android:name="entityId"
-                android:value="wear_gravity" />
+                android:value="gravity" />
             <meta-data
                 android:name="valuePaths"
                 android:value="x,y,z" />
@@ -159,7 +163,9 @@
         </activity>
 
         <service
-            android:name=".sensors.GravitySensor">
+            android:name=".sensors.GravitySensor"
+            android:exported="true"
+            android:process=":gravitysensor">
 
         </service>
 
@@ -173,7 +179,7 @@
 
             <meta-data
                 android:name="entityId"
-                android:value="wear_step_counter" />
+                android:value="step_counter" />
             <meta-data
                 android:name="valuePaths"
                 android:value="step_counter" />
@@ -191,7 +197,7 @@
         <service
             android:name=".sensors.StepCounterSensor"
             android:exported="true"
-            android:process=":wearstepcountersensor">
+            android:process=":stepcountersensor">
 
         </service>
 
@@ -206,7 +212,7 @@
 
             <meta-data
                 android:name="entityId"
-                android:value="wear_gamerotation" />
+                android:value="gamerotation" />
             <meta-data
                 android:name="valuePaths"
                 android:value="x,y,z,total" />
@@ -223,7 +229,9 @@
 
         <!-- Wear Game Rotation Sensor-->
         <service
-            android:name=".sensors.GameRotationSensor" />
+            android:name=".sensors.GameRotationSensor"
+            android:exported="true"
+            android:process=":gamerotationsensor"/>
 
 
 
@@ -237,7 +245,7 @@
 
             <meta-data
                 android:name="entityId"
-                android:value="wear_linearacceleration" />
+                android:value="linearacceleration" />
             <meta-data
                 android:name="valuePaths"
                 android:value="x,y,z,total" />
@@ -253,7 +261,9 @@
         </activity>
 
         <service
-            android:name=".sensors.LinearAccelerationSensor" />
+            android:name=".sensors.LinearAccelerationSensor"
+            android:exported="true"
+            android:process=":linearaccsensor"/>
 
         <!-- Heart Rate-->
         <activity
@@ -265,7 +275,10 @@
 
             <meta-data
                 android:name="entityId"
-                android:value="wear_heartrate" />
+                android:value="heartrate" />
+            <meta-data
+                android:name="delay"
+                android:value="2000" />
             <meta-data
                 android:name="valuePaths"
                 android:value="heart_rate" />
@@ -275,7 +288,9 @@
         </activity>
 
         <service
-            android:name=".sensors.HeartRateSensor" />
+            android:name=".sensors.HeartRateSensor"
+            android:exported="true"
+            android:process=":heartratesensor"/>
 
         <activity
             android:name=".sensors.BatterySensor$ConfigurationActivity"

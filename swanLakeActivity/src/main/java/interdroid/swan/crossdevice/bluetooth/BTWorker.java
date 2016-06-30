@@ -40,16 +40,16 @@ public class BTWorker extends Thread {
         }
     }
 
-    protected void send(String expressionId, String expressionAction, String expressionData) throws IOException {
-        Log.w(getTag(), this + " sending " + expressionAction + ": "
-                + toPrintableData(expressionData, expressionAction));
+    // we synchronize this to make sure that BTServerWorker.disconnect() is not called at the same time
+    protected synchronized void send(String expressionId, String expressionAction, String expressionData) throws IOException {
+        Log.w(getTag(), this + " sending " + expressionAction + ": " + toPrintableData(expressionData, expressionAction));
 
         HashMap<String, String> dataMap = new HashMap<>();
-
         dataMap.put("source", btManager.getBtAdapter().getName());
         dataMap.put("id", expressionId);
         dataMap.put("action", expressionAction);
         dataMap.put("data", expressionData);
+        //TODO check here if device has any expression registered remotely
         dataMap.put("timeToNextReq", getTimeToNextRequest() + "");
 
         synchronized (outStream) {

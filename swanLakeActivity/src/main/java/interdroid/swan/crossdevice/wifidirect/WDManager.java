@@ -235,12 +235,12 @@ public class WDManager implements ProximityManagerI {
         });
     }
 
-    public void registerExpression(String id, String expression, String resolvedLocation, String action) {
+    public void registerExpression(String id, String expression, String resolvedLocation) {
         // TODO implement me
     }
 
     @Override
-    public void unregisterExpression(String id, String expression, String resolvedLocation, String action) {
+    public void unregisterExpression(String id, String expression, String resolvedLocation) {
         // TODO implement me
     }
 

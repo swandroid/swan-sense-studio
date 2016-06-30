@@ -11,6 +11,7 @@ import java.util.UUID;
 import interdroid.swancore.crossdevice.Converter;
 import interdroid.swan.engine.EvaluationEngineService;
 import interdroid.swancore.swansong.Result;
+import interdroid.swancore.swansong.TriState;
 
 /**
  * Created by vladimir on 4/7/16.
@@ -19,25 +20,29 @@ public class BTClientWorker extends BTWorker {
 
     private static final String TAG = "BTClientWorker";
 
-    private BTRemoteExpression remoteExpression;
+    private BTRemoteEvaluationTask remoteEvaluationTask;
     private boolean connected = false;
 
-    public BTClientWorker(BTManager btManager, BTRemoteExpression remoteExpression, BTSwanDevice swanDevice) {
+    public BTClientWorker(BTManager btManager, BTRemoteEvaluationTask remoteEvaluationTask) {
         this.btManager = btManager;
-        this.remoteExpression = remoteExpression;
-        this.swanDevice = swanDevice;
+        this.remoteEvaluationTask = remoteEvaluationTask;
+        this.swanDevice = remoteEvaluationTask.getSwanDevice();
     }
 
     @Override
     public void run() {
         try {
             Log.d(TAG, this + " started processing");
-            connect(remoteExpression.getRemoteDevice());
+            connect(swanDevice.getBtDevice());
 
             if (btSocket != null) {
                 connected = true;
                 initConnection();
-                send(remoteExpression.getId(), remoteExpression.getAction(), remoteExpression.getExpression());
+
+                for(BTRemoteExpression remoteExpression : remoteEvaluationTask.getExpressions()) {
+                    send(remoteExpression.getId(), EvaluationEngineService.ACTION_REGISTER_REMOTE, remoteExpression.getExpression());
+                }
+
                 manageClientConnection();
             } else {
                 btManager.clientWorkerDone(this);
@@ -89,11 +94,13 @@ public class BTClientWorker extends BTWorker {
                 String timeToNextReq = dataMap.get("timeToNextReq");
 
                 if (exprAction.equals(EvaluationEngineService.ACTION_NEW_RESULT_REMOTE)) {
+                    BTRemoteExpression remoteExpression = remoteEvaluationTask.getRemoteExpression(exprId);
+                    // TODO for "undefined" result, resend request
                     Result result = exprData != null ? (Result) Converter.stringToObject(exprData) : null;
                     Log.w(TAG, this + " received " + exprAction + ": " + result);
 
-                    if (exprId.equals(remoteExpression.getId())) {
-                        if (result != null && result.getValues().length > 0) {
+                    if (remoteExpression != null) {
+                        if (isValidResult(result)) {
                             if(timeToNextReq != null) {
                                 remoteTimeToNextRequest = Integer.parseInt(timeToNextReq);
                             }
@@ -120,8 +127,15 @@ public class BTClientWorker extends BTWorker {
         }
     }
 
-    public BTRemoteExpression getRemoteExpression() {
-        return remoteExpression;
+    private boolean isValidResult(Result result) {
+        if(result == null) { return false; }
+        if(result.getValues() != null && result.getValues().length > 0) { return true; }
+        if(result.getTriState() != null && result.getTriState() != TriState.UNDEFINED) { return true; }
+        return false;
+    }
+
+    public BTRemoteEvaluationTask getRemoteEvaluationTask() {
+        return remoteEvaluationTask;
     }
 
     protected String getTag() {
@@ -130,7 +144,7 @@ public class BTClientWorker extends BTWorker {
 
     @Override
     public String toString() {
-        return "CW[" + getRemoteDeviceName() + ":" + remoteExpression.getId() + "]";
+        return "CW[" + getRemoteDeviceName() + ":" + remoteEvaluationTask.getExpressionIds() + "]";
     }
 
     public boolean isConnected() {

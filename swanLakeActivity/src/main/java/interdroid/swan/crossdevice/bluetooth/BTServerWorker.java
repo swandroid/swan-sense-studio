@@ -5,6 +5,8 @@ import android.util.Log;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Set;
+import java.util.TreeSet;
 
 import interdroid.swan.engine.EvaluationEngineService;
 
@@ -15,7 +17,7 @@ public class BTServerWorker extends BTWorker {
 
     private static final String TAG = "BTServerWorker";
 
-    private String expressionId = null;
+    private Set<String> expressionIds = new TreeSet<String>();
 
     public BTServerWorker(BTManager btManager, BluetoothSocket btSocket, BTSwanDevice swanDevice) {
         this.btManager = btManager;
@@ -44,9 +46,8 @@ public class BTServerWorker extends BTWorker {
                 String exprId = dataMap.get("id");
                 String exprData = dataMap.get("data");
 
-                if (expressionId == null) {
-                    expressionId = exprId;
-                }
+                // add the expression id to the list of registered expressions
+                expressionIds.add(exprId);
 
                 if (exprAction.equals(EvaluationEngineService.ACTION_REGISTER_REMOTE)
                         || exprAction.equals(EvaluationEngineService.ACTION_UNREGISTER_REMOTE)) {
@@ -55,7 +56,11 @@ public class BTServerWorker extends BTWorker {
                     btManager.sendExprForEvaluation(exprId, exprAction, exprSource, exprData);
 
                     if (exprAction.equals(EvaluationEngineService.ACTION_UNREGISTER_REMOTE)) {
-                        disconnect();
+                        expressionIds.remove(exprId);
+
+                        if(expressionIds.isEmpty()) {
+                            disconnect();
+                        }
                     }
                 } else {
                     Log.e(TAG, this + " didn't expect " + exprAction);
@@ -63,7 +68,11 @@ public class BTServerWorker extends BTWorker {
             }
         } catch (Exception e) {
             Log.e(TAG, this + " disconnected: " + e.getMessage());
-            //TODO unregister expression
+
+            // unregister expressions
+            for(String exprId : expressionIds) {
+                btManager.sendExprForEvaluation(exprId, EvaluationEngineService.ACTION_UNREGISTER_REMOTE, swanDevice.getName(), null);
+            }
 
             try {
                 btManager.serverWorkerDone(this);
@@ -74,7 +83,8 @@ public class BTServerWorker extends BTWorker {
         }
     }
 
-    public void disconnect() {
+    // we synchronize this to make sure that BTWorker.send() is not called at the same time
+    public synchronized void disconnect() {
         try {
             Log.e(TAG, this + " disconnecting");
             btSocket.close();
@@ -89,6 +99,6 @@ public class BTServerWorker extends BTWorker {
 
     @Override
     public String toString() {
-        return "SW[" + getRemoteDeviceName() + ":" + expressionId + "]";
+        return "SW[" + getRemoteDeviceName() + ":" + expressionIds + "]";
     }
 }

@@ -205,7 +205,7 @@ public class SensorService extends Service implements SensorEventListener {
                 } else {
                     activeSensors.put(sensorId, new SensorContainer(sensor, accuracy, 1));
                     Log.d(TAG,"Registering sensor with accuracy" + accuracy);
-                    mSensorManager.registerListener(this, sensor, accuracy);
+                    mSensorManager.registerListener(this, sensor, delayNormalizer(accuracy));
                 }
                 update_notification();
             } else {
@@ -304,5 +304,20 @@ public class SensorService extends Service implements SensorEventListener {
         NotificationManager nf = ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE));
 
         nf.notify(1, notificationBuilder.build());
+    }
+
+
+    public int delayNormalizer(int delay){
+        if(delay < 4) {
+            return delay;
+        } else if(delay < 20000){
+            return SensorManager.SENSOR_DELAY_FASTEST;
+        } else if(delay < 60000){
+            return SensorManager.SENSOR_DELAY_GAME;
+        } else if(delay < 200000){
+            return SensorManager.SENSOR_DELAY_UI;
+        } else {
+            return SensorManager.SENSOR_DELAY_NORMAL;
+        }
     }
 }
