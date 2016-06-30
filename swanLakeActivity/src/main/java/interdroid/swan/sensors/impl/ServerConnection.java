@@ -147,10 +147,6 @@ public class ServerConnection {
 
         hashData.putAll(httpBody);
 
-        for (String key : hashData.keySet()) {
-
-        }
-
 
         if (serverHttpBodyType.equals("formdata")) {
 

@@ -43,6 +43,10 @@ public abstract class AbstractWearSensor extends AbstractSwanSensor {
                 WearSensor s = (WearSensor) extra.getSerializable(SensorConstants.SENSOR_OBJECT);
                 SensorDataPoint d = (SensorDataPoint) extra.getSerializable(SensorConstants.SENSOR_DATA);
                 if (s.getName().equals(sensor_name)) {
+
+                    long now = acceptSensorReading();
+                    if(now < 0)
+                        return;
                     Log.d(TAG, "Got update+++++++++++++++++++++" + s.getName());
                     float[] dataz = d.getValues();
                     for (Map.Entry<String, Integer> data : valuePathMappings.entrySet()) {

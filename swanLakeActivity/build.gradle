@@ -65,6 +65,12 @@ dependencies {
 
     compile 'com.google.apis:google-api-services-qpxExpress:v1-rev20-1.22.0'
 
+    //For firebase connection
+    compile 'com.google.firebase:firebase-messaging:9.0.2'
     compile 'com.android.support:multidex:1.0.0'
 
 }
+
+
+//For firebase connection
+apply plugin: 'com.google.gms.google-services'
