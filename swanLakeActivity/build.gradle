@@ -65,4 +65,11 @@ dependencies {
     compile('com.lsjwzh:materialloadingprogressbar:0.5.8-RELEASE')
 
     compile 'com.google.apis:google-api-services-qpxExpress:v1-rev20-1.22.0'
+
+    //For firebase connection
+    compile 'com.google.firebase:firebase-messaging:9.0.2'
 }
+
+
+//For firebase connection
+apply plugin: 'com.google.gms.google-services'

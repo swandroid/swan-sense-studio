@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "950942329841",
+    "firebase_url": "https://swan-15740.firebaseio.com",
+    "project_id": "swan-15740",
+    "storage_bucket": "swan-15740.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:950942329841:android:8647184d42aad812",
+        "android_client_info": {
+          "package_name": "interdroid.swan"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "950942329841-75qu04r2g4lsoe6qg7rjqavb7r75dmlp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBsp7kgoNtLJFiEleHfaGa8fd9Jq595RRg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

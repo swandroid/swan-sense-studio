@@ -3,6 +3,7 @@ package interdroid.swan.engine;
 import android.content.Context;
 import android.os.Bundle;
 
+import interdroid.swan.remote.cloud.CloudManager;
 import interdroid.swan.sensors.impl.wear.shared.RemoteSensorManager;
 import interdroid.swancore.engine.EvaluationEngineServiceBase;
 import interdroid.swancore.engine.EvaluationManagerBase;
@@ -42,7 +43,11 @@ public class EvaluationManager extends EvaluationManagerBase{
 
         if(resolvedLocation.equals(Expression.LOCATION_WEAR)){
             RemoteSensorManager.getInstance(mContext).registerExpression(toCrossDeviceString(expression, resolvedLocation), id);
-        } else if (resolvedLocation.equals(Expression.LOCATION_NEARBY) || mProximityManager.hasPeer(resolvedLocation)) {
+        }else if(resolvedLocation.equals(Expression.LOCATION_CLOUD)) {
+
+            CloudManager.getInstance().registerExpression(id,expression.toParseString());
+
+        }else if (resolvedLocation.equals(Expression.LOCATION_NEARBY) || mProximityManager.hasPeer(resolvedLocation)) {
             // get sensor info from nearby devices
             mProximityManager.registerExpression(id, toCrossDeviceString(expression, resolvedLocation),
                     resolvedLocation, EvaluationEngineService.ACTION_REGISTER_REMOTE);
@@ -168,7 +173,12 @@ public class EvaluationManager extends EvaluationManagerBase{
 
         if(resolvedLocation.equals(Expression.LOCATION_WEAR)) {
             RemoteSensorManager.getInstance(mContext).unregisterExpression(toCrossDeviceString(expression, resolvedLocation), id);
-        } else if (resolvedLocation.equals(Expression.LOCATION_NEARBY) || mProximityManager.hasPeer(resolvedLocation)) {
+        }else if(resolvedLocation.equals(Expression.LOCATION_CLOUD)){
+
+            CloudManager.getInstance().unregisterExpression(id);
+
+
+        }else if (resolvedLocation.equals(Expression.LOCATION_NEARBY) || mProximityManager.hasPeer(resolvedLocation)) {
             // get sensor info from nearby devices
             mProximityManager.unregisterExpression(id, toCrossDeviceString(expression, resolvedLocation),
                     resolvedLocation, EvaluationEngineServiceBase.ACTION_UNREGISTER_REMOTE);

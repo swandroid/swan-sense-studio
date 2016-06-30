@@ -23,6 +23,7 @@ public interface Expression extends Parseable<Expression> {
     public static final String LOCATION_INFER = "infer";
     public static final String LOCATION_NEARBY = "NEARBY";
     public static final String LOCATION_WEAR   = "wear";
+    public static final String LOCATION_CLOUD   = "cloud";
     public static final String REGID_PREFIX = "regid:";
 
     public void setInferredLocation(String location);
