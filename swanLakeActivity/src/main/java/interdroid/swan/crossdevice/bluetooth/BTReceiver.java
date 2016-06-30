@@ -30,15 +30,18 @@ public class BTReceiver extends Thread {
     public void run() {
         Log.d(TAG, "BT receiver started for uuid " + uuid);
 
+        // comment this and uncomment the rest to allow only one serverWorker to be active at a time
+        serverSocket = openServerSocket();
+
         try {
             while (true) {
-                Log.d(TAG, "receiver resumed for uuid " + uuid);
-                serverSocket = openServerSocket();
+//                Log.d(TAG, "receiver resumed for uuid " + uuid);
+//                serverSocket = openServerSocket();
                 socket = serverSocket.accept();
 
                 if (socket != null) {
-                    Log.d(TAG, "receiver paused for uuid " + uuid);
-                    serverSocket.close();
+//                    Log.d(TAG, "receiver paused for uuid " + uuid);
+//                    serverSocket.close();
 
                     // we add the device in the nearby devices list in case it wasn't discovered already
                     BTSwanDevice swanDevice = btManager.addNearbyDevice(new BTSwanDevice(socket.getRemoteDevice()));
@@ -47,9 +50,9 @@ public class BTReceiver extends Thread {
                     btManager.addServerWorker(serverWorker);
                     serverWorker.start();
 
-                    synchronized (this) {
-                        wait();
-                    }
+//                    synchronized (this) {
+//                        wait();
+//                    }
                 }
             }
         } catch (Exception e) {

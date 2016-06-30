@@ -108,12 +108,12 @@ public class TestActivity extends Activity {
 
         if (!mRegistered) {
             registerSWANSensor(expression1, REQUEST_CODE_1);
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    registerSWANSensor(expression2, REQUEST_CODE_2);
-                }
-            }, 30000);
+//            handler.postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    registerSWANSensor(expression2, REQUEST_CODE_2);
+//                }
+//            }, 30000);
 
         } else {
             Log.d(TAG, "Already registered");
@@ -157,10 +157,8 @@ public class TestActivity extends Activity {
                             if (arg1 != null && arg1.length > 0) {
                                 String value = arg1[0].getValue().toString();
                                 tv.setText("Value = " + value);
-
                             } else {
                                 tv.setText("Value = null");
-                                Log.e(TAG, "Value = null");
                             }
 
                         }

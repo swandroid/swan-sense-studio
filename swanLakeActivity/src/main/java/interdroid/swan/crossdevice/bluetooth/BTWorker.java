@@ -12,6 +12,8 @@ import java.util.HashMap;
 
 import interdroid.swancore.crossdevice.Converter;
 import interdroid.swan.engine.EvaluationEngineService;
+import interdroid.swancore.swansong.Result;
+import interdroid.swancore.swansong.TriState;
 
 /**
  * Created by vladimir on 4/8/16.
@@ -28,20 +30,14 @@ public class BTWorker extends Thread {
     protected ObjectInputStream inStream;
 
     protected void initConnection() throws IOException {
-        try {
-            OutputStream os = btSocket.getOutputStream();
-            outStream = new ObjectOutputStream(os);
-            InputStream is = btSocket.getInputStream();
-            inStream = new ObjectInputStream(is);
-        } catch (IOException e) {
-            // we ususally get this exception when the worker on the other side was interrupted
-            // due to an expired timeout
-            Log.e(getTag(), this + " connection was closed: " + e.getMessage());
-        }
+        OutputStream os = btSocket.getOutputStream();
+        outStream = new ObjectOutputStream(os);
+        InputStream is = btSocket.getInputStream();
+        inStream = new ObjectInputStream(is);
     }
 
     // we synchronize this to make sure that BTServerWorker.disconnect() is not called at the same time
-    protected synchronized void send(String expressionId, String expressionAction, String expressionData) throws IOException {
+    protected synchronized void send(String expressionId, String expressionAction, String expressionData) throws Exception {
         Log.w(getTag(), this + " sending " + expressionAction + ": " + toPrintableData(expressionData, expressionAction));
 
         HashMap<String, String> dataMap = new HashMap<>();
@@ -66,6 +62,13 @@ public class BTWorker extends Thread {
         } else {
             return BTManager.TIME_BETWEEN_REQUESTS;
         }
+    }
+
+    protected boolean isValidResult(Result result) {
+        if(result == null) { return false; }
+        if(result.getValues() != null && result.getValues().length > 0) { return true; }
+        if(result.getTriState() != null && result.getTriState() != TriState.UNDEFINED) { return true; }
+        return false;
     }
 
     private String toPrintableData(String data, String action) {

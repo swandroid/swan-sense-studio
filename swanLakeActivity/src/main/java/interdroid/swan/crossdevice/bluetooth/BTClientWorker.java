@@ -127,13 +127,6 @@ public class BTClientWorker extends BTWorker {
         }
     }
 
-    private boolean isValidResult(Result result) {
-        if(result == null) { return false; }
-        if(result.getValues() != null && result.getValues().length > 0) { return true; }
-        if(result.getTriState() != null && result.getTriState() != TriState.UNDEFINED) { return true; }
-        return false;
-    }
-
     public BTRemoteEvaluationTask getRemoteEvaluationTask() {
         return remoteEvaluationTask;
     }

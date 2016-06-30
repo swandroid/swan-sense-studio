@@ -9,6 +9,8 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import interdroid.swan.engine.EvaluationEngineService;
+import interdroid.swancore.crossdevice.Converter;
+import interdroid.swancore.swansong.Result;
 
 /**
  * Created by vladimir on 4/8/16.
@@ -33,6 +35,18 @@ public class BTServerWorker extends BTWorker {
             manageServerConnection();
         } catch (Exception e) {
             Log.e(TAG, this + " crashed", e);
+            btManager.serverWorkerDone(this, true);
+        }
+    }
+
+    @Override
+    protected synchronized void send(String expressionId, String expressionAction, String expressionData) throws Exception {
+        // we don't check action type, because it can only be ACTION_NEW_RESULT_REMOTE
+        Result result = expressionData != null ? (Result) Converter.stringToObject(expressionData) : null;
+
+        if(isValidResult(result)) {
+            btManager.sendExprForEvaluation(expressionId, EvaluationEngineService.ACTION_UNREGISTER_REMOTE, swanDevice.getName(), null);
+            super.send(expressionId, expressionAction, expressionData);
         }
     }
 
@@ -75,7 +89,7 @@ public class BTServerWorker extends BTWorker {
             }
 
             try {
-                btManager.serverWorkerDone(this);
+                btManager.serverWorkerDone(this, false);
                 btSocket.close();
             } catch (IOException e1) {
                 Log.e(TAG, this + " couldn't close socket", e1);

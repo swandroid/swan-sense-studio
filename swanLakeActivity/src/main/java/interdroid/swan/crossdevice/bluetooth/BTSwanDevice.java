@@ -12,7 +12,6 @@ public class BTSwanDevice {
 
     private BluetoothDevice btDevice;
     private BTPendingItem pendingItem;
-
     private Map<String, String> registeredExpressions = new HashMap<String, String>();
 
     public BTSwanDevice(BluetoothDevice btDevice) {

@@ -531,25 +531,27 @@ public class BTManager implements ProximityManagerI {
      * we have to synchronize the methods dealing with workers, as it may happen that send() is called
      * by EvaluationEngineService right before a worker is removed
      */
-    protected synchronized void serverWorkerDone(BTServerWorker serverWorker) {
+    protected synchronized void serverWorkerDone(BTServerWorker serverWorker, boolean crashed) {
         Log.d(TAG, "server worker done " + serverWorker);
         BTSwanDevice swanDevice = serverWorker.getSwanDevice();
         serverWorkers.remove(serverWorker);
 
-        if(swanDevice.getPendingItem() != null) {
+        // if crashed, the other side will reschedule a request, so we wait for it and don't reschedule
+        if(swanDevice.getPendingItem() != null && !crashed) {
             final BTPendingItem pendingItem = swanDevice.getPendingItem();
             scheduleQueueItem(pendingItem.getItem(), pendingItem.getTimeout());
             swanDevice.setPendingItem(null);
         }
 
-        for (BTReceiver receiver : btReceivers) {
-            if (receiver.getSocket() != null && receiver.getSocket().equals(serverWorker.getBtSocket())) {
-                synchronized (receiver) {
-                    receiver.notify();
-                }
-                break;
-            }
-        }
+        // uncomment the code below to allow only one serverWorker to be active at a time; also, look at BTReceiver
+//        for (BTReceiver receiver : btReceivers) {
+//            if (receiver.getSocket() != null && receiver.getSocket().equals(serverWorker.getBtSocket())) {
+//                synchronized (receiver) {
+//                    receiver.notify();
+//                }
+//                break;
+//            }
+//        }
     }
 
     protected synchronized BTClientWorker getClientWorker(String deviceName) {
