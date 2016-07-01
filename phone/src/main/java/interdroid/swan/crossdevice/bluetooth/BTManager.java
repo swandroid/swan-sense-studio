@@ -346,16 +346,31 @@ public class BTManager implements ProximityManagerI {
 
         if(item instanceof BTRemoteEvaluationTask) {
             BTRemoteEvaluationTask remoteEvalTask = (BTRemoteEvaluationTask) item;
-            BTClientWorker clientWorker = new BTClientWorker(this, remoteEvalTask);
+            updateEvaluationTask(remoteEvalTask);
 
-            clientWorkers.add(clientWorker);
-            clientWorker.start();
+            if(remoteEvalTask.hasExpressions()) {
+                BTClientWorker clientWorker = new BTClientWorker(this, remoteEvalTask);
+                clientWorkers.add(clientWorker);
+                clientWorker.start();
+            }
         } else if(item instanceof Runnable) {
             // peer discovery
             ((Runnable) item).run();
         } else {
             Log.e(TAG, "Item can't be processed: " + item);
         }
+    }
+
+    private void updateEvaluationTask(BTRemoteEvaluationTask remoteEvalTask) {
+        List<BTRemoteExpression> toRemove = new ArrayList<BTRemoteExpression>();
+
+        for(BTRemoteExpression expression : remoteEvalTask.getExpressions()) {
+            if(!registeredExpressions.containsKey(expression.getBaseId())) {
+                toRemove.add(expression);
+            }
+        }
+
+        remoteEvalTask.getExpressions().removeAll(toRemove);
     }
 
     // we synchronize this to make sure that it is not called while clientWorkerDone or serverWorkerDone are called

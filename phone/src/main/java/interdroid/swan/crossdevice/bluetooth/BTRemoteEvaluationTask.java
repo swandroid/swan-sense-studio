@@ -24,14 +24,6 @@ public class BTRemoteEvaluationTask {
         }
     }
 
-    public void addExpression(BTRemoteExpression expression) {
-        expressions.add(expression);
-    }
-
-    public void removeExpression(BTRemoteExpression expression) {
-        expressions.remove(expression);
-    }
-
     public boolean hasExpressions() {
         return !expressions.isEmpty();
     }
