@@ -23,7 +23,8 @@ allprojects {
     }
 }
 
+
 /* uncomment this if you want to skip building javadocs (as they have errors) */
-//subprojects {
-//    tasks.withType(Javadoc).all { enabled = false }
-//}
+subprojects {
+    tasks.withType(Javadoc).all { enabled = false }
+}
