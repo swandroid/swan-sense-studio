@@ -13,6 +13,13 @@ public class BTSwanDevice {
     private BluetoothDevice btDevice;
     private BTPendingItem pendingItem;
     private Map<String, String> registeredExpressions = new HashMap<String, String>();
+    private BTConnection connection;
+    private BTClientWorker clientWorker;
+    private BTServerWorker serverWorker;
+
+    public void sendData(HashMap<String, String> dataMap) {}
+
+    public void receiveData(HashMap<String, String> dataMap) {}
 
     public BTSwanDevice(BluetoothDevice btDevice) {
         this.btDevice = btDevice;

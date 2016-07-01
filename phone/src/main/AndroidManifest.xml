@@ -1658,10 +1658,6 @@
             android:process=":weargravitysensor" >
         </service>
             <!-- android:multiprocess="true" /> -->
-        <activity
-            android:name=".crossdevice.swanplus.run2gether.NearbyRunnersActivity"
-            android:label="@string/title_activity_nearby_runners">
-        </activity>
 
         <activity
             android:name="interdroid.swan.sensors.impl.BeaconDiscoverySensor$ConfigurationActivity"
