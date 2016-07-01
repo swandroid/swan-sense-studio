@@ -11,12 +11,9 @@ import com.google.android.gms.wearable.DataMapItem;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.WearableListenerService;
 
-import java.io.IOException;
 import java.util.Arrays;
 
-import interdroid.swan.sensordashboard.shared.DataMapKeys;
-import interdroid.swancore.crossdevice.Converter;
-import interdroid.swancore.swansong.TimestampedValue;
+import interdroid.swancore.shared.DataMapKeys;
 
 //import interdroid.swan.sensordashboard.database.DataEntry;
 

@@ -30,7 +30,6 @@ android {
 dependencies {
     //ant.importBuild 'src/main/buildgrammar.ant'
     compile project(':senseandroidlibrary')
-    compile project(':shared')
     compile project(':swancore')
 
     compile files('libs/cuckoo-client.jar')

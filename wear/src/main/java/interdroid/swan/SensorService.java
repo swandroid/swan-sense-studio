@@ -19,9 +19,9 @@ import java.util.HashMap;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.locks.ReentrantLock;
 
-import interdroid.swan.sensordashboard.shared.DataMapKeys;
+import interdroid.swancore.shared.DataMapKeys;
 import interdroid.swan.expression.ManageExpressions;
-import interdroid.swan.sensordashboard.shared.SensorConstants;
+import interdroid.swancore.shared.SensorConstants;
 
 
 class SensorContainer {
