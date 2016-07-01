@@ -1,4 +1,4 @@
-package interdroid.swan.sensordashboard.shared;
+package interdroid.swancore.shared;
 
 /**
  * Created by Veaceslav Munteanu on 3/24/16.

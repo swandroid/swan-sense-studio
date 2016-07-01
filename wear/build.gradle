@@ -24,8 +24,6 @@ android {
 
 dependencies {
     compile 'com.google.android.gms:play-services-wearable:8.3.0'
-
-    compile project(':shared')
     compile project(':swancore')
 
 }

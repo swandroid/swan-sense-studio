@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 
-import interdroid.swan.sensordashboard.shared.SensorConstants;
+import interdroid.swancore.shared.SensorConstants;
 import interdroid.swan.sensors.AbstractSwanSensor;
 import interdroid.swan.sensors.impl.wear.shared.data.SensorDataPoint;
 import interdroid.swan.sensors.impl.wear.shared.data.SensorNames;

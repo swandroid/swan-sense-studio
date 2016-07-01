@@ -25,13 +25,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import interdroid.swan.engine.EvaluationEngineService;
-import interdroid.swan.sensordashboard.shared.ClientPaths;
-import interdroid.swan.sensordashboard.shared.DataMapKeys;
-import interdroid.swan.sensordashboard.shared.SensorConstants;
+import interdroid.swancore.shared.ClientPaths;
+import interdroid.swancore.shared.DataMapKeys;
+import interdroid.swancore.shared.SensorConstants;
 import interdroid.swan.sensors.impl.wear.shared.data.SensorDataPoint;
 import interdroid.swan.sensors.impl.wear.shared.data.SensorNames;
 import interdroid.swan.sensors.impl.wear.shared.data.WearSensor;
-import interdroid.swancore.swansong.TimestampedValue;
 
 public class RemoteSensorManager {
     private static final String TAG = "RemoteSensorManager";

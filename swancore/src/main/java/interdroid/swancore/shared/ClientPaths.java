@@ -1,4 +1,4 @@
-package interdroid.swan.sensordashboard.shared;
+package interdroid.swancore.shared;
 
 public class ClientPaths {
     public static final String START_MEASUREMENT = "/start";

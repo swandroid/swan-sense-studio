@@ -2,7 +2,6 @@ package interdroid.swan;
 
 import android.content.Context;
 import android.util.Log;
-import android.util.SparseLongArray;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -17,7 +16,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import interdroid.swan.sensordashboard.shared.DataMapKeys;
+import interdroid.swancore.shared.DataMapKeys;
 import interdroid.swancore.crossdevice.Converter;
 import interdroid.swancore.swansong.Result;
 

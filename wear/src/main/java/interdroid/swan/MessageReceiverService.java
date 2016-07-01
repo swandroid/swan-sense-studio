@@ -19,9 +19,9 @@ import com.google.android.gms.wearable.WearableListenerService;
 import java.nio.ByteBuffer;
 import java.util.List;
 
-import interdroid.swan.sensordashboard.shared.ClientPaths;
-import interdroid.swan.sensordashboard.shared.DataMapKeys;
-import interdroid.swan.sensordashboard.shared.SensorConstants;
+import interdroid.swancore.shared.ClientPaths;
+import interdroid.swancore.shared.DataMapKeys;
+import interdroid.swancore.shared.SensorConstants;
 
 public class MessageReceiverService extends WearableListenerService {
     private static final String TAG = "Wear/MessageReceiver";
