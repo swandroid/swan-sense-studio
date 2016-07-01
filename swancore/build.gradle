@@ -20,6 +20,11 @@ android {
 
 dependencies {
     compile 'com.android.support:appcompat-v7:23.3.0'
-    compile project(':swaninterface')
+
+    // NOTE: for jcenter export option, we set the swansong as dependecy here
+    // If you made local changes to the swansong, use:
+    // compile project(':swaninterface')
+    compile 'interdroid.swancore.swanmain:swaninterface:1.0.2'
+
     //compile files('libs/antlr-3.4-complete-no-antlrv2.jar')
 }
