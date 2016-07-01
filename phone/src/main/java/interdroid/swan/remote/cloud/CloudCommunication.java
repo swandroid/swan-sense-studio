@@ -7,7 +7,6 @@ import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.HashMap;
 
-import interdroid.swan.sensors.impl.ServerConnection;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;

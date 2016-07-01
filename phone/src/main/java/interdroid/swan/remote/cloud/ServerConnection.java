@@ -1,4 +1,4 @@
-package interdroid.swan.sensors.impl;
+package interdroid.swan.remote.cloud;
 
 import android.os.Bundle;
 import android.util.Log;
