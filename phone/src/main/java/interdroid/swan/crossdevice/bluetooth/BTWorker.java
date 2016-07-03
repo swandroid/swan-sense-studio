@@ -18,23 +18,13 @@ import interdroid.swancore.swansong.TriState;
 /**
  * Created by vladimir on 4/8/16.
  */
-public class BTWorker extends Thread {
+public class BTWorker {
 
     private static final String TAG = "BTWorker";
 
     protected BTManager btManager;
     protected BTSwanDevice swanDevice;
-
-    protected BluetoothSocket btSocket;
-    protected ObjectOutputStream outStream;
-    protected ObjectInputStream inStream;
-
-    protected void initConnection() throws IOException {
-        OutputStream os = btSocket.getOutputStream();
-        outStream = new ObjectOutputStream(os);
-        InputStream is = btSocket.getInputStream();
-        inStream = new ObjectInputStream(is);
-    }
+    protected BTConnection btConnection;
 
     // we synchronize this to make sure that BTServerWorker.disconnect() is not called at the same time
     protected synchronized void send(String expressionId, String expressionAction, String expressionData) throws Exception {
@@ -48,8 +38,10 @@ public class BTWorker extends Thread {
         //TODO check here if device has any expression registered remotely
         dataMap.put("timeToNextReq", getTimeToNextRequest() + "");
 
-        synchronized (outStream) {
-            outStream.writeObject(dataMap);
+        if(BTManager.THREADED_WORKERS) {
+            btConnection.send(dataMap);
+        } else {
+            swanDevice.getBtConnection().send(dataMap);
         }
 
         Log.w(getTag(), this + " successfully sent " + expressionAction + ": "
@@ -88,10 +80,7 @@ public class BTWorker extends Thread {
     }
 
     public String getRemoteDeviceName() {
-        if (btSocket != null) {
-            return btSocket.getRemoteDevice().getName();
-        }
-        return null;
+        return swanDevice.getName();
     }
 
     protected String getTag() {
@@ -99,15 +88,7 @@ public class BTWorker extends Thread {
     }
 
     public void abort() {
-        try {
-            btSocket.close();
-        } catch (IOException e) {
-            Log.e(TAG, this + " couldn't close socket", e);
-        }
-    }
-
-    public BluetoothSocket getBtSocket() {
-        return btSocket;
+        //TODO
     }
 
     public BTSwanDevice getSwanDevice() {

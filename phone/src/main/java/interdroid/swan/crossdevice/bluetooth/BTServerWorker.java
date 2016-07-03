@@ -15,28 +15,15 @@ import interdroid.swancore.swansong.Result;
 /**
  * Created by vladimir on 4/8/16.
  */
-public class BTServerWorker extends BTWorker {
+public class BTServerWorker extends BTWorker implements BTConnectionHandler {
 
     private static final String TAG = "BTServerWorker";
 
     private Set<String> expressionIds = new TreeSet<String>();
 
-    public BTServerWorker(BTManager btManager, BluetoothSocket btSocket, BTSwanDevice swanDevice) {
+    public BTServerWorker(BTManager btManager, BTSwanDevice swanDevice) {
         this.btManager = btManager;
-        this.btSocket = btSocket;
         this.swanDevice = swanDevice;
-    }
-
-    @Override
-    public void run() {
-        try {
-            Log.d(TAG, this + " started");
-            initConnection();
-            manageServerConnection();
-        } catch (Exception e) {
-            Log.e(TAG, this + " crashed", e);
-            btManager.serverWorkerDone(this, true);
-        }
     }
 
     @Override
@@ -50,60 +37,51 @@ public class BTServerWorker extends BTWorker {
         }
     }
 
-    protected void manageServerConnection() {
-        try {
-            while (true) {
-                HashMap<String, String> dataMap = (HashMap<String, String>) inStream.readObject();
+    @Override
+    public void onReceive(HashMap<String, String> dataMap) {
+        String exprAction = dataMap.get("action");
+        String exprSource = dataMap.get("source");
+        String exprId = dataMap.get("id");
+        String exprData = dataMap.get("data");
 
-                String exprAction = dataMap.get("action");
-                String exprSource = dataMap.get("source");
-                String exprId = dataMap.get("id");
-                String exprData = dataMap.get("data");
+        // add the expression id to the list of registered expressions
+        expressionIds.add(exprId);
 
-                // add the expression id to the list of registered expressions
-                expressionIds.add(exprId);
+        if (exprAction.equals(EvaluationEngineService.ACTION_REGISTER_REMOTE)
+                || exprAction.equals(EvaluationEngineService.ACTION_UNREGISTER_REMOTE)) {
+            Log.w(TAG, this + " received " + exprAction + ": " + exprData);
 
-                if (exprAction.equals(EvaluationEngineService.ACTION_REGISTER_REMOTE)
-                        || exprAction.equals(EvaluationEngineService.ACTION_UNREGISTER_REMOTE)) {
-                    Log.w(TAG, this + " received " + exprAction + ": " + exprData);
+            btManager.sendExprForEvaluation(exprId, exprAction, exprSource, exprData);
 
-                    btManager.sendExprForEvaluation(exprId, exprAction, exprSource, exprData);
+            if (exprAction.equals(EvaluationEngineService.ACTION_UNREGISTER_REMOTE)) {
+                expressionIds.remove(exprId);
 
-                    if (exprAction.equals(EvaluationEngineService.ACTION_UNREGISTER_REMOTE)) {
-                        expressionIds.remove(exprId);
-
-                        if(expressionIds.isEmpty()) {
-                            disconnect();
-                        }
-                    }
-                } else {
-                    Log.e(TAG, this + " didn't expect " + exprAction);
+                if(expressionIds.isEmpty()) {
+                    disconnect();
                 }
             }
-        } catch (Exception e) {
-            Log.e(TAG, this + " disconnected: " + e.getMessage());
-
-            // unregister expressions
-            for(String exprId : expressionIds) {
-                btManager.sendExprForEvaluation(exprId, EvaluationEngineService.ACTION_UNREGISTER_REMOTE, swanDevice.getName(), null);
-            }
-
-            try {
-                btManager.serverWorkerDone(this, false);
-                btSocket.close();
-            } catch (IOException e1) {
-                Log.e(TAG, this + " couldn't close socket", e1);
-            }
+        } else {
+            Log.e(TAG, this + " didn't expect " + exprAction);
         }
     }
 
-    // we synchronize this to make sure that BTWorker.send() is not called at the same time
-    public synchronized void disconnect() {
-        try {
-            Log.e(TAG, this + " disconnecting");
-            btSocket.close();
-        } catch (IOException e) {
-            Log.e(TAG, this + " couldn't close socket", e);
+    @Override
+    public void onDisconnected(Exception e, boolean crashed) {
+        Log.e(TAG, this + " disconnected: " + e.getMessage());
+
+        // unregister expressions
+        for(String exprId : expressionIds) {
+            btManager.sendExprForEvaluation(exprId, EvaluationEngineService.ACTION_UNREGISTER_REMOTE, swanDevice.getName(), null);
+        }
+
+        btManager.serverWorkerDone(this, crashed);
+    }
+
+    public void disconnect() {
+        if(BTManager.THREADED_WORKERS) {
+            btConnection.disconnect();
+        } else {
+            swanDevice.getBtConnection().disconnect();
         }
     }
 

@@ -1,27 +1,23 @@
 package interdroid.swan.crossdevice.bluetooth;
 
-import android.bluetooth.BluetoothDevice;
 import android.util.Log;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Random;
-import java.util.UUID;
 
 import interdroid.swancore.crossdevice.Converter;
 import interdroid.swan.engine.EvaluationEngineService;
 import interdroid.swancore.swansong.Result;
-import interdroid.swancore.swansong.TriState;
 
 /**
  * Created by vladimir on 4/7/16.
  */
-public class BTClientWorker extends BTWorker {
+public class BTClientWorker extends BTWorker implements BTConnectionHandler {
 
     private static final String TAG = "BTClientWorker";
 
     private BTRemoteEvaluationTask remoteEvaluationTask;
-    private boolean connected = false;
+    int remoteTimeToNextRequest = 0;
 
     public BTClientWorker(BTManager btManager, BTRemoteEvaluationTask remoteEvaluationTask) {
         this.btManager = btManager;
@@ -29,21 +25,15 @@ public class BTClientWorker extends BTWorker {
         this.swanDevice = remoteEvaluationTask.getSwanDevice();
     }
 
-    @Override
-    public void run() {
+    public void doWork() {
         try {
             Log.d(TAG, this + " started processing");
-            connect(swanDevice.getBtDevice());
+            connectToRemote();
 
-            if (btSocket != null) {
-                connected = true;
-                initConnection();
-
+            if(isConnectedToRemote()) {
                 for(BTRemoteExpression remoteExpression : remoteEvaluationTask.getExpressions()) {
                     send(remoteExpression.getId(), EvaluationEngineService.ACTION_REGISTER_REMOTE, remoteExpression.getExpression());
                 }
-
-                manageClientConnection();
             } else {
                 btManager.clientWorkerDone(this);
             }
@@ -53,78 +43,69 @@ public class BTClientWorker extends BTWorker {
         }
     }
 
-    // blocking call; use only in a separate thread
-    protected void connect(BluetoothDevice device) {
-        int uuidIdx = new Random().nextInt(BTManager.SERVICE_UUIDS.length);
-        UUID uuid = BTManager.SERVICE_UUIDS[uuidIdx];
-        Log.i(TAG, this + " connecting to " + device.getName() + " on port " + uuidIdx + "...");
-        btManager.bcastLogMessage("connecting to " + device.getName() + " on port " + uuidIdx + "...");
+    protected void connectToRemote() {
+        if(BTManager.THREADED_WORKERS) {
+            btConnection = new BTConnection(this);
+            btConnection.connect(swanDevice.getBtDevice());
 
-        try {
-            btSocket = device.createInsecureRfcommSocketToServiceRecord(uuid);
-            btSocket.connect();
-            Log.i(TAG, this + " connected to " + device.getName());
-            btManager.bcastLogMessage("connected to " + device.getName());
-            return;
-        } catch (Exception e) {
-            Log.e(TAG, this + " can't connect to " + device.getName() + ": " + e.getMessage());
-            btManager.bcastLogMessage("can't connect to " + device.getName() + ": " + e.getMessage());
-
-            try {
-                btSocket.close();
-            } catch (Exception e1) {
-                Log.e(TAG, "couldn't close socket", e1);
+            if(btConnection.isConnected()) {
+                btConnection.start();
             }
-        }
+        } else {
+            if(!swanDevice.isConnectedToRemote()) {
+                btConnection = new BTConnection(swanDevice);
+                btConnection.connect(swanDevice.getBtDevice());
 
-        btSocket = null;
-    }
-
-    protected void manageClientConnection() {
-        int remoteTimeToNextRequest = 0;
-
-        try {
-            while (true) {
-                HashMap<String, String> dataMap = (HashMap<String, String>) inStream.readObject();
-
-                String exprAction = dataMap.get("action");
-                String exprSource = dataMap.get("source");
-                String exprId = dataMap.get("id");
-                String exprData = dataMap.get("data");
-                String timeToNextReq = dataMap.get("timeToNextReq");
-
-                if (exprAction.equals(EvaluationEngineService.ACTION_NEW_RESULT_REMOTE)) {
-                    BTRemoteExpression remoteExpression = remoteEvaluationTask.getRemoteExpression(exprId);
-                    // TODO for "undefined" result, resend request
-                    Result result = exprData != null ? (Result) Converter.stringToObject(exprData) : null;
-                    Log.w(TAG, this + " received " + exprAction + ": " + result);
-
-                    if (remoteExpression != null) {
-                        if (isValidResult(result)) {
-                            if(timeToNextReq != null) {
-                                remoteTimeToNextRequest = Integer.parseInt(timeToNextReq);
-                            }
-                            btManager.sendExprForEvaluation(remoteExpression.getBaseId(), exprAction, exprSource, exprData);
-                            send(exprId, EvaluationEngineService.ACTION_UNREGISTER_REMOTE, null);
-                        }
-                    } else {
-                        Log.e(TAG, this + " received result for wrong expression: " + exprId);
-                        send(exprId, EvaluationEngineService.ACTION_UNREGISTER_REMOTE, null);
-                    }
-                } else {
-                    Log.e(TAG, this + " didn't expect " + exprAction);
+                if(btConnection.isConnected()) {
+                    btConnection.start();
                 }
             }
-        } catch (Exception e) {
-            Log.e(TAG, this + " disconnected: " + e.getMessage());
-
-            try {
-                btManager.clientWorkerDone(this, remoteTimeToNextRequest);
-                btSocket.close();
-            } catch (IOException e1) {
-                Log.e(TAG, this + " couldn't close socket", e1);
-            }
         }
+    }
+
+    public boolean isConnectedToRemote() {
+        if(BTManager.THREADED_WORKERS) {
+            return btConnection != null && btConnection.isConnected();
+        } else {
+            return swanDevice.isConnectedToRemote();
+        }
+    }
+
+    @Override
+    public void onReceive(HashMap<String, String> dataMap) throws Exception {
+        String exprAction = dataMap.get("action");
+        String exprSource = dataMap.get("source");
+        String exprId = dataMap.get("id");
+        String exprData = dataMap.get("data");
+        String timeToNextReq = dataMap.get("timeToNextReq");
+
+        if (exprAction.equals(EvaluationEngineService.ACTION_NEW_RESULT_REMOTE)) {
+            BTRemoteExpression remoteExpression = remoteEvaluationTask.getRemoteExpression(exprId);
+            // TODO for "undefined" result, resend request
+            Result result = exprData != null ? (Result) Converter.stringToObject(exprData) : null;
+            Log.w(TAG, this + " received " + exprAction + ": " + result);
+
+            if (remoteExpression != null) {
+                if (isValidResult(result)) {
+                    if(timeToNextReq != null) {
+                        remoteTimeToNextRequest = Integer.parseInt(timeToNextReq);
+                    }
+                    btManager.sendExprForEvaluation(remoteExpression.getBaseId(), exprAction, exprSource, exprData);
+                    send(exprId, EvaluationEngineService.ACTION_UNREGISTER_REMOTE, null);
+                }
+            } else {
+                Log.e(TAG, this + " received result for wrong expression: " + exprId);
+                send(exprId, EvaluationEngineService.ACTION_UNREGISTER_REMOTE, null);
+            }
+        } else {
+            Log.e(TAG, this + " didn't expect " + exprAction);
+        }
+    }
+
+    @Override
+    public void onDisconnected(Exception e, boolean crashed) {
+        Log.e(TAG, this + " disconnected: " + e.getMessage());
+        btManager.clientWorkerDone(this, remoteTimeToNextRequest);
     }
 
     public BTRemoteEvaluationTask getRemoteEvaluationTask() {
@@ -138,9 +119,5 @@ public class BTClientWorker extends BTWorker {
     @Override
     public String toString() {
         return "CW[" + getRemoteDeviceName() + ":" + remoteEvaluationTask.getExpressionIds() + "]";
-    }
-
-    public boolean isConnected() {
-        return connected;
     }
 }

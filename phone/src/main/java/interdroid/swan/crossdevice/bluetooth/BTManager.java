@@ -50,6 +50,7 @@ public class BTManager implements ProximityManagerI {
     public static final String ACTION_LOG_MESSAGE = "interdroid.swan.crossdevice.bluetooth.ACTION_LOG_MESSAGE";
     /* this should be configurable */
     public static final int TIME_BETWEEN_REQUESTS = 4000;
+    public static final boolean THREADED_WORKERS = false;
     private final int BLOCKED_WORKERS_CHECKING_INTERVAL = 5000;
     private final int PEER_DISCOVERY_INTERVAL = 60000;
 
@@ -92,7 +93,7 @@ public class BTManager implements ProximityManagerI {
             List<BTClientWorker> blockedWorkers = new ArrayList<>();
 
             for (BTClientWorker clientWorker : clientWorkers) {
-                if (!clientWorker.isConnected()) {
+                if (!clientWorker.isConnectedToRemote()) {
                     if (waitingWorkers.contains(clientWorker)) {
                         Log.e(TAG, "blocked worker " + clientWorker + " found, interrupting...");
                         blockedWorkers.add(clientWorker);
@@ -351,7 +352,7 @@ public class BTManager implements ProximityManagerI {
             if(remoteEvalTask.hasExpressions()) {
                 BTClientWorker clientWorker = new BTClientWorker(this, remoteEvalTask);
                 clientWorkers.add(clientWorker);
-                clientWorker.start();
+                clientWorker.doWork();
             }
         } else if(item instanceof Runnable) {
             // peer discovery

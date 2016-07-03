@@ -13,22 +13,27 @@ import java.util.HashMap;
 import java.util.Random;
 import java.util.UUID;
 
-import interdroid.swan.engine.EvaluationEngineService;
-
 /**
  * Created by vladimir on 7/1/16.
+ * TODO set connected to false in catch blocks
+ * TODO make sure that send and disconnect are not called at the same time
  */
 public class BTConnection extends Thread {
 
     private static final String TAG = "BTConnection";
 
     protected BTManager btManager;
-    protected BTSwanDevice swanDevice;
+    protected BTConnectionHandler connectionHandler;
+
     private boolean connected = false;
 
     protected BluetoothSocket btSocket;
     protected ObjectOutputStream outStream;
     protected ObjectInputStream inStream;
+
+    public BTConnection(BTConnectionHandler connectionHandler) {
+        this.connectionHandler = connectionHandler;
+    }
 
     protected void initConnection() throws IOException {
         OutputStream os = btSocket.getOutputStream();
@@ -47,6 +52,8 @@ public class BTConnection extends Thread {
         try {
             btSocket = device.createInsecureRfcommSocketToServiceRecord(uuid);
             btSocket.connect();
+            connected = true;
+            initConnection();
             Log.i(TAG, this + " connected to " + device.getName());
             btManager.bcastLogMessage("connected to " + device.getName());
             return;
@@ -71,17 +78,21 @@ public class BTConnection extends Thread {
         }
     }
 
-    protected void manageClientConnection() {
+    @Override
+    public void run() {
+        Log.d(TAG, "started processing");
+
         try {
             while (true) {
                 HashMap<String, String> dataMap = (HashMap<String, String>) inStream.readObject();
-                swanDevice.receiveData(dataMap);
+                connectionHandler.onReceive(dataMap);
             }
         } catch (Exception e) {
             Log.e(TAG, this + " disconnected: " + e.getMessage());
+            connected = false;
+            connectionHandler.onDisconnected(e, false);
 
             try {
-                //TODO
                 btSocket.close();
             } catch (IOException e1) {
                 Log.e(TAG, this + " couldn't close socket", e1);
@@ -89,22 +100,17 @@ public class BTConnection extends Thread {
         }
     }
 
-    @Override
-    public void run() {
+    // we synchronize this to make sure that BTWorker.send() is not called at the same time
+    public synchronized void disconnect() {
         try {
-            Log.d(TAG, this + " started processing");
-            connect(swanDevice.getBtDevice());
-
-            if (btSocket != null) {
-                connected = true;
-                initConnection();
-                manageClientConnection();
-            } else {
-                //TODO
-            }
-        } catch (Exception e) {
-            Log.e(TAG, this + " crashed", e);
-            //TODO
+            Log.e(TAG, this + " disconnecting");
+            btSocket.close();
+        } catch (IOException e) {
+            Log.e(TAG, this + " couldn't close socket", e);
         }
+    }
+
+    public boolean isConnected() {
+        return connected;
     }
 }
