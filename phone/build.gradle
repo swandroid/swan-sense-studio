@@ -62,7 +62,12 @@ dependencies {
     // https://github.com/lsjwzh/MaterialLoadingProgressBar
     compile('com.lsjwzh:materialloadingprogressbar:0.5.8-RELEASE')
 
-    compile 'com.google.apis:google-api-services-qpxExpress:v1-rev20-1.22.0'
+    //For Flight sensor from google
+    compile ('com.google.apis:google-api-services-qpxExpress:v1-rev20-1.22.0'){
+        exclude module: 'httpclient' //by artifact name
+        exclude group: 'org.apache.httpcomponents' //by group
+        exclude group: 'org.apache.httpcomponents', module: 'httpclient' //by both name and group
+    }
 
     //For firebase connection
     compile 'com.google.firebase:firebase-messaging:9.0.2'
