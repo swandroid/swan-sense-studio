@@ -21,9 +21,10 @@ public class BTServerWorker extends BTWorker implements BTConnectionHandler {
 
     private Set<String> expressionIds = new TreeSet<String>();
 
-    public BTServerWorker(BTManager btManager, BTSwanDevice swanDevice) {
+    public BTServerWorker(BTManager btManager, BTSwanDevice swanDevice, BTConnection btConnection) {
         this.btManager = btManager;
         this.swanDevice = swanDevice;
+        this.btConnection = btConnection;
     }
 
     @Override
@@ -57,7 +58,7 @@ public class BTServerWorker extends BTWorker implements BTConnectionHandler {
                 expressionIds.remove(exprId);
 
                 if(expressionIds.isEmpty()) {
-                    disconnect();
+                    done();
                 }
             }
         } else {
@@ -66,7 +67,7 @@ public class BTServerWorker extends BTWorker implements BTConnectionHandler {
     }
 
     @Override
-    public void onDisconnected(Exception e, boolean crashed) {
+    public void onDisconnected(Exception e) {
         Log.e(TAG, this + " disconnected: " + e.getMessage());
 
         // unregister expressions
@@ -74,14 +75,16 @@ public class BTServerWorker extends BTWorker implements BTConnectionHandler {
             btManager.sendExprForEvaluation(exprId, EvaluationEngineService.ACTION_UNREGISTER_REMOTE, swanDevice.getName(), null);
         }
 
-        btManager.serverWorkerDone(this, crashed);
+        swanDevice.setServerWorker(null);
+        btManager.serverWorkerDone(this);
     }
 
-    public void disconnect() {
+    public void done() {
         if(BTManager.THREADED_WORKERS) {
             btConnection.disconnect();
         } else {
-            swanDevice.getBtConnection().disconnect();
+            swanDevice.setServerWorker(null);
+            btManager.serverWorkerDone(this);
         }
     }
 

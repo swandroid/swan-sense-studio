@@ -24,10 +24,10 @@ public class BTWorker {
 
     protected BTManager btManager;
     protected BTSwanDevice swanDevice;
+
     protected BTConnection btConnection;
 
-    // we synchronize this to make sure that BTServerWorker.disconnect() is not called at the same time
-    protected synchronized void send(String expressionId, String expressionAction, String expressionData) throws Exception {
+    protected void send(String expressionId, String expressionAction, String expressionData) throws Exception {
         Log.w(getTag(), this + " sending " + expressionAction + ": " + toPrintableData(expressionData, expressionAction));
 
         HashMap<String, String> dataMap = new HashMap<>();
@@ -93,5 +93,9 @@ public class BTWorker {
 
     public BTSwanDevice getSwanDevice() {
         return swanDevice;
+    }
+
+    public BTConnection getBtConnection() {
+        return btConnection;
     }
 }

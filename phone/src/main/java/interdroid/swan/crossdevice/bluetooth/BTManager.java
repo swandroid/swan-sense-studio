@@ -51,6 +51,7 @@ public class BTManager implements ProximityManagerI {
     /* this should be configurable */
     public static final int TIME_BETWEEN_REQUESTS = 4000;
     public static final boolean THREADED_WORKERS = false;
+    public static final boolean SYNCHRONOUS_WORKERS = false;
     private final int BLOCKED_WORKERS_CHECKING_INTERVAL = 5000;
     private final int PEER_DISCOVERY_INTERVAL = 60000;
 
@@ -164,7 +165,7 @@ public class BTManager implements ProximityManagerI {
 
                 if (device.getName() != null && device.getName().contains("SWAN")) {
                     Log.d(TAG, "found nearby device " + device.getName());
-                    addNearbyDevice(new BTSwanDevice(device));
+                    addNearbyDevice(new BTSwanDevice(device, BTManager.this));
 
                     // code below is used by SwanLakePlus
                     Intent deviceFoundIntent = new Intent();
@@ -547,27 +548,28 @@ public class BTManager implements ProximityManagerI {
      * we have to synchronize the methods dealing with workers, as it may happen that send() is called
      * by EvaluationEngineService right before a worker is removed
      */
-    protected synchronized void serverWorkerDone(BTServerWorker serverWorker, boolean crashed) {
+    protected synchronized void serverWorkerDone(BTServerWorker serverWorker) {
         Log.d(TAG, "server worker done " + serverWorker);
         BTSwanDevice swanDevice = serverWorker.getSwanDevice();
         serverWorkers.remove(serverWorker);
 
         // if crashed, the other side will reschedule a request, so we wait for it and don't reschedule
-        if(swanDevice.getPendingItem() != null && !crashed) {
+        if(swanDevice.getPendingItem() != null) {
             final BTPendingItem pendingItem = swanDevice.getPendingItem();
             scheduleQueueItem(pendingItem.getItem(), pendingItem.getTimeout());
             swanDevice.setPendingItem(null);
         }
 
-        // uncomment the code below to allow only one serverWorker to be active at a time; also, look at BTReceiver
-//        for (BTReceiver receiver : btReceivers) {
-//            if (receiver.getSocket() != null && receiver.getSocket().equals(serverWorker.getBtSocket())) {
-//                synchronized (receiver) {
-//                    receiver.notify();
-//                }
-//                break;
-//            }
-//        }
+        if(SYNCHRONOUS_WORKERS) {
+            for (BTReceiver receiver : btReceivers) {
+                if (receiver.getSocket() != null && receiver.getSocket().equals(serverWorker.getBtConnection().getBtSocket())) {
+                    synchronized (receiver) {
+                        receiver.notify();
+                    }
+                    break;
+                }
+            }
+        }
     }
 
     protected synchronized BTClientWorker getClientWorker(String deviceName) {

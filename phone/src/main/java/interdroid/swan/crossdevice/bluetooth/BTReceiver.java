@@ -30,33 +30,73 @@ public class BTReceiver extends Thread {
     public void run() {
         Log.d(TAG, "BT receiver started for uuid " + uuid);
 
-        // comment this and uncomment the rest to allow only one serverWorker to be active at a time
+        if(BTManager.SYNCHRONOUS_WORKERS) {
+            runWithSynchronousWorkers();
+        } else {
+            runWithAsynchronousWorkers();
+        }
+    }
+
+    private void runWithAsynchronousWorkers() {
         serverSocket = openServerSocket();
 
         try {
             while (true) {
-//                Log.d(TAG, "receiver resumed for uuid " + uuid);
-//                serverSocket = openServerSocket();
                 socket = serverSocket.accept();
 
                 if (socket != null) {
-//                    Log.d(TAG, "receiver paused for uuid " + uuid);
-//                    serverSocket.close();
-
                     // we add the device in the nearby devices list in case it wasn't discovered already
-                    BTSwanDevice swanDevice = btManager.addNearbyDevice(new BTSwanDevice(socket.getRemoteDevice()));
+                    BTSwanDevice swanDevice = btManager.addNearbyDevice(new BTSwanDevice(socket.getRemoteDevice(), btManager));
 
-                    BTServerWorker serverWorker = new BTServerWorker(btManager, socket, swanDevice);
-                    btManager.addServerWorker(serverWorker);
-                    serverWorker.start();
-
-//                    synchronized (this) {
-//                        wait();
-//                    }
+                    manageConnection(swanDevice, socket);
                 }
             }
         } catch (Exception e) {
             Log.e(TAG, "receiver was stopped: " + e.getMessage());
+        }
+    }
+
+    private void runWithSynchronousWorkers() {
+        try {
+            while (true) {
+                Log.d(TAG, "receiver resumed for uuid " + uuid);
+                serverSocket = openServerSocket();
+                socket = serverSocket.accept();
+
+                if (socket != null) {
+                    Log.d(TAG, "receiver paused for uuid " + uuid);
+                    serverSocket.close();
+
+                    // we add the device in the nearby devices list in case it wasn't discovered already
+                    BTSwanDevice swanDevice = btManager.addNearbyDevice(new BTSwanDevice(socket.getRemoteDevice(), btManager));
+
+                    manageConnection(swanDevice, socket);
+
+                    synchronized (this) {
+                        wait();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "receiver was stopped: " + e.getMessage());
+        }
+    }
+
+    private void manageConnection(BTSwanDevice swanDevice, BluetoothSocket socket) {
+        BTConnection btConnection = new BTConnection(socket);
+        if(btConnection.isConnected()) {
+            BTServerWorker serverWorker = new BTServerWorker(btManager, swanDevice, btConnection);
+            btManager.addServerWorker(serverWorker);
+
+            if(BTManager.THREADED_WORKERS) {
+                btConnection.setConnectionHandler(serverWorker);
+            } else {
+                btConnection.setConnectionHandler(swanDevice);
+                swanDevice.setBtConnection(btConnection);
+                swanDevice.setServerWorker(serverWorker);
+            }
+
+            btConnection.start();
         }
     }
 

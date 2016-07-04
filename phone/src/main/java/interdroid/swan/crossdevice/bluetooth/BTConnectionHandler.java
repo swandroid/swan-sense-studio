@@ -10,5 +10,5 @@ public interface BTConnectionHandler {
     public void onReceive(HashMap<String, String> dataMap) throws Exception;
 
     //TODO not sure if we need crashed
-    public void onDisconnected(Exception e, boolean crashed);
+    public void onDisconnected(Exception e);
 }

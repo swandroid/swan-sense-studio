@@ -53,12 +53,16 @@ public class BTClientWorker extends BTWorker implements BTConnectionHandler {
             }
         } else {
             if(!swanDevice.isConnectedToRemote()) {
-                btConnection = new BTConnection(swanDevice);
+                BTConnection btConnection = new BTConnection(swanDevice);
                 btConnection.connect(swanDevice.getBtDevice());
 
                 if(btConnection.isConnected()) {
+                    swanDevice.setBtConnection(btConnection);
+                    swanDevice.setClientWorker(this);
                     btConnection.start();
                 }
+            } else {
+                swanDevice.setClientWorker(this);
             }
         }
     }
@@ -103,8 +107,10 @@ public class BTClientWorker extends BTWorker implements BTConnectionHandler {
     }
 
     @Override
-    public void onDisconnected(Exception e, boolean crashed) {
+    public void onDisconnected(Exception e) {
         Log.e(TAG, this + " disconnected: " + e.getMessage());
+
+        swanDevice.setClientWorker(null);
         btManager.clientWorkerDone(this, remoteTimeToNextRequest);
     }
 
