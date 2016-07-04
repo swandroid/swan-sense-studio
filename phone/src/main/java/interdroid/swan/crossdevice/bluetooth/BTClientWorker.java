@@ -57,10 +57,7 @@ public class BTClientWorker extends BTWorker implements BTConnectionHandler {
                 BTConnection btConnection = new BTConnection(btManager, swanDevice);
                 btConnection.connect(swanDevice.getBtDevice());
 
-                if(swanDevice.isConnectedToRemote()) {
-                    // if a connection was accepted in the meantime
-                    Log.i(TAG, this + " remote already connected");
-                } else if(btConnection.isConnected()) {
+                if(btConnection.isConnected()) {
                     swanDevice.setBtConnection(btConnection);
                     btConnection.start();
                 }

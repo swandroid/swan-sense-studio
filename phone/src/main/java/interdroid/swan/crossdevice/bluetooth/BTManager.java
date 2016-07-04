@@ -454,7 +454,7 @@ public class BTManager implements ProximityManagerI {
             registerRemoteDevice(swanDevice);
         } else {
             Log.d(TAG, "device " + btDevice.getName() + " already present, won't add");
-            if(!swanDevice.isConnectedToRemote() && btConnection != null) {
+            if(btConnection != null && btConnection.isConnected()) {
                 swanDevice.setBtConnection(btConnection);
             }
         }
