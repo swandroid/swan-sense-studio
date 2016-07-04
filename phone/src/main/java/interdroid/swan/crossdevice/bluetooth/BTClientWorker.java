@@ -27,7 +27,6 @@ public class BTClientWorker extends BTWorker implements BTConnectionHandler {
 
     public void doWork() {
         try {
-            Log.d(TAG, this + " started processing");
             connectToRemote();
 
             if(isConnectedToRemote()) {
@@ -35,34 +34,36 @@ public class BTClientWorker extends BTWorker implements BTConnectionHandler {
                     send(remoteExpression.getId(), EvaluationEngineService.ACTION_REGISTER_REMOTE, remoteExpression.getExpression());
                 }
             } else {
-                btManager.clientWorkerDone(this);
+                done();
             }
         } catch (Exception e) {
             Log.e(TAG, this + " crashed", e);
-            btManager.clientWorkerDone(this);
+            done();
         }
     }
 
     protected void connectToRemote() {
         if(BTManager.THREADED_WORKERS) {
-            btConnection = new BTConnection(this);
+            btConnection = new BTConnection(btManager, this);
             btConnection.connect(swanDevice.getBtDevice());
 
             if(btConnection.isConnected()) {
                 btConnection.start();
             }
         } else {
+            swanDevice.setClientWorker(this);
+
             if(!swanDevice.isConnectedToRemote()) {
-                BTConnection btConnection = new BTConnection(swanDevice);
+                BTConnection btConnection = new BTConnection(btManager, swanDevice);
                 btConnection.connect(swanDevice.getBtDevice());
 
-                if(btConnection.isConnected()) {
+                if(swanDevice.isConnectedToRemote()) {
+                    // if a connection was accepted in the meantime
+                    Log.i(TAG, this + " remote already connected");
+                } else if(btConnection.isConnected()) {
                     swanDevice.setBtConnection(btConnection);
-                    swanDevice.setClientWorker(this);
                     btConnection.start();
                 }
-            } else {
-                swanDevice.setClientWorker(this);
             }
         }
     }
@@ -91,14 +92,22 @@ public class BTClientWorker extends BTWorker implements BTConnectionHandler {
 
             if (remoteExpression != null) {
                 if (isValidResult(result)) {
+                    btManager.bcastLogMessage("got new result from " + swanDevice);
+
                     if(timeToNextReq != null) {
                         remoteTimeToNextRequest = Integer.parseInt(timeToNextReq);
                     }
+
                     btManager.sendExprForEvaluation(remoteExpression.getBaseId(), exprAction, exprSource, exprData);
                     send(exprId, EvaluationEngineService.ACTION_UNREGISTER_REMOTE, null);
+                    remoteEvaluationTask.removeExpression(remoteExpression);
+
+                    if(!remoteEvaluationTask.hasExpressions()) {
+                        done();
+                    }
                 }
             } else {
-                Log.e(TAG, this + " received result for wrong expression: " + exprId);
+                Log.e(TAG, this + " received result for wrong or outdated expression: " + exprId);
                 send(exprId, EvaluationEngineService.ACTION_UNREGISTER_REMOTE, null);
             }
         } else {
@@ -109,7 +118,10 @@ public class BTClientWorker extends BTWorker implements BTConnectionHandler {
     @Override
     public void onDisconnected(Exception e) {
         Log.e(TAG, this + " disconnected: " + e.getMessage());
+        done();
+    }
 
+    private void done() {
         swanDevice.setClientWorker(null);
         btManager.clientWorkerDone(this, remoteTimeToNextRequest);
     }

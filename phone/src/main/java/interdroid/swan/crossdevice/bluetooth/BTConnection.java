@@ -31,8 +31,9 @@ public class BTConnection extends Thread {
     protected ObjectOutputStream outStream;
     protected ObjectInputStream inStream;
 
-    public BTConnection(BluetoothSocket btSocket) {
+    public BTConnection(BTManager btManager, BluetoothSocket btSocket) {
         this.btSocket = btSocket;
+        this.btManager = btManager;
 
         try {
             initConnection();
@@ -42,8 +43,9 @@ public class BTConnection extends Thread {
         }
     }
 
-    public BTConnection(BTConnectionHandler connectionHandler) {
+    public BTConnection(BTManager btManager, BTConnectionHandler connectionHandler) {
         this.connectionHandler = connectionHandler;
+        this.btManager = btManager;
     }
 
     protected void initConnection() throws IOException {
@@ -57,7 +59,7 @@ public class BTConnection extends Thread {
     protected void connect(BluetoothDevice device) {
         int uuidIdx = new Random().nextInt(BTManager.SERVICE_UUIDS.length);
         UUID uuid = BTManager.SERVICE_UUIDS[uuidIdx];
-        Log.i(TAG, "connecting to " + device.getName() + " on port " + uuidIdx + "...");
+        Log.i(TAG, connectionHandler + " connecting to on port " + uuidIdx + "...");
         btManager.bcastLogMessage("connecting to " + device.getName() + " on port " + uuidIdx + "...");
 
         try {
@@ -65,17 +67,16 @@ public class BTConnection extends Thread {
             btSocket.connect();
             initConnection();
             connected = true;
-            Log.i(TAG, "connected to " + device.getName());
-            btManager.bcastLogMessage("connected to " + device.getName());
+            Log.i(TAG, connectionHandler + " connected to " + device.getName());
             return;
         } catch (Exception e) {
-            Log.e(TAG, "can't connect to " + device.getName() + ": " + e.getMessage());
+            Log.e(TAG, connectionHandler + " can't connect to " + device.getName() + ": " + e.getMessage());
             btManager.bcastLogMessage("can't connect to " + device.getName() + ": " + e.getMessage());
 
             try {
                 btSocket.close();
             } catch (Exception e1) {
-                Log.e(TAG, "couldn't close socket", e1);
+                Log.e(TAG, connectionHandler + " couldn't close socket", e1);
             }
         }
 
@@ -91,7 +92,7 @@ public class BTConnection extends Thread {
 
     @Override
     public void run() {
-        Log.d(TAG, "started processing");
+        Log.d(TAG, connectionHandler + " connection ready");
 
         try {
             while (true) {
@@ -99,14 +100,14 @@ public class BTConnection extends Thread {
                 connectionHandler.onReceive(dataMap);
             }
         } catch (Exception e) {
-            Log.e(TAG, "disconnected: " + e.getMessage());
+            Log.e(TAG, connectionHandler + " disconnected: " + e.getMessage());
             connected = false;
             connectionHandler.onDisconnected(e);
 
             try {
                 btSocket.close();
             } catch (IOException e1) {
-                Log.e(TAG, "couldn't close socket", e1);
+                Log.e(TAG, connectionHandler + " couldn't close socket", e1);
             }
         }
     }
@@ -114,10 +115,10 @@ public class BTConnection extends Thread {
     // we synchronize this to make sure that BTWorker.send() is not called at the same time
     public synchronized void disconnect() {
         try {
-            Log.e(TAG, "disconnecting");
+            Log.e(TAG, connectionHandler + " disconnecting");
             btSocket.close();
         } catch (IOException e) {
-            Log.e(TAG, "couldn't close socket", e);
+            Log.e(TAG, connectionHandler + " couldn't close socket", e);
         }
     }
 

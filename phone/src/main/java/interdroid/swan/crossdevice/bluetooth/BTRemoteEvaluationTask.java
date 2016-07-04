@@ -50,10 +50,8 @@ public class BTRemoteEvaluationTask {
         return null;
     }
 
-    public void renewExpressions() {
-        for(BTRemoteExpression expression : expressions) {
-            expression.renewId();
-        }
+    public void removeExpression(BTRemoteExpression expression) {
+        expressions.remove(expression);
     }
 
     public List<String> getExpressionIds() {
@@ -62,10 +60,6 @@ public class BTRemoteEvaluationTask {
             ids.add(expression.getId());
         }
         return ids;
-    }
-
-    public void mergeTask(BTRemoteEvaluationTask evalTask) {
-        expressions.addAll(evalTask.getExpressions());
     }
 
     public BTSwanDevice getSwanDevice() {

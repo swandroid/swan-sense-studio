@@ -51,7 +51,6 @@ public class BTServerWorker extends BTWorker implements BTConnectionHandler {
         if (exprAction.equals(EvaluationEngineService.ACTION_REGISTER_REMOTE)
                 || exprAction.equals(EvaluationEngineService.ACTION_UNREGISTER_REMOTE)) {
             Log.w(TAG, this + " received " + exprAction + ": " + exprData);
-
             btManager.sendExprForEvaluation(exprId, exprAction, exprSource, exprData);
 
             if (exprAction.equals(EvaluationEngineService.ACTION_UNREGISTER_REMOTE)) {
@@ -79,7 +78,7 @@ public class BTServerWorker extends BTWorker implements BTConnectionHandler {
         btManager.serverWorkerDone(this);
     }
 
-    public void done() {
+    private void done() {
         if(BTManager.THREADED_WORKERS) {
             btConnection.disconnect();
         } else {

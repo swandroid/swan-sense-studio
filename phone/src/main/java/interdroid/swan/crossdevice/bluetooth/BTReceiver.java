@@ -45,10 +45,7 @@ public class BTReceiver extends Thread {
                 socket = serverSocket.accept();
 
                 if (socket != null) {
-                    // we add the device in the nearby devices list in case it wasn't discovered already
-                    BTSwanDevice swanDevice = btManager.addNearbyDevice(new BTSwanDevice(socket.getRemoteDevice(), btManager));
-
-                    manageConnection(swanDevice, socket);
+                    manageConnection();
                 }
             }
         } catch (Exception e) {
@@ -67,10 +64,7 @@ public class BTReceiver extends Thread {
                     Log.d(TAG, "receiver paused for uuid " + uuid);
                     serverSocket.close();
 
-                    // we add the device in the nearby devices list in case it wasn't discovered already
-                    BTSwanDevice swanDevice = btManager.addNearbyDevice(new BTSwanDevice(socket.getRemoteDevice(), btManager));
-
-                    manageConnection(swanDevice, socket);
+                    manageConnection();
 
                     synchronized (this) {
                         wait();
@@ -82,8 +76,11 @@ public class BTReceiver extends Thread {
         }
     }
 
-    private void manageConnection(BTSwanDevice swanDevice, BluetoothSocket socket) {
-        BTConnection btConnection = new BTConnection(socket);
+    private void manageConnection() {
+        BTConnection btConnection = new BTConnection(btManager, socket);
+        // we add the device in the nearby devices list in case it wasn't discovered already
+        BTSwanDevice swanDevice = btManager.addNearbyDevice(socket.getRemoteDevice(), btConnection);
+
         if(btConnection.isConnected()) {
             BTServerWorker serverWorker = new BTServerWorker(btManager, swanDevice, btConnection);
             btManager.addServerWorker(serverWorker);
@@ -92,7 +89,6 @@ public class BTReceiver extends Thread {
                 btConnection.setConnectionHandler(serverWorker);
             } else {
                 btConnection.setConnectionHandler(swanDevice);
-                swanDevice.setBtConnection(btConnection);
                 swanDevice.setServerWorker(serverWorker);
             }
 

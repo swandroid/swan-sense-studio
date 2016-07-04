@@ -22,9 +22,10 @@ public class BTSwanDevice implements BTConnectionHandler {
     private BTClientWorker clientWorker;
     private BTServerWorker serverWorker;
 
-    public BTSwanDevice(BluetoothDevice btDevice, BTManager btManager) {
+    public BTSwanDevice(BluetoothDevice btDevice, BTManager btManager, BTConnection btConnection) {
         this.btDevice = btDevice;
         this.btManager = btManager;
+        this.btConnection = btConnection;
     }
 
     @Override

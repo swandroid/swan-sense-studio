@@ -165,7 +165,7 @@ public class BTManager implements ProximityManagerI {
 
                 if (device.getName() != null && device.getName().contains("SWAN")) {
                     Log.d(TAG, "found nearby device " + device.getName());
-                    addNearbyDevice(new BTSwanDevice(device, BTManager.this));
+                    addNearbyDevice(device, null);
 
                     // code below is used by SwanLakePlus
                     Intent deviceFoundIntent = new Intent();
@@ -352,7 +352,7 @@ public class BTManager implements ProximityManagerI {
 
             if(remoteEvalTask.hasExpressions()) {
                 BTClientWorker clientWorker = new BTClientWorker(this, remoteEvalTask);
-                clientWorkers.add(clientWorker);
+                addClientWorker(clientWorker);
                 clientWorker.doWork();
             }
         } else if(item instanceof Runnable) {
@@ -443,16 +443,22 @@ public class BTManager implements ProximityManagerI {
         return null;
     }
 
-    protected BTSwanDevice addNearbyDevice(BTSwanDevice device) {
-        if (!hasPeer(device.getName())) {
-            Log.d(TAG, "added new device " + device.getName());
-            bcastLogMessage("nearby device found " + device.getName());
-            nearbyDevices.add(device);
-            registerRemoteDevice(device);
+    protected BTSwanDevice addNearbyDevice(BluetoothDevice btDevice, BTConnection btConnection) {
+        BTSwanDevice swanDevice = getNearbyDeviceByName(btDevice.getName());
+
+        if (swanDevice == null) {
+            Log.d(TAG, "added new device " + btDevice.getName());
+            bcastLogMessage("nearby device found " + btDevice.getName());
+            swanDevice = new BTSwanDevice(btDevice, this, btConnection);
+            nearbyDevices.add(swanDevice);
+            registerRemoteDevice(swanDevice);
         } else {
-            Log.d(TAG, "device " + device.getName() + " already present, won't add");
+            Log.d(TAG, "device " + btDevice.getName() + " already present, won't add");
+            if(!swanDevice.isConnectedToRemote() && btConnection != null) {
+                swanDevice.setBtConnection(btConnection);
+            }
         }
-        return getNearbyDeviceByName(device.getName());
+        return swanDevice;
     }
 
     private void registerRemoteDevice(BTSwanDevice swanDevice) {
@@ -590,7 +596,13 @@ public class BTManager implements ProximityManagerI {
         return null;
     }
 
+    protected void addClientWorker(BTClientWorker clientWorker) {
+        Log.d(TAG, "client worker added to pool: " + clientWorker);
+        clientWorkers.add(clientWorker);
+    }
+
     protected void addServerWorker(BTServerWorker serverWorker) {
+        Log.d(TAG, "server worker added to pool: " + serverWorker);
         serverWorkers.add(serverWorker);
     }
 
