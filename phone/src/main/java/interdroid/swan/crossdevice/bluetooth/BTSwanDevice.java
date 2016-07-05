@@ -103,6 +103,14 @@ public class BTSwanDevice implements BTConnectionHandler {
         this.clientWorker = clientWorker;
     }
 
+    public BTClientWorker getClientWorker() {
+        return clientWorker;
+    }
+
+    public BTServerWorker getServerWorker() {
+        return serverWorker;
+    }
+
     @Override
     public String toString() {
         return btDevice.getName();

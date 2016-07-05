@@ -50,10 +50,13 @@ public class BTManager implements ProximityManagerI {
     public static final String ACTION_LOG_MESSAGE = "interdroid.swan.crossdevice.bluetooth.ACTION_LOG_MESSAGE";
     /* this should be configurable */
     public static final int TIME_BETWEEN_REQUESTS = 4000;
-    public static final boolean THREADED_WORKERS = false;
+    /* set this to true if you want one connection per device, or false if you want one connection per worker */
+    public static final boolean SHARED_CONNECTIONS = true;
+    /* set this to true if you want only one server worker at a time, or false if you want multiple server workers in parallel */
     public static final boolean SYNCHRONOUS_WORKERS = false;
     private final int BLOCKED_WORKERS_CHECKING_INTERVAL = 5000;
-    private final int PEER_DISCOVERY_INTERVAL = 60000;
+    private final int PEER_DISCOVERY_INTERVAL = 40000;
+    private final int MAX_CONNECTIONS = 1;
 
     private Context context;
     private List<BTReceiver> btReceivers = new ArrayList<>();
@@ -248,9 +251,17 @@ public class BTManager implements ProximityManagerI {
 //        blockedWorkersChecker.run();
     }
 
+    @Override
     public void clean() {
         disconnect();
         context.unregisterReceiver(mReceiver);
+    }
+
+    @Override
+    public void disconnect() {
+        for(Map.Entry<String, String> entry : registeredExpressions.entrySet()) {
+            unregisterExpression(entry.getKey(), entry.getValue(), null);
+        }
     }
 
     public void discoverPeers() {
@@ -275,10 +286,6 @@ public class BTManager implements ProximityManagerI {
         }
     }
 
-    public void disconnect() {
-        //TODO implement me
-    }
-
     // we have to synchronize this to make sure that it is not exectued while a client worker is removed in
     // clientWorkerDone(), which would prevent the addition of a new task in the queue
     public synchronized void registerExpression(String id, String expression, String resolvedLocation) {
@@ -293,7 +300,8 @@ public class BTManager implements ProximityManagerI {
                 // if this is the first registered expression, then start a new task
                 if(swanDevice.getRegisteredExpressions().size() == 1) {
                     BTRemoteEvaluationTask evalTask = new BTRemoteEvaluationTask(swanDevice);
-                    addToQueue(evalTask);
+//                    addToQueue(evalTask);
+                    scheduleEvaluationTask(evalTask, TIME_BETWEEN_REQUESTS);
                     newTask = true;
                 }
             }
@@ -305,7 +313,8 @@ public class BTManager implements ProximityManagerI {
                 // if this is the first registered expression, then start a new task
                 if(swanDevice.getRegisteredExpressions().size() == 1) {
                     BTRemoteEvaluationTask evalTask = new BTRemoteEvaluationTask(swanDevice);
-                    addToQueue(evalTask);
+//                    addToQueue(evalTask);
+                    scheduleEvaluationTask(evalTask, TIME_BETWEEN_REQUESTS);
                     newTask = true;
                 }
             } else {
@@ -343,7 +352,8 @@ public class BTManager implements ProximityManagerI {
         }
     }
 
-    private void processQueueItem(Object item) {
+    // we synchronize this to make sure that a client worker is not added while a connection is killed in cleanupConnections()
+    private synchronized void processQueueItem(Object item) {
         Log.d(TAG, "processing " + item);
 
         if(item instanceof BTRemoteEvaluationTask) {
@@ -376,7 +386,7 @@ public class BTManager implements ProximityManagerI {
     }
 
     // we synchronize this to make sure that it is not called while clientWorkerDone or serverWorkerDone are called
-    public synchronized  void send(final String remoteDeviceName, final String exprId, final String exprAction, final String exprData) {
+    public synchronized void send(final String remoteDeviceName, final String exprId, final String exprAction, final String exprData) {
         try {
             if (exprAction.equals(EvaluationEngineService.ACTION_NEW_RESULT_REMOTE)) {
                 BTServerWorker serverWorker = getServerWorker(remoteDeviceName);
@@ -455,6 +465,7 @@ public class BTManager implements ProximityManagerI {
         } else {
             Log.d(TAG, "device " + btDevice.getName() + " already present, won't add");
             if(btConnection != null && btConnection.isConnected()) {
+                Log.d(TAG, "updated connection for " + btDevice.getName());
                 swanDevice.setBtConnection(btConnection);
             }
         }
@@ -471,7 +482,8 @@ public class BTManager implements ProximityManagerI {
         }
 
         BTRemoteEvaluationTask evalTask = new BTRemoteEvaluationTask(swanDevice);
-        addToQueue(evalTask);
+//        addToQueue(evalTask);
+        scheduleEvaluationTask(evalTask, TIME_BETWEEN_REQUESTS);
 
         synchronized (evalThread) {
             evalThread.notify();
@@ -526,14 +538,41 @@ public class BTManager implements ProximityManagerI {
         }
     }
 
+    private void cleanupConnections() {
+        if(!SHARED_CONNECTIONS) {
+            return;
+        }
+
+        Log.i(TAG, "cleaning up connections...");
+        List<BTSwanDevice> idleDevices = new ArrayList<BTSwanDevice>();
+        int connectedDevices = 0;
+
+        for(BTSwanDevice swanDevice : nearbyDevices) {
+            if(swanDevice.isConnectedToRemote()) {
+                connectedDevices++;
+
+                if (swanDevice.getClientWorker() == null && swanDevice.getServerWorker() == null) {
+                    idleDevices.add(swanDevice);
+                }
+            }
+        }
+
+        Log.d(TAG, "found " + connectedDevices + " connected devices; max is " + MAX_CONNECTIONS);
+
+        for(BTSwanDevice swanDevice : idleDevices) {
+            if(connectedDevices > MAX_CONNECTIONS) {
+                swanDevice.getBtConnection().disconnect();
+                connectedDevices--;
+            } else {
+                break;
+            }
+        }
+    }
+
     /**
      * we have to synchronize the methods dealing with workers, as it may happen that send() is called
      * by EvaluationEngineService right before a worker is removed
      */
-    protected synchronized void clientWorkerDone(BTClientWorker clientWorker) {
-        clientWorkerDone(clientWorker, 0);
-    }
-
     protected synchronized void clientWorkerDone(BTClientWorker clientWorker, int remoteTimeToNextReq) {
         BTSwanDevice swanDevice = clientWorker.getSwanDevice();
         Log.d(TAG, "client worker done " + clientWorker);
@@ -545,6 +584,8 @@ public class BTManager implements ProximityManagerI {
         }
 
         clientWorkers.remove(clientWorker);
+        cleanupConnections();
+
         synchronized (evalThread) {
             evalThread.notify();
         }
@@ -553,6 +594,7 @@ public class BTManager implements ProximityManagerI {
     /**
      * we have to synchronize the methods dealing with workers, as it may happen that send() is called
      * by EvaluationEngineService right before a worker is removed
+     * also, cleanupConnections() call in this method shouldn't overlap with processQueueItem()
      */
     protected synchronized void serverWorkerDone(BTServerWorker serverWorker) {
         Log.d(TAG, "server worker done " + serverWorker);
@@ -565,6 +607,8 @@ public class BTManager implements ProximityManagerI {
             scheduleQueueItem(pendingItem.getItem(), pendingItem.getTimeout());
             swanDevice.setPendingItem(null);
         }
+
+        cleanupConnections();
 
         if(SYNCHRONOUS_WORKERS) {
             for (BTReceiver receiver : btReceivers) {

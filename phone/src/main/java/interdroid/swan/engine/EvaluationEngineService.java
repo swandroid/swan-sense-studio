@@ -30,6 +30,12 @@ public class EvaluationEngineService extends EvaluationEngineServiceBase{
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mProximityManager.clean();
+    }
+
+    @Override
     protected void sendUpdateToRemote(final String registrationId,
                                       final String expressionId, final Result result) {
         // pusher is async

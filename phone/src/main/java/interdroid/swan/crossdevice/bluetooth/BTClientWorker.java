@@ -2,7 +2,6 @@ package interdroid.swan.crossdevice.bluetooth;
 
 import android.util.Log;
 
-import java.io.IOException;
 import java.util.HashMap;
 
 import interdroid.swancore.crossdevice.Converter;
@@ -38,19 +37,11 @@ public class BTClientWorker extends BTWorker implements BTConnectionHandler {
             }
         } catch (Exception e) {
             Log.e(TAG, this + " crashed", e);
-            done();
         }
     }
 
     protected void connectToRemote() {
-        if(BTManager.THREADED_WORKERS) {
-            btConnection = new BTConnection(btManager, this);
-            btConnection.connect(swanDevice.getBtDevice());
-
-            if(btConnection.isConnected()) {
-                btConnection.start();
-            }
-        } else {
+        if(BTManager.SHARED_CONNECTIONS) {
             swanDevice.setClientWorker(this);
 
             if(!swanDevice.isConnectedToRemote()) {
@@ -62,14 +53,21 @@ public class BTClientWorker extends BTWorker implements BTConnectionHandler {
                     btConnection.start();
                 }
             }
+        } else {
+            btConnection = new BTConnection(btManager, this);
+            btConnection.connect(swanDevice.getBtDevice());
+
+            if(btConnection.isConnected()) {
+                btConnection.start();
+            }
         }
     }
 
     public boolean isConnectedToRemote() {
-        if(BTManager.THREADED_WORKERS) {
-            return btConnection != null && btConnection.isConnected();
-        } else {
+        if(BTManager.SHARED_CONNECTIONS) {
             return swanDevice.isConnectedToRemote();
+        } else {
+            return btConnection != null && btConnection.isConnected();
         }
     }
 
