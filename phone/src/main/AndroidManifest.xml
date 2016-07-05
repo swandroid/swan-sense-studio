@@ -44,7 +44,7 @@
 
     <application tools:replace="label"
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/ic_launcher_swan"
         android:label="@string/swan_app_name"
         android:largeHeap="true">
         <meta-data
@@ -147,12 +147,12 @@
         </activity>
         <activity
             android:name="interdroid.sense.LoginActivity"
-            android:icon="@drawable/ic_launcher_lake"
+            android:icon="@drawable/ic_launcher_swan"
             android:label="@string/title_activity_login"
             android:screenOrientation="portrait"></activity>
         <activity
             android:name="interdroid.sense.RegistrationActivity"
-            android:icon="@drawable/ic_launcher_lake"
+            android:icon="@drawable/ic_launcher_swan"
             android:label="@string/title_activity_register"
             android:screenOrientation="portrait"></activity>
         <activity
@@ -207,13 +207,13 @@
         <activity
             android:name=".engine.ExpressionViewerActivity"
             android:exported="false"
-            android:icon="@drawable/ic_launcher"
+            android:icon="@drawable/ic_launcher_swan"
             android:label="@string/expression_viewer_name"
             android:launchMode="singleTask" />
         <activity
             android:name=".engine.SensorViewerActivity"
             android:exported="false"
-            android:icon="@drawable/ic_launcher"
+            android:icon="@drawable/ic_launcher_swan"
             android:label="@string/sensor_viewer_name"
             android:launchMode="singleTask" />
 
@@ -987,7 +987,7 @@
         <activity
             android:name="interdroid.swan.sensors.cuckoo.TrainSensor$ConfigurationActivity"
             android:exported="true"
-            android:icon="@drawable/ic_launcher" >
+            android:icon="@drawable/ic_launcher_swan" >
 
             <meta-data
                 android:name="entityId"
