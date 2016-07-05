@@ -81,7 +81,7 @@
 
         <activity
             android:name=".crossdevice.SwanLakeActivity"
-            android:icon="@drawable/ic_launcher_lake"
+            android:icon="@drawable/ic_launcher_swan"
             android:label="@string/title_activity_swanlake"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -116,7 +116,8 @@
         </activity>
         <activity
             android:name=".crossdevice.TestActivity"
-            android:label="SwanLakeTest"
+            android:label="SWAN Lake Test"
+            android:icon="@drawable/ic_launcher_swan"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -130,6 +131,19 @@
 
                 <data android:scheme="swan" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".remote.cloud.CloudTestActivity"
+            android:label="SWAN Cloud Test"
+            android:icon="@drawable/ic_launcher_swan"
+            android:screenOrientation="portrait">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
         </activity>
         <activity
             android:name="interdroid.sense.LoginActivity"

@@ -1,4 +1,4 @@
-package interdroid.swan.remote.cloud;
+package interdroid.swan.remote;
 
 import android.os.Bundle;
 import android.util.Log;

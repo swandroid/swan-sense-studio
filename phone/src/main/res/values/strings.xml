@@ -62,4 +62,6 @@
     <string name="mqtt_error">MQTT error: %1$s</string>
     <string name="packet_title">Packet:</string>
 
+    <string name="test_value">Test Value</string>
+
 </resources>
