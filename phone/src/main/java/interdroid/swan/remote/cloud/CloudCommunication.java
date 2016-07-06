@@ -7,6 +7,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.HashMap;
 
+import interdroid.swan.remote.Constant;
 import interdroid.swan.remote.ServerConnection;
 import retrofit.Callback;
 import retrofit.RetrofitError;
