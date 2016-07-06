@@ -7,7 +7,7 @@ android {
     defaultConfig {
         applicationId "interdroid.swan"
         minSdkVersion 16
-        targetSdkVersion 23
+        targetSdkVersion 22 // please leave this to '22' as bluetooth discovery is not working properly in higher versions
         multiDexEnabled true
     }
 

@@ -59,7 +59,7 @@ public class BTConnection extends Thread {
     protected void connect(BluetoothDevice device) {
         int uuidIdx = new Random().nextInt(BTManager.SERVICE_UUIDS.length);
         UUID uuid = BTManager.SERVICE_UUIDS[uuidIdx];
-        Log.i(TAG, connectionHandler + " connecting to on port " + uuidIdx + "...");
+        Log.i(TAG, "connecting to " + device.getName() + " on port " + uuidIdx + "...");
         btManager.bcastLogMessage("connecting to " + device.getName() + " on port " + uuidIdx + "...");
 
         try {
@@ -67,16 +67,16 @@ public class BTConnection extends Thread {
             btSocket.connect();
             initConnection();
             connected = true;
-            Log.i(TAG, connectionHandler + " connected to " + device.getName());
+            Log.i(TAG, "connected to " + device.getName());
             return;
         } catch (Exception e) {
-            Log.e(TAG, connectionHandler + " can't connect to " + device.getName() + ": " + e.getMessage());
-            btManager.bcastLogMessage("can't connect to " + device.getName() + ": " + e.getMessage());
+            Log.e(TAG, "can't connect to " + device.getName() + ": " + e.getMessage());
+            btManager.bcastLogMessage("[FAIL] can't connect to " + device.getName());
 
             try {
                 btSocket.close();
             } catch (Exception e1) {
-                Log.e(TAG, connectionHandler + " couldn't close socket", e1);
+                Log.e(TAG, "couldn't close socket", e1);
             }
         }
 

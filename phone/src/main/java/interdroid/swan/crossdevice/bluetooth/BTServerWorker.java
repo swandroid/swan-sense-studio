@@ -1,9 +1,7 @@
 package interdroid.swan.crossdevice.bluetooth;
 
-import android.bluetooth.BluetoothSocket;
 import android.util.Log;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.TreeSet;
@@ -79,11 +77,11 @@ public class BTServerWorker extends BTWorker implements BTConnectionHandler {
     }
 
     private void done() {
-        if(BTManager.THREADED_WORKERS) {
-            btConnection.disconnect();
-        } else {
+        if(BTManager.SHARED_CONNECTIONS) {
             swanDevice.setServerWorker(null);
             btManager.serverWorkerDone(this);
+        } else {
+            btConnection.disconnect();
         }
     }
 

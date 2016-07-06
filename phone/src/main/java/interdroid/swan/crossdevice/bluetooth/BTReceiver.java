@@ -77,6 +77,7 @@ public class BTReceiver extends Thread {
     }
 
     private void manageConnection() {
+        Log.i(TAG, "new connection from " + socket.getRemoteDevice().getName());
         BTConnection btConnection = new BTConnection(btManager, socket);
         // we add the device in the nearby devices list in case it wasn't discovered already
         BTSwanDevice swanDevice = btManager.addNearbyDevice(socket.getRemoteDevice(), btConnection);
@@ -85,11 +86,11 @@ public class BTReceiver extends Thread {
             BTServerWorker serverWorker = new BTServerWorker(btManager, swanDevice, btConnection);
             btManager.addServerWorker(serverWorker);
 
-            if(BTManager.THREADED_WORKERS) {
-                btConnection.setConnectionHandler(serverWorker);
-            } else {
+            if(BTManager.SHARED_CONNECTIONS) {
                 btConnection.setConnectionHandler(swanDevice);
                 swanDevice.setServerWorker(serverWorker);
+            } else {
+                btConnection.setConnectionHandler(serverWorker);
             }
 
             btConnection.start();

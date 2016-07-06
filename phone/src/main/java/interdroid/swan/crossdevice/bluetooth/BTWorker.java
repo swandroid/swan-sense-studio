@@ -1,13 +1,7 @@
 package interdroid.swan.crossdevice.bluetooth;
 
-import android.bluetooth.BluetoothSocket;
 import android.util.Log;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.util.HashMap;
 
 import interdroid.swancore.crossdevice.Converter;
@@ -38,10 +32,10 @@ public class BTWorker {
         //TODO check here if device has any expression registered remotely
         dataMap.put("timeToNextReq", getTimeToNextRequest() + "");
 
-        if(BTManager.THREADED_WORKERS) {
-            btConnection.send(dataMap);
-        } else {
+        if(BTManager.SHARED_CONNECTIONS) {
             swanDevice.getBtConnection().send(dataMap);
+        } else {
+            btConnection.send(dataMap);
         }
 
         Log.w(getTag(), this + " successfully sent " + expressionAction + ": "
