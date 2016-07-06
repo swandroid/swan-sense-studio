@@ -559,7 +559,7 @@ public class EvaluationEngineServiceBase extends Service {
         builder.setContentIntent(contentIntent)
                 .setContentTitle("Swan Active")
                 .setContentText("number of expressions: " + mRegisteredExpressions.size())
-                .setSmallIcon(R.drawable.ic);
+                .setSmallIcon(R.drawable.ic_stat_swan);
 
         mNotification = builder.build();
         mNotificationManager.notify(NOTIFICATION_ID, mNotification);
