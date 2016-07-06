@@ -150,7 +150,7 @@ public class ServerConnection {
 
     public void parseAndSetHeader(String rawData) {
 
-        if (!rawData.equals(Constant.NULL) || !rawData.isEmpty() || rawData!=null) {
+        if (!rawData.equals(Constant.NULL) && !rawData.isEmpty() && rawData!=null) {
             String[] pairs = rawData.split(",");
             for (String pair : pairs) {
                 String[] data = pair.split(":");
@@ -164,7 +164,7 @@ public class ServerConnection {
 
     public void parseAndSetBody(String rawData) {
 
-        if (!rawData.equals(Constant.NULL) || !rawData.isEmpty() || rawData!=null) {
+        if (!rawData.equals(Constant.NULL) && !rawData.isEmpty() && rawData!=null) {
             String[] pairs = rawData.split(",");
             for (String pair : pairs) {
                 String[] data = pair.split(":");

@@ -45,7 +45,7 @@ public class EvaluationManager extends EvaluationManagerBase{
             RemoteSensorManager.getInstance(mContext).registerExpression(toCrossDeviceString(expression, resolvedLocation), id);
         }else if(resolvedLocation.equals(Expression.LOCATION_CLOUD)) {
 
-            CloudManager.getInstance().registerExpression(id,expression.toParseString());
+            CloudManager.getInstance(mContext).registerExpression(id,expression.toParseString());
 
         }else if (resolvedLocation.equals(Expression.LOCATION_NEARBY) || mProximityManager.hasPeer(resolvedLocation)) {
             // get sensor info from nearby devices
@@ -174,7 +174,7 @@ public class EvaluationManager extends EvaluationManagerBase{
             RemoteSensorManager.getInstance(mContext).unregisterExpression(toCrossDeviceString(expression, resolvedLocation), id);
         }else if(resolvedLocation.equals(Expression.LOCATION_CLOUD)){
 
-            CloudManager.getInstance().unregisterExpression(id);
+            CloudManager.getInstance(mContext).unregisterExpression(id);
 
 
         }else if (resolvedLocation.equals(Expression.LOCATION_NEARBY) || mProximityManager.hasPeer(resolvedLocation)) {

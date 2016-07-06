@@ -1,5 +1,10 @@
 package interdroid.swan.remote.cloud;
 
+import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
+
+import interdroid.swan.engine.EvaluationEngineService;
 import interdroid.swan.remote.IRemoteManager;
 
 /**
@@ -8,14 +13,24 @@ import interdroid.swan.remote.IRemoteManager;
 public class CloudManager implements IRemoteManager {
 
 
+    private Context context;
     private static CloudManager instance;
 
-
-    public static synchronized CloudManager getInstance() {
+    public static synchronized CloudManager getInstance(Context context) {
         if (instance == null) {
-            instance = new CloudManager();
+            instance = new CloudManager(context);
         }
 
+        return instance;
+    }
+
+    CloudManager(Context context){
+
+        this.context = context;
+    }
+
+
+    public static synchronized CloudManager getCreatedInstance(){
         return instance;
     }
 
@@ -39,8 +54,14 @@ public class CloudManager implements IRemoteManager {
 
 
     @Override
-    public void sendResult() {
+    public void sendResult(String id, String action, String data) {
 
+        Intent notifyIntent = new Intent(EvaluationEngineService.ACTION_NEW_RESULT_REMOTE);
+        notifyIntent.setClass(context, EvaluationEngineService.class);
+        notifyIntent.putExtra("id", id);
+        notifyIntent.putExtra("data", data);
+        context.startService(notifyIntent);
+        //context.sendBroadcast(notifyIntent);
 
 
     }

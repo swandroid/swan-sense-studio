@@ -9,6 +9,6 @@ public interface IRemoteManager {
 
     void unregisterExpression(String id);
 
-    void sendResult();
+    void sendResult(String id, String action, String data);
 
 }
