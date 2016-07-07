@@ -319,6 +319,31 @@
         <service
             android:name=".sensors.BatterySensor" />
 
+        <activity
+            android:name=".sensors.TestSensor$ConfigurationActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="interdroid.swan.sensor.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="battery" />
+            <meta-data
+                android:name="valuePaths"
+                android:value="zero,one,alternate_test" />
+            <meta-data
+                android:name="delay"
+                android:value="20000" />
+
+            <meta-data
+                android:name="units"
+                android:value="" />
+        </activity>
+
+        <service
+            android:name=".sensors.BatterySensor" />
+
     </application>
 
 
