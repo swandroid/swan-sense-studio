@@ -1,0 +1,216 @@
+Activity Resolver Table:
+  Schemes:
+      swan:
+        21f6892 interdroid.swan/.crossdevice.SwanLakeActivity
+        c283263 interdroid.swan/.crossdevice.TestActivity
+
+  Non-Data Actions:
+      interdroid.swan.ui.BUILD_EXPRESSION:
+        809ce60 interdroid.swan/.ui.ExpressionBuilderActivity
+      android.intent.action.MAIN:
+        21f6892 interdroid.swan/.crossdevice.SwanLakeActivity
+        74e4f19 interdroid.swan/.remote.cloud.CloudTestActivity
+        c283263 interdroid.swan/.crossdevice.TestActivity
+        ec77bde interdroid.swan/.ttn.TtnActivity
+      interdroid.swan.DEFAULT_PREFERENCES:
+        e6191bf interdroid.swan/.sensors.AbstractConfigurationActivity
+      interdroid.swan.sensor.DISCOVER:
+        d6bea7 interdroid.swan/.sensors.impl.WifiSensor$ConfigurationActivity
+        10bd0b5 interdroid.swan/.sensors.impl.wear.WearMovementSensor$ConfigurationActivity
+        1a467c1 interdroid.swan/.sensors.impl.SoundSensor$ConfigurationActivity
+        1b2616d interdroid.swan/.sensors.impl.BeaconTempSensor$ConfigurationActivity
+        24f1a42 interdroid.swan/.sensors.impl.CallSensor$ConfigurationActivity
+        25ce0cb interdroid.swan/.sensors.impl.FitnessSensor$ConfigurationActivity
+        2743089 interdroid.swan/.sensors.impl.LocationSensor$ConfigurationActivity
+        2ad708c interdroid.swan/.sensors.impl.SmartLocationSensor$ConfigurationActivity
+        34b77ea interdroid.swan/.sensors.impl.LightSensor$ConfigurationActivity
+        36868af interdroid.swan/.sensors.impl.MovementSensor$ConfigurationActivity
+        46bc3d5 interdroid.swan/.sensors.impl.GyroscopeSensor$ConfigurationActivity
+        4b1c851 interdroid.swan/.sensors.impl.ProximitySensor$ConfigurationActivity
+        50c2584 interdroid.swan/.sensors.impl.BeaconDiscoverySensor$ConfigurationActivity
+        5169f97 interdroid.swan/.sensors.impl.wear.WearGravitySensor$ConfigurationActivity
+        538988e interdroid.swan/.sensors.impl.LogCatSensor$ConfigurationActivity
+        5664c45 interdroid.swan/.sensors.impl.OVSensor$ConfigurationActivity
+        59b9e33 interdroid.swan/.sensors.impl.BeaconMovementSensor$ConfigurationActivity
+        5b03f54 interdroid.swan/.sensors.impl.PolarHeartRate$ConfigurationActivity
+        60bc0a8 interdroid.swan/.sensors.impl.ScreenSensor$ConfigurationActivity
+        6ba7a53 interdroid.swan/.sensors.impl.SignalStrengthSensor$ConfigurationActivity
+        7269e43 interdroid.swan/.sensors.cuckoo.TrainSensor$ConfigurationActivity
+        75f4524 interdroid.swan/.sensors.impl.BluetoothSensor$ConfigurationActivity
+        78424ec interdroid.swan/.sensors.impl.wear.HeartRateSensor$ConfigurationActivity
+        80adb9f interdroid.swan/.sensors.cuckoo.FlightSensor$ConfigurationActivity
+        842413e interdroid.swan/.sensors.cuckoo.ServerSensor$ConfigurationActivity
+        879988d interdroid.swan/.sensors.impl.CalendarSensor$ConfigurationActivity
+        889f9b7 interdroid.swan/.sensors.impl.BatterySensor$ConfigurationActivity
+        9033a16 interdroid.swan/.sensors.impl.wear.WearStepCounterSensor$ConfigurationActivity
+        9b414bc interdroid.swan/.sensors.impl.RainSensor$ConfigurationActivity
+        9cb92bb interdroid.swan/.sensors.impl.wear.WearGameRotationSensor$ConfigurationActivity
+        9f0e1a2 interdroid.swan/.sensors.impl.BeaconDistanceSensor$ConfigurationActivity
+        a04a3d8 interdroid.swan/.sensors.impl.wear.WearLightSensor$ConfigurationActivity
+        a070978 interdroid.swan/.sensors.impl.PressureSensor$ConfigurationActivity
+        a29af9a interdroid.swan/.sensors.impl.ServerSensor$ConfigurationActivity
+        a4d4df9 interdroid.swan/.sensors.cuckoo.CuckooRainSensor$ConfigurationActivity
+        a6128b6 interdroid.swan/.sensors.impl.TemperatureSensor$ConfigurationActivity
+        a6697f2 interdroid.swan/.sensors.impl.StepCounterSensor$ConfigurationActivity
+        a7bfcc0 interdroid.swan/.sensors.cuckoo.NewsSensor$ConfigurationActivity
+        ae32b66 interdroid.swan/.sensors.TimeSensor$ConfigurationActivity
+        be815f0 interdroid.swan/.sensors.impl.BeaconMotionSensor$ConfigurationActivity
+        c9d334a interdroid.swan/.sensors.impl.wear.WearGyroscopeSensor$ConfigurationActivity
+        ddd8f90 interdroid.swan/.sensors.impl.IntentSensor$ConfigurationActivity
+        e4ebefd interdroid.swan/.sensors.impl.StepDetectorSensor$ConfigurationActivity
+        ea78adb interdroid.swan/.sensors.impl.MagnetometerSensor$ConfigurationActivity
+        ef5c331 interdroid.swan/.sensors.impl.wear.WearLinearAcceleration$ConfigurationActivity
+
+Receiver Resolver Table:
+  Non-Data Actions:
+      android.intent.action.ACTION_POWER_DISCONNECTED:
+        20a769 interdroid.swan/org.altbeacon.beacon.startup.StartupBroadcastReceiver
+      interdroid.swan.NOTIFY:
+        51f75ee interdroid.swan/.engine.EvaluationEngineReceiver
+      com.google.android.gms.measurement.UPLOAD:
+        867ea8f interdroid.swan/com.google.android.gms.measurement.AppMeasurementReceiver
+      interdroid.swan.GET_NAMES:
+        750a11c interdroid.swan/interdroid.swancore.crossdevice.Registry$Receiver
+      android.net.conn.CONNECTIVITY_CHANGE:
+        6135125 interdroid.swan/nl.sense_os.service.NetworkMonitor
+      interdroid.swan.UNREGISTER:
+        51f75ee interdroid.swan/.engine.EvaluationEngineReceiver
+      com.google.android.c2dm.intent.RECEIVE:
+        9102fa interdroid.swan/.crossdevice.CrossDeviceReceiver
+        402a0ab interdroid.swan/com.google.firebase.iid.FirebaseInstanceIdReceiver
+      interdroid.swan.REGISTER:
+        51f75ee interdroid.swan/.engine.EvaluationEngineReceiver
+      android.intent.action.BOOT_COMPLETED:
+        20a769 interdroid.swan/org.altbeacon.beacon.startup.StartupBroadcastReceiver
+        154b308 interdroid.swan/nl.sense_os.service.BootRx
+        51f75ee interdroid.swan/.engine.EvaluationEngineReceiver
+      android.intent.action.ACTION_POWER_CONNECTED:
+        20a769 interdroid.swan/org.altbeacon.beacon.startup.StartupBroadcastReceiver
+      interdroid.swan.NEW_REQUIREMENTS:
+        fccdaa1 interdroid.swan/nl.sense_os.service.configuration.RequirementReceiver
+      com.google.android.c2dm.intent.REGISTRATION:
+        402a0ab interdroid.swan/com.google.firebase.iid.FirebaseInstanceIdReceiver
+      interdroid.swan.CHECK_ALIVE:
+        e5c54c6 interdroid.swan/nl.sense_os.service.AliveChecker
+
+Service Resolver Table:
+  Schemes:
+      wear:
+        6489c87 interdroid.swan/.sensors.impl.wear.shared.SensorReceiverService
+
+  Non-Data Actions:
+      interdroid.swan.NEW_DATA:
+        405f7b4 interdroid.swan/nl.sense_os.service.MsgHandler
+      com.google.firebase.INSTANCE_ID_EVENT:
+        13b7fdd interdroid.swan/.remote.cloud.FirebaseTokenService
+        938f752 interdroid.swan/com.google.firebase.iid.FirebaseInstanceIdService
+      interdroid.swan.SENSE_SERVICE:
+        4087a23 interdroid.swan/nl.sense_os.service.SenseService
+      com.google.firebase.MESSAGING_EVENT:
+        4f53cd9 interdroid.swan/com.google.firebase.messaging.FirebaseMessagingService
+        6e4db20 interdroid.swan/.remote.cloud.FirebaseMessageService
+      interdroid.swan.SEND_DATA:
+        405f7b4 interdroid.swan/nl.sense_os.service.MsgHandler
+
+Permissions:
+  Permission [interdroid.swan.permission.C2D_MESSAGE] (5d6555):
+    sourcePackage=interdroid.swan
+    uid=10138 gids=null type=0 prot=signature
+    perm=Permission{dcb369e interdroid.swan.permission.C2D_MESSAGE}
+    packageSetting=PackageSetting{2e9c85b interdroid.swan/10138}
+
+Registered ContentProviders:
+  interdroid.swan/com.google.firebase.provider.FirebaseInitProvider:
+    Provider{65e957f interdroid.swan/com.google.firebase.provider.FirebaseInitProvider}
+  interdroid.swan/interdroid.cuckoo.resourcemanager.ResourceManagerProvider:
+    Provider{70c894c interdroid.swan/interdroid.cuckoo.resourcemanager.ResourceManagerProvider}
+
+ContentProvider Authorities:
+  [interdroid.swan.firebaseinitprovider]:
+    Provider{65e957f interdroid.swan/com.google.firebase.provider.FirebaseInitProvider}
+      applicationInfo=ApplicationInfo{ef3cd95 interdroid.swan}
+  [interdroid.cuckoo.ResourceManager]:
+    Provider{70c894c interdroid.swan/interdroid.cuckoo.resourcemanager.ResourceManagerProvider}
+      applicationInfo=ApplicationInfo{ef3cd95 interdroid.swan}
+
+Key Set Manager:
+  [interdroid.swan]
+      Signing KeySets: 224
+
+Packages:
+  Package [interdroid.swan] (2e9c85b):
+    userId=10138
+    pkg=Package{cb01eaa interdroid.swan}
+    codePath=/data/app/interdroid.swan-1
+    resourcePath=/data/app/interdroid.swan-1
+    legacyNativeLibraryDir=/data/app/interdroid.swan-1/lib
+    primaryCpuAbi=null
+    secondaryCpuAbi=null
+    versionCode=1 targetSdk=22
+    versionName=1.0
+    splits=[base]
+    applicationInfo=ApplicationInfo{ef3cd95 interdroid.swan}
+    flags=[ DEBUGGABLE HAS_CODE ALLOW_CLEAR_USER_DATA ALLOW_BACKUP LARGE_HEAP ]
+    dataDir=/data/user/0/interdroid.swan
+    supportsScreens=[small, medium, large, xlarge, resizeable, anyDensity]
+    timeStamp=2016-07-06 16:29:12
+    firstInstallTime=2016-07-05 12:54:35
+    lastUpdateTime=2016-07-06 16:29:21
+    signatures=PackageSignatures{8697e4b [1d10a9b]}
+    installPermissionsFixed=true installStatus=1
+    pkgFlags=[ DEBUGGABLE HAS_CODE ALLOW_CLEAR_USER_DATA ALLOW_BACKUP LARGE_HEAP ]
+    declared permissions:
+      interdroid.swan.permission.C2D_MESSAGE: prot=signature, INSTALLED
+    requested permissions:
+      android.permission.ACCESS_FINE_LOCATION
+      android.permission.RECORD_AUDIO
+      android.permission.ACCESS_WIFI_STATE
+      android.permission.CHANGE_WIFI_STATE
+      android.permission.READ_PHONE_STATE
+      android.permission.BLUETOOTH_ADMIN
+      android.permission.BLUETOOTH
+      android.permission.BODY_SENSORS
+      android.permission.ACCESS_COARSE_LOCATION
+      android.permission.ACCESS_MOCK_LOCATION
+      android.permission.ACCESS_NETWORK_STATE
+      android.permission.INTERNET
+      android.permission.VIBRATE
+      android.permission.CALL_PHONE
+      android.permission.READ_LOGS
+      android.permission.WRITE_EXTERNAL_STORAGE
+      android.permission.READ_EXTERNAL_STORAGE
+      android.permission.READ_USER_DICTIONARY
+      android.permission.WRITE_USER_DICTIONARY
+      android.permission.NFC
+      android.permission.WAKE_LOCK
+      interdroid.vdb.permission.READ_DATABASE
+      interdroid.vdb.permission.WRITE_DATABASE
+      com.google.android.c2dm.permission.RECEIVE
+      android.permission.RECEIVE_BOOT_COMPLETED
+      interdroid.swan.permission.C2D_MESSAGE
+    install permissions:
+      com.google.android.c2dm.permission.RECEIVE: granted=true
+      android.permission.ACCESS_FINE_LOCATION: granted=true
+      android.permission.NFC: granted=true
+      android.permission.BODY_SENSORS: granted=true
+      android.permission.RECEIVE_BOOT_COMPLETED: granted=true
+      android.permission.BLUETOOTH: granted=true
+      android.permission.INTERNET: granted=true
+      android.permission.BLUETOOTH_ADMIN: granted=true
+      android.permission.READ_EXTERNAL_STORAGE: granted=true
+      android.permission.ACCESS_COARSE_LOCATION: granted=true
+      android.permission.READ_PHONE_STATE: granted=true
+      android.permission.CALL_PHONE: granted=true
+      android.permission.CHANGE_WIFI_STATE: granted=true
+      interdroid.swan.permission.C2D_MESSAGE: granted=true
+      android.permission.ACCESS_NETWORK_STATE: granted=true
+      android.permission.WRITE_USER_DICTIONARY: granted=true
+      android.permission.WRITE_EXTERNAL_STORAGE: granted=true
+      android.permission.VIBRATE: granted=true
+      android.permission.READ_USER_DICTIONARY: granted=true
+      android.permission.ACCESS_WIFI_STATE: granted=true
+      android.permission.RECORD_AUDIO: granted=true
+      android.permission.WAKE_LOCK: granted=true
+    User 0:  installed=true hidden=false stopped=false notLaunched=false enabled=0
+      gids=[3002, 3003, 3001]
+      runtime permissions:

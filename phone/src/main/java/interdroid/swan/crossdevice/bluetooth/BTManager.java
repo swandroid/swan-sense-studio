@@ -32,6 +32,7 @@ import interdroid.swancore.swansong.Expression;
  * TODO handle properly the cases when BT is switched on/off during usage
  * TODO stop client workers that are blocked waiting for results
  * TODO send just one valid result in BTServerWorker
+ * TODO for tristate expressions sometimes there is no result
  */
 public class BTManager implements ProximityManagerI {
 

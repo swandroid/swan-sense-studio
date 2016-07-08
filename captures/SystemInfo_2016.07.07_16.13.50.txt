@@ -1,0 +1,226 @@
+CURRENT STATS:
+System memory usage:
+  SOff/Norm: 2 samples:
+    Cached: 51MB min, 123MB avg, 194MB max
+    Free: 44MB min, 46MB avg, 48MB max
+    ZRam: 0.00 min, 0.00 avg, 0.00 max
+    Kernel: 113MB min, 114MB avg, 116MB max
+    Native: 60MB min, 61MB avg, 61MB max
+  SOn /Norm: 1 samples:
+    Cached: 77MB min, 77MB avg, 77MB max
+    Free: 51MB min, 51MB avg, 51MB max
+    ZRam: 0.00 min, 0.00 avg, 0.00 max
+    Kernel: 114MB min, 114MB avg, 114MB max
+    Native: 61MB min, 61MB avg, 61MB max
+       Mod : 1 samples:
+    Cached: 43MB min, 43MB avg, 43MB max
+    Free: 48MB min, 48MB avg, 48MB max
+    ZRam: 0.00 min, 0.00 avg, 0.00 max
+    Kernel: 115MB min, 115MB avg, 115MB max
+    Native: 58MB min, 58MB avg, 58MB max
+
+Per-Package Stats:
+  * interdroid.swan / u0a138 / v1:
+      * interdroid.swan / u0a138 / v1:
+               TOTAL: 100% (4.1MB-39MB-59MB/3.4MB-38MB-58MB over 8)
+             Service: 100% (4.1MB-39MB-59MB/3.4MB-38MB-58MB over 8)
+          Service Rs: 0.04%
+      * interdroid.swan.crossdevice.beacon.BeaconSingleton:
+        Process: interdroid.swan
+            Running count 4 / time 100%
+            Started count 3 / time 100%
+          Executing count 2 / time 0.08%
+      * interdroid.swan.engine.EvaluationEngineService:
+        Process: interdroid.swan
+            Running count 3 / time 59%
+            Started count 2 / time 59%
+          Executing count 1 / time 0.09%
+
+Summary:
+  * interdroid.swan / u0a138 / v1:
+           TOTAL: 100% (4.1MB-39MB-59MB/3.4MB-38MB-58MB over 8)
+         Service: 100% (4.1MB-39MB-59MB/3.4MB-38MB-58MB over 8)
+      Service Rs: 0.04%
+
+Run time Stats:
+  SOff/Norm: +21m36s59ms (running)
+  SOn /Norm: +23m13s454ms
+       Mod : +1s847ms
+      TOTAL: +44m51s360ms
+
+Memory usage:
+  Kernel : 114MB (32 samples)
+  Native : 60MB (32 samples)
+  Persist: 222MB (45 samples)
+  Top    : 122MB (106 samples)
+  ImpFg  : 168MB (167 samples)
+  ImpBg  : 5.4MB (129 samples)
+  Service: 644MB (340 samples)
+  Receivr: 330KB (213 samples)
+  Home   : 29MB (21 samples)
+  LastAct: 556KB (20 samples)
+  CchAct : 11MB (11 samples)
+  CchCAct: 15KB (1 samples)
+  CchEmty: 190MB (192 samples)
+  Cached : 91MB (32 samples)
+  Free   : 48MB (32 samples)
+  TOTAL  : 1.7GB
+  ServRst: 64KB (57 samples)
+
+          Start time: 2016-07-07 15:09:15
+  Total elapsed time: +1h4m33s656ms (partial) libart.so
+
+AGGREGATED OVER LAST 24 HOURS:
+System memory usage:
+  SOff/Norm: 12 samples:
+    Cached: 31MB min, 116MB avg, 219MB max
+    Free: 42MB min, 94MB avg, 241MB max
+    ZRam: 0.00 min, 0.00 avg, 0.00 max
+    Kernel: 107MB min, 113MB avg, 119MB max
+    Native: 58MB min, 60MB avg, 61MB max
+  SOn /Norm: 13 samples:
+    Cached: 22MB min, 118MB avg, 217MB max
+    Free: 42MB min, 52MB avg, 66MB max
+    ZRam: 0.00 min, 0.00 avg, 0.00 max
+    Kernel: 106MB min, 112MB avg, 119MB max
+    Native: 59MB min, 60MB avg, 63MB max
+       Mod : 2 samples:
+    Cached: 0.00 min, 21MB avg, 43MB max
+    Free: 48MB min, 54MB avg, 61MB max
+    ZRam: 0.00 min, 0.00 avg, 0.00 max
+    Kernel: 115MB min, 116MB avg, 117MB max
+    Native: 57MB min, 57MB avg, 58MB max
+
+Per-Package Stats:
+  * interdroid.swan / u0a138 / v1:
+      * interdroid.swan:lightsensor / u0a138 / v1:
+            (Cached): 0.22% (3.9MB-3.9MB-3.9MB/2.4MB-2.4MB-2.4MB over 1)
+      * interdroid.swan / u0a138 / v1:
+               TOTAL: 100% (4.1MB-57MB-67MB/3.4MB-56MB-64MB over 63)
+                 Top: 4.2% (59MB-62MB-63MB/57MB-60MB-60MB over 8)
+             Service: 96% (4.1MB-56MB-67MB/3.4MB-55MB-64MB over 55)
+          Service Rs: 0.01%
+      * interdroid.swan.sensors.impl.LightSensor:
+        Process: interdroid.swan:lightsensor
+            Running count 1 / time 0.00%
+              Bound count 1 / time 0.00%
+          Executing count 1 / time 0.00%
+      * interdroid.swan.crossdevice.beacon.BeaconSingleton:
+        Process: interdroid.swan
+            Running count 10 / time 100%
+            Started count 9 / time 100%
+          Executing count 4 / time 0.01%
+      * interdroid.swan.engine.EvaluationEngineService:
+        Process: interdroid.swan
+            Running count 7 / time 94%
+            Started count 6 / time 94%
+          Executing count 9 / time 0.01%
+
+Summary:
+  * interdroid.swan / u0a138 / v1:
+           TOTAL: 100% (4.1MB-57MB-67MB/3.4MB-56MB-64MB over 63)
+             Top: 4.2% (59MB-62MB-63MB/57MB-60MB-60MB over 8)
+         Service: 96% (4.1MB-56MB-67MB/3.4MB-55MB-64MB over 55)
+      Service Rs: 0.01%
+  * interdroid.swan:lightsensor / u0a138 / v1:
+        (Cached): 0.22% (3.9MB-3.9MB-3.9MB/2.4MB-2.4MB-2.4MB over 1)
+
+Run time Stats:
+  SOff/Norm: +3h26m46s112ms
+  SOn /Norm: +2h48m26s276ms
+       Mod : +30s201ms
+      TOTAL: +6h15m42s589ms
+
+Memory usage:
+  Kernel : 113MB (187 samples)
+  Native : 60MB (187 samples)
+  Persist: 230MB (300 samples)
+  Top    : 140MB (1329 samples)
+  ImpFg  : 171MB (1388 samples)
+  ImpBg  : 1.7MB (1059 samples)
+  Service: 623MB (2310 samples)
+  Receivr: 115KB (1818 samples)
+  Home   : 25MB (138 samples)
+  LastAct: 4.2MB (446 samples)
+  CchAct : 58MB (306 samples)
+  CchCAct: 1.3MB (16 samples)
+  CchEmty: 159MB (1515 samples)
+  Cached : 117MB (187 samples)
+  Free   : 75MB (187 samples)
+  TOTAL  : 1.7GB
+  ServRst: 17KB (641 samples)
+
+          Start time: 2016-07-06 15:41:30
+  Total elapsed time: +1d0h32m14s369ms (partial) libart.so
+
+AGGREGATED OVER LAST 3 HOURS:
+System memory usage:
+  SOff/Norm: 3 samples:
+    Cached: 51MB min, 99MB avg, 194MB max
+    Free: 44MB min, 45MB avg, 48MB max
+    ZRam: 0.00 min, 0.00 avg, 0.00 max
+    Kernel: 113MB min, 114MB avg, 116MB max
+    Native: 60MB min, 60MB avg, 61MB max
+  SOn /Norm: 4 samples:
+    Cached: 22MB min, 71MB avg, 127MB max
+    Free: 43MB min, 49MB avg, 56MB max
+    ZRam: 0.00 min, 0.00 avg, 0.00 max
+    Kernel: 111MB min, 114MB avg, 116MB max
+    Native: 60MB min, 62MB avg, 63MB max
+       Mod : 1 samples:
+    Cached: 43MB min, 43MB avg, 43MB max
+    Free: 48MB min, 48MB avg, 48MB max
+    ZRam: 0.00 min, 0.00 avg, 0.00 max
+    Kernel: 115MB min, 115MB avg, 115MB max
+    Native: 58MB min, 58MB avg, 58MB max
+
+Per-Package Stats:
+  * interdroid.swan / u0a138 / v1:
+      * interdroid.swan / u0a138 / v1:
+               TOTAL: 100% (4.1MB-49MB-59MB/3.4MB-48MB-58MB over 16)
+             Service: 100% (4.1MB-49MB-59MB/3.4MB-48MB-58MB over 16)
+          Service Rs: 0.02%
+      * interdroid.swan.crossdevice.beacon.BeaconSingleton:
+        Process: interdroid.swan
+            Running count 5 / time 100%
+            Started count 4 / time 100%
+          Executing count 2 / time 0.03%
+      * interdroid.swan.engine.EvaluationEngineService:
+        Process: interdroid.swan
+            Running count 4 / time 83%
+            Started count 3 / time 83%
+          Executing count 1 / time 0.04%
+
+Summary:
+  * interdroid.swan / u0a138 / v1:
+           TOTAL: 100% (4.1MB-49MB-59MB/3.4MB-48MB-58MB over 16)
+         Service: 100% (4.1MB-49MB-59MB/3.4MB-48MB-58MB over 16)
+      Service Rs: 0.02%
+
+Run time Stats:
+  SOff/Norm: +56m35s912ms
+  SOn /Norm: +48m18s671ms
+       Mod : +1s847ms
+      TOTAL: +1h44m56s430ms
+
+Memory usage:
+  Kernel : 114MB (55 samples)
+  Native : 61MB (55 samples)
+  Persist: 224MB (90 samples)
+  Top    : 138MB (375 samples)
+  ImpFg  : 172MB (416 samples)
+  ImpBg  : 2.7MB (341 samples)
+  Service: 637MB (823 samples)
+  Receivr: 222KB (611 samples)
+  Home   : 26MB (79 samples)
+  LastAct: 825KB (115 samples)
+  CchAct : 35MB (74 samples)
+  CchCAct: 423KB (6 samples)
+  CchEmty: 183MB (508 samples)
+  Cached : 86MB (55 samples)
+  Free   : 47MB (55 samples)
+  TOTAL  : 1.7GB
+  ServRst: 34KB (145 samples)
+
+          Start time: 2016-07-07 10:34:19
+  Total elapsed time: +5h39m27s216ms (partial) libart.so

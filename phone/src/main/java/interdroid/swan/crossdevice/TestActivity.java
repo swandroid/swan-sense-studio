@@ -102,7 +102,7 @@ public class TestActivity extends Activity {
         }
 
         final String expression1 = connectTo + "@light:lux";
-        final String expression2 = connectTo + "@movement:x";
+//        final String expression2 = connectTo + "@movement:x";
 //        String expression3 = connectTo + "@light:lux > 10.0";
 //        mExpression = connectTo + "@fitness:avg_speed$server_storage=false{ANY,0}";
 
@@ -147,31 +147,31 @@ public class TestActivity extends Activity {
     /* Register expression to SWAN */
     private void registerSWANSensor(String myExpression, int requestCode) {
         try {
-            ExpressionManager.registerValueExpression(this, String.valueOf(requestCode),
-                    (ValueExpression) ExpressionFactory.parse(myExpression),
-                    new ValueExpressionListener() {
-
-                        /* Registering a listener to process new values from the registered sensor*/
-                        @Override
-                        public void onNewValues(String id, TimestampedValue[] arg1) {
-                            if (arg1 != null && arg1.length > 0) {
-                                String value = arg1[0].getValue().toString();
-                                tv.setText("Value = " + value);
-                            } else {
-                                tv.setText("Value = null");
-                            }
-
-                        }
-                    });
-//            ExpressionManager.registerTriStateExpression(this, String.valueOf(requestCode),
-//                    (TriStateExpression) ExpressionFactory.parse(myExpression),
-//                    new TriStateExpressionListener() {
+//            ExpressionManager.registerValueExpression(this, String.valueOf(requestCode),
+//                    (ValueExpression) ExpressionFactory.parse(myExpression),
+//                    new ValueExpressionListener() {
 //
+//                        /* Registering a listener to process new values from the registered sensor*/
 //                        @Override
-//                        public void onNewState(String id, long timestamp, TriState newState) {
-//                            tv.setText("Value = " + newState);
+//                        public void onNewValues(String id, TimestampedValue[] arg1) {
+//                            if (arg1 != null && arg1.length > 0) {
+//                                String value = arg1[0].getValue().toString();
+//                                tv.setText("Value = " + value);
+//                            } else {
+//                                tv.setText("Value = null");
+//                            }
+//
 //                        }
 //                    });
+            ExpressionManager.registerTriStateExpression(this, String.valueOf(requestCode),
+                    (TriStateExpression) ExpressionFactory.parse(myExpression),
+                    new TriStateExpressionListener() {
+
+                        @Override
+                        public void onNewState(String id, long timestamp, TriState newState) {
+                            tv.setText("Value = " + newState);
+                        }
+                    });
             mRegistered = true;
         } catch (SwanException e) {
             // TODO Auto-generated catch block
