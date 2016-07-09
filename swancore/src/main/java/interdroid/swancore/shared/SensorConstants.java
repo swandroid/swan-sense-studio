@@ -11,4 +11,6 @@ public class SensorConstants {
     public static final String SENSOR_OBJECT = "Sensor_Object";
     public static final String SENSOR_DATA = "Sensor_Data";
 
+    public static final int TEST_SENSOR_ID = -999;
+
 }

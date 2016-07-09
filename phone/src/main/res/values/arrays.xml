@@ -485,4 +485,11 @@
         <item>BUSINESS</item>
         <item>FIRST</item>
     </string-array>
+
+    <string-array name="wear_test">
+        <item>zero</item>
+        <item>one</item>
+        <item>alternate_test</item>
+    </string-array>
+
 </resources>

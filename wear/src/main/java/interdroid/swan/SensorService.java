@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.locks.ReentrantLock;
 
+import interdroid.FixedSensor;
 import interdroid.swancore.shared.DataMapKeys;
 import interdroid.swan.expression.ManageExpressions;
 import interdroid.swancore.shared.SensorConstants;
@@ -88,6 +89,8 @@ public class SensorService extends Service implements SensorEventListener {
 
     ManageExpressions exp;
 
+    FixedSensor fixedSensor;
+
     private class SensorCommand extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -129,6 +132,8 @@ public class SensorService extends Service implements SensorEventListener {
 
         client = DeviceClient.getInstance(this);
         client.initExecutor();
+
+        fixedSensor = new FixedSensor(this);
 
         exp = new ManageExpressions(getApplicationContext());
 
@@ -188,6 +193,12 @@ public class SensorService extends Service implements SensorEventListener {
                 registerSwanExpression(expressionID, expression);
                 return;
             }
+
+            if(sensorId == SensorConstants.TEST_SENSOR_ID){
+                activeSensors.put(sensorId, new SensorContainer(null, accuracy, 1));
+                fixedSensor.register(accuracy);
+                return;
+            }
             if (sensorId <= 0) {
                 Log.w(TAG, "Bad sensor ID");
                 return;
@@ -243,6 +254,11 @@ public class SensorService extends Service implements SensorEventListener {
                 unregisterSwanExpression(exprID);
             } else {
 
+                if(sensorID == SensorConstants.TEST_SENSOR_ID){
+                    activeSensors.remove(sensorID);
+                    fixedSensor.unregister();
+                    return;
+                }
                 if (!activeSensors.containsKey(sensorID)) {
                     Log.w(TAG, "Trying to stop an non-stated sensor");
                     return;

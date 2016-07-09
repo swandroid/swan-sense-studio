@@ -26,7 +26,6 @@ public class DeviceClient {
 
     public static DeviceClient instance;
 
-    //private SparseLongArray lastSensorData;
 
     public static DeviceClient getInstance(Context context) {
         if (instance == null) {
@@ -64,23 +63,6 @@ public class DeviceClient {
 
     public void sendSensorData(final int sensorType, final int accuracy, final long timestamp, final float[] values) {
 
-       // Log.d(TAG, "Send Sensor Data in Main Thread");
-//        long t = System.currentTimeMillis();
-//
-//        long lastTimestamp = lastSensorData.get(sensorType);
-//        long timeAgo = t - lastTimestamp;
-//
-//        if (lastTimestamp != 0) {
-//            if (timeAgo < 100) {
-//                return;
-//            }
-//
-////            if (filterId != sensorType && timeAgo < 3000) {
-////                return;
-////            }
-//        }
-//
-//        lastSensorData.put(sensorType, t);
         executorService.submit(new Runnable() {
             @Override
             public void run() {
