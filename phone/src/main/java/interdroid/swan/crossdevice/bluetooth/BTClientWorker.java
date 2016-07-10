@@ -22,11 +22,13 @@ public class BTClientWorker extends BTWorker implements BTConnectionHandler {
         this.btManager = btManager;
         this.remoteEvaluationTask = remoteEvaluationTask;
         this.swanDevice = remoteEvaluationTask.getSwanDevice();
+        logRecord = new BTLogRecord(btManager.getStartTime(), true);
     }
 
     public void doWork() {
         try {
             connectToRemote();
+            logRecord.connDuration = System.currentTimeMillis() - logRecord.startTime;
 
             if(isConnectedToRemote()) {
                 for(BTRemoteExpression remoteExpression : remoteEvaluationTask.getExpressions()) {
@@ -78,6 +80,7 @@ public class BTClientWorker extends BTWorker implements BTConnectionHandler {
         String exprId = dataMap.get("id");
         String exprData = dataMap.get("data");
         String timeToNextReq = dataMap.get("timeToNextReq");
+        String swanDuration = dataMap.get("swanDuration");
 
         if (exprAction.equals(EvaluationEngineService.ACTION_NEW_RESULT_REMOTE)) {
             BTRemoteExpression remoteExpression = remoteEvaluationTask.getRemoteExpression(exprId);
@@ -91,6 +94,9 @@ public class BTClientWorker extends BTWorker implements BTConnectionHandler {
 
                     if(timeToNextReq != null) {
                         remoteTimeToNextRequest = Integer.parseInt(timeToNextReq);
+                    }
+                    if(swanDuration != null) {
+                        logRecord.swanDuration = Integer.parseInt(swanDuration);
                     }
 
                     btManager.sendExprForEvaluation(remoteExpression.getBaseId(), exprAction, exprSource, exprData);
@@ -116,7 +122,14 @@ public class BTClientWorker extends BTWorker implements BTConnectionHandler {
         done();
     }
 
-    private void done() {
+    @Override
+    protected void done() {
+        super.done();
+
+        // if we have unprocessed expressions left, it means it crashed
+        if(remoteEvaluationTask.hasExpressions()) {
+            logRecord.failed = true;
+        }
         swanDevice.setClientWorker(null);
         btManager.clientWorkerDone(this, remoteTimeToNextRequest);
     }

@@ -23,6 +23,7 @@ public class BTServerWorker extends BTWorker implements BTConnectionHandler {
         this.btManager = btManager;
         this.swanDevice = swanDevice;
         this.btConnection = btConnection;
+        logRecord = new BTLogRecord(btManager.getStartTime(), false);
     }
 
     @Override
@@ -31,8 +32,12 @@ public class BTServerWorker extends BTWorker implements BTConnectionHandler {
         Result result = expressionData != null ? (Result) Converter.stringToObject(expressionData) : null;
 
         if(isValidResult(result)) {
+            logRecord.swanDuration = System.currentTimeMillis() - logRecord.startSwanTime;
+            HashMap<String, String> extra = new HashMap<String, String>();
+            extra.put("swanDuration", logRecord.swanDuration + "");
+
             btManager.sendExprForEvaluation(expressionId, EvaluationEngineService.ACTION_UNREGISTER_REMOTE, swanDevice.getName(), null);
-            super.send(expressionId, expressionAction, expressionData);
+            super.send(expressionId, expressionAction, expressionData, extra);
         }
     }
 
@@ -49,13 +54,18 @@ public class BTServerWorker extends BTWorker implements BTConnectionHandler {
         if (exprAction.equals(EvaluationEngineService.ACTION_REGISTER_REMOTE)
                 || exprAction.equals(EvaluationEngineService.ACTION_UNREGISTER_REMOTE)) {
             Log.w(TAG, this + " received " + exprAction + ": " + exprData);
+            logRecord.startSwanTime = System.currentTimeMillis();
             btManager.sendExprForEvaluation(exprId, exprAction, exprSource, exprData);
 
             if (exprAction.equals(EvaluationEngineService.ACTION_UNREGISTER_REMOTE)) {
                 expressionIds.remove(exprId);
 
                 if(expressionIds.isEmpty()) {
-                    done();
+                    if(BTManager.SHARED_CONNECTIONS) {
+                        done();
+                    } else {
+                        btConnection.disconnect();
+                    }
                 }
             }
         } else {
@@ -72,17 +82,19 @@ public class BTServerWorker extends BTWorker implements BTConnectionHandler {
             btManager.sendExprForEvaluation(exprId, EvaluationEngineService.ACTION_UNREGISTER_REMOTE, swanDevice.getName(), null);
         }
 
-        swanDevice.setServerWorker(null);
-        btManager.serverWorkerDone(this);
+        done();
     }
 
-    private void done() {
-        if(BTManager.SHARED_CONNECTIONS) {
-            swanDevice.setServerWorker(null);
-            btManager.serverWorkerDone(this);
-        } else {
-            btConnection.disconnect();
+    @Override
+    protected void done() {
+        super.done();
+
+        // if we have unprocessed expressions left, it means it crashed
+        if(!expressionIds.isEmpty()) {
+            logRecord.failed = true;
         }
+        swanDevice.setServerWorker(null);
+        btManager.serverWorkerDone(this);
     }
 
     protected String getTag() {

@@ -6,19 +6,28 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.MediaScannerConnection;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.logging.LogRecord;
 
 import interdroid.swan.crossdevice.ProximityManagerI;
 import interdroid.swan.crossdevice.wifidirect.WDSwanDevice;
@@ -65,11 +74,14 @@ public class BTManager implements ProximityManagerI {
     private ConcurrentLinkedQueue<Object> evalQueue;
     private Handler handler;
     private boolean discovering = false;
+    private long logsCount = 0;
+    private long startTime = System.currentTimeMillis();
 
     private List<BTClientWorker> clientWorkers = new ArrayList<>();
     private List<BTServerWorker> serverWorkers = new ArrayList<>();
     private List<BTClientWorker> waitingWorkers = new ArrayList<>();
     private List<BTSwanDevice> nearbyDevices = new ArrayList<>();
+    private List<BTLogRecord> logRecords = new ArrayList<>();
     /**
      * IMPORTANT the order of items in this list matters! (see SwanLakePlus)
      */
@@ -351,6 +363,10 @@ public class BTManager implements ProximityManagerI {
                 }
             }
         }
+
+        if(registeredExpressions.isEmpty()) {
+            printLogs();
+        }
     }
 
     // we synchronize this to make sure that a client worker is not added while a connection is killed in cleanupConnections()
@@ -585,6 +601,7 @@ public class BTManager implements ProximityManagerI {
         }
 
         clientWorkers.remove(clientWorker);
+        logRecords.add(clientWorker.getLogRecord());
         cleanupConnections();
 
         synchronized (evalThread) {
@@ -601,6 +618,7 @@ public class BTManager implements ProximityManagerI {
         Log.d(TAG, "server worker done " + serverWorker);
         BTSwanDevice swanDevice = serverWorker.getSwanDevice();
         serverWorkers.remove(serverWorker);
+        logRecords.add(serverWorker.getLogRecord());
 
         // if crashed, the other side will reschedule a request, so we wait for it and don't reschedule
         if(swanDevice.getPendingItem() != null) {
@@ -659,6 +677,70 @@ public class BTManager implements ProximityManagerI {
         logMsgIntent.setAction(ACTION_LOG_MESSAGE);
         logMsgIntent.putExtra("log", message);
         context.sendBroadcast(logMsgIntent);
+    }
+
+    private void printLogs() {
+        StringBuffer sb = new StringBuffer();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd-HHmm");
+        String logSuffix = sdf.format(new Date());
+        File logsDir = new File(context.getExternalFilesDir(null), "logs");
+        File logFile = new File(logsDir, "log-" + logSuffix);
+        logsDir.mkdirs();
+
+        double reqCount = 0;
+        double failedReq = 0;
+        double failedRate = 0;
+        double avgReqTime = 0;
+        double avgConnTime = 0;
+        double avgCommTime = 0;
+
+        for(BTLogRecord logRec : logRecords) {
+            // we log only logs by client workers
+            if(logRec.client) {
+                reqCount++;
+                avgReqTime += logRec.totalDuration;
+                avgConnTime += logRec.connDuration;
+                avgCommTime += logRec.totalDuration - logRec.swanDuration;
+
+                if(logRec.failed) {
+                    failedReq++;
+                }
+
+                sb.append(logRec.toString() + "\t" + (reqCount - failedReq) + "\n");
+            }
+        }
+
+        if(reqCount > 0) {
+            failedRate = failedReq / reqCount;
+            avgReqTime = avgReqTime / reqCount;
+            avgConnTime = avgConnTime / reqCount;
+            avgCommTime = avgCommTime / reqCount;
+        }
+
+        try {
+            FileWriter fw = new FileWriter(logFile);
+            fw.append("\n# phones = " + (nearbyDevices.size() + 1));
+            fw.append("\n# shared connections = " + SHARED_CONNECTIONS);
+            fw.append("\n# max connections = " + MAX_CONNECTIONS);
+            fw.append("\n\n# failedRate = " + failedRate);
+            fw.append("\n# avgReqTime = " + avgReqTime);
+            fw.append("\n# avgConnTime = " + avgConnTime);
+            fw.append("\n# avgCommTime = " + avgCommTime);
+            fw.append("\n\n" + sb.toString());
+            fw.close();
+
+            logRecords.clear();
+            startTime = 0;
+
+            MediaScannerConnection.scanFile(context, new String[]{ logFile.getAbsolutePath() }, null, null);
+            Log.i(TAG, "log printed");
+        } catch (IOException e) {
+            Log.e(TAG, "couldn't write log");
+        }
+    }
+
+    public long getStartTime() {
+        return startTime;
     }
 
     public BluetoothAdapter getBtAdapter() {

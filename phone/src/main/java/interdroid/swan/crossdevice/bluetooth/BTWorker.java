@@ -3,6 +3,7 @@ package interdroid.swan.crossdevice.bluetooth;
 import android.util.Log;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import interdroid.swancore.crossdevice.Converter;
 import interdroid.swan.engine.EvaluationEngineService;
@@ -18,10 +19,15 @@ public class BTWorker {
 
     protected BTManager btManager;
     protected BTSwanDevice swanDevice;
-
     protected BTConnection btConnection;
 
+    protected BTLogRecord logRecord;
+
     protected void send(String expressionId, String expressionAction, String expressionData) throws Exception {
+        send(expressionId, expressionAction, expressionData, null);
+    }
+
+    protected void send(String expressionId, String expressionAction, String expressionData, Map<String, String> extra) throws Exception {
         Log.w(getTag(), this + " sending " + expressionAction + ": " + toPrintableData(expressionData, expressionAction));
 
         HashMap<String, String> dataMap = new HashMap<>();
@@ -31,6 +37,12 @@ public class BTWorker {
         dataMap.put("data", expressionData);
         //TODO check here if device has any expression registered remotely
         dataMap.put("timeToNextReq", getTimeToNextRequest() + "");
+
+        if(extra != null) {
+            for(Map.Entry<String, String> entry : extra.entrySet()) {
+                dataMap.put(entry.getKey(), entry.getValue());
+            }
+        }
 
         if(BTManager.SHARED_CONNECTIONS) {
             swanDevice.getBtConnection().send(dataMap);
@@ -81,6 +93,10 @@ public class BTWorker {
         return TAG;
     }
 
+    protected void done() {
+        logRecord.totalDuration = System.currentTimeMillis() - logRecord.startTime;
+    }
+
     public void abort() {
         //TODO
     }
@@ -91,5 +107,9 @@ public class BTWorker {
 
     public BTConnection getBtConnection() {
         return btConnection;
+    }
+
+    public BTLogRecord getLogRecord() {
+        return logRecord;
     }
 }
