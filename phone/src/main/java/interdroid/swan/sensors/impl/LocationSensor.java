@@ -1,17 +1,21 @@
 package interdroid.swan.sensors.impl;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.Bundle;
 import android.os.Looper;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
 import java.lang.reflect.Field;
 
 import interdroid.swan.R;
+import interdroid.swancore.models.LocationCoordinates;
 import interdroid.swancore.sensors.AbstractConfigurationActivity;
 import interdroid.swan.sensors.AbstractSwanSensor;
 
@@ -135,7 +139,7 @@ public class LocationSensor extends AbstractSwanSensor {
 
     @Override
     public final String[] getValuePaths() {
-        return new String[]{LOCATION_FIELD, LATITUDE_FIELD, LONGITUDE_FIELD,
+        return new String[]{/*LOCATION_FIELD,*/ LATITUDE_FIELD, LONGITUDE_FIELD,
                 ALTITUDE_FIELD, SPEED_FIELD, BEARING_FIELD, ACCURACY_FIELD};
     }
 
@@ -161,6 +165,16 @@ public class LocationSensor extends AbstractSwanSensor {
         if (registeredConfigurations.size() == 1) {
             updateListener();
         }
+    }
+
+    @Override
+    public String getModelClassName() {
+        return LocationCoordinates.class.getName();
+    }
+
+    @Override
+    public Class<?>[] getParameterTypes() {
+        return LocationCoordinates.class.getConstructors()[0].getParameterTypes();
     }
 
     /**
@@ -211,6 +225,16 @@ public class LocationSensor extends AbstractSwanSensor {
             minDistance = mDefaultConfiguration.getLong(MIN_DISTANCE);
         }
 
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
         locationManager.removeUpdates(locationListener);
         locationManager.requestLocationUpdates(mostAccurateProvider, minTime,
                 minDistance, locationListener, Looper.getMainLooper());
@@ -219,6 +243,16 @@ public class LocationSensor extends AbstractSwanSensor {
     @Override
     public final void unregister(final String id) {
         if (registeredConfigurations.size() == 0) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
             locationManager.removeUpdates(locationListener);
         } else {
             updateListener();

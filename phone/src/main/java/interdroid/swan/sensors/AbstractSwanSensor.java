@@ -9,6 +9,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -33,6 +35,8 @@ public abstract class AbstractSwanSensor extends AbstractSensorBase {
     public static String TAG = "Abstract Sensor";
 
     public static final String DELAY = "delay";
+
+    public static final String ALL_VALUES = "all_values";
 
     /**
      * State for sensor update rate
@@ -321,13 +325,72 @@ public abstract class AbstractSwanSensor extends AbstractSensorBase {
         if (mLastFlushed > (now - timespan))
             getLocalValues(now - timespan, mLastFlushed);
         try {
-            valuesForTimeSpan = getValuesForTimeSpan(getValues().get(registeredValuePaths.get(id)),
+            String registeredValuePath = registeredValuePaths.get(id);
+
+            // return all value path data if all is set
+            if (registeredValuePath.equalsIgnoreCase(ALL_VALUES)) {
+                return constructValues(now, timespan);
+            }
+
+            valuesForTimeSpan = getValuesForTimeSpan(getValues().get(registeredValuePath),
                     now, timespan);
         } catch (OutOfMemoryError e) {
             Log.e(TAG, "OutOfMemoryError");
             onDestroySensor();
         }
         return valuesForTimeSpan;
+    }
+
+    private List<TimestampedValue> constructValues(final long now, final long timespan) {
+        List<TimestampedValue> valuesForTimeSpan = new ArrayList<>();
+
+        int counterKeys = values.size();
+        if (counterKeys >= 2) {
+            String[] keySet = new String[counterKeys];
+            values.keySet().toArray(keySet);
+            int counterValues = values.get(keySet[0]).size();
+            for (int i = 0; i < counterValues; i ++) {
+                long ts = 0;
+                Object[] parameters = new Object[counterKeys];
+                for (int j = 0; j < counterKeys; j ++) {
+                    String key = keySet[j];
+                    List<TimestampedValue> valuesList = values.get(key);
+                    if (valuesList.size() > i) {
+                        TimestampedValue tsValue = valuesList.get(i);
+                        if (tsValue != null) {
+                            parameters[j] = tsValue.getValue();
+                            ts = tsValue.getTimestamp();
+                        }
+                    }
+                }
+
+                try {
+                    Class<?> sensor = Class.forName(getModelClassName());
+                    Constructor constructor = sensor.getConstructor(getParameterTypes());
+                    Object newValue = constructor.newInstance(parameters);
+                    valuesForTimeSpan.add(new TimestampedValue(newValue, ts));
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                } catch (NoSuchMethodException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InstantiationException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+            }
+            System.out.println(valuesForTimeSpan.toString());
+            return valuesForTimeSpan;
+        } else {
+            if (counterKeys == 1) {
+                return getValuesForTimeSpan(values.get(values.keySet().iterator().next()),
+                        now, timespan);
+            } else {
+                return null;
+            }
+        }
     }
 
     /**

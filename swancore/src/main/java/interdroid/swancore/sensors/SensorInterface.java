@@ -70,4 +70,8 @@ public interface SensorInterface {
 
 
     double getAverageSensingRate();
+
+    String getModelClassName();
+
+    Class<?>[] getParameterTypes();
 }

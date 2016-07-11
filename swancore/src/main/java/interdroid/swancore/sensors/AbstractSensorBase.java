@@ -174,6 +174,16 @@ public abstract class AbstractSensorBase extends Service implements
         }
     };
 
+    @Override
+    public Class<?>[] getParameterTypes() {
+        return new Class<?>[0];
+    }
+
+    @Override
+    public String getModelClassName() {
+        return null;
+    }
+
     /**
      * Debug helper which prints the state for this sensor.
      */

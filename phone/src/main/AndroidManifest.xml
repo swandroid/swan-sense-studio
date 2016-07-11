@@ -37,6 +37,7 @@
     <uses-permission android:name="interdroid.vdb.permission.WRITE_DATABASE" />
     <!-- <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS_FULL "/> -->
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
 
     <uses-feature
         android:name="android.hardware.nfc"
@@ -560,6 +561,41 @@
                 android:name="units"
                 android:value="start_time_next_event" />
         </activity>
+
+        <activity
+            android:name=".sensors.impl.GoogleCalendarSensor$ConfigurationActivity"
+            android:exported="true"
+            android:icon="@drawable/ic_stat_sense_error">
+            <intent-filter>
+                <action android:name="interdroid.swan.sensor.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="google_calendar" />
+            <meta-data
+                android:name="valuePaths"
+                android:value="all_values,title,location,start_time,end_time" />
+            <meta-data
+                android:name="sample_interval"
+                android:value="300000L" />
+            <meta-data
+                android:name="events_period"
+                android:value="today"/>
+            <!--<meta-data-->
+                <!--android:name=" "-->
+                <!--android:value="required" />-->
+            <!--<meta-data-->
+                <!--android:name="ignore_free_events"-->
+                <!--android:value="true" />-->
+            <!--<meta-data-->
+                <!--android:name="ignore_allday_events"-->
+                <!--android:value="true" />-->
+            <meta-data
+                android:name="units"
+                android:value=" " />
+        </activity>
+
         <activity
             android:name=".sensors.impl.CallSensor$ConfigurationActivity"
             android:exported="true"
@@ -633,7 +669,7 @@
                 android:value="location" />
             <meta-data
                 android:name="valuePaths"
-                android:value="location,latitude,longitude,altitude,speed,bearing,accuracy" />
+                android:value="all_values,latitude,longitude,altitude,speed,bearing,accuracy" />
             <meta-data
                 android:name="min_distance"
                 android:value="0L" />
@@ -1262,10 +1298,10 @@
             android:exported="true"
             android:process=":screensensor"/>
 
+        <!-- TODO: add process tag-->
         <service
             android:name=".sensors.impl.LocationSensor"
-            android:exported="true"
-            android:process=":locationsensor"/>
+            android:exported="true"/>
 
         <service
             android:name=".sensors.impl.SmartLocationSensor"
@@ -1309,6 +1345,11 @@
             android:name=".sensors.impl.CalendarSensor"
             android:exported="true"
             android:process=":calendarsensor"/>
+
+        <!-- TODO: add process tag-->
+        <service
+            android:name=".sensors.impl.GoogleCalendarSensor"
+            android:exported="true"/>
 
         <service
             android:name=".sensors.impl.LogCatSensor"

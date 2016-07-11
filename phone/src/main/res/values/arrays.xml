@@ -237,7 +237,11 @@
 
     <!-- calendar sensor -->
     <string-array name="calendar_valuepaths">
-        <item>start_time_next_event</item>
+        <item>all_values</item>
+        <item>title</item>
+        <item>location</item>
+        <item>start_time</item>
+        <item>end_time</item>
     </string-array>
 
     <!-- call sensor -->
@@ -265,7 +269,8 @@
 
     <!-- location sensor -->
     <string-array name="location_valuepaths">
-        <item>location</item>
+        <item>all_values</item>
+        <!--<item>location</item>-->
         <item>latitude</item>
         <item>longitude</item>
         <item>altitude</item>
@@ -492,4 +497,8 @@
         <item>alternate_test</item>
     </string-array>
 
+
+    <string-array name="calendar_periods">
+        <item>TODAY</item>
+    </string-array>
 </resources>
