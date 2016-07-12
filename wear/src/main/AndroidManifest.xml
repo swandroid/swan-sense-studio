@@ -328,7 +328,7 @@
 
             <meta-data
                 android:name="entityId"
-                android:value="battery" />
+                android:value="test" />
             <meta-data
                 android:name="valuePaths"
                 android:value="zero,one,alternate_test" />
@@ -342,7 +342,7 @@
         </activity>
 
         <service
-            android:name=".sensors.BatterySensor" />
+            android:name=".sensors.TestSensor" />
 
     </application>
 

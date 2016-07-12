@@ -92,7 +92,7 @@ public class TestSensor extends AbstractSwanSensorBase {
 
                         }
                         try {
-                            Thread.sleep(getSensorDelay());
+                            Thread.sleep(getSensorDelay()/1000);
                         } catch (InterruptedException e) {
                             break;
                         }
