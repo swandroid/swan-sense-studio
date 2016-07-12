@@ -56,7 +56,7 @@ public class BTSwanDevice implements BTConnectionHandler {
     }
 
     public String getName() {
-        return btDevice.getName();
+        return btDevice.getName() != null ? btDevice.getName() : "(null)";
     }
 
     public BluetoothDevice getBtDevice() {

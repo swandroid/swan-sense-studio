@@ -50,10 +50,11 @@ public class BTServerWorker extends BTWorker implements BTConnectionHandler {
 
         // add the expression id to the list of registered expressions
         expressionIds.add(exprId);
+        logRecord.sensors = expressionIds.size();
 
         if (exprAction.equals(EvaluationEngineService.ACTION_REGISTER_REMOTE)
                 || exprAction.equals(EvaluationEngineService.ACTION_UNREGISTER_REMOTE)) {
-            Log.w(TAG, this + " received " + exprAction + ": " + exprData);
+            btManager.log(TAG, this + " received " + exprAction + ": " + exprData, Log.WARN);
             logRecord.startSwanTime = System.currentTimeMillis();
             btManager.sendExprForEvaluation(exprId, exprAction, exprSource, exprData);
 
@@ -69,13 +70,13 @@ public class BTServerWorker extends BTWorker implements BTConnectionHandler {
                 }
             }
         } else {
-            Log.e(TAG, this + " didn't expect " + exprAction);
+            btManager.log(TAG, this + " didn't expect " + exprAction, Log.ERROR);
         }
     }
 
     @Override
     public void onDisconnected(Exception e) {
-        Log.e(TAG, this + " disconnected: " + e.getMessage());
+        btManager.log(TAG, this + " disconnected: " + e.getMessage(), Log.ERROR);
 
         // unregister expressions
         for(String exprId : expressionIds) {

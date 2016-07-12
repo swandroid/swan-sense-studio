@@ -81,7 +81,7 @@ public class EvaluationManager extends EvaluationManagerBase{
 
         // we check if we have a wildcard as location or if the remote device is in proximity
         if (registrationId == null) {
-            if (mProximityManager.hasPeer(toRegistrationId) || toRegistrationId.equals(Expression.LOCATION_NEARBY)) {
+            if (toRegistrationId.equals(Expression.LOCATION_NEARBY) || mProximityManager.hasPeer(toRegistrationId)) {
                 registrationId = toRegistrationId;
             }
 
@@ -101,7 +101,7 @@ public class EvaluationManager extends EvaluationManagerBase{
             if (config != null && config.size() > 0) {
                 boolean first = true;
                 for (String key : config.keySet()) {
-                    result += (first ? "?" : "&") + key + "="
+                    result += (first ? "?" : "#") + key + "="
                             + config.getString(key);
                     first = false;
                 }

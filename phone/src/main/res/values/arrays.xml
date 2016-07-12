@@ -218,12 +218,12 @@
         <item>3</item>
     </string-array>
     <string-array name="sound_audio_format">
-        <item>Default</item>
-        <item>PCM 8-bit</item>
+        <!--<item>Default</item> for some reason if this option is selected the audio sensor crashes-->
         <item>PCM 16-bit</item>
+        <item>PCM 8-bit</item>
     </string-array>
     <string-array name="sound_audio_format_values">
-        <item>1</item>
+        <!--<item>1</item>-->
         <item>2</item>
         <item>3</item>
     </string-array>

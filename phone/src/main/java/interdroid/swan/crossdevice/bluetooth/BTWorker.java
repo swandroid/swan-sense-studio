@@ -28,7 +28,7 @@ public class BTWorker {
     }
 
     protected void send(String expressionId, String expressionAction, String expressionData, Map<String, String> extra) throws Exception {
-        Log.w(getTag(), this + " sending " + expressionAction + ": " + toPrintableData(expressionData, expressionAction));
+        btManager.log(getTag(), this + " sending " + expressionAction + ": " + toPrintableData(expressionData, expressionAction), Log.WARN);
 
         HashMap<String, String> dataMap = new HashMap<>();
         dataMap.put("source", btManager.getBtAdapter().getName());
@@ -50,8 +50,8 @@ public class BTWorker {
             btConnection.send(dataMap);
         }
 
-        Log.w(getTag(), this + " successfully sent " + expressionAction + ": "
-                + toPrintableData(expressionData, expressionAction));
+        btManager.log(getTag(), this + " successfully sent " + expressionAction + ": "
+                + toPrintableData(expressionData, expressionAction), Log.WARN);
     }
 
     protected int getTimeToNextRequest() {
@@ -78,7 +78,7 @@ public class BTWorker {
             try {
                 return Converter.stringToObject(data).toString();
             } catch (Exception e) {
-                Log.e(getTag(), this + " can't get printable data", e);
+                btManager.log(getTag(), this + " can't get printable data", Log.ERROR, e);
             }
         }
 
@@ -95,10 +95,6 @@ public class BTWorker {
 
     protected void done() {
         logRecord.totalDuration = System.currentTimeMillis() - logRecord.startTime;
-    }
-
-    public void abort() {
-        //TODO
     }
 
     public BTSwanDevice getSwanDevice() {

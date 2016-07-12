@@ -59,14 +59,15 @@ public class BTManager implements ProximityManagerI {
     public static final String ACTION_NEARBY_DEVICE_FOUND = "interdroid.swan.crossdevice.bluetooth.ACTION_NEARBY_DEVICE_FOUND";
     public static final String ACTION_LOG_MESSAGE = "interdroid.swan.crossdevice.bluetooth.ACTION_LOG_MESSAGE";
     /* this should be configurable */
-    public static final int TIME_BETWEEN_REQUESTS = 4000;
+    public static final int TIME_BETWEEN_REQUESTS = 1000;
     /* set this to true if you want one connection per device, or false if you want one connection per worker */
     public static final boolean SHARED_CONNECTIONS = true;
     /* set this to true if you want only one server worker at a time, or false if you want multiple server workers in parallel */
     public static final boolean SYNCHRONOUS_WORKERS = false;
     private final int BLOCKED_WORKERS_CHECKING_INTERVAL = 5000;
-    private final int PEER_DISCOVERY_INTERVAL = 40000;
-    private final int MAX_CONNECTIONS = 1;
+    private final int PEER_DISCOVERY_INTERVAL = 60000;
+    private final int MAX_CONNECTIONS = 0;
+    private final boolean LOG_ONLY_CRITICAL = true;
 
     private Context context;
     private List<BTReceiver> btReceivers = new ArrayList<>();
@@ -90,7 +91,7 @@ public class BTManager implements ProximityManagerI {
     /* we schedule peer discovery to take place at regular intervals */
     Runnable nearbyPeersChecker = new Runnable() {
         public void run() {
-            Log.i(TAG, "discovery started");
+            log(TAG, "discovery started", Log.INFO, true);
             bcastLogMessage("discovery started");
 
             discoverPeers();
@@ -104,32 +105,31 @@ public class BTManager implements ProximityManagerI {
     };
 
     /* we check periodically that client threads are not blocked in connect() */
-    @Deprecated
     Runnable blockedWorkersChecker = new Runnable() {
         public void run() {
-            List<BTClientWorker> blockedWorkers = new ArrayList<>();
-
-            for (BTClientWorker clientWorker : clientWorkers) {
-                if (!clientWorker.isConnectedToRemote()) {
-                    if (waitingWorkers.contains(clientWorker)) {
-                        Log.e(TAG, "blocked worker " + clientWorker + " found, interrupting...");
-                        blockedWorkers.add(clientWorker);
-                        waitingWorkers.remove(clientWorker);
-                    } else {
-                        waitingWorkers.add(clientWorker);
-                    }
-                } else {
-                    waitingWorkers.remove(clientWorker);
-                }
-            }
-
-            for (BTClientWorker clientWorker : blockedWorkers) {
-                clientWorker.abort();
-            }
-
-            handler.postDelayed(blockedWorkersChecker, BLOCKED_WORKERS_CHECKING_INTERVAL);
+            BTManager.this.terminateBlockedWorkers();
         }
     };
+
+    private synchronized void terminateBlockedWorkers() {
+        List<BTClientWorker> blockedWorkers = new ArrayList<>();
+
+        for (BTClientWorker clientWorker : clientWorkers) {
+            if (waitingWorkers.contains(clientWorker)) {
+                log(TAG, "blocked worker " + clientWorker + " found, interrupting...", Log.ERROR, true);
+                blockedWorkers.add(clientWorker);
+                waitingWorkers.remove(clientWorker);
+            } else {
+                waitingWorkers.add(clientWorker);
+            }
+        }
+
+        for (BTClientWorker clientWorker : blockedWorkers) {
+            clientWorker.disconnectFromRemote();
+        }
+
+        handler.postDelayed(blockedWorkersChecker, BLOCKED_WORKERS_CHECKING_INTERVAL);
+    }
 
     private final Thread evalThread = new Thread() {
         @Override
@@ -158,7 +158,7 @@ public class BTManager implements ProximityManagerI {
     };
 
     private void scheduleQueueItem(final Object item, int timeout) {
-        Log.d(TAG, "scheduled item " + item + " in " + timeout + "ms");
+        log(TAG, "scheduled item " + item + " in " + timeout + "ms", Log.DEBUG);
 
         handler.postDelayed(new Runnable() {
             @Override
@@ -180,7 +180,7 @@ public class BTManager implements ProximityManagerI {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
                 if (device.getName() != null && device.getName().contains("SWAN")) {
-                    Log.d(TAG, "found nearby device " + device.getName());
+                    log(TAG, "found nearby device " + device.getName(), Log.DEBUG);
                     addNearbyDevice(device, null);
 
                     // code below is used by SwanLakePlus
@@ -192,15 +192,15 @@ public class BTManager implements ProximityManagerI {
                 int connState = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1);
 
                 if (connState == BluetoothAdapter.STATE_ON) {
-                    Log.d(TAG, "bluetooth connected, starting receiver thread...");
+                    log(TAG, "bluetooth connected, starting receiver thread...", Log.DEBUG);
                     for (BTReceiver receiver : btReceivers) {
                         receiver.start();
                     }
                 }
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
-                Log.i(TAG, "discovery finished");
+                log(TAG, "discovery finished", Log.INFO, true);
                 bcastLogMessage("discovery finished");
-                scheduleQueueItem(nearbyPeersChecker, PEER_DISCOVERY_INTERVAL);
+//                scheduleQueueItem(nearbyPeersChecker, PEER_DISCOVERY_INTERVAL);
                 setDiscovering(false);
 
                 synchronized (evalThread) {
@@ -215,7 +215,7 @@ public class BTManager implements ProximityManagerI {
 
         btAdapter = BluetoothAdapter.getDefaultAdapter();
         if (btAdapter == null) {
-            Log.w(TAG, "Bluetooth not supported");
+            log(TAG, "Bluetooth not supported", Log.ERROR, true);
             return;
         }
 
@@ -237,7 +237,7 @@ public class BTManager implements ProximityManagerI {
         String userFriendlyName = PreferenceManager.getDefaultSharedPreferences(context).getString("name", null);
 
         if (userFriendlyName == null) {
-            Log.e(TAG, "Name not set for device");
+            log(TAG, "Name not set for device", Log.ERROR, true);
             return;
         }
 
@@ -261,7 +261,7 @@ public class BTManager implements ProximityManagerI {
             evalThread.notify();
         }
 
-//        blockedWorkersChecker.run();
+        blockedWorkersChecker.run();
     }
 
     @Override
@@ -279,10 +279,10 @@ public class BTManager implements ProximityManagerI {
 
     public void discoverPeers() {
         if (!btAdapter.isDiscovering()) {
-            Log.d(TAG, "Discovering...");
+            log(TAG, "Discovering...", Log.DEBUG);
             btAdapter.startDiscovery();
         } else {
-            Log.d(TAG, "Discovery already started");
+            log(TAG, "Discovery already started", Log.DEBUG);
         }
     }
 
@@ -302,7 +302,7 @@ public class BTManager implements ProximityManagerI {
     // we have to synchronize this to make sure that it is not exectued while a client worker is removed in
     // clientWorkerDone(), which would prevent the addition of a new task in the queue
     public synchronized void registerExpression(String id, String expression, String resolvedLocation) {
-        Log.d(TAG, "registering expression " + id + ": " + expression);
+        log(TAG, "registering expression " + id + ": " + expression, Log.DEBUG);
         boolean newTask = false;
 
         if (resolvedLocation.equals(Expression.LOCATION_NEARBY)) {
@@ -331,7 +331,7 @@ public class BTManager implements ProximityManagerI {
                     newTask = true;
                 }
             } else {
-                Log.e(TAG, "can't find device " + resolvedLocation + "; won't register expression");
+                log(TAG, "can't find device " + resolvedLocation + "; won't register expression", Log.ERROR);
             }
         }
 
@@ -344,7 +344,7 @@ public class BTManager implements ProximityManagerI {
 
     @Override
     public synchronized void unregisterExpression(String id, String expression, String resolvedLocation) {
-        Log.d(TAG, "unregistering expression " + id + ": " + expression);
+        log(TAG, "unregistering expression " + id + ": " + expression, Log.DEBUG);
         registeredExpressions.remove(id);
 
         for(BTSwanDevice swanDevice : nearbyDevices) {
@@ -359,7 +359,7 @@ public class BTManager implements ProximityManagerI {
                 try {
                     clientWorker.send(remoteExpression.getId(), EvaluationEngineService.ACTION_UNREGISTER_REMOTE, null);
                 } catch (Exception e) {
-                    Log.e(TAG, "couldn't unregister remote expression with id " + remoteExpression.getId(), e);
+                    log(TAG, "couldn't unregister remote expression with id " + remoteExpression.getId(), Log.ERROR, e);
                 }
             }
         }
@@ -371,7 +371,7 @@ public class BTManager implements ProximityManagerI {
 
     // we synchronize this to make sure that a client worker is not added while a connection is killed in cleanupConnections()
     private synchronized void processQueueItem(Object item) {
-        Log.d(TAG, "processing " + item);
+        log(TAG, "processing " + item, Log.DEBUG, true);
 
         if(item instanceof BTRemoteEvaluationTask) {
             BTRemoteEvaluationTask remoteEvalTask = (BTRemoteEvaluationTask) item;
@@ -386,7 +386,7 @@ public class BTManager implements ProximityManagerI {
             // peer discovery
             ((Runnable) item).run();
         } else {
-            Log.e(TAG, "Item can't be processed: " + item);
+            log(TAG, "Item can't be processed: " + item, Log.ERROR);
         }
     }
 
@@ -421,19 +421,19 @@ public class BTManager implements ProximityManagerI {
                 }
             }
         } catch (Exception e) {
-            Log.e(TAG, "couldn't send " + exprAction + " to " + remoteDeviceName + "(id: " + exprId + "): " + e.getMessage());
+            log(TAG, "couldn't send " + exprAction + " to " + remoteDeviceName + "(id: " + exprId + "): " + e.getMessage(), Log.ERROR, true);
 
             // unregister expression
             if (exprAction.equals(EvaluationEngineService.ACTION_NEW_RESULT_REMOTE)) {
                 // TODO close socket here, so the other side unblocks
-                Log.e(TAG, "unregistering expression " + exprId + "...");
+                log(TAG, "unregistering expression " + exprId + "...", Log.ERROR);
                 sendExprForEvaluation(exprId, EvaluationEngineService.ACTION_UNREGISTER_REMOTE, remoteDeviceName, exprData);
             }
 
             return;
         }
 
-        Log.e(TAG, "couldn't send " + exprAction + " to " + remoteDeviceName + "(id: " + exprId + "): expression already processed");
+        log(TAG, "couldn't send " + exprAction + " to " + remoteDeviceName + "(id: " + exprId + "): expression already processed", Log.ERROR);
     }
 
     /**
@@ -450,14 +450,14 @@ public class BTManager implements ProximityManagerI {
 
     private void addToQueue(Object item) {
         evalQueue.add(item);
-        Log.d(TAG, "item added to queue: " + item);
-        Log.d(TAG, "[Queue] " + evalQueue);
+        log(TAG, "item added to queue: " + item, Log.DEBUG);
+        log(TAG, "[Queue] " + evalQueue, Log.DEBUG);
     }
 
     private Object removeFromQueue() {
         Object item = evalQueue.remove();
-        Log.d(TAG, "first item removed from queue: " + item);
-        Log.d(TAG, "[Queue] " + evalQueue);
+        log(TAG, "first item removed from queue: " + item, Log.DEBUG);
+        log(TAG, "[Queue] " + evalQueue, Log.DEBUG);
         return item;
     }
 
@@ -474,15 +474,15 @@ public class BTManager implements ProximityManagerI {
         BTSwanDevice swanDevice = getNearbyDeviceByName(btDevice.getName());
 
         if (swanDevice == null) {
-            Log.d(TAG, "added new device " + btDevice.getName());
+            log(TAG, "added new device " + btDevice.getName(), Log.DEBUG, true);
             bcastLogMessage("nearby device found " + btDevice.getName());
             swanDevice = new BTSwanDevice(btDevice, this, btConnection);
             nearbyDevices.add(swanDevice);
             registerRemoteDevice(swanDevice);
         } else {
-            Log.d(TAG, "device " + btDevice.getName() + " already present, won't add");
+            log(TAG, "device " + btDevice.getName() + " already present, won't add", Log.DEBUG);
             if(btConnection != null && btConnection.isConnected()) {
-                Log.d(TAG, "updated connection for " + btDevice.getName());
+                log(TAG, "updated connection for " + btDevice.getName(), Log.DEBUG);
                 swanDevice.setBtConnection(btConnection);
             }
         }
@@ -531,7 +531,7 @@ public class BTManager implements ProximityManagerI {
     private void scheduleEvaluationTask(BTRemoteEvaluationTask remoteEvalTask, int remoteTimeToNextReq) {
         BTSwanDevice swanDevice = remoteEvalTask.getSwanDevice();
         int timeToNextReq = TIME_BETWEEN_REQUESTS;
-        Log.d(TAG, "timeToNextReq = " + timeToNextReq + "; " + "remoteTimeToNextReq = " + remoteTimeToNextReq);
+        log(TAG, "timeToNextReq = " + timeToNextReq + "; " + "remoteTimeToNextReq = " + remoteTimeToNextReq, Log.DEBUG);
 
         // remoteTimeToNextReq is 0 if an error occurs or if the remote device doesn't want
         // to register any expression on this device
@@ -546,7 +546,7 @@ public class BTManager implements ProximityManagerI {
 
             if (timeToNextReq > remoteTimeToNextReq) {
                 swanDevice.setPendingItem(new BTPendingItem(remoteEvalTask, timeToNextReq - remoteTimeToNextReq));
-                Log.d(TAG, "set pending item " + swanDevice.getPendingItem() + " for device " + swanDevice);
+                log(TAG, "set pending item " + swanDevice.getPendingItem() + " for device " + swanDevice, Log.DEBUG);
             } else {
                 scheduleQueueItem(remoteEvalTask, timeToNextReq);
             }
@@ -560,7 +560,7 @@ public class BTManager implements ProximityManagerI {
             return;
         }
 
-        Log.i(TAG, "cleaning up connections...");
+        log(TAG, "cleaning up connections...", Log.INFO, true);
         List<BTSwanDevice> idleDevices = new ArrayList<BTSwanDevice>();
         int connectedDevices = 0;
 
@@ -574,7 +574,7 @@ public class BTManager implements ProximityManagerI {
             }
         }
 
-        Log.d(TAG, "found " + connectedDevices + " connected devices; max is " + MAX_CONNECTIONS);
+        log(TAG, "found " + connectedDevices + " connected devices; max is " + MAX_CONNECTIONS, Log.DEBUG);
 
         for(BTSwanDevice swanDevice : idleDevices) {
             if(connectedDevices > MAX_CONNECTIONS) {
@@ -592,7 +592,7 @@ public class BTManager implements ProximityManagerI {
      */
     protected synchronized void clientWorkerDone(BTClientWorker clientWorker, int remoteTimeToNextReq) {
         BTSwanDevice swanDevice = clientWorker.getSwanDevice();
-        Log.d(TAG, "client worker done " + clientWorker);
+        log(TAG, "client worker done " + clientWorker, Log.DEBUG, true);
 
         // reschedule a new task if there are registered expressions on the device
         if(!swanDevice.getRegisteredExpressions().isEmpty()) {
@@ -601,6 +601,7 @@ public class BTManager implements ProximityManagerI {
         }
 
         clientWorkers.remove(clientWorker);
+        waitingWorkers.remove(clientWorker);
         logRecords.add(clientWorker.getLogRecord());
         cleanupConnections();
 
@@ -615,7 +616,7 @@ public class BTManager implements ProximityManagerI {
      * also, cleanupConnections() call in this method shouldn't overlap with processQueueItem()
      */
     protected synchronized void serverWorkerDone(BTServerWorker serverWorker) {
-        Log.d(TAG, "server worker done " + serverWorker);
+        log(TAG, "server worker done " + serverWorker, Log.DEBUG, true);
         BTSwanDevice swanDevice = serverWorker.getSwanDevice();
         serverWorkers.remove(serverWorker);
         logRecords.add(serverWorker.getLogRecord());
@@ -660,12 +661,12 @@ public class BTManager implements ProximityManagerI {
     }
 
     protected void addClientWorker(BTClientWorker clientWorker) {
-        Log.d(TAG, "client worker added to pool: " + clientWorker);
+        log(TAG, "client worker added to pool: " + clientWorker, Log.DEBUG, true);
         clientWorkers.add(clientWorker);
     }
 
     protected void addServerWorker(BTServerWorker serverWorker) {
-        Log.d(TAG, "server worker added to pool: " + serverWorker);
+        log(TAG, "server worker added to pool: " + serverWorker, Log.DEBUG, true);
         serverWorkers.add(serverWorker);
     }
 
@@ -693,28 +694,34 @@ public class BTManager implements ProximityManagerI {
         double avgReqTime = 0;
         double avgConnTime = 0;
         double avgCommTime = 0;
+        double avgSwanTime = 0;
+        double successCount = 0;
 
         for(BTLogRecord logRec : logRecords) {
             // we log only logs by client workers
             if(logRec.client) {
                 reqCount++;
-                avgReqTime += logRec.totalDuration;
-                avgConnTime += logRec.connDuration;
-                avgCommTime += logRec.totalDuration - logRec.swanDuration;
 
                 if(logRec.failed) {
                     failedReq++;
-                }
+                } else {
+                    successCount++;
+                    avgReqTime += logRec.totalDuration;
+                    avgConnTime += logRec.connDuration;
+                    avgCommTime += logRec.totalDuration - logRec.swanDuration;
+                    avgSwanTime += logRec.swanDuration;
 
-                sb.append(logRec.toString() + "\t" + (reqCount - failedReq) + "\n");
+                    sb.append((int)successCount + "\t" + logRec.toString() + "\n");
+                }
             }
         }
 
         if(reqCount > 0) {
             failedRate = failedReq / reqCount;
-            avgReqTime = avgReqTime / reqCount;
-            avgConnTime = avgConnTime / reqCount;
-            avgCommTime = avgCommTime / reqCount;
+            avgReqTime = avgReqTime / successCount;
+            avgConnTime = avgConnTime / successCount;
+            avgCommTime = avgCommTime / successCount;
+            avgSwanTime = avgSwanTime / successCount;
         }
 
         try {
@@ -722,10 +729,13 @@ public class BTManager implements ProximityManagerI {
             fw.append("\n# phones = " + (nearbyDevices.size() + 1));
             fw.append("\n# shared connections = " + SHARED_CONNECTIONS);
             fw.append("\n# max connections = " + MAX_CONNECTIONS);
+            fw.append("\n# sample interval = " + TIME_BETWEEN_REQUESTS);
             fw.append("\n\n# failedRate = " + failedRate);
             fw.append("\n# avgReqTime = " + avgReqTime);
             fw.append("\n# avgConnTime = " + avgConnTime);
             fw.append("\n# avgCommTime = " + avgCommTime);
+            fw.append("\n# avgSwanTime = " + avgSwanTime);
+            fw.append("\n\n# Idx\t" + BTLogRecord.printHeader());
             fw.append("\n\n" + sb.toString());
             fw.close();
 
@@ -733,9 +743,34 @@ public class BTManager implements ProximityManagerI {
             startTime = 0;
 
             MediaScannerConnection.scanFile(context, new String[]{ logFile.getAbsolutePath() }, null, null);
-            Log.i(TAG, "log printed");
+            log(TAG, "log printed", Log.INFO, true);
         } catch (IOException e) {
-            Log.e(TAG, "couldn't write log");
+            log(TAG, "couldn't write log", Log.ERROR, true, e);
+        }
+    }
+
+    protected void log(String tag, String msg, int level) {
+        log(tag, msg, level, false, null);
+    }
+
+    protected void log(String tag, String msg, int level, boolean critical) {
+        log(tag, msg, level, critical, null);
+    }
+
+    protected void log(String tag, String msg, int level, Exception e) {
+        log(tag, msg, level, false, e);
+    }
+
+    protected void log(String tag, String msg, int level, boolean critical, Exception e) {
+        if(LOG_ONLY_CRITICAL && !critical) {
+            return;
+        }
+
+        switch (level) {
+            case Log.DEBUG: if(e != null) Log.d(tag, msg, e); else Log.d(tag, msg); break;
+            case Log.ERROR: if(e != null) Log.e(tag, msg, e); else Log.e(tag, msg); break;
+            case Log.INFO: if(e != null) Log.i(tag, msg, e); else Log.i(tag, msg); break;
+            case Log.WARN: if(e != null) Log.w(tag, msg, e); else Log.w(tag, msg); break;
         }
     }
 

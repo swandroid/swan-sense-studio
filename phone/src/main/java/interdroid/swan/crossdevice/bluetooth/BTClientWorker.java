@@ -23,6 +23,7 @@ public class BTClientWorker extends BTWorker implements BTConnectionHandler {
         this.remoteEvaluationTask = remoteEvaluationTask;
         this.swanDevice = remoteEvaluationTask.getSwanDevice();
         logRecord = new BTLogRecord(btManager.getStartTime(), true);
+        logRecord.sensors = remoteEvaluationTask.getExpressions().size();
     }
 
     public void doWork() {
@@ -38,7 +39,7 @@ public class BTClientWorker extends BTWorker implements BTConnectionHandler {
                 done();
             }
         } catch (Exception e) {
-            Log.e(TAG, this + " crashed", e);
+            btManager.log(TAG, this + " crashed", Log.ERROR, true, e);
         }
     }
 
@@ -65,6 +66,18 @@ public class BTClientWorker extends BTWorker implements BTConnectionHandler {
         }
     }
 
+    protected void disconnectFromRemote() {
+        if(BTManager.SHARED_CONNECTIONS) {
+            if(swanDevice.getBtConnection() != null) {
+                swanDevice.getBtConnection().disconnect();
+            }
+        } else {
+            if(btConnection != null) {
+                btConnection.disconnect();
+            }
+        }
+    }
+
     public boolean isConnectedToRemote() {
         if(BTManager.SHARED_CONNECTIONS) {
             return swanDevice.isConnectedToRemote();
@@ -86,12 +99,10 @@ public class BTClientWorker extends BTWorker implements BTConnectionHandler {
             BTRemoteExpression remoteExpression = remoteEvaluationTask.getRemoteExpression(exprId);
             // TODO for "undefined" result, resend request
             Result result = exprData != null ? (Result) Converter.stringToObject(exprData) : null;
-            Log.w(TAG, this + " received " + exprAction + ": " + result);
+            btManager.log(TAG, this + " received " + exprAction + ": " + result, Log.WARN);
 
             if (remoteExpression != null) {
                 if (isValidResult(result)) {
-                    btManager.bcastLogMessage("got new result from " + swanDevice);
-
                     if(timeToNextReq != null) {
                         remoteTimeToNextRequest = Integer.parseInt(timeToNextReq);
                     }
@@ -104,21 +115,23 @@ public class BTClientWorker extends BTWorker implements BTConnectionHandler {
                     remoteEvaluationTask.removeExpression(remoteExpression);
 
                     if(!remoteEvaluationTask.hasExpressions()) {
-                        done();
+                        if(BTManager.SHARED_CONNECTIONS) {
+                            done();
+                        }
                     }
                 }
             } else {
-                Log.e(TAG, this + " received result for wrong or outdated expression: " + exprId);
+                btManager.log(TAG, this + " received result for wrong or outdated expression: " + exprId, Log.ERROR);
                 send(exprId, EvaluationEngineService.ACTION_UNREGISTER_REMOTE, null);
             }
         } else {
-            Log.e(TAG, this + " didn't expect " + exprAction);
+            btManager.log(TAG, this + " didn't expect " + exprAction, Log.ERROR);
         }
     }
 
     @Override
     public void onDisconnected(Exception e) {
-        Log.e(TAG, this + " disconnected: " + e.getMessage());
+        btManager.log(TAG, this + " disconnected: " + e.getMessage(), Log.ERROR);
         done();
     }
 
@@ -128,7 +141,12 @@ public class BTClientWorker extends BTWorker implements BTConnectionHandler {
 
         // if we have unprocessed expressions left, it means it crashed
         if(remoteEvaluationTask.hasExpressions()) {
+            btManager.bcastLogMessage("[FAIL] worker failed for " + swanDevice);
+            btManager.log(TAG, "[FAIL] worker failed for " + swanDevice, Log.ERROR, true);
             logRecord.failed = true;
+        } else {
+            btManager.bcastLogMessage("[SUCCESS] worker done for " + swanDevice);
+            btManager.log(TAG, "[SUCCESS] worker done for " + swanDevice, Log.INFO, true);
         }
         swanDevice.setClientWorker(null);
         btManager.clientWorkerDone(this, remoteTimeToNextRequest);
