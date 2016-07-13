@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="Sensor storage">
+
+        <PreferenceScreen
+            android:key="pref_key_storage"
+            android:title="Sensor data storage">
+
+            <CheckBoxPreference
+                android:defaultValue="false"
+                android:key="pref_key_sense"
+                android:summary="Use Sense platform as default storage mechanism for sensor data"
+                android:title="Off"/>
+
+            <Preference
+                android:enabled="false"
+                android:key="pref_key_sense_login"
+                android:summary="Login to Sense platform"
+                android:title="Login">
+
+                <intent
+                    android:targetClass="interdroid.sense.LoginActivity"
+                    android:targetPackage="interdroid.swan"/>
+            </Preference>
+
+            <Preference
+                android:enabled="false"
+                android:key="pref_key_sense_logout"
+                android:summary="Logout from Sense platform"
+                android:title="Logout"/>
+
+            <Preference
+                android:enabled="false"
+                android:key="pref_key_sense_register"
+                android:summary="Register to Sense platform"
+                android:title="Register">
+
+                <intent
+                    android:targetClass="interdroid.sense.RegistrationActivity"
+                    android:targetPackage="interdroid.swan"/>
+            </Preference>
+
+            <Preference
+                android:enabled="false"
+                android:key="pref_key_sense_settings"
+                android:summary="Sense platform settings"
+                android:title="Settings">
+
+                <intent
+                    android:targetClass="interdroid.sense.SettingsActivity"
+                    android:targetPackage="interdroid.swan"/>
+            </Preference>
+
+        </PreferenceScreen>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="pref_key_cuckoo"
+        android:title="Use Cuckoo for offloading">
+
+        <EditTextPreference
+            android:defaultValue=""
+            android:key="pref_key_cuckoo_comp"
+            android:summary="Computation offloading"
+            android:title="Computation offloading"/>
+
+        <EditTextPreference
+            android:defaultValue=""
+            android:key="pref_key_cuckoo_comm"
+            android:summary="Communication offloading"
+            android:title="Communication offloading"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

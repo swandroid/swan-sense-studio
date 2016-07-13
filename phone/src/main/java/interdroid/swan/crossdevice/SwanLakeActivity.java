@@ -6,7 +6,6 @@ import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.content.SharedPreferences.Editor;
 import android.content.res.TypedArray;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
@@ -39,14 +38,10 @@ import java.io.IOException;
 import java.util.List;
 
 import interdroid.cuckoo.resourcemanager.ResourcesActivity;
-import interdroid.sense.LoginActivity;
-import interdroid.sense.RegistrationActivity;
-import interdroid.sense.SettingsActivity;
 import interdroid.swan.R;
 import interdroid.swancore.swansong.Expression;
 import interdroid.swan.ttn.TtnActivity;
 import interdroid.swancore.crossdevice.Registry;
-import nl.sense_os.service.constants.SensePrefs;
 
 /**
  * Activity that shows which remote devices are known and enables to pair with
@@ -225,31 +220,6 @@ public class SwanLakeActivity extends ListActivity {
                 break;
             case R.id.action_set_name:
                 showDialog(DIALOG_SET_NAME);
-                break;
-            case R.id.login:
-                startActivity(new Intent(this, LoginActivity.class));
-                break;
-            case R.id.logout:
-                // clear cached settings of the previous user (e.g. device id)
-                Editor authEditor = getSharedPreferences(SensePrefs.AUTH_PREFS, MODE_PRIVATE).edit();
-                authEditor.clear();
-                authEditor.commit();
-                // update UI
-                runOnUiThread(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        Toast.makeText(SwanLakeActivity.this, R.string.logout_success, Toast.LENGTH_LONG)
-                                .show();
-                    }
-                });
-
-                break;
-            case R.id.signup:
-                startActivity(new Intent(this, RegistrationActivity.class));
-                break;
-            case R.id.settings:
-                startActivity(new Intent(this, SettingsActivity.class));
                 break;
             case R.id.action_ttn:
                 startActivity(new Intent(this, TtnActivity.class));

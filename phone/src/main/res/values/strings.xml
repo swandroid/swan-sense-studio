@@ -14,6 +14,7 @@
     <string name="action_enable">Enable</string>
     <string name="action_refresh">Refresh</string>
     <string name="title_activity_swanlake">SWAN Lake</string>
+    <string name="title_activity_swan_config">SWAN Configuration</string>
     <string name="menu_sort">Sort</string>
     <string name="sort_name">Name</string>
     <string name="sort_eval_per">Time</string>

@@ -80,6 +80,18 @@
         </receiver>
 
         <activity
+            android:name=".ui.SwanConfigActivity"
+            android:icon="@drawable/ic_launcher_swan"
+            android:label="@string/title_activity_swan_config"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
             android:name=".crossdevice.SwanLakeActivity"
             android:icon="@drawable/ic_launcher_swan"
             android:label="@string/title_activity_swanlake"
