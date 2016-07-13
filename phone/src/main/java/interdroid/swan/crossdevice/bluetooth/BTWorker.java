@@ -13,7 +13,7 @@ import interdroid.swancore.swansong.TriState;
 /**
  * Created by vladimir on 4/8/16.
  */
-public class BTWorker {
+public class BTWorker extends Thread {
 
     private static final String TAG = "BTWorker";
 

@@ -26,7 +26,8 @@ public class BTClientWorker extends BTWorker implements BTConnectionHandler {
         logRecord.sensors = remoteEvaluationTask.getExpressions().size();
     }
 
-    public void doWork() {
+    @Override
+    public void run() {
         try {
             connectToRemote();
             logRecord.connDuration = System.currentTimeMillis() - logRecord.startTime;

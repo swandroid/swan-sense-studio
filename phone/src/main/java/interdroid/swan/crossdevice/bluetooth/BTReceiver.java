@@ -30,7 +30,7 @@ public class BTReceiver extends Thread {
     public void run() {
         Log.d(TAG, "BT receiver started for uuid " + uuid);
 
-        if(BTManager.SYNCHRONOUS_WORKERS) {
+        if(BTManager.SYNC_RECEIVERS) {
             runWithSynchronousWorkers();
         } else {
             runWithAsynchronousWorkers();
@@ -109,5 +109,15 @@ public class BTReceiver extends Thread {
 
     public BluetoothSocket getSocket() {
         return socket;
+    }
+
+    public void abort() {
+        if(serverSocket != null) {
+            try {
+                serverSocket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

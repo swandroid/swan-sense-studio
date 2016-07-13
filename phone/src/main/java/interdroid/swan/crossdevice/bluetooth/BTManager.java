@@ -12,22 +12,16 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
-import java.util.Scanner;
-import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.logging.LogRecord;
 
 import interdroid.swan.crossdevice.ProximityManagerI;
 import interdroid.swan.crossdevice.wifidirect.WDSwanDevice;
@@ -48,9 +42,9 @@ public class BTManager implements ProximityManagerI {
     private static final String TAG = "BTManager";
     protected final static UUID[] SERVICE_UUIDS = {
             UUID.fromString("e2035693-b335-403f-b921-537e5ce2d27d"),
-//            UUID.fromString("b0ec7a42-2e19-438e-a091-d6954b999225"),
-//            UUID.fromString("fc74ed56-8cf2-4eae-b609-7a32bd70183d"),
-//            UUID.fromString("15e416a2-0fab-45ff-b799-b6e67b131d3a"),
+            UUID.fromString("b0ec7a42-2e19-438e-a091-d6954b999225"),
+            UUID.fromString("fc74ed56-8cf2-4eae-b609-7a32bd70183d"),
+            UUID.fromString("15e416a2-0fab-45ff-b799-b6e67b131d3a"),
 //            UUID.fromString("c84a39b5-8a25-43ac-9f2d-e5f3e96f615a"),
 //            UUID.fromString("803581d4-55d5-45fc-a31b-acf55052a5d7"),
 //            UUID.fromString("94192877-54e0-43a3-abc5-fbf9bbc43137")
@@ -63,7 +57,7 @@ public class BTManager implements ProximityManagerI {
     /* set this to true if you want one connection per device, or false if you want one connection per worker */
     public static final boolean SHARED_CONNECTIONS = true;
     /* set this to true if you want only one server worker at a time, or false if you want multiple server workers in parallel */
-    public static final boolean SYNCHRONOUS_WORKERS = false;
+    public static final boolean SYNC_RECEIVERS = true;
     private final int BLOCKED_WORKERS_CHECKING_INTERVAL = 5000;
     private final int PEER_DISCOVERY_INTERVAL = 60000;
     private final int MAX_CONNECTIONS = 0;
@@ -107,29 +101,25 @@ public class BTManager implements ProximityManagerI {
     /* we check periodically that client threads are not blocked in connect() */
     Runnable blockedWorkersChecker = new Runnable() {
         public void run() {
-            BTManager.this.terminateBlockedWorkers();
+            List<BTClientWorker> blockedWorkers = new ArrayList<>();
+
+            for (BTClientWorker clientWorker : clientWorkers) {
+                if (waitingWorkers.contains(clientWorker)) {
+                    log(TAG, "blocked worker " + clientWorker + " found, interrupting...", Log.ERROR, true);
+                    blockedWorkers.add(clientWorker);
+                    waitingWorkers.remove(clientWorker);
+                } else {
+                    waitingWorkers.add(clientWorker);
+                }
+            }
+
+            for (BTClientWorker clientWorker : blockedWorkers) {
+                clientWorker.disconnectFromRemote();
+            }
+
+            handler.postDelayed(blockedWorkersChecker, BLOCKED_WORKERS_CHECKING_INTERVAL);
         }
     };
-
-    private synchronized void terminateBlockedWorkers() {
-        List<BTClientWorker> blockedWorkers = new ArrayList<>();
-
-        for (BTClientWorker clientWorker : clientWorkers) {
-            if (waitingWorkers.contains(clientWorker)) {
-                log(TAG, "blocked worker " + clientWorker + " found, interrupting...", Log.ERROR, true);
-                blockedWorkers.add(clientWorker);
-                waitingWorkers.remove(clientWorker);
-            } else {
-                waitingWorkers.add(clientWorker);
-            }
-        }
-
-        for (BTClientWorker clientWorker : blockedWorkers) {
-            clientWorker.disconnectFromRemote();
-        }
-
-        handler.postDelayed(blockedWorkersChecker, BLOCKED_WORKERS_CHECKING_INTERVAL);
-    }
 
     private final Thread evalThread = new Thread() {
         @Override
@@ -193,9 +183,11 @@ public class BTManager implements ProximityManagerI {
 
                 if (connState == BluetoothAdapter.STATE_ON) {
                     log(TAG, "bluetooth connected, starting receiver thread...", Log.DEBUG);
-                    for (BTReceiver receiver : btReceivers) {
-                        receiver.start();
-                    }
+                    startReceivers();
+                }
+                if(connState == BluetoothAdapter.STATE_OFF) {
+                    log(TAG, "bluetooth connected, stopping receiver thread...", Log.DEBUG);
+                    stopReceivers();
                 }
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
                 log(TAG, "discovery finished", Log.INFO, true);
@@ -222,10 +214,6 @@ public class BTManager implements ProximityManagerI {
         evalQueue = new ConcurrentLinkedQueue<Object>();
         handler = new Handler();
 
-        for (UUID uuid : SERVICE_UUIDS) {
-            btReceivers.add(new BTReceiver(this, context, uuid));
-        }
-
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
@@ -251,9 +239,7 @@ public class BTManager implements ProximityManagerI {
         evalThread.start();
 
         if (btAdapter.isEnabled()) {
-            for (BTReceiver receiver : btReceivers) {
-                receiver.start();
-            }
+            startReceivers();
         }
 
         addToQueue(nearbyPeersChecker);
@@ -261,7 +247,22 @@ public class BTManager implements ProximityManagerI {
             evalThread.notify();
         }
 
-        blockedWorkersChecker.run();
+//        blockedWorkersChecker.run();
+    }
+
+    private void startReceivers() {
+        for (UUID uuid : SERVICE_UUIDS) {
+            BTReceiver btReceiver = new BTReceiver(this, context, uuid);
+            btReceivers.add(btReceiver);
+            btReceiver.start();
+        }
+    }
+
+    private void stopReceivers() {
+        for (BTReceiver receiver : btReceivers) {
+            receiver.abort();
+            btReceivers.remove(receiver);
+        }
     }
 
     @Override
@@ -380,7 +381,7 @@ public class BTManager implements ProximityManagerI {
             if(remoteEvalTask.hasExpressions()) {
                 BTClientWorker clientWorker = new BTClientWorker(this, remoteEvalTask);
                 addClientWorker(clientWorker);
-                clientWorker.doWork();
+                clientWorker.start();
             }
         } else if(item instanceof Runnable) {
             // peer discovery
@@ -630,7 +631,7 @@ public class BTManager implements ProximityManagerI {
 
         cleanupConnections();
 
-        if(SYNCHRONOUS_WORKERS) {
+        if(SYNC_RECEIVERS) {
             for (BTReceiver receiver : btReceivers) {
                 if (receiver.getSocket() != null && receiver.getSocket().equals(serverWorker.getBtConnection().getBtSocket())) {
                     synchronized (receiver) {
@@ -730,6 +731,7 @@ public class BTManager implements ProximityManagerI {
             fw.append("\n# shared connections = " + SHARED_CONNECTIONS);
             fw.append("\n# max connections = " + MAX_CONNECTIONS);
             fw.append("\n# sample interval = " + TIME_BETWEEN_REQUESTS);
+            fw.append("\n# sync receivers = " + SYNC_RECEIVERS);
             fw.append("\n\n# failedRate = " + failedRate);
             fw.append("\n# avgReqTime = " + avgReqTime);
             fw.append("\n# avgConnTime = " + avgConnTime);
