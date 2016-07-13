@@ -45,9 +45,9 @@ public class BTManager implements ProximityManagerI {
             UUID.fromString("b0ec7a42-2e19-438e-a091-d6954b999225"),
             UUID.fromString("fc74ed56-8cf2-4eae-b609-7a32bd70183d"),
             UUID.fromString("15e416a2-0fab-45ff-b799-b6e67b131d3a"),
-//            UUID.fromString("c84a39b5-8a25-43ac-9f2d-e5f3e96f615a"),
-//            UUID.fromString("803581d4-55d5-45fc-a31b-acf55052a5d7"),
-//            UUID.fromString("94192877-54e0-43a3-abc5-fbf9bbc43137")
+            UUID.fromString("c84a39b5-8a25-43ac-9f2d-e5f3e96f615a"),
+            UUID.fromString("803581d4-55d5-45fc-a31b-acf55052a5d7"),
+            UUID.fromString("94192877-54e0-43a3-abc5-fbf9bbc43137")
     };
     protected final static String SERVICE_NAME = "swanlake";
     public static final String ACTION_NEARBY_DEVICE_FOUND = "interdroid.swan.crossdevice.bluetooth.ACTION_NEARBY_DEVICE_FOUND";
@@ -261,8 +261,8 @@ public class BTManager implements ProximityManagerI {
     private void stopReceivers() {
         for (BTReceiver receiver : btReceivers) {
             receiver.abort();
-            btReceivers.remove(receiver);
         }
+        btReceivers.clear();
     }
 
     @Override
@@ -353,17 +353,17 @@ public class BTManager implements ProximityManagerI {
         }
 
         // terminate workers assigned to expression
-        for(BTClientWorker clientWorker : clientWorkers) {
-            BTRemoteExpression remoteExpression = clientWorker.getRemoteEvaluationTask().getExpressionWithBaseId(id);
-
-            if(remoteExpression != null) {
-                try {
-                    clientWorker.send(remoteExpression.getId(), EvaluationEngineService.ACTION_UNREGISTER_REMOTE, null);
-                } catch (Exception e) {
-                    log(TAG, "couldn't unregister remote expression with id " + remoteExpression.getId(), Log.ERROR, e);
-                }
-            }
-        }
+//        for(BTClientWorker clientWorker : clientWorkers) {
+//            BTRemoteExpression remoteExpression = clientWorker.getRemoteEvaluationTask().getExpressionWithBaseId(id);
+//
+//            if(remoteExpression != null) {
+//                try {
+//                    clientWorker.send(remoteExpression.getId(), EvaluationEngineService.ACTION_UNREGISTER_REMOTE, null);
+//                } catch (Exception e) {
+//                    log(TAG, "couldn't unregister remote expression with id " + remoteExpression.getId(), Log.ERROR, e);
+//                }
+//            }
+//        }
 
         if(registeredExpressions.isEmpty()) {
             printLogs();
@@ -732,6 +732,7 @@ public class BTManager implements ProximityManagerI {
             fw.append("\n# max connections = " + MAX_CONNECTIONS);
             fw.append("\n# sample interval = " + TIME_BETWEEN_REQUESTS);
             fw.append("\n# sync receivers = " + SYNC_RECEIVERS);
+            fw.append("\n# receivers = " + btReceivers.size());
             fw.append("\n\n# failedRate = " + failedRate);
             fw.append("\n# avgReqTime = " + avgReqTime);
             fw.append("\n# avgConnTime = " + avgConnTime);
