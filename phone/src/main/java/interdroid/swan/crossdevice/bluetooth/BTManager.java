@@ -45,9 +45,9 @@ public class BTManager implements ProximityManagerI {
             UUID.fromString("b0ec7a42-2e19-438e-a091-d6954b999225"),
             UUID.fromString("fc74ed56-8cf2-4eae-b609-7a32bd70183d"),
             UUID.fromString("15e416a2-0fab-45ff-b799-b6e67b131d3a"),
-            UUID.fromString("c84a39b5-8a25-43ac-9f2d-e5f3e96f615a"),
-            UUID.fromString("803581d4-55d5-45fc-a31b-acf55052a5d7"),
-            UUID.fromString("94192877-54e0-43a3-abc5-fbf9bbc43137")
+//            UUID.fromString("c84a39b5-8a25-43ac-9f2d-e5f3e96f615a"),
+//            UUID.fromString("803581d4-55d5-45fc-a31b-acf55052a5d7"),
+//            UUID.fromString("94192877-54e0-43a3-abc5-fbf9bbc43137")
     };
     protected final static String SERVICE_NAME = "swanlake";
     public static final String ACTION_NEARBY_DEVICE_FOUND = "interdroid.swan.crossdevice.bluetooth.ACTION_NEARBY_DEVICE_FOUND";
@@ -61,7 +61,7 @@ public class BTManager implements ProximityManagerI {
     private final int BLOCKED_WORKERS_CHECKING_INTERVAL = 5000;
     private final int PEER_DISCOVERY_INTERVAL = 60000;
     private final int MAX_CONNECTIONS = 0;
-    private final boolean LOG_ONLY_CRITICAL = true;
+    private final boolean LOG_ONLY_CRITICAL = false;
 
     private Context context;
     private List<BTReceiver> btReceivers = new ArrayList<>();
@@ -114,7 +114,8 @@ public class BTManager implements ProximityManagerI {
             }
 
             for (BTClientWorker clientWorker : blockedWorkers) {
-                clientWorker.disconnectFromRemote();
+//                clientWorker.disconnectFromRemote();
+                clientWorker.getSwanDevice().getBtDevice().fetchUuidsWithSdp();
             }
 
             handler.postDelayed(blockedWorkersChecker, BLOCKED_WORKERS_CHECKING_INTERVAL);
@@ -247,7 +248,7 @@ public class BTManager implements ProximityManagerI {
             evalThread.notify();
         }
 
-//        blockedWorkersChecker.run();
+        blockedWorkersChecker.run();
     }
 
     private void startReceivers() {
