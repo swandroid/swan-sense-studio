@@ -60,7 +60,7 @@ public class BTManager implements ProximityManagerI {
     public static final boolean SYNC_RECEIVERS = true;
     private final int BLOCKED_WORKERS_CHECKING_INTERVAL = 5000;
     private final int PEER_DISCOVERY_INTERVAL = 60000;
-    private final int MAX_CONNECTIONS = 0;
+    private final int MAX_CONNECTIONS = 2;
     private final boolean LOG_ONLY_CRITICAL = false;
 
     private Context context;
@@ -74,7 +74,7 @@ public class BTManager implements ProximityManagerI {
 
     private List<BTClientWorker> clientWorkers = new ArrayList<>();
     private List<BTServerWorker> serverWorkers = new ArrayList<>();
-    private List<BTClientWorker> waitingWorkers = new ArrayList<>();
+    private List<BTWorker> waitingWorkers = new ArrayList<>();
     private List<BTSwanDevice> nearbyDevices = new ArrayList<>();
     private List<BTLogRecord> logRecords = new ArrayList<>();
     /**
@@ -101,21 +101,23 @@ public class BTManager implements ProximityManagerI {
     /* we check periodically that client threads are not blocked in connect() */
     Runnable blockedWorkersChecker = new Runnable() {
         public void run() {
-            List<BTClientWorker> blockedWorkers = new ArrayList<>();
+            List<BTWorker> blockedWorkers = new ArrayList<>();
+            List<BTWorker> allWorkers = new ArrayList<>();
+            allWorkers.addAll(clientWorkers);
+            allWorkers.addAll(serverWorkers);
 
-            for (BTClientWorker clientWorker : clientWorkers) {
-                if (waitingWorkers.contains(clientWorker)) {
-                    log(TAG, "blocked worker " + clientWorker + " found, interrupting...", Log.ERROR, true);
-                    blockedWorkers.add(clientWorker);
-                    waitingWorkers.remove(clientWorker);
+            for (BTWorker worker : allWorkers) {
+                if (waitingWorkers.contains(worker)) {
+                    log(TAG, "blocked worker " + worker + " found, interrupting...", Log.ERROR, true);
+                    blockedWorkers.add(worker);
+                    waitingWorkers.remove(worker);
                 } else {
-                    waitingWorkers.add(clientWorker);
+                    waitingWorkers.add(worker);
                 }
             }
 
-            for (BTClientWorker clientWorker : blockedWorkers) {
-//                clientWorker.disconnectFromRemote();
-                clientWorker.getSwanDevice().getBtDevice().fetchUuidsWithSdp();
+            for (BTWorker worker : blockedWorkers) {
+                worker.disconnectFromRemote();
             }
 
             handler.postDelayed(blockedWorkersChecker, BLOCKED_WORKERS_CHECKING_INTERVAL);
@@ -236,7 +238,6 @@ public class BTManager implements ProximityManagerI {
     public void init() {
         registerService();
         initDiscovery();
-        btAdapter.startDiscovery();
         evalThread.start();
 
         if (btAdapter.isEnabled()) {

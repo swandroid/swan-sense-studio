@@ -85,6 +85,26 @@ public class BTWorker extends Thread {
         return data;
     }
 
+    protected void disconnectFromRemote() {
+        if(BTManager.SHARED_CONNECTIONS) {
+            if(swanDevice.getBtConnection() != null) {
+                swanDevice.getBtConnection().disconnect();
+            }
+        } else {
+            if(btConnection != null) {
+                btConnection.disconnect();
+            }
+        }
+    }
+
+    protected boolean isConnectedToRemote() {
+        if(BTManager.SHARED_CONNECTIONS) {
+            return swanDevice.isConnectedToRemote();
+        } else {
+            return btConnection != null && btConnection.isConnected();
+        }
+    }
+
     public String getRemoteDeviceName() {
         return swanDevice.getName();
     }

@@ -67,26 +67,6 @@ public class BTClientWorker extends BTWorker implements BTConnectionHandler {
         }
     }
 
-    protected void disconnectFromRemote() {
-        if(BTManager.SHARED_CONNECTIONS) {
-            if(swanDevice.getBtConnection() != null) {
-                swanDevice.getBtConnection().disconnect();
-            }
-        } else {
-            if(btConnection != null) {
-                btConnection.disconnect();
-            }
-        }
-    }
-
-    public boolean isConnectedToRemote() {
-        if(BTManager.SHARED_CONNECTIONS) {
-            return swanDevice.isConnectedToRemote();
-        } else {
-            return btConnection != null && btConnection.isConnected();
-        }
-    }
-
     @Override
     public void onReceive(HashMap<String, String> dataMap) throws Exception {
         String exprAction = dataMap.get("action");
@@ -151,10 +131,6 @@ public class BTClientWorker extends BTWorker implements BTConnectionHandler {
         }
         swanDevice.setClientWorker(null);
         btManager.clientWorkerDone(this, remoteTimeToNextRequest);
-    }
-
-    public BTRemoteEvaluationTask getRemoteEvaluationTask() {
-        return remoteEvaluationTask;
     }
 
     protected String getTag() {

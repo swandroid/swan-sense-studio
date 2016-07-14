@@ -117,12 +117,12 @@ public class TestActivity extends Activity {
 
         if (!mRegistered) {
             registerSWANSensor(expression1, REQUEST_CODE_1);
-//            registerSWANSensor(expression2, REQUEST_CODE_2);
-//            registerSWANSensor(expression3, REQUEST_CODE_3);
-//            registerSWANSensor(expression4, REQUEST_CODE_4);
-//            registerSWANSensor(expression5, REQUEST_CODE_5);
-//            registerSWANSensor(expression6, REQUEST_CODE_6);
-//            registerSWANSensor(expression7, REQUEST_CODE_7);
+            registerSWANSensor(expression2, REQUEST_CODE_2);
+            registerSWANSensor(expression3, REQUEST_CODE_3);
+            registerSWANSensor(expression4, REQUEST_CODE_4);
+            registerSWANSensor(expression5, REQUEST_CODE_5);
+            registerSWANSensor(expression6, REQUEST_CODE_6);
+            registerSWANSensor(expression7, REQUEST_CODE_7);
 //            handler.postDelayed(new Runnable() {
 //                @Override
 //                public void run() {
