@@ -56,20 +56,31 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:key="pref_key_cuckoo"
         android:title="Use Cuckoo for offloading">
 
-        <EditTextPreference
+        <PreferenceScreen
             android:defaultValue=""
-            android:key="pref_key_cuckoo_comp"
-            android:summary="Computation offloading"
-            android:title="Computation offloading"/>
+            android:title="Offloading with Cuckoo"
+            android:summary="Use Cuckoo for offloading computation or communication intensive tasks">
 
-        <EditTextPreference
-            android:defaultValue=""
-            android:key="pref_key_cuckoo_comm"
-            android:summary="Communication offloading"
-            android:title="Communication offloading"/>
+            <CheckBoxPreference
+                android:defaultValue="false"
+                android:key="pref_key_cuckoo_on_off"
+                android:summary="Use Cuckoo"
+                android:title="Off"/>
+
+            <Preference
+                android:enabled="false"
+                android:key="pref_key_cuckoo"
+                android:summary="Manage Cuckoo servers"
+                android:title="Cuckoo servers">
+
+                <intent
+                    android:targetClass="interdroid.cuckoo.resourcemanager.ResourcesActivity"
+                    android:targetPackage="interdroid.swan"/>
+
+            </Preference>
+        </PreferenceScreen>
 
     </PreferenceCategory>
 

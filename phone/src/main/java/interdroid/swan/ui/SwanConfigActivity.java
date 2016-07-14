@@ -14,8 +14,8 @@ import interdroid.swan.R;
 import nl.sense_os.service.constants.SensePrefs;
 
 public class SwanConfigActivity extends Activity implements OnSharedPreferenceChangeListener, Preference.OnPreferenceClickListener {
-    private static Preference loginPref, logoutPref, settingsPref, registrationPref;
-    private static CheckBoxPreference sensePref;
+    private static Preference loginPref, logoutPref, settingsPref, registrationPref, cuckooPref;
+    private static CheckBoxPreference senseCheckBox, cuckooCheckBox;
     private PreferenceFragment configFragment;
 
     @Override
@@ -49,8 +49,14 @@ public class SwanConfigActivity extends Activity implements OnSharedPreferenceCh
         switch (key) {
             case "pref_key_sense":
                 boolean senseEnabled = sharedPreferences.getBoolean(key, false);
-                sensePref.setTitle(senseEnabled ? "On" : "Off");
+                senseCheckBox.setTitle(senseEnabled ? "On" : "Off");
                 enableSenseSettings(senseEnabled);
+                break;
+
+            case "pref_key_cuckoo_on_off":
+                boolean cuckooEnabled = sharedPreferences.getBoolean(key, false);
+                cuckooCheckBox.setTitle(cuckooEnabled ? "On" : "Off");
+                enableCuckooSettings(cuckooEnabled);
                 break;
         }
     }
@@ -70,6 +76,10 @@ public class SwanConfigActivity extends Activity implements OnSharedPreferenceCh
         logoutPref.setEnabled(enable);
         settingsPref.setEnabled(enable);
         registrationPref.setEnabled(enable);
+    }
+
+    private static void enableCuckooSettings(boolean enable) {
+        cuckooPref.setEnabled(enable);
     }
 
     private void logoutSense() {
@@ -104,11 +114,17 @@ public class SwanConfigActivity extends Activity implements OnSharedPreferenceCh
             logoutPref = findPreference("pref_key_sense_logout");
             registrationPref = findPreference("pref_key_sense_register");
             settingsPref = findPreference("pref_key_sense_settings");
-            sensePref = (CheckBoxPreference) findPreference("pref_key_sense");
+            cuckooPref = findPreference("pref_key_cuckoo");
+            senseCheckBox = (CheckBoxPreference) findPreference("pref_key_sense");
+            cuckooCheckBox = (CheckBoxPreference) findPreference("pref_key_cuckoo_on_off");
 
             boolean senseEnabled = PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("pref_key_sense", false);
-            sensePref.setTitle(senseEnabled ? "On" : "Off");
+            senseCheckBox.setTitle(senseEnabled ? "On" : "Off");
             enableSenseSettings(senseEnabled);
+
+            boolean cuckooEnabled = PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("pref_key_cuckoo_on_off", false);
+            cuckooCheckBox.setTitle(cuckooEnabled ? "On" : "Off");
+            enableCuckooSettings(cuckooEnabled);
         }
     }
 }

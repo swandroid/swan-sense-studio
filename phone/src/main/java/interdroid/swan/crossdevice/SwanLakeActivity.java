@@ -224,9 +224,6 @@ public class SwanLakeActivity extends ListActivity {
             case R.id.action_ttn:
                 startActivity(new Intent(this, TtnActivity.class));
                 break;
-            case R.id.action_cuckoo_resources:
-                startActivity(new Intent(this, ResourcesActivity.class));
-                break;
             default:
                 break;
         }
