@@ -5,12 +5,12 @@
 
         <PreferenceScreen
             android:key="pref_key_storage"
-            android:title="Sensor data storage">
+            android:title="Sensor data storage"
+            android:summary="Use Sense platform as default storage mechanism for sensor data">
 
             <CheckBoxPreference
                 android:defaultValue="false"
                 android:key="pref_key_sense"
-                android:summary="Use Sense platform as default storage mechanism for sensor data"
                 android:title="Off"/>
 
             <Preference

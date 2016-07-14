@@ -49,6 +49,9 @@ public class SwanConfigActivity extends Activity implements OnSharedPreferenceCh
         switch (key) {
             case "pref_key_sense":
                 boolean senseEnabled = sharedPreferences.getBoolean(key, false);
+                if (!senseEnabled)
+                    logoutSense();
+
                 senseCheckBox.setTitle(senseEnabled ? "On" : "Off");
                 enableSenseSettings(senseEnabled);
                 break;
@@ -96,7 +99,6 @@ public class SwanConfigActivity extends Activity implements OnSharedPreferenceCh
                         .show();
             }
         });
-
     }
 
     public static class SwanConfigFragment extends PreferenceFragment {
