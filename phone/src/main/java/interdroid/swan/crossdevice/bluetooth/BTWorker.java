@@ -2,9 +2,14 @@ package interdroid.swan.crossdevice.bluetooth;
 
 import android.util.Log;
 
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import interdroid.swan.crossdevice.CrossdeviceConnectionI;
 import interdroid.swancore.crossdevice.Converter;
 import interdroid.swan.engine.EvaluationEngineService;
 import interdroid.swancore.swansong.Result;
@@ -19,7 +24,7 @@ public class BTWorker extends Thread {
 
     protected BTManager btManager;
     protected BTSwanDevice swanDevice;
-    protected BTConnection btConnection;
+    protected CrossdeviceConnectionI connection;
 
     protected BTLogRecord logRecord;
 
@@ -37,6 +42,7 @@ public class BTWorker extends Thread {
         dataMap.put("data", expressionData);
         //TODO check here if device has any expression registered remotely
         dataMap.put("timeToNextReq", getTimeToNextRequest() + "");
+        dataMap.put("ip", getIPAddress(true));
 
         if(extra != null) {
             for(Map.Entry<String, String> entry : extra.entrySet()) {
@@ -45,9 +51,9 @@ public class BTWorker extends Thread {
         }
 
         if(BTManager.SHARED_CONNECTIONS) {
-            swanDevice.getBtConnection().send(dataMap);
+            swanDevice.getConnection().send(dataMap);
         } else {
-            btConnection.send(dataMap);
+            connection.send(dataMap);
         }
 
         btManager.log(getTag(), this + " successfully sent " + expressionAction + ": "
@@ -87,12 +93,12 @@ public class BTWorker extends Thread {
 
     protected void disconnectFromRemote() {
         if(BTManager.SHARED_CONNECTIONS) {
-            if(swanDevice.getBtConnection() != null) {
-                swanDevice.getBtConnection().disconnect();
+            if(swanDevice.getConnection() != null) {
+                swanDevice.getConnection().disconnect();
             }
         } else {
-            if(btConnection != null) {
-                btConnection.disconnect();
+            if(connection != null) {
+                connection.disconnect();
             }
         }
     }
@@ -101,8 +107,35 @@ public class BTWorker extends Thread {
         if(BTManager.SHARED_CONNECTIONS) {
             return swanDevice.isConnectedToRemote();
         } else {
-            return btConnection != null && btConnection.isConnected();
+            return connection != null && connection.isConnected();
         }
+    }
+
+    public static String getIPAddress(boolean useIPv4) {
+        try {
+            List<NetworkInterface> interfaces = Collections.list(NetworkInterface.getNetworkInterfaces());
+            for (NetworkInterface intf : interfaces) {
+                List<InetAddress> addrs = Collections.list(intf.getInetAddresses());
+                for (InetAddress addr : addrs) {
+                    if (!addr.isLoopbackAddress()) {
+                        String sAddr = addr.getHostAddress();
+                        //boolean isIPv4 = InetAddressUtils.isIPv4Address(sAddr);
+                        boolean isIPv4 = sAddr.indexOf(':')<0;
+
+                        if (useIPv4) {
+                            if (isIPv4)
+                                return sAddr;
+                        } else {
+                            if (!isIPv4) {
+                                int delim = sAddr.indexOf('%'); // drop ip6 zone suffix
+                                return delim<0 ? sAddr.toUpperCase() : sAddr.substring(0, delim).toUpperCase();
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception ex) { } // for now eat exceptions
+        return "";
     }
 
     public String getRemoteDeviceName() {
@@ -121,8 +154,8 @@ public class BTWorker extends Thread {
         return swanDevice;
     }
 
-    public BTConnection getBtConnection() {
-        return btConnection;
+    public CrossdeviceConnectionI getConnection() {
+        return connection;
     }
 
     public BTLogRecord getLogRecord() {

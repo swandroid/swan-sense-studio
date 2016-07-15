@@ -13,13 +13,15 @@ import java.util.HashMap;
 import java.util.Random;
 import java.util.UUID;
 
+import interdroid.swan.crossdevice.CrossdeviceConnectionI;
+
 /**
  * Created by vladimir on 7/1/16.
  * TODO set connected to false in catch blocks
  * TODO make sure that send and disconnect are not called at the same time
  * TODO fix log messages
  */
-public class BTConnection extends Thread {
+public class BTConnection extends Thread implements CrossdeviceConnectionI {
 
     private static final String TAG = "BTConnection";
 
@@ -84,7 +86,7 @@ public class BTConnection extends Thread {
     }
 
     // we synchronize this to make sure that disconnect() is not called at the same time
-    protected synchronized void send(HashMap<String, String> dataMap) throws Exception {
+    public synchronized void send(HashMap<String, String> dataMap) throws Exception {
         synchronized (outStream) {
             outStream.writeObject(dataMap);
         }

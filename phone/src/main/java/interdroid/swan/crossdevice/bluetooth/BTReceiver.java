@@ -15,14 +15,12 @@ public class BTReceiver extends Thread {
     private static final String TAG = "BTReceiver";
 
     private BTManager btManager;
-    private Context context;
     private UUID uuid;
     private BluetoothServerSocket serverSocket;
     private BluetoothSocket socket;
 
-    public BTReceiver(BTManager btManager, Context context, UUID uuid) {
+    public BTReceiver(BTManager btManager, UUID uuid) {
         this.btManager = btManager;
-        this.context = context;
         this.uuid = uuid;
     }
 

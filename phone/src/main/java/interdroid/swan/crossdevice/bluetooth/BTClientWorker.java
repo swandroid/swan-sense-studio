@@ -53,15 +53,28 @@ public class BTClientWorker extends BTWorker implements BTConnectionHandler {
                 btConnection.connect(swanDevice.getBtDevice());
 
                 if(btConnection.isConnected()) {
-                    swanDevice.setBtConnection(btConnection);
+                    swanDevice.setConnection(btConnection);
                     btConnection.start();
+                }
+            } else {
+                // if wifi communication is desired, switch to wifi connection
+                if(btManager.USE_WIFI && swanDevice.getIpAddress() != null
+                        && !(swanDevice.getConnection() instanceof  WifiConnection)) {
+                    WifiConnection wifiConnection = new WifiConnection(btManager, swanDevice);
+                    wifiConnection.connect(swanDevice.getIpAddress());
+
+                    if(wifiConnection.isConnected()) {
+                        swanDevice.setConnection(wifiConnection);
+                        wifiConnection.start();
+                    }
                 }
             }
         } else {
-            btConnection = new BTConnection(btManager, this);
+            BTConnection btConnection = new BTConnection(btManager, this);
             btConnection.connect(swanDevice.getBtDevice());
 
-            if(btConnection.isConnected()) {
+            if(connection.isConnected()) {
+                connection = btConnection;
                 btConnection.start();
             }
         }
@@ -75,6 +88,11 @@ public class BTClientWorker extends BTWorker implements BTConnectionHandler {
         String exprData = dataMap.get("data");
         String timeToNextReq = dataMap.get("timeToNextReq");
         String swanDuration = dataMap.get("swanDuration");
+        String ipAddress = dataMap.get("ip");
+
+        if(ipAddress != null) {
+            swanDevice.setIpAddress(ipAddress);
+        }
 
         if (exprAction.equals(EvaluationEngineService.ACTION_NEW_RESULT_REMOTE)) {
             BTRemoteExpression remoteExpression = remoteEvaluationTask.getRemoteExpression(exprId);

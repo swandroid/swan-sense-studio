@@ -57,13 +57,16 @@ public class BTManager implements ProximityManagerI {
     /* set this to true if you want one connection per device, or false if you want one connection per worker */
     public static final boolean SHARED_CONNECTIONS = true;
     /* set this to true if you want only one server worker at a time, or false if you want multiple server workers in parallel */
-    public static final boolean SYNC_RECEIVERS = true;
+    public static final boolean SYNC_RECEIVERS = false;
+    /* set SYNC_RECEIVERS to false if you set this to true */
+    public static final boolean USE_WIFI = true;
     private final int BLOCKED_WORKERS_CHECKING_INTERVAL = 5000;
     private final int PEER_DISCOVERY_INTERVAL = 60000;
     private final int MAX_CONNECTIONS = 2;
     private final boolean LOG_ONLY_CRITICAL = false;
 
     private Context context;
+    private WifiReceiver wifiReceiver;
     private List<BTReceiver> btReceivers = new ArrayList<>();
     private BluetoothAdapter btAdapter;
     private ConcurrentLinkedQueue<Object> evalQueue;
@@ -216,6 +219,7 @@ public class BTManager implements ProximityManagerI {
 
         evalQueue = new ConcurrentLinkedQueue<Object>();
         handler = new Handler();
+        wifiReceiver = new WifiReceiver(this);
 
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
@@ -239,6 +243,7 @@ public class BTManager implements ProximityManagerI {
         registerService();
         initDiscovery();
         evalThread.start();
+        wifiReceiver.start();
 
         if (btAdapter.isEnabled()) {
             startReceivers();
@@ -254,7 +259,7 @@ public class BTManager implements ProximityManagerI {
 
     private void startReceivers() {
         for (UUID uuid : SERVICE_UUIDS) {
-            BTReceiver btReceiver = new BTReceiver(this, context, uuid);
+            BTReceiver btReceiver = new BTReceiver(this, uuid);
             btReceivers.add(btReceiver);
             btReceiver.start();
         }
@@ -473,6 +478,15 @@ public class BTManager implements ProximityManagerI {
         return null;
     }
 
+    protected BTSwanDevice getNearbyDeviceByIp(String deviceIp) {
+        for (BTSwanDevice device : nearbyDevices) {
+            if (device.getIpAddress().equals(deviceIp)) {
+                return device;
+            }
+        }
+        return null;
+    }
+
     protected BTSwanDevice addNearbyDevice(BluetoothDevice btDevice, BTConnection btConnection) {
         BTSwanDevice swanDevice = getNearbyDeviceByName(btDevice.getName());
 
@@ -486,7 +500,7 @@ public class BTManager implements ProximityManagerI {
             log(TAG, "device " + btDevice.getName() + " already present, won't add", Log.DEBUG);
             if(btConnection != null && btConnection.isConnected()) {
                 log(TAG, "updated connection for " + btDevice.getName(), Log.DEBUG);
-                swanDevice.setBtConnection(btConnection);
+                swanDevice.setConnection(btConnection);
             }
         }
         return swanDevice;
@@ -581,7 +595,7 @@ public class BTManager implements ProximityManagerI {
 
         for(BTSwanDevice swanDevice : idleDevices) {
             if(connectedDevices > MAX_CONNECTIONS) {
-                swanDevice.getBtConnection().disconnect();
+                swanDevice.getConnection().disconnect();
                 connectedDevices--;
             } else {
                 break;
@@ -635,7 +649,7 @@ public class BTManager implements ProximityManagerI {
 
         if(SYNC_RECEIVERS) {
             for (BTReceiver receiver : btReceivers) {
-                if (receiver.getSocket() != null && receiver.getSocket().equals(serverWorker.getBtConnection().getBtSocket())) {
+                if (receiver.getSocket() != null && receiver.getSocket().equals(((BTConnection)serverWorker.getConnection()).getBtSocket())) {
                     synchronized (receiver) {
                         receiver.notify();
                     }
