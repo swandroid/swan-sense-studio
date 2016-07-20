@@ -22,7 +22,7 @@ import interdroid.swan.crossdevice.CrossdeviceConnectionI;
 public class WifiConnection extends Thread implements CrossdeviceConnectionI {
 
     private static final String TAG = "BTConnection";
-    protected static final int PORT = 2016;
+    protected static final int PORT = 2162;
 
     protected BTManager btManager;
     protected BTSwanDevice swanDevice;
@@ -59,6 +59,9 @@ public class WifiConnection extends Thread implements CrossdeviceConnectionI {
     }
 
     protected void connect(String ipAddress) {
+        btManager.log(TAG, "connecting to " + swanDevice.getName() + " on port " + PORT + " via wifi...", Log.INFO, true);
+        btManager.bcastLogMessage("connecting to " + swanDevice.getName() + " on port " + PORT + " via wifi...");
+
         try {
             InetAddress inetAddress = InetAddress.getByName(ipAddress);
             socket = new Socket(inetAddress, PORT);

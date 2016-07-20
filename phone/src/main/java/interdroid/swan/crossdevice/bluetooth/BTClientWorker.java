@@ -2,7 +2,9 @@ package interdroid.swan.crossdevice.bluetooth;
 
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import interdroid.swancore.crossdevice.Converter;
 import interdroid.swan.engine.EvaluationEngineService;
@@ -31,9 +33,12 @@ public class BTClientWorker extends BTWorker implements BTConnectionHandler {
         try {
             connectToRemote();
             logRecord.connDuration = System.currentTimeMillis() - logRecord.startTime;
+            // we make a copy of the original expressions list to avoid ConcurrentModificationException that occurs
+            // when we iterate over the expressions while at the same time expressions are removed in onReceive()
+            List<BTRemoteExpression> remoteExpressions = new ArrayList<>(remoteEvaluationTask.getExpressions());
 
             if(isConnectedToRemote()) {
-                for(BTRemoteExpression remoteExpression : remoteEvaluationTask.getExpressions()) {
+                for(BTRemoteExpression remoteExpression : remoteExpressions) {
                     send(remoteExpression.getId(), EvaluationEngineService.ACTION_REGISTER_REMOTE, remoteExpression.getExpression());
                 }
             } else {
@@ -49,17 +54,15 @@ public class BTClientWorker extends BTWorker implements BTConnectionHandler {
             swanDevice.setClientWorker(this);
 
             if(!swanDevice.isConnectedToRemote()) {
-                BTConnection btConnection = new BTConnection(btManager, swanDevice);
-                btConnection.connect(swanDevice.getBtDevice());
+                if(!BTManager.USE_WIFI || swanDevice.getIpAddress() == null) {
+                    BTConnection btConnection = new BTConnection(btManager, swanDevice);
+                    btConnection.connect(swanDevice.getBtDevice());
 
-                if(btConnection.isConnected()) {
-                    swanDevice.setConnection(btConnection);
-                    btConnection.start();
-                }
-            } else {
-                // if wifi communication is desired, switch to wifi connection
-                if(btManager.USE_WIFI && swanDevice.getIpAddress() != null
-                        && !(swanDevice.getConnection() instanceof  WifiConnection)) {
+                    if (btConnection.isConnected()) {
+                        swanDevice.setConnection(btConnection);
+                        btConnection.start();
+                    }
+                } else {
                     WifiConnection wifiConnection = new WifiConnection(btManager, swanDevice);
                     wifiConnection.connect(swanDevice.getIpAddress());
 
@@ -73,7 +76,7 @@ public class BTClientWorker extends BTWorker implements BTConnectionHandler {
             BTConnection btConnection = new BTConnection(btManager, this);
             btConnection.connect(swanDevice.getBtDevice());
 
-            if(connection.isConnected()) {
+            if(btConnection.isConnected()) {
                 connection = btConnection;
                 btConnection.start();
             }

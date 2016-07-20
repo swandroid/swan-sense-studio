@@ -42,6 +42,12 @@ public class BTConnection extends Thread implements CrossdeviceConnectionI {
             connected = true;
         } catch (Exception e) {
             btManager.log(TAG, "can't connect to " + btSocket.getRemoteDevice().getName() + ": " + e.getMessage(), Log.ERROR, true);
+
+            try {
+                btSocket.close();
+            } catch (Exception e1) {
+                btManager.log(TAG, "couldn't close socket", Log.ERROR, e1);
+            }
         }
     }
 

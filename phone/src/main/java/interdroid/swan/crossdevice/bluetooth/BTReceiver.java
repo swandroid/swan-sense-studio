@@ -62,10 +62,10 @@ public class BTReceiver extends Thread {
                     Log.d(TAG, "receiver paused for uuid " + uuid);
                     serverSocket.close();
 
-                    manageConnection();
-
-                    synchronized (this) {
-                        wait();
+                    if(manageConnection()) {
+                        synchronized (this) {
+                            wait();
+                        }
                     }
                 }
             }
@@ -74,7 +74,7 @@ public class BTReceiver extends Thread {
         }
     }
 
-    private void manageConnection() {
+    private boolean manageConnection() {
         Log.i(TAG, "new connection from " + socket.getRemoteDevice().getName());
         BTConnection btConnection = new BTConnection(btManager, socket);
         // we add the device in the nearby devices list in case it wasn't discovered already
@@ -92,6 +92,9 @@ public class BTReceiver extends Thread {
             }
 
             btConnection.start();
+            return true;
+        } else {
+            return false;
         }
     }
 

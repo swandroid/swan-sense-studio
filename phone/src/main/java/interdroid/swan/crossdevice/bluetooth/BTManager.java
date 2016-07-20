@@ -57,13 +57,15 @@ public class BTManager implements ProximityManagerI {
     /* set this to true if you want one connection per device, or false if you want one connection per worker */
     public static final boolean SHARED_CONNECTIONS = true;
     /* set this to true if you want only one server worker at a time, or false if you want multiple server workers in parallel */
-    public static final boolean SYNC_RECEIVERS = false;
+    public static final boolean SYNC_RECEIVERS = true;
+    /* set this to true if you want to prevent 2 devices connecting to each other at the same time */
+    public static final boolean SYNC_DEVICES = true;
     /* set SYNC_RECEIVERS to false if you set this to true */
-    public static final boolean USE_WIFI = true;
-    private final int BLOCKED_WORKERS_CHECKING_INTERVAL = 5000;
+    public static final boolean USE_WIFI = false;
+    private final int BLOCKED_WORKERS_CHECKING_INTERVAL = 10000;
     private final int PEER_DISCOVERY_INTERVAL = 60000;
-    private final int MAX_CONNECTIONS = 2;
-    private final boolean LOG_ONLY_CRITICAL = false;
+    private final int MAX_CONNECTIONS = 0;
+    private final boolean LOG_ONLY_CRITICAL = true;
 
     private Context context;
     private WifiReceiver wifiReceiver;
@@ -72,7 +74,8 @@ public class BTManager implements ProximityManagerI {
     private ConcurrentLinkedQueue<Object> evalQueue;
     private Handler handler;
     private boolean discovering = false;
-    private long logsCount = 0;
+
+    private boolean restarting = false;
     private long startTime = System.currentTimeMillis();
 
     private List<BTClientWorker> clientWorkers = new ArrayList<>();
@@ -98,6 +101,26 @@ public class BTManager implements ProximityManagerI {
         @Override
         public String toString() {
             return "DiscoveryEvent";
+        }
+    };
+
+    Runnable bluetoothRestart = new Runnable() {
+        public void run() {
+            log(TAG, "stopping bluetooth...", Log.INFO, true);
+            bcastLogMessage("stopping bluetooth...");
+
+            if(btAdapter.isEnabled()) {
+                btAdapter.disable();
+            } else {
+                btAdapter.enable();
+            }
+
+            setRestarting(true);
+        }
+
+        @Override
+        public String toString() {
+            return "BluetoothRestartEvent";
         }
     };
 
@@ -141,7 +164,7 @@ public class BTManager implements ProximityManagerI {
                     Object item = removeFromQueue();
                     processQueueItem(item);
 
-                    while (!clientWorkers.isEmpty() || isDiscovering()) {
+                    while (!clientWorkers.isEmpty() || isDiscovering() || isRestarting()) {
                         synchronized (this) {
                             wait();
                         }
@@ -167,6 +190,7 @@ public class BTManager implements ProximityManagerI {
         }, timeout);
     }
 
+    //TODO move this to a separate file
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -189,11 +213,25 @@ public class BTManager implements ProximityManagerI {
 
                 if (connState == BluetoothAdapter.STATE_ON) {
                     log(TAG, "bluetooth connected, starting receiver thread...", Log.DEBUG);
+                    initDiscovery();
                     startReceivers();
+
+                    if(isRestarting()) {
+                        setRestarting(false);
+                        synchronized (evalThread) {
+                            evalThread.notify();
+                        }
+                    }
                 }
                 if(connState == BluetoothAdapter.STATE_OFF) {
                     log(TAG, "bluetooth connected, stopping receiver thread...", Log.DEBUG);
                     stopReceivers();
+
+                    if(isRestarting()) {
+                        btAdapter.enable();
+                        log(TAG, "starting bluetooth...", Log.INFO, true);
+                        bcastLogMessage("starting bluetooth...");
+                    }
                 }
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
                 log(TAG, "discovery finished", Log.INFO, true);
@@ -241,15 +279,16 @@ public class BTManager implements ProximityManagerI {
 
     public void init() {
         registerService();
-        initDiscovery();
+
         evalThread.start();
         wifiReceiver.start();
 
-        if (btAdapter.isEnabled()) {
-            startReceivers();
-        }
-
+        // we restart bluetooth before each run
+        addToQueue(bluetoothRestart);
+        // we schedule discovery twice to make sure all devices are discovered
         addToQueue(nearbyPeersChecker);
+        addToQueue(nearbyPeersChecker);
+
         synchronized (evalThread) {
             evalThread.notify();
         }
@@ -274,15 +313,25 @@ public class BTManager implements ProximityManagerI {
 
     @Override
     public void clean() {
+        for(Map.Entry<String, String> entry : registeredExpressions.entrySet()) {
+            unregisterExpression(entry.getKey(), entry.getValue(), null);
+        }
+
         disconnect();
         context.unregisterReceiver(mReceiver);
     }
 
     @Override
     public void disconnect() {
-        for(Map.Entry<String, String> entry : registeredExpressions.entrySet()) {
-            unregisterExpression(entry.getKey(), entry.getValue(), null);
+        for(BTSwanDevice swanDevice : nearbyDevices) {
+            if (swanDevice.isConnectedToRemote()) {
+                swanDevice.getConnection().disconnect();
+            }
         }
+        for(BTReceiver receiver : btReceivers) {
+            receiver.abort();
+        }
+        wifiReceiver.abort();
     }
 
     public void discoverPeers() {
@@ -359,21 +408,9 @@ public class BTManager implements ProximityManagerI {
             swanDevice.unregisterExpression(id);
         }
 
-        // terminate workers assigned to expression
-//        for(BTClientWorker clientWorker : clientWorkers) {
-//            BTRemoteExpression remoteExpression = clientWorker.getRemoteEvaluationTask().getExpressionWithBaseId(id);
-//
-//            if(remoteExpression != null) {
-//                try {
-//                    clientWorker.send(remoteExpression.getId(), EvaluationEngineService.ACTION_UNREGISTER_REMOTE, null);
-//                } catch (Exception e) {
-//                    log(TAG, "couldn't unregister remote expression with id " + remoteExpression.getId(), Log.ERROR, e);
-//                }
-//            }
-//        }
-
         if(registeredExpressions.isEmpty()) {
             printLogs();
+            disconnect();
         }
     }
 
@@ -391,7 +428,7 @@ public class BTManager implements ProximityManagerI {
                 clientWorker.start();
             }
         } else if(item instanceof Runnable) {
-            // peer discovery
+            // peer discovery or restart bluetooth
             ((Runnable) item).run();
         } else {
             log(TAG, "Item can't be processed: " + item, Log.ERROR);
@@ -546,6 +583,10 @@ public class BTManager implements ProximityManagerI {
     }
 
     private void scheduleEvaluationTask(BTRemoteEvaluationTask remoteEvalTask, int remoteTimeToNextReq) {
+        if(!SYNC_DEVICES) {
+            remoteTimeToNextReq = 0;
+        }
+
         BTSwanDevice swanDevice = remoteEvalTask.getSwanDevice();
         int timeToNextReq = TIME_BETWEEN_REQUESTS;
         log(TAG, "timeToNextReq = " + timeToNextReq + "; " + "remoteTimeToNextReq = " + remoteTimeToNextReq, Log.DEBUG);
@@ -597,6 +638,9 @@ public class BTManager implements ProximityManagerI {
             if(connectedDevices > MAX_CONNECTIONS) {
                 swanDevice.getConnection().disconnect();
                 connectedDevices--;
+            } else if(USE_WIFI && swanDevice.getConnection() instanceof BTConnection) {
+                // we use the bluetooth connection only for the initial exchange of IPs, so we can close it now
+                swanDevice.getConnection().disconnect();
             } else {
                 break;
             }
@@ -609,7 +653,9 @@ public class BTManager implements ProximityManagerI {
      */
     protected synchronized void clientWorkerDone(BTClientWorker clientWorker, int remoteTimeToNextReq) {
         BTSwanDevice swanDevice = clientWorker.getSwanDevice();
-        log(TAG, "client worker done " + clientWorker, Log.DEBUG, true);
+        BTLogRecord workerLog = clientWorker.getLogRecord();
+        log(TAG, "client worker done " + clientWorker + " in " + workerLog.totalDuration
+                + "ms (comm time = " + (workerLog.totalDuration - workerLog.swanDuration) + "ms)", Log.DEBUG, true);
 
         // reschedule a new task if there are registered expressions on the device
         if(!swanDevice.getRegisteredExpressions().isEmpty()) {
@@ -749,6 +795,7 @@ public class BTManager implements ProximityManagerI {
             fw.append("\n# sample interval = " + TIME_BETWEEN_REQUESTS);
             fw.append("\n# sync receivers = " + SYNC_RECEIVERS);
             fw.append("\n# receivers = " + btReceivers.size());
+            fw.append("\n# wifi enabled = " + USE_WIFI);
             fw.append("\n\n# failedRate = " + failedRate);
             fw.append("\n# avgReqTime = " + avgReqTime);
             fw.append("\n# avgConnTime = " + avgConnTime);
@@ -815,5 +862,13 @@ public class BTManager implements ProximityManagerI {
 
     public void setDiscovering(boolean discovering) {
         this.discovering = discovering;
+    }
+
+    public boolean isRestarting() {
+        return restarting;
+    }
+
+    public void setRestarting(boolean restarting) {
+        this.restarting = restarting;
     }
 }

@@ -2,6 +2,7 @@ package interdroid.swan.crossdevice.bluetooth;
 
 import android.util.Log;
 
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.UUID;
@@ -50,6 +51,16 @@ public class WifiReceiver extends Thread {
             swanDevice.setServerWorker(serverWorker);
             swanDevice.setConnection(wifiConnection);
             wifiConnection.start();
+        }
+    }
+
+    public void abort() {
+        if(serverSocket != null) {
+            try {
+                serverSocket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
