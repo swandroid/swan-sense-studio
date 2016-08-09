@@ -53,7 +53,7 @@ public class BTManager implements ProximityManagerI {
     public static final String ACTION_NEARBY_DEVICE_FOUND = "interdroid.swan.crossdevice.bluetooth.ACTION_NEARBY_DEVICE_FOUND";
     public static final String ACTION_LOG_MESSAGE = "interdroid.swan.crossdevice.bluetooth.ACTION_LOG_MESSAGE";
     /* this should be configurable */
-    public static final int TIME_BETWEEN_REQUESTS = 1000;
+    public static final int TIME_BETWEEN_REQUESTS = 4000;
     /* set this to true if you want one connection per device, or false if you want one connection per worker */
     public static final boolean SHARED_CONNECTIONS = true;
     /* set this to true if you want only one server worker at a time, or false if you want multiple server workers in parallel */
@@ -65,7 +65,7 @@ public class BTManager implements ProximityManagerI {
     private final int BLOCKED_WORKERS_CHECKING_INTERVAL = 10000;
     private final int PEER_DISCOVERY_INTERVAL = 60000;
     private final int MAX_CONNECTIONS = 0;
-    private final boolean LOG_ONLY_CRITICAL = true;
+    private final boolean LOG_ONLY_CRITICAL = false;
 
     private Context context;
     private WifiReceiver wifiReceiver;
@@ -236,7 +236,7 @@ public class BTManager implements ProximityManagerI {
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
                 log(TAG, "discovery finished", Log.INFO, true);
                 bcastLogMessage("discovery finished");
-//                scheduleQueueItem(nearbyPeersChecker, PEER_DISCOVERY_INTERVAL);
+                scheduleQueueItem(nearbyPeersChecker, PEER_DISCOVERY_INTERVAL);
                 setDiscovering(false);
 
                 synchronized (evalThread) {
@@ -285,9 +285,8 @@ public class BTManager implements ProximityManagerI {
 
         // we restart bluetooth before each run
         addToQueue(bluetoothRestart);
-        // we schedule discovery twice to make sure all devices are discovered
         addToQueue(nearbyPeersChecker);
-        addToQueue(nearbyPeersChecker);
+//        addToQueue(nearbyPeersChecker);
 
         synchronized (evalThread) {
             evalThread.notify();
