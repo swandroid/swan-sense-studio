@@ -744,7 +744,7 @@
                 android:value="rain" />
             <meta-data
                 android:name="valuePaths"
-                android:value="expected_mm" />
+                android:value="all_values,expected_mm" />
             <meta-data
                 android:name="latitude"
                 android:value="0L" />
@@ -753,7 +753,7 @@
                 android:value="0L" />
             <meta-data
                 android:name="units"
-                android:value="mm/Hr" />
+                android:value="mm/hour" />
         </activity>
         <activity
             android:name="interdroid.swan.sensors.impl.OVSensor$ConfigurationActivity"

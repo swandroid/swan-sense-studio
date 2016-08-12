@@ -9,10 +9,13 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import interdroid.swan.R;
+import interdroid.swancore.models.RainPrediction;
 import interdroid.swancore.sensors.AbstractConfigurationActivity;
 import interdroid.swan.sensors.AbstractSwanSensor;
 
@@ -37,7 +40,7 @@ public class RainSensor extends AbstractSwanSensor {
 
     /*Configuration */
     public static final String SAMPLE_INTERVAL = "sample_interval";
-    public static final long DEFAULT_SAMPLE_INTERVAL = 5 * 60 * 1000;
+    public static final long DEFAULT_SAMPLE_INTERVAL = 5 * 60 * 1000;   // default update frequency is 5 minutes
     public static final String LATITUDE = "latitude";
     public static final double DEFAULT_LATITUDE = 52.3;
     public static final String LONGITUDE = "longitude";
@@ -117,13 +120,21 @@ public class RainSensor extends AbstractSwanSensor {
 
 
                 try {
+                    RainPrediction rainPrediction = new RainPrediction();
                     URLConnection conn = new URL(url).openConnection();
-                    BufferedReader r = new BufferedReader(new InputStreamReader(
-                            conn.getInputStream()));
-                    String line = r.readLine();
-                    Log.e(TAG, "Rain Sensor Value: " + Integer.parseInt(line.substring(0, 3)));
-                    float value = convertValueToMMPerHr(Integer.parseInt(line.substring(0, 3)));
-                    putValueTrimSize(valuePath, id, start, value);
+                    BufferedReader r = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+                    String line;
+                    while ((line = r.readLine()) != null) {
+                        Log.d(TAG, line);
+                        Log.d(TAG, "Expected mm: " + Integer.parseInt(line.substring(0, 3)) + " at hour " + line.substring(4));
+
+                        float value = convertValueToMMPerHr(Integer.parseInt(line.substring(0, 3)));
+                        String time = line.substring(4);
+                        rainPrediction.addRainValue(time, value);
+                    }
+
+                    putValueTrimSize(valuePath, id, start, rainPrediction);
 
                 } catch (MalformedURLException e1) {
                     // TODO Auto-generated catch block
@@ -146,11 +157,15 @@ public class RainSensor extends AbstractSwanSensor {
             }
         }
 
+        /*
+        Based on lat lon coordinates, you can deposit two hours to fetch ahead in text form. 0 dry, 255 is heavy rain.
+        Mm / hour = 10 ^ ((value -109) / 32) So 77 = 0.1 mm / hour
+         */
         private float convertValueToMMPerHr(int value) {
-            float result = (float) (Math.pow(10, (value - 109) / 32.0));
-            return result;
+            if (value == 0)
+                return 0;
+            return (float) (Math.pow(10, (value - 109) / 32.0));
         }
-
     }
 
     @Override
@@ -160,7 +175,4 @@ public class RainSensor extends AbstractSwanSensor {
         }
         super.onDestroySensor();
     }
-
-    ;
-
 }

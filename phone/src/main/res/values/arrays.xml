@@ -302,6 +302,7 @@
 
     <!-- rain sensor -->
     <string-array name="rain_valuepaths">
+        <item>all_values</item>
         <item>expected_mm</item>
     </string-array>
 
