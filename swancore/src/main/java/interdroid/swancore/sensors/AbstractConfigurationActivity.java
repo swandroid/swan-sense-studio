@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -172,6 +173,10 @@ public abstract class AbstractConfigurationActivity extends PreferenceActivity
                 newPrefs.add(newPref);
             } else if (preference instanceof PreferenceGroup) {
                 reAddPrefs((PreferenceGroup) preference);
+            } else if (preference instanceof CheckBoxPreference) {
+                CheckBoxPreference oldPref = (CheckBoxPreference) preference;
+                CheckBoxPreference newPref = new CheckBoxPreference(this);
+                newPref.setChecked(oldPref.isChecked());
             } else {
                 group.removePreference(preference);
                 Log.d(TAG, "not re adding preference: '" + preference.getKey()
@@ -304,6 +309,9 @@ public abstract class AbstractConfigurationActivity extends PreferenceActivity
 
         if (map.containsKey("server_storage")) {
             httpConfiguration.putString("server_storage", map.remove("server_storage").toString());
+        }
+        if (map.containsKey("server_use_location")) {
+            httpConfiguration.putBoolean("server_use_location", (Boolean) map.remove("server_use_location"));
         }
         if (map.containsKey("server_url")) {
             httpConfiguration.putString("server_url", map.remove("server_url").toString());

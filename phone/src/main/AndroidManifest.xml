@@ -286,7 +286,7 @@
 
         <!-- sensor stuff -->
         <activity
-            android:name=".sensors.AbstractConfigurationActivity"
+            android:name="interdroid.swancore.sensors.AbstractConfigurationActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="interdroid.swan.DEFAULT_PREFERENCES" />
