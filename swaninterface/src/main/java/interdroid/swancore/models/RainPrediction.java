@@ -3,19 +3,28 @@ package interdroid.swancore.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class RainPrediction implements Parcelable {
     private List<RainValue> rainValues;
+    private LatLng latLng;
 
-    public RainPrediction() {
+    public RainPrediction(double latitude, double longitude) {
         rainValues = new ArrayList<>();
+        latLng = new LatLng(latitude, longitude);
     }
 
     public RainPrediction(Parcel in) {
-        this();
+        rainValues = new ArrayList<>();
+        latLng = in.readParcelable(getClass().getClassLoader());
         in.readList(rainValues, getClass().getClassLoader());
+    }
+
+    public RainPrediction(List<RainValue> rainValues) {
+        this.rainValues = rainValues;
     }
 
     public static final Creator<RainPrediction> CREATOR = new Creator<RainPrediction>() {
@@ -38,6 +47,14 @@ public class RainPrediction implements Parcelable {
         rainValues.add(new RainValue(time, value));
     }
 
+    public List<RainValue> getRainValues() {
+        return rainValues;
+    }
+
+    public LatLng getLatLng() {
+        return latLng;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -45,6 +62,7 @@ public class RainPrediction implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(latLng, flags);
         dest.writeList(rainValues);
     }
 }

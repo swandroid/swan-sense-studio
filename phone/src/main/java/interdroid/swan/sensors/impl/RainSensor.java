@@ -9,9 +9,7 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import interdroid.swan.R;
@@ -120,21 +118,22 @@ public class RainSensor extends AbstractSwanSensor {
 
 
                 try {
-                    RainPrediction rainPrediction = new RainPrediction();
+                    RainPrediction rainPrediction = new RainPrediction(Double.valueOf((String)configuration.get(LATITUDE)),
+                            Double.valueOf((String)configuration.get(LONGITUDE)));
                     URLConnection conn = new URL(url).openConnection();
                     BufferedReader r = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
                     String line;
                     while ((line = r.readLine()) != null) {
-                        Log.d(TAG, line);
-                        Log.d(TAG, "Expected mm: " + Integer.parseInt(line.substring(0, 3)) + " at hour " + line.substring(4));
+//                        Log.d(TAG, line);
+//                        Log.d(TAG, "Expected mm: " + Integer.parseInt(line.substring(0, 3)) + " at hour " + line.substring(4));
 
                         float value = convertValueToMMPerHr(Integer.parseInt(line.substring(0, 3)));
                         String time = line.substring(4);
                         rainPrediction.addRainValue(time, value);
                     }
 
-                    putValueTrimSize(valuePath, id, start, rainPrediction);
+                    putValueTrimSize(EXPECTED_MM, id, start, rainPrediction);
 
                 } catch (MalformedURLException e1) {
                     // TODO Auto-generated catch block
@@ -174,5 +173,15 @@ public class RainSensor extends AbstractSwanSensor {
             rainPoller.interrupt();
         }
         super.onDestroySensor();
+    }
+
+    @Override
+    public String getModelClassName() {
+        return RainPrediction.class.getName();
+    }
+
+    @Override
+    public Class<?>[] getParameterTypes() {
+        return RainPrediction.class.getConstructors()[2].getParameterTypes();
     }
 }

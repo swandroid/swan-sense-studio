@@ -747,10 +747,10 @@
                 android:value="all_values,expected_mm" />
             <meta-data
                 android:name="latitude"
-                android:value="0L" />
+                android:value="required"/>
             <meta-data
                 android:name="longitude"
-                android:value="0L" />
+                android:value="required"/>
             <meta-data
                 android:name="units"
                 android:value="mm/hour" />

@@ -5,9 +5,9 @@ import android.os.Parcelable;
 
 public class RainValue implements Parcelable {
     public String time;
-    public float value;
+    public Float value;
 
-    public RainValue(String time, float value) {
+    public RainValue(String time, Float value) {
         this.time = time;
         this.value = value;
     }

@@ -47,7 +47,7 @@ public abstract class AbstractSwanSensor extends AbstractSensorBase {
     /**
      * The map of values for this sensor.
      */
-    private final Map<String, List<TimestampedValue>> values = new HashMap<String, List<TimestampedValue>>();
+    private final Map<String, List<TimestampedValue>> values = new HashMap<>();
 
     /**
      * Sensor specific name, as it will appear on Sense.
