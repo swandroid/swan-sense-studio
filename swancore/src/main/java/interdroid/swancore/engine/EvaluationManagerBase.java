@@ -199,11 +199,13 @@ public class EvaluationManagerBase {
         if (expression == null) {
             throw new RuntimeException("This should not happen! Please debug");
         }
-        if (mCachedResults.containsKey(id)) {
-            if (mCachedResults.get(id).getDeferUntil() > now) {
-                return mCachedResults.get(id);
-            }
-        }
+
+        // TODO: Re-enable this after checking why is it always taking the values from cache
+//        if (mCachedResults.containsKey(id)) {
+//            if (mCachedResults.get(id).getDeferUntil() > now) {
+//                return mCachedResults.get(id);
+//            }
+//        }
         Result result = null;
         // if the location is remote, result is null or undefined
         String location = expression.getLocation();

@@ -135,8 +135,11 @@ public class EvaluationEngineServiceBase extends Service {
                             }
                             // re add the expression to the queue
                             synchronized (mEvaluationThread) {
-                                mEvaluationQueue.remove(head);
-                                mEvaluationQueue.add(head);
+                                // we re add the expression only if it wasn't unregistered in the meantime
+                                if(mEvaluationQueue.contains(head)) {
+                                    mEvaluationQueue.remove(head);
+                                    mEvaluationQueue.add(head);
+                                }
                             }
                         } catch (SwanException e) {
                             Log.d(TAG, "Failed to evaluate", e);

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.TreeSet;
 
+import interdroid.swan.crossdevice.CrossdeviceConnectionI;
 import interdroid.swan.engine.EvaluationEngineService;
 import interdroid.swancore.crossdevice.Converter;
 import interdroid.swancore.swansong.Result;
@@ -19,10 +20,10 @@ public class BTServerWorker extends BTWorker implements BTConnectionHandler {
 
     private Set<String> expressionIds = new TreeSet<String>();
 
-    public BTServerWorker(BTManager btManager, BTSwanDevice swanDevice, BTConnection btConnection) {
+    public BTServerWorker(BTManager btManager, BTSwanDevice swanDevice, CrossdeviceConnectionI btConnection) {
         this.btManager = btManager;
         this.swanDevice = swanDevice;
-        this.btConnection = btConnection;
+        this.connection = btConnection;
         logRecord = new BTLogRecord(btManager.getStartTime(), false);
     }
 
@@ -47,13 +48,19 @@ public class BTServerWorker extends BTWorker implements BTConnectionHandler {
         String exprSource = dataMap.get("source");
         String exprId = dataMap.get("id");
         String exprData = dataMap.get("data");
+        String ipAddress = dataMap.get("ip");
+
+        if(ipAddress != null) {
+            swanDevice.setIpAddress(ipAddress);
+        }
 
         // add the expression id to the list of registered expressions
         expressionIds.add(exprId);
+        logRecord.sensors = expressionIds.size();
 
         if (exprAction.equals(EvaluationEngineService.ACTION_REGISTER_REMOTE)
                 || exprAction.equals(EvaluationEngineService.ACTION_UNREGISTER_REMOTE)) {
-            Log.w(TAG, this + " received " + exprAction + ": " + exprData);
+            btManager.log(TAG, this + " received " + exprAction + ": " + exprData, Log.WARN);
             logRecord.startSwanTime = System.currentTimeMillis();
             btManager.sendExprForEvaluation(exprId, exprAction, exprSource, exprData);
 
@@ -64,18 +71,18 @@ public class BTServerWorker extends BTWorker implements BTConnectionHandler {
                     if(BTManager.SHARED_CONNECTIONS) {
                         done();
                     } else {
-                        btConnection.disconnect();
+                        connection.disconnect();
                     }
                 }
             }
         } else {
-            Log.e(TAG, this + " didn't expect " + exprAction);
+            btManager.log(TAG, this + " didn't expect " + exprAction, Log.ERROR);
         }
     }
 
     @Override
     public void onDisconnected(Exception e) {
-        Log.e(TAG, this + " disconnected: " + e.getMessage());
+        btManager.log(TAG, this + " disconnected: " + e.getMessage(), Log.ERROR);
 
         // unregister expressions
         for(String exprId : expressionIds) {

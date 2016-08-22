@@ -1,4 +1,4 @@
-package interdroid.swan.sensors;
+package interdroid.swan.sensors.impl;
 
 /**
  * Created by slavik on 7/7/16.
@@ -11,10 +11,9 @@ import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import interdroid.swan.R;
 import interdroid.swancore.sensors.AbstractConfigurationActivity;
-import interdroid.swancore.sensors.AbstractSwanSensorBase;
-
-
+import interdroid.swan.sensors.AbstractSwanSensor;
 
 
 /**
@@ -22,7 +21,7 @@ import interdroid.swancore.sensors.AbstractSwanSensorBase;
  *
  * @author nick &lt;palmer@cs.vu.nl&gt;
  */
-public class TestSensor extends AbstractSwanSensorBase {
+public class TestSensor extends AbstractSwanSensor {
 
     public static final String TAG = "TestSensor";
 
@@ -42,7 +41,7 @@ public class TestSensor extends AbstractSwanSensorBase {
 
         @Override
         public final int getPreferencesXML() {
-            return 1;
+            return R.xml.wear_test_preferences;
         }
     }
 

@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.hardware.SensorManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -44,6 +46,8 @@ public abstract class AbstractSwanSensor extends AbstractSensorBase {
     private long lastUpdate = 0;
     private int currentDelay = 0;
 
+    private LocationManager mLocationManager;
+
     /**
      * The map of values for this sensor.
      */
@@ -76,6 +80,8 @@ public abstract class AbstractSwanSensor extends AbstractSensorBase {
     private long mReadings = 0;
     private long mLastReadingTimestamp = 0;
 
+    private Bundle mHttpConfiguration;
+
     /**
      * @return the values
      */
@@ -85,6 +91,9 @@ public abstract class AbstractSwanSensor extends AbstractSensorBase {
 
     @Override
     public void init() {
+        // Acquire a reference to the system Location Manager
+        mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+
         final Context context = this;
         for (final String valuePath : VALUE_PATHS) {
             expressionIdsPerValuePath.put(valuePath, new ArrayList<String>());
@@ -107,7 +116,7 @@ public abstract class AbstractSwanSensor extends AbstractSensorBase {
 
     @Override
     public void register(String id, String valuePath, Bundle configuration, Bundle httpConfiguration, Bundle extraConfiguration) {
-
+        this.mHttpConfiguration = httpConfiguration;
         for (String key : httpConfiguration.keySet()) {
             Object obj = httpConfiguration.get(key);   //later parse it as per your required type
             Log.d(TAG, "bundle data in register " + obj.toString());
@@ -214,18 +223,25 @@ public abstract class AbstractSwanSensor extends AbstractSensorBase {
 
         if (registeredValuepath.contains(valuePath)) {
             if (serverConnection != null) {
-                HashMap<String, Object> serverData = new HashMap<String, Object>();
-
+                HashMap<String, Object> serverData = new HashMap<>();
 
                 serverData.clear();
                 serverData.put("id", id);
                 //serverData.put("channel",valuePath);
                 serverData.put("field1", value);
                 serverData.put("time", now);
+
+                if (mHttpConfiguration != null &&
+                        mHttpConfiguration.getString("server_use_location") != null &&
+                        mHttpConfiguration.getString("server_use_location").equalsIgnoreCase("true")) {
+                    Location lastKnownLocation = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                    serverData.put("latitude", lastKnownLocation.getLatitude());
+                    serverData.put("longitude", lastKnownLocation.getLongitude());
+                }
                 serverConnection.useHttpMethod(serverData, cb);
             }
         } else {
-            Log.d(TAG,"No valupath registered");
+            Log.d(TAG, "No valuepath registered");
         }
 
         try {
@@ -318,7 +334,7 @@ public abstract class AbstractSwanSensor extends AbstractSensorBase {
     @Override
     public final List<TimestampedValue> getValues(final String id,
                                                   final long now, final long timespan) {
-		/*
+        /*
 		 * First check if we have all data in memory, otherwise fetch it from upper storage layer
 		 */
         List<TimestampedValue> valuesForTimeSpan = null;

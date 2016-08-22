@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothDevice;
 import java.util.HashMap;
 import java.util.Map;
 
+import interdroid.swan.crossdevice.CrossdeviceConnectionI;
 import interdroid.swan.engine.EvaluationEngineService;
 
 /**
@@ -17,15 +18,17 @@ public class BTSwanDevice implements BTConnectionHandler {
     private BTPendingItem pendingItem;
     private Map<String, String> registeredExpressions = new HashMap<String, String>();
 
-    private BTConnection btConnection;
+    private CrossdeviceConnectionI connection;
 
     private BTClientWorker clientWorker;
     private BTServerWorker serverWorker;
 
-    public BTSwanDevice(BluetoothDevice btDevice, BTManager btManager, BTConnection btConnection) {
+    private String ipAddress;
+
+    public BTSwanDevice(BluetoothDevice btDevice, BTManager btManager, BTConnection connection) {
         this.btDevice = btDevice;
         this.btManager = btManager;
-        this.btConnection = btConnection;
+        this.connection = connection;
     }
 
     @Override
@@ -38,7 +41,7 @@ public class BTSwanDevice implements BTConnectionHandler {
         } else {
             // if there is no server worker to handle the message, we create one
             if(serverWorker == null) {
-                serverWorker = new BTServerWorker(btManager, this, btConnection);
+                serverWorker = new BTServerWorker(btManager, this, connection);
                 btManager.addServerWorker(serverWorker);
             }
             serverWorker.onReceive(dataMap);
@@ -56,7 +59,7 @@ public class BTSwanDevice implements BTConnectionHandler {
     }
 
     public String getName() {
-        return btDevice.getName();
+        return btDevice.getName() != null ? btDevice.getName() : "(null)";
     }
 
     public BluetoothDevice getBtDevice() {
@@ -83,16 +86,16 @@ public class BTSwanDevice implements BTConnectionHandler {
         return registeredExpressions;
     }
 
-    public void setBtConnection(BTConnection btConnection) {
-        this.btConnection = btConnection;
+    public void setConnection(CrossdeviceConnectionI connection) {
+        this.connection = connection;
     }
 
-    public BTConnection getBtConnection() {
-        return btConnection;
+    public CrossdeviceConnectionI getConnection() {
+        return connection;
     }
 
     public boolean isConnectedToRemote() {
-        return btConnection != null && btConnection.isConnected();
+        return connection != null && connection.isConnected();
     }
 
     public void setServerWorker(BTServerWorker serverWorker) {
@@ -109,6 +112,14 @@ public class BTSwanDevice implements BTConnectionHandler {
 
     public BTServerWorker getServerWorker() {
         return serverWorker;
+    }
+
+    public String getIpAddress() {
+        return ipAddress;
+    }
+
+    public void setIpAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
     }
 
     @Override

@@ -15,14 +15,12 @@ public class BTReceiver extends Thread {
     private static final String TAG = "BTReceiver";
 
     private BTManager btManager;
-    private Context context;
     private UUID uuid;
     private BluetoothServerSocket serverSocket;
     private BluetoothSocket socket;
 
-    public BTReceiver(BTManager btManager, Context context, UUID uuid) {
+    public BTReceiver(BTManager btManager, UUID uuid) {
         this.btManager = btManager;
-        this.context = context;
         this.uuid = uuid;
     }
 
@@ -30,7 +28,7 @@ public class BTReceiver extends Thread {
     public void run() {
         Log.d(TAG, "BT receiver started for uuid " + uuid);
 
-        if(BTManager.SYNCHRONOUS_WORKERS) {
+        if(BTManager.SYNC_RECEIVERS) {
             runWithSynchronousWorkers();
         } else {
             runWithAsynchronousWorkers();
@@ -64,10 +62,10 @@ public class BTReceiver extends Thread {
                     Log.d(TAG, "receiver paused for uuid " + uuid);
                     serverSocket.close();
 
-                    manageConnection();
-
-                    synchronized (this) {
-                        wait();
+                    if(manageConnection()) {
+                        synchronized (this) {
+                            wait();
+                        }
                     }
                 }
             }
@@ -76,7 +74,7 @@ public class BTReceiver extends Thread {
         }
     }
 
-    private void manageConnection() {
+    private boolean manageConnection() {
         Log.i(TAG, "new connection from " + socket.getRemoteDevice().getName());
         BTConnection btConnection = new BTConnection(btManager, socket);
         // we add the device in the nearby devices list in case it wasn't discovered already
@@ -94,6 +92,9 @@ public class BTReceiver extends Thread {
             }
 
             btConnection.start();
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -109,5 +110,15 @@ public class BTReceiver extends Thread {
 
     public BluetoothSocket getSocket() {
         return socket;
+    }
+
+    public void abort() {
+        if(serverSocket != null) {
+            try {
+                serverSocket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

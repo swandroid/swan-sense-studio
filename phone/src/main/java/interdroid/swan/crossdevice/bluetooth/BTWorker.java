@@ -2,9 +2,14 @@ package interdroid.swan.crossdevice.bluetooth;
 
 import android.util.Log;
 
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import interdroid.swan.crossdevice.CrossdeviceConnectionI;
 import interdroid.swancore.crossdevice.Converter;
 import interdroid.swan.engine.EvaluationEngineService;
 import interdroid.swancore.swansong.Result;
@@ -13,13 +18,13 @@ import interdroid.swancore.swansong.TriState;
 /**
  * Created by vladimir on 4/8/16.
  */
-public class BTWorker {
+public class BTWorker extends Thread {
 
     private static final String TAG = "BTWorker";
 
     protected BTManager btManager;
     protected BTSwanDevice swanDevice;
-    protected BTConnection btConnection;
+    protected CrossdeviceConnectionI connection;
 
     protected BTLogRecord logRecord;
 
@@ -28,7 +33,7 @@ public class BTWorker {
     }
 
     protected void send(String expressionId, String expressionAction, String expressionData, Map<String, String> extra) throws Exception {
-        Log.w(getTag(), this + " sending " + expressionAction + ": " + toPrintableData(expressionData, expressionAction));
+        btManager.log(getTag(), this + " sending " + expressionAction + ": " + toPrintableData(expressionData, expressionAction), Log.WARN);
 
         HashMap<String, String> dataMap = new HashMap<>();
         dataMap.put("source", btManager.getBtAdapter().getName());
@@ -37,6 +42,7 @@ public class BTWorker {
         dataMap.put("data", expressionData);
         //TODO check here if device has any expression registered remotely
         dataMap.put("timeToNextReq", getTimeToNextRequest() + "");
+        dataMap.put("ip", getIPAddress(true));
 
         if(extra != null) {
             for(Map.Entry<String, String> entry : extra.entrySet()) {
@@ -45,13 +51,13 @@ public class BTWorker {
         }
 
         if(BTManager.SHARED_CONNECTIONS) {
-            swanDevice.getBtConnection().send(dataMap);
+            swanDevice.getConnection().send(dataMap);
         } else {
-            btConnection.send(dataMap);
+            connection.send(dataMap);
         }
 
-        Log.w(getTag(), this + " successfully sent " + expressionAction + ": "
-                + toPrintableData(expressionData, expressionAction));
+        btManager.log(getTag(), this + " successfully sent " + expressionAction + ": "
+                + toPrintableData(expressionData, expressionAction), Log.WARN);
     }
 
     protected int getTimeToNextRequest() {
@@ -78,11 +84,58 @@ public class BTWorker {
             try {
                 return Converter.stringToObject(data).toString();
             } catch (Exception e) {
-                Log.e(getTag(), this + " can't get printable data", e);
+                btManager.log(getTag(), this + " can't get printable data", Log.ERROR, e);
             }
         }
 
         return data;
+    }
+
+    protected void disconnectFromRemote() {
+        if(BTManager.SHARED_CONNECTIONS) {
+            if(swanDevice.getConnection() != null) {
+                swanDevice.getConnection().disconnect();
+            }
+        } else {
+            if(connection != null) {
+                connection.disconnect();
+            }
+        }
+    }
+
+    protected boolean isConnectedToRemote() {
+        if(BTManager.SHARED_CONNECTIONS) {
+            return swanDevice.isConnectedToRemote();
+        } else {
+            return connection != null && connection.isConnected();
+        }
+    }
+
+    public static String getIPAddress(boolean useIPv4) {
+        try {
+            List<NetworkInterface> interfaces = Collections.list(NetworkInterface.getNetworkInterfaces());
+            for (NetworkInterface intf : interfaces) {
+                List<InetAddress> addrs = Collections.list(intf.getInetAddresses());
+                for (InetAddress addr : addrs) {
+                    if (!addr.isLoopbackAddress()) {
+                        String sAddr = addr.getHostAddress();
+                        //boolean isIPv4 = InetAddressUtils.isIPv4Address(sAddr);
+                        boolean isIPv4 = sAddr.indexOf(':')<0;
+
+                        if (useIPv4) {
+                            if (isIPv4)
+                                return sAddr;
+                        } else {
+                            if (!isIPv4) {
+                                int delim = sAddr.indexOf('%'); // drop ip6 zone suffix
+                                return delim<0 ? sAddr.toUpperCase() : sAddr.substring(0, delim).toUpperCase();
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception ex) { } // for now eat exceptions
+        return "";
     }
 
     public String getRemoteDeviceName() {
@@ -97,16 +150,12 @@ public class BTWorker {
         logRecord.totalDuration = System.currentTimeMillis() - logRecord.startTime;
     }
 
-    public void abort() {
-        //TODO
-    }
-
     public BTSwanDevice getSwanDevice() {
         return swanDevice;
     }
 
-    public BTConnection getBtConnection() {
-        return btConnection;
+    public CrossdeviceConnectionI getConnection() {
+        return connection;
     }
 
     public BTLogRecord getLogRecord() {
