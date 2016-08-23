@@ -116,7 +116,6 @@ public class RainSensor extends AbstractSwanSensor {
                 String url = String.format(BASE_URL, configuration.get(LATITUDE),
                         configuration.get(LONGITUDE));
 
-
                 try {
                     RainPrediction rainPrediction = new RainPrediction(Double.valueOf((String)configuration.get(LATITUDE)),
                             Double.valueOf((String)configuration.get(LONGITUDE)));
@@ -135,12 +134,8 @@ public class RainSensor extends AbstractSwanSensor {
 
                     putValueTrimSize(EXPECTED_MM, id, start, rainPrediction);
 
-                } catch (MalformedURLException e1) {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace();
-                } catch (IOException e1) {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace();
+                } catch (Exception e) {
+                    Log.e(TAG, e.getMessage());
                 }
 
 
@@ -152,6 +147,7 @@ public class RainSensor extends AbstractSwanSensor {
                                             .getLong(SAMPLE_INTERVAL))
                                     + start - System.currentTimeMillis()));
                 } catch (InterruptedException e) {
+                    return;
                 }
             }
         }

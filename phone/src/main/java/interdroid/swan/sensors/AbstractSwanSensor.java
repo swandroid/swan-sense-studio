@@ -12,9 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,9 +47,38 @@ public abstract class AbstractSwanSensor extends AbstractSensorBase {
     private LocationManager mLocationManager;
 
     /**
-     * The map of values for this sensor.
+     * The map of values for this sensor. The values are grouped per each unique pair (valuePath, configuration)
      */
-    private final Map<String, List<TimestampedValue>> values = new HashMap<>();
+    private volatile Map<SensorDataKey, List<TimestampedValue>> mSensorValues = new HashMap<>();
+
+    private class SensorDataKey {
+        public String valuePath;
+        public Bundle configuration;
+
+        public SensorDataKey(String valuePath, Bundle configuration) {
+            this.valuePath = valuePath;
+            this.configuration = configuration;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            SensorDataKey sensorDataKey = (SensorDataKey) o;
+
+            if (!valuePath.equals(sensorDataKey.valuePath)) return false;
+            return configuration != null ? configuration.equals(sensorDataKey.configuration) : sensorDataKey.configuration == null;
+
+        }
+
+        @Override
+        public int hashCode() {
+            int result = valuePath.hashCode();
+            result = 31 * result + (configuration != null ? configuration.hashCode() : 0);
+            return result;
+        }
+    }
 
     /**
      * Sensor specific name, as it will appear on Sense.
@@ -85,8 +112,8 @@ public abstract class AbstractSwanSensor extends AbstractSensorBase {
     /**
      * @return the values
      */
-    public final Map<String, List<TimestampedValue>> getValues() {
-        return values;
+    public final Map<SensorDataKey, List<TimestampedValue>> getValues() {
+        return mSensorValues;
     }
 
     @Override
@@ -97,8 +124,6 @@ public abstract class AbstractSwanSensor extends AbstractSensorBase {
         final Context context = this;
         for (final String valuePath : VALUE_PATHS) {
             expressionIdsPerValuePath.put(valuePath, new ArrayList<String>());
-            getValues().put(valuePath,
-                    Collections.synchronizedList(new ArrayList<TimestampedValue>()));
         }
 
         new Thread() {
@@ -117,6 +142,7 @@ public abstract class AbstractSwanSensor extends AbstractSensorBase {
     @Override
     public void register(String id, String valuePath, Bundle configuration, Bundle httpConfiguration, Bundle extraConfiguration) {
         this.mHttpConfiguration = httpConfiguration;
+
         for (String key : httpConfiguration.keySet()) {
             Object obj = httpConfiguration.get(key);   //later parse it as per your required type
             Log.d(TAG, "bundle data in register " + obj.toString());
@@ -212,10 +238,9 @@ public abstract class AbstractSwanSensor extends AbstractSensorBase {
     /**
      * Adds a value for the given value path to the history.
      *
-     * @param valuePath   the value path
-     * @param now         the current time
-     * @param value       the value
-     *
+     * @param valuePath the value path
+     * @param now       the current time
+     * @param value     the value
      */
     protected final void putValueTrimSize(final String valuePath,
                                           final String id, final long now, final Object value /*, final int historySize*/) {
@@ -245,11 +270,19 @@ public abstract class AbstractSwanSensor extends AbstractSensorBase {
         }
 
         try {
-            getValues().get(valuePath).add(new TimestampedValue(value, now));
+            String registeredValuePath = registeredValuePaths.get(id);
+            if (registeredValuePath.equalsIgnoreCase(valuePath) || registeredValuePath.equalsIgnoreCase(ALL_VALUES)) {
+                SensorDataKey sensorDataKey = new SensorDataKey(valuePath, registeredConfigurations.get(id));
+                addNewValue(sensorDataKey, new TimestampedValue(value, now));
+            } else {
+                Log.e(TAG, "Value path \"" + valuePath + "\" not registered");
+                return;
+            }
         } catch (OutOfMemoryError e) {
             Log.d(TAG, "OutOfMemoryError");
             onDestroySensor();
         }
+
         checkMemoryAtRuntime();
 
         if (id != null) {
@@ -257,6 +290,19 @@ public abstract class AbstractSwanSensor extends AbstractSensorBase {
         } else {
             notifyDataChanged(valuePath);
         }
+    }
+
+    /**
+     * Add new sensor value in the data source
+     *
+     * @param sensorDataKey
+     * @param newValue
+     */
+    private void addNewValue(SensorDataKey sensorDataKey, TimestampedValue newValue) {
+        if (!mSensorValues.containsKey(sensorDataKey)) {
+            mSensorValues.put(sensorDataKey, new ArrayList<TimestampedValue>());
+        }
+        mSensorValues.get(sensorDataKey).add(newValue);
     }
 
     /**
@@ -335,21 +381,34 @@ public abstract class AbstractSwanSensor extends AbstractSensorBase {
     public final List<TimestampedValue> getValues(final String id,
                                                   final long now, final long timespan) {
         /*
-		 * First check if we have all data in memory, otherwise fetch it from upper storage layer
+         * First check if we have all data in memory, otherwise fetch it from upper storage layer
 		 */
         List<TimestampedValue> valuesForTimeSpan = null;
         if (mLastFlushed > (now - timespan))
             getLocalValues(now - timespan, mLastFlushed);
+
         try {
             String registeredValuePath = registeredValuePaths.get(id);
+            if (registeredValuePath == null) {
+                Log.e(TAG, "No Value path registered");
+                return null;
+            }
+
+            Bundle registeredConfiguration = registeredConfigurations.get(id);
 
             // return all value path data if all is set
             if (registeredValuePath.equalsIgnoreCase(ALL_VALUES)) {
-                return constructValues(now, timespan);
+                return constructValues(now, timespan, registeredConfiguration);
             }
 
-            valuesForTimeSpan = getValuesForTimeSpan(getValues().get(registeredValuePath),
-                    now, timespan);
+            SensorDataKey valKey = new SensorDataKey(registeredValuePath, registeredConfiguration);
+            if (!getValues().containsKey(valKey)) {
+                Log.e(TAG, "No Values for this expression id");
+                return null;
+            }
+
+            valuesForTimeSpan = getValuesForTimeSpan(getValues().get(valKey), now, timespan);
+
         } catch (OutOfMemoryError e) {
             Log.e(TAG, "OutOfMemoryError");
             onDestroySensor();
@@ -357,20 +416,36 @@ public abstract class AbstractSwanSensor extends AbstractSensorBase {
         return valuesForTimeSpan;
     }
 
-    private List<TimestampedValue> constructValues(final long now, final long timespan) {
+    /**
+     * Construct list of values for expressions registered to ALL_VALUES.
+     *
+     * @param now
+     * @param timespan
+     * @param configuration
+     * @return
+     */
+    private List<TimestampedValue> constructValues(final long now, final long timespan, Bundle configuration) {
         List<TimestampedValue> valuesForTimeSpan = new ArrayList<>();
+        Map<String, List<TimestampedValue>> allValues = new HashMap<>();
 
-        int counterKeys = values.size();
-        if (counterKeys >= 2) {
+        for (String valuePath : getValuePaths()) {
+            SensorDataKey key = new SensorDataKey(valuePath, configuration);
+            if (mSensorValues.containsKey(key)) {
+                allValues.put(key.valuePath, mSensorValues.get(key));
+            }
+        }
+
+        int counterKeys = allValues.size();
+        if (counterKeys > 1) {
             String[] keySet = new String[counterKeys];
-            values.keySet().toArray(keySet);
-            int counterValues = values.get(keySet[0]).size();
-            for (int i = 0; i < counterValues; i ++) {
+            allValues.keySet().toArray(keySet);
+            int counterValues = allValues.get(keySet[0]).size();
+            for (int i = 0; i < counterValues; i++) {
                 long ts = 0;
                 Object[] parameters = new Object[counterKeys];
-                for (int j = 0; j < counterKeys; j ++) {
+                for (int j = 0; j < counterKeys; j++) {
                     String key = keySet[j];
-                    List<TimestampedValue> valuesList = values.get(key);
+                    List<TimestampedValue> valuesList = allValues.get(key);
                     if (valuesList.size() > i) {
                         TimestampedValue tsValue = valuesList.get(i);
                         if (tsValue != null) {
@@ -385,24 +460,15 @@ public abstract class AbstractSwanSensor extends AbstractSensorBase {
                     Constructor constructor = sensor.getConstructor(getParameterTypes());
                     Object newValue = constructor.newInstance(parameters);
                     valuesForTimeSpan.add(new TimestampedValue(newValue, ts));
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                } catch (NoSuchMethodException e) {
-                    e.printStackTrace();
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                } catch (InstantiationException e) {
-                    e.printStackTrace();
-                } catch (InvocationTargetException e) {
-                    e.printStackTrace();
+                } catch (Exception e) {
+                    Log.e(TAG, e.getMessage());
                 }
             }
             System.out.println(valuesForTimeSpan.toString());
             return valuesForTimeSpan;
         } else {
-            if (counterKeys == 1) {
-                return getValuesForTimeSpan(values.get(values.keySet().iterator().next()),
-                        now, timespan);
+            if (counterKeys == 1) { // sensor has only one value_path, return corresponding list of values
+                return getValuesForTimeSpan(allValues.get(allValues.keySet().iterator().next()), now, timespan);
             } else {
                 return null;
             }
@@ -415,12 +481,12 @@ public abstract class AbstractSwanSensor extends AbstractSensorBase {
      */
     public void flushData() {
         Log.d(TAG, "Flush data to db");
-        for (final String valuePath : getValues().keySet()) {
-            if (getValues().get(valuePath).size() == 0) {
-                Log.d(TAG, "No values to send for value path" + valuePath);
+        for (final SensorDataKey sensorDataKey : getValues().keySet()) {
+            if (getValues().get(sensorDataKey).size() == 0) {
+                Log.d(TAG, "No values to send for value path" + sensorDataKey);
                 continue;
             }
-            insertDataInLocalStorage(valuePath);
+            insertDataInLocalStorage(sensorDataKey);
         }
     }
 
@@ -429,13 +495,13 @@ public abstract class AbstractSwanSensor extends AbstractSensorBase {
      * All values are insert in a single batch
      * The values are removed from the hash map, clearing memory
      *
-     * @param valuePath
+     * @param sensorDataKey
      */
-    private void insertDataInLocalStorage(String valuePath) {
-        int size = getValues().get(valuePath).size();
-        ArrayList<ContentValues> vals = new ArrayList<ContentValues>();
+    private void insertDataInLocalStorage(SensorDataKey sensorDataKey) {
+        int size = getValues().get(sensorDataKey).size();
+        ArrayList<ContentValues> vals = new ArrayList<>();
         for (int i = size - 1; i >= 0; i--) {
-            TimestampedValue tsVal = getValues().get(valuePath).get(i);
+            TimestampedValue tsVal = getValues().get(sensorDataKey).get(i);
             if (i == size - 1) {
                 mLastFlushed = tsVal.getTimestamp();    //the latest timestamp is of the last item in the list
             }
@@ -443,8 +509,8 @@ public abstract class AbstractSwanSensor extends AbstractSensorBase {
             ContentValues val = new ContentValues();
             val.put(DataPoint.SENSOR_NAME, SENSOR_NAME);
             val.put(DataPoint.DISPLAY_NAME, SENSOR_NAME);
-            val.put(DataPoint.SENSOR_DESCRIPTION, "valuePath= " + valuePath);
-            val.put(DataPoint.VALUE_PATH, valuePath);
+            val.put(DataPoint.SENSOR_DESCRIPTION, "valuePath= " + sensorDataKey.valuePath);
+            val.put(DataPoint.VALUE_PATH, sensorDataKey.valuePath);
             val.put(DataPoint.DATA_TYPE, SenseDataTypes.FLOAT);
 //			val.put(DataPoint.DEVICE_UUID, null);
             val.put(DataPoint.TIMESTAMP, tsVal.getTimestamp());
@@ -461,7 +527,7 @@ public abstract class AbstractSwanSensor extends AbstractSensorBase {
 
             vals.add(val);
         }
-        getValues().get(valuePath).clear();
+        getValues().get(sensorDataKey).clear();
         bulkInsertToLocalStorage(vals);
     }
 

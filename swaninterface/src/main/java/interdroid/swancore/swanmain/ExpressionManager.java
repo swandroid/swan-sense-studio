@@ -136,6 +136,10 @@ public class ExpressionManager {
                     // TimestampedValue[], casting doesn't work
                     Parcelable[] parcelables = (Parcelable[]) intent
                             .getParcelableArrayExtra(EXTRA_NEW_VALUES);
+                    if (parcelables.length == 0) {
+                        Log.d(TAG, "Values list is empty, dont notify the app");
+                        return;
+                    }
                     TimestampedValue[] timestampedValues = new TimestampedValue[parcelables.length];
                     System.arraycopy(parcelables, 0, timestampedValues, 0,
                             parcelables.length);
