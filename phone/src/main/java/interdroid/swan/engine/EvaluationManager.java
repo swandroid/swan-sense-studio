@@ -43,9 +43,9 @@ public class EvaluationManager extends EvaluationManagerBase{
 
         if(resolvedLocation.equals(Expression.LOCATION_WEAR)){
             RemoteSensorManager.getInstance(mContext).registerExpression(toCrossDeviceString(expression, resolvedLocation), id);
-        }else if(resolvedLocation.equals(Expression.LOCATION_CLOUD)) {
+        }else if(resolvedLocation.equals(Expression.LOCATION_CLOUD)|| resolvedLocation.contains("http")) {
 
-            CloudManager.getInstance(mContext).registerExpression(id,expression.toParseString());
+            CloudManager.getInstance(mContext).registerExpression(id,expression.toParseString(),resolvedLocation);
 
         }else if (resolvedLocation.equals(Expression.LOCATION_NEARBY) || mProximityManager.hasPeer(resolvedLocation)) {
             // get sensor info from nearby devices
@@ -172,9 +172,9 @@ public class EvaluationManager extends EvaluationManagerBase{
 
         if(resolvedLocation.equals(Expression.LOCATION_WEAR)) {
             RemoteSensorManager.getInstance(mContext).unregisterExpression(toCrossDeviceString(expression, resolvedLocation), id);
-        }else if(resolvedLocation.equals(Expression.LOCATION_CLOUD)){
+        }else if(resolvedLocation.equals(Expression.LOCATION_CLOUD)|| resolvedLocation.contains("http")){
 
-            CloudManager.getInstance(mContext).unregisterExpression(id);
+            CloudManager.getInstance(mContext).unregisterExpression(id,resolvedLocation);
 
 
         }else if (resolvedLocation.equals(Expression.LOCATION_NEARBY) || mProximityManager.hasPeer(resolvedLocation)) {

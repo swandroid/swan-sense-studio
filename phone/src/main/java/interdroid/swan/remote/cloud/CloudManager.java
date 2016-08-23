@@ -36,18 +36,19 @@ public class CloudManager implements IRemoteManager {
 
 
     @Override
-    public void registerExpression(String id, String expression) {
+    public void registerExpression(String id, String expression, String location) {
+
 
         CloudCommunication cloudCommunication = new CloudCommunication();
-        cloudCommunication.sendRegisterRequest(id,expression);
+        cloudCommunication.sendRegisterRequest(id,expression,location);
 
     }
 
     @Override
-    public void unregisterExpression(String id) {
+    public void unregisterExpression(String id, String location) {
 
         CloudCommunication cloudCommunication = new CloudCommunication();
-        cloudCommunication.sendUnregisterRequest(id);
+        cloudCommunication.sendUnregisterRequest(id,location);
 
     }
 
