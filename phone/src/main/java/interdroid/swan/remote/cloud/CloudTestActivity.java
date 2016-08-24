@@ -27,7 +27,7 @@ public class CloudTestActivity extends Activity {
 
     /* name of the sensor */
    // final String MY_EXPRESSION = "cloud@test:value{ANY,1000} > 0";
-    final String MY_EXPRESSION = "http://swan-cloud.herokuapp.com@test:value{ANY,0} > 0";
+    final String MY_EXPRESSION = "cloud@test:value{ANY,0}";
     /* random id */
     public final String REQUEST_CODE = "cloud-test-light";
 

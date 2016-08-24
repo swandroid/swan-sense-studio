@@ -9,6 +9,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import interdroid.swancore.crossdevice.Converter;
 import interdroid.swancore.swansong.Result;
@@ -44,7 +46,11 @@ public class FirebaseMessageService extends FirebaseMessagingService{
 
                 if(jsonResult.getString("action").contentEquals("register-value")) {
 
-                    result = new Result((TimestampedValue[]) jsonResult.get("data"),(long) jsonResult.get("timestamp"));
+                    TimestampedValue[]  timestampedValues = new TimestampedValue[1];
+
+                    timestampedValues[0] = new TimestampedValue(jsonResult.get("data"),(long) jsonResult.get("timestamp"));
+
+                    result = new Result(timestampedValues,(long) jsonResult.get("timestamp"));
 
 
                 }
