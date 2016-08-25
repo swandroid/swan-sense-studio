@@ -36,18 +36,19 @@ public class CloudManager implements IRemoteManager {
 
 
     @Override
-    public void registerExpression(String id, String expression) {
+    public void registerExpression(String id, String expression, String location) {
+
 
         CloudCommunication cloudCommunication = new CloudCommunication();
-        cloudCommunication.sendRegisterRequest(id,expression);
+        cloudCommunication.sendRegisterRequest(id,expression,location);
 
     }
 
     @Override
-    public void unregisterExpression(String id) {
+    public void unregisterExpression(String id, String location) {
 
         CloudCommunication cloudCommunication = new CloudCommunication();
-        cloudCommunication.sendUnregisterRequest(id);
+        cloudCommunication.sendUnregisterRequest(id,location);
 
     }
 
@@ -59,7 +60,9 @@ public class CloudManager implements IRemoteManager {
         Intent notifyIntent = new Intent(EvaluationEngineService.ACTION_NEW_RESULT_REMOTE);
         notifyIntent.setClass(context, EvaluationEngineService.class);
         notifyIntent.putExtra("id", id);
-        notifyIntent.putExtra("data", data);
+        if(data!=null) {
+            notifyIntent.putExtra("data", data);
+        }
         context.startService(notifyIntent);
         //context.sendBroadcast(notifyIntent);
 

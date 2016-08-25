@@ -22,6 +22,10 @@ public class CloudCommunication {
 
     ServerConnection serverConnection;
 
+    static String DEFAULT_URL = "http://swan-cloud.herokuapp.com";
+
+    static String SWAN_REGISTER = "/swan/register/";
+    static String SWAN_UNREGISTER = "/swan/unregister/";
 
     Bundle httpConfiguration = new Bundle();
 
@@ -55,10 +59,15 @@ public class CloudCommunication {
     };
 
 
-    void sendRegisterRequest(String id, String expression) {
+    void sendRegisterRequest(String id, String expression, String location) {
 
+                if(location.contains("http")){
+                    httpConfiguration.putString(Constant.SERVER_URL,location+SWAN_REGISTER);
+                }
+                else {
 
-                httpConfiguration.putString(Constant.SERVER_URL,"http://swan-cloud.herokuapp.com/swan/register/");
+                    httpConfiguration.putString(Constant.SERVER_URL, DEFAULT_URL+SWAN_REGISTER);
+                }
 
                 serverConnection = new ServerConnection(httpConfiguration);
 
@@ -76,11 +85,15 @@ public class CloudCommunication {
     }
 
 
-    void sendUnregisterRequest(String id) {
+    void sendUnregisterRequest(String id, String location) {
 
 
-
-            httpConfiguration.putString(Constant.SERVER_URL,"http://swan-cloud.herokuapp.com/swan/unregister/");
+            if(location.contains("http")){
+                httpConfiguration.putString(Constant.SERVER_URL,location+SWAN_UNREGISTER);
+            }
+            else {
+                httpConfiguration.putString(Constant.SERVER_URL, DEFAULT_URL+SWAN_UNREGISTER);
+            }
 
             serverConnection = new ServerConnection(httpConfiguration);
 

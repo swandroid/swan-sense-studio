@@ -168,6 +168,12 @@ sensor_value_expression returns [SensorValueExpression value_expression]
 			} else {
 				$value_expression = new SensorValueExpression(location.getText(), entity.getText(), path /* .value_path */, null, mode /*.history_mode */, time,http_config);
 			}}
+	|	location=ID '@' entity=ID ':' path=value_path '?' config=configuration_options '{' ((mode=history_mode ',' time=time_value) | mode=history_mode | time=time_value) '}'
+			{if (time == null) {
+				$value_expression = new SensorValueExpression(location.getText(), entity.getText(), path /* .value_path */ , config /*.configuration */ , mode /* .history_mode */, 0,null);
+			} else {
+				$value_expression = new SensorValueExpression(location.getText(), entity.getText(), path /* .value_path */ , config /*.configuration */ , mode /* .history_mode */ , time,null);
+			}}
 	|	location=ID '@' entity=ID ':' path=value_path '?' config=configuration_options '$' http_config=http_configuration_options '{' ((mode=history_mode ',' time=time_value) | mode=history_mode | time=time_value) '}'
 			{if (time == null) {
 				$value_expression = new SensorValueExpression(location.getText(), entity.getText(), path /* .value_path */ , config /*.configuration */ , mode /* .history_mode */, 0,http_config);
@@ -384,8 +390,12 @@ MIN :   ('MIN'|'min');
 MEAN    :   ('MEAN'|'mean');
 MEDIAN  :   ('MEDIAN'|'median');
 
-ID  :   ('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'0'..'9'|'_')*
+HTTP 	:	('http://') ;
+HTTPS 	: 	('https://') ;
+
+ID  :   (HTTP | HTTPS)?(('a'..'z'|'A'..'Z'|'_'|'/'|'-'|'.') ('a'..'z'|'A'..'Z'|'0'..'9'|'_'|'/'|'-'|'.')*)
     ;
+
 
 INT :   ('-')? '0'..'9'+
     ;
