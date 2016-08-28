@@ -186,19 +186,19 @@
             </intent-filter>
         </receiver>
 
-        <service
-            android:name=".remote.cloud.FirebaseMessageService">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
-            </intent-filter>
-        </service>
+        <!--<service-->
+            <!--android:name=".remote.cloud.FirebaseMessageService">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="com.google.firebase.MESSAGING_EVENT"/>-->
+            <!--</intent-filter>-->
+        <!--</service>-->
 
-        <service
-            android:name=".remote.cloud.FirebaseTokenService">
-            <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
-            </intent-filter>
-        </service>
+        <!--<service-->
+            <!--android:name=".remote.cloud.FirebaseTokenService">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>-->
+            <!--</intent-filter>-->
+        <!--</service>-->
 
         <service
             android:name=".engine.EvaluationEngineService"
@@ -1158,6 +1158,46 @@
                 <action android:name="interdroid.swan.sensor.DISCOVER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="interdroid.swan.sensors.cuckoo.ProfilerSensor$ConfigurationActivity"
+            android:exported="true"
+            android:icon="@drawable/add_icon">
+
+            <meta-data
+                android:name="entityId"
+                android:value="profiler" />
+
+            <meta-data
+                android:name="valuePaths"
+                android:value="value" />
+
+            <meta-data
+                android:name="units"
+                android:value="" />
+
+            <meta-data
+                android:name="case"
+                android:value="0" />
+
+            <meta-data
+                android:name="delay"
+                android:value="1000" />
+
+            <meta-data
+                android:name="authority"
+                android:value="interdroid.swan.sensors.cuckoo.profiler" />
+
+            <intent-filter>
+                <action android:name="interdroid.swan.sensor.DISCOVER" />
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name="interdroid.swan.sensors.cuckoo.ProfilerSensor"
+            android:exported="true"
+            android:process=":profilersensor">
+        </service>
 
         <service
             android:name="interdroid.swan.sensors.cuckoo.FlightSensor"

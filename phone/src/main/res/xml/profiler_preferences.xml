@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="Value Path">
+        <ListPreference android:title="Value Path"
+                        android:summary="Select a Value Path"
+                        android:key="valuepath"
+                        android:entries="@array/profiler_valuepaths"
+                        android:entryValues="@array/profiler_valuepaths" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Configuration">
+
+        <EditTextPreference
+            android:key="case"
+            android:inputType="numberDecimal"
+            android:dialogTitle="Enter Case Scenario number"
+            android:summary="Case Scenario"
+            android:title="Case Scenario"/>
+
+        <EditTextPreference
+            android:key="delay"
+            android:inputType="number"
+            android:dialogTitle="Enter Delay"
+            android:summary="Delay"
+            android:title="Delay"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

@@ -479,6 +479,10 @@
         <item>price</item>
     </string-array>
 
+    <string-array name="profiler_valuepaths">
+        <item>value</item>
+    </string-array>
+
     <string-array name="flight_cabin_types">
         <item>COACH</item>
         <item>PREMIUM_COACH</item>
