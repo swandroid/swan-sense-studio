@@ -218,6 +218,9 @@ public class EvaluationManagerBase {
                     result = new Result(now, TriState.UNDEFINED);
                 }
             } else if (expression instanceof ValueExpression) {
+                if (mCachedResults.containsKey(id))
+                    return mCachedResults.get(id);
+
                 // we don't have anything cached, so send an empty result.
                 result = new Result(new TimestampedValue[]{}, 0);
             }
