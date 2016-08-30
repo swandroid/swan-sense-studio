@@ -3,6 +3,12 @@ package interdroid.swan.sensors.impl;
 import android.os.Bundle;
 import android.util.Log;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -65,6 +71,8 @@ public class ProfilerLocalSensor extends AbstractSwanSensor {
     class ProfilerPoller extends Thread {
         public static final String SAMPLE_INTERVAL = "sample_interval";
 
+        private static final String BASE_URL = "http://gps.buienradar.nl/getrr.php?lat=52.3&lon=4.87";
+
         private Bundle configuration;
         private String valuePath;
         private String id;
@@ -89,6 +97,21 @@ public class ProfilerLocalSensor extends AbstractSwanSensor {
 
                 if (configuration.containsKey(DELAY)) {
                     delay = configuration.getInt(DELAY);
+                }
+
+
+                try {
+                    URLConnection conn = new URL(BASE_URL).openConnection();
+                    BufferedReader r = new BufferedReader(new InputStreamReader(
+                            conn.getInputStream()));
+                    String line = r.readLine();
+
+                } catch (MalformedURLException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                } catch (IOException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
                 }
 
                 if (caseScenario == 0) {
