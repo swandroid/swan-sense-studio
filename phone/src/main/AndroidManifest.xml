@@ -1193,6 +1193,46 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".sensors.impl.ProfilerLocalSensor$ConfigurationActivity"
+            android:exported="true"
+            android:icon="@drawable/the_things_network_logo">
+
+            <meta-data
+                android:name="entityId"
+                android:value="profiler1" />
+
+            <meta-data
+                android:name="valuePaths"
+                android:value="value" />
+
+            <meta-data
+                android:name="units"
+                android:value="" />
+
+            <meta-data
+                android:name="case"
+                android:value="0" />
+
+            <meta-data
+                android:name="delay"
+                android:value="1000" />
+
+            <meta-data
+                android:name="authority"
+                android:value="interdroid.swan.sensors.impl.profiler1" />
+
+            <intent-filter>
+                <action android:name="interdroid.swan.sensor.DISCOVER" />
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name=".sensors.impl.ProfilerLocalSensor"
+            android:exported="true"
+            android:process=":profilerlocalsensor">
+        </service>
+
         <service
             android:name="interdroid.swan.sensors.cuckoo.ProfilerSensor"
             android:exported="true"
