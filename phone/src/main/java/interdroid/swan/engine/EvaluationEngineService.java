@@ -22,8 +22,8 @@ public class EvaluationEngineService extends EvaluationEngineServiceBase{
         super.onCreate();
 
         mProximityManager = new BTManager(this);
-        mProximityManager.init();
-        BeaconInitializer.getInstance(getApplicationContext());
+//        mProximityManager.init();
+//        BeaconInitializer.getInstance(getApplicationContext());
 
         // Re-initialize with correct EvaluationManager
         mEvaluationManager = new EvaluationManager(this, mProximityManager);
