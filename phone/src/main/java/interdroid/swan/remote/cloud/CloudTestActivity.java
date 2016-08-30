@@ -2,6 +2,9 @@ package interdroid.swan.remote.cloud;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import interdroid.swan.R;
@@ -25,21 +28,47 @@ public class CloudTestActivity extends Activity {
 
     private static final String TAG = "CloudTestActivity";
 
-    /* name of the sensor */
-   // final String MY_EXPRESSION = "cloud@test:value{ANY,1000} > 0";
-    final String MY_EXPRESSION = "cloud@test:value{ANY,0}";
+    final String MY_EXPRESSION = "cloud@profiler:value?case=0{ANY,0} > 1";
+
+   // final String MY_EXPRESSION = "cloud@profiler:value?case=1{ANY,0} > 1";
+
+  //  final String MY_EXPRESSION = "self@profiler:value?case=0{ANY,0} > 1";
+
+   // final String MY_EXPRESSION = "self@profiler:value?case=1{ANY,0} > 1";
+
     /* random id */
     public final String REQUEST_CODE = "cloud-test-light";
 
     TextView tv = null;
 
+    Button button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cloudtest);
 
+        addListenerOnButton();
+
+        new CountDownTimer(60000, 1000) {
+
+
+            @Override
+            public void onTick(long millisUntilFinished) {
+
+            }
+
+            @Override
+            public void onFinish() {
+                unregisterSWANSensor();
+            }
+
+        }.start();
+
         initialize();
+
+
+
 
     }
 
@@ -51,6 +80,25 @@ public class CloudTestActivity extends Activity {
         registerSWANSensor(MY_EXPRESSION);
 
     }
+
+
+    public void addListenerOnButton() {
+
+        button = (Button) findViewById(R.id.button);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                unregisterSWANSensor();
+
+
+            }
+        });
+
+    }
+
+
 
 
     /* Register expression to SWAN */
@@ -125,16 +173,20 @@ public class CloudTestActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterSWANSensor();
+      //  unregisterSWANSensor();
     }
 
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterSWANSensor();
+     //   unregisterSWANSensor();
 
     }
+
+
+
+
 
 
 
