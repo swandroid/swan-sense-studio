@@ -50,7 +50,7 @@ public class CloudTestActivity extends Activity {
 
         addListenerOnButton();
 
-        new CountDownTimer(60000, 1000) {
+        new CountDownTimer(5*60000, 1000) {
 
 
             @Override
