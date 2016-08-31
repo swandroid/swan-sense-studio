@@ -1182,7 +1182,7 @@
 
             <meta-data
                 android:name="delay"
-                android:value="1000" />
+                android:value="1000L" />
 
             <meta-data
                 android:name="authority"

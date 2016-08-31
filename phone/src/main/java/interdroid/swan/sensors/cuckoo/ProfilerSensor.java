@@ -69,8 +69,9 @@ public class ProfilerSensor  extends AbstractCuckooSensor {
                     Log.d(TAG, "Messages were deleted at the server.");
                 } else {
                     if (intent.hasExtra(VALUE)) {
-                        putValueTrimSize(VALUE, null, System.currentTimeMillis(),
-                                intent.getExtras().getString(VALUE));
+                        int newVal = Integer.valueOf(intent.getExtras().getString(VALUE));
+                        Log.d(TAG, newVal+"");
+                        putValueTrimSize(VALUE, null, System.currentTimeMillis(), newVal);
                     }
                 }
                 setResultCode(Activity.RESULT_OK);

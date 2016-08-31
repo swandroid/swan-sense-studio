@@ -247,22 +247,22 @@ public class BTManager implements ProximityManagerI {
     };
 
     public BTManager(Context context) {
-        this.context = context;
-
-        btAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (btAdapter == null) {
-            log(TAG, "Bluetooth not supported", Log.ERROR, true);
-            return;
-        }
-
-        evalQueue = new ConcurrentLinkedQueue<Object>();
-        handler = new Handler();
-        wifiReceiver = new WifiReceiver(this);
-
-        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-        filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-        this.context.registerReceiver(mReceiver, filter); // Don't forget to unregister during onDestroy
+//        this.context = context;
+//
+//        btAdapter = BluetoothAdapter.getDefaultAdapter();
+//        if (btAdapter == null) {
+//            log(TAG, "Bluetooth not supported", Log.ERROR, true);
+//            return;
+//        }
+//
+//        evalQueue = new ConcurrentLinkedQueue<Object>();
+//        handler = new Handler();
+//        wifiReceiver = new WifiReceiver(this);
+//
+//        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+//        filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+//        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+//        this.context.registerReceiver(mReceiver, filter); // Don't forget to unregister during onDestroy
     }
 
     // TODO this is not quite OK
