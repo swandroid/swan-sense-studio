@@ -67,7 +67,7 @@ public class ProfilerLocalSensor extends AbstractSwanSensor {
     @Override
     public final void unregister(String id) {
         Log.e("Roshan","SWAN Phone Communication"+noOfTimes);
-        activeThreads.remove(id).interrupt();
+        activeThreads.remove(id).interrupt(); 
         noOfTimes=0;
     }
 
