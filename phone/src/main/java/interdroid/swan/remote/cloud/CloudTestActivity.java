@@ -3,6 +3,7 @@ package interdroid.swan.remote.cloud;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -115,7 +116,7 @@ public class CloudTestActivity extends Activity {
 
             if(checkExpression instanceof ValueExpression) {
 
-
+                final long[] startValue = {System.currentTimeMillis()};
                 ExpressionManager.registerValueExpression(this, String.valueOf(REQUEST_CODE),
                         (ValueExpression) ExpressionFactory.parse(myExpression),
                         new ValueExpressionListener() {
@@ -125,6 +126,11 @@ public class CloudTestActivity extends Activity {
                             public void onNewValues(String id,
                                                     TimestampedValue[] arg1) {
                                 if (arg1 != null && arg1.length > 0) {
+                                    long endValue = System.currentTimeMillis();
+                                    long result = (endValue- startValue[0]);
+                                    startValue[0] = endValue;
+                                    Log.e("CloudTestActivity","Time taken to get value result(milli seconds) "+result);
+
                                     String value = arg1[0].getValue().toString();
                                     tv.setText("Value = " + value+"\nTimestamp = "+arg1[0].getTimestamp());
 
@@ -138,11 +144,17 @@ public class CloudTestActivity extends Activity {
             }
             else if(checkExpression instanceof TriStateExpression){
 
+                final long[] startTriState = {System.currentTimeMillis()};
                 ExpressionManager.registerTriStateExpression(this, String.valueOf(REQUEST_CODE),
                         (TriStateExpression) ExpressionFactory.parse(myExpression), new TriStateExpressionListener() {
                             @Override
                             public void onNewState(String id, long timestamp, TriState newState) {
 
+                                long endTriState = System.currentTimeMillis();
+                                long resultState = (endTriState- startTriState[0]);
+                                startTriState[0] = endTriState;
+
+                                Log.e("CloudTestActivity","Time taken to get tristate result(milli seconds) "+resultState);
 
                                     tv.setText("Tristate ="+newState+"\nTimestamp = "+timestamp);
 
