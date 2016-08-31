@@ -23,6 +23,7 @@ public class ProfilerLocalSensor extends AbstractSwanSensor {
     public static final String CASE = "case";
     public static final String DELAY = "delay";
 
+    public static int noOfTimes = 0;
     public static class ConfigurationActivity extends
             AbstractConfigurationActivity {
 
@@ -65,7 +66,9 @@ public class ProfilerLocalSensor extends AbstractSwanSensor {
 
     @Override
     public final void unregister(String id) {
+        Log.e("Roshan","SWAN Phone Communication"+noOfTimes);
         activeThreads.remove(id).interrupt();
+        noOfTimes=0;
     }
 
     class ProfilerPoller extends Thread {
@@ -99,6 +102,7 @@ public class ProfilerLocalSensor extends AbstractSwanSensor {
                     delay = configuration.getInt(DELAY);
                 }
 
+                noOfTimes++;
 
                 try {
                     URLConnection conn = new URL(BASE_URL).openConnection();
