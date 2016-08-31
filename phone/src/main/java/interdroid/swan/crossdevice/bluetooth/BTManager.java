@@ -312,25 +312,25 @@ public class BTManager implements ProximityManagerI {
 
     @Override
     public void clean() {
-        for(Map.Entry<String, String> entry : registeredExpressions.entrySet()) {
-            unregisterExpression(entry.getKey(), entry.getValue(), null);
-        }
-
-        disconnect();
-        context.unregisterReceiver(mReceiver);
+//        for(Map.Entry<String, String> entry : registeredExpressions.entrySet()) {
+//            unregisterExpression(entry.getKey(), entry.getValue(), null);
+//        }
+//
+//        disconnect();
+//        context.unregisterReceiver(mReceiver);
     }
 
     @Override
     public void disconnect() {
-        for(BTSwanDevice swanDevice : nearbyDevices) {
-            if (swanDevice.isConnectedToRemote()) {
-                swanDevice.getConnection().disconnect();
-            }
-        }
-        for(BTReceiver receiver : btReceivers) {
-            receiver.abort();
-        }
-        wifiReceiver.abort();
+//        for(BTSwanDevice swanDevice : nearbyDevices) {
+//            if (swanDevice.isConnectedToRemote()) {
+//                swanDevice.getConnection().disconnect();
+//            }
+//        }
+//        for(BTReceiver receiver : btReceivers) {
+//            receiver.abort();
+//        }
+//        wifiReceiver.abort();
     }
 
     public void discoverPeers() {

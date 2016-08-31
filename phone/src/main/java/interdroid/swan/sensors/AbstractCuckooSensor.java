@@ -83,13 +83,14 @@ public abstract class AbstractCuckooSensor extends AbstractSwanSensor {
 
                 }
                 if (prefs.getString(REGISTRATION_ID, null) != null) {
+                    Log.d(TAG, "connecting to cuckoo");
                     try {
+                        registerReceiver();
                         Cuckoo.register(AbstractCuckooSensor.this,
                                 remoteResource,
                                 prefs.getString(REGISTRATION_ID, null),
                                 getGCMApiKey(), getPoller(), id, valuePath,
                                 configAsMap);
-                        registerReceiver();
 
                         return;
                     } catch (NoResourceAvailableException e) {
