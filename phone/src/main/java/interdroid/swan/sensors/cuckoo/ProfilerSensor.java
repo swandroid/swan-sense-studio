@@ -8,16 +8,15 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-
 import interdroid.swan.R;
 import interdroid.swan.cuckoo_sensors.CuckooPoller;
 import interdroid.swan.sensors.AbstractCuckooSensor;
 import interdroid.swancore.sensors.AbstractConfigurationActivity;
 
-public class ProfilerSensor  extends AbstractCuckooSensor {
+public class ProfilerSensor extends AbstractCuckooSensor {
 
     public static final String VALUE = "value";
+    public static final String ACTION_NEW_VALUE = "new_value";
 
     /**
      * The configuration activity for this sensor.
@@ -34,49 +33,45 @@ public class ProfilerSensor  extends AbstractCuckooSensor {
 
     @Override
     public CuckooPoller getPoller() {
-         return new ProfilerPoller();
+        return new ProfilerPoller();
     }
 
     @Override
     public String getGCMSenderId() {
-        return "314238823080";
+        return "251697980958";
         //throw new RuntimeException("<EMPTY FOR GIT>");
     }
 
     @Override
     public String getGCMApiKey() {
-        return "AIzaSyCHqnp0RwLhVUkX6MWJBW_5hfbKB93ynQ8";
+        return "AIzaSyCJoZbF36XS-2I83oe5ahuoEBRuqcU1u7M";
+        //return "AIzaSyCHqnp0RwLhVUkX6MWJBW_5hfbKB93ynQ8";
         //throw new RuntimeException("<EMPTY FOR GIT>");
     }
 
     @Override
     public void registerReceiver() {
-        IntentFilter filter = new IntentFilter(
-                "com.google.android.c2dm.intent.RECEIVE");
+        SENSOR_NAME = "Profiler Sensor";
+
+        IntentFilter filter = new IntentFilter(ACTION_NEW_VALUE);
         filter.addCategory(getPackageName());
         registerReceiver(mReceiver = new BroadcastReceiver() {
             private static final String TAG = "profilerSensorReceiver";
 
             @Override
             public void onReceive(Context context, Intent intent) {
-                GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(context);
-                String messageType = gcm.getMessageType(intent);
-                if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR
-                        .equals(messageType)) {
-                    Log.d(TAG, "Received update but encountered send error.");
-                } else if (GoogleCloudMessaging.MESSAGE_TYPE_DELETED
-                        .equals(messageType)) {
-                    Log.d(TAG, "Messages were deleted at the server.");
-                } else {
-                    if (intent.hasExtra(VALUE)) {
+                if (intent.hasExtra(VALUE)) {
+                    try {
                         int newVal = Integer.valueOf(intent.getExtras().getString(VALUE));
-                        Log.d(TAG, newVal+"");
+                        Log.d(TAG, newVal + "");
                         putValueTrimSize(VALUE, null, System.currentTimeMillis(), newVal);
+                    } catch (Exception e) {
+                        Log.e(TAG, e.toString());
                     }
                 }
                 setResultCode(Activity.RESULT_OK);
             }
-        }, filter, "com.google.android.c2dm.permission.SEND", null);
+        }, filter);
     }
 
     @Override
@@ -86,6 +81,6 @@ public class ProfilerSensor  extends AbstractCuckooSensor {
 
     @Override
     public String[] getValuePaths() {
-        return new String[]{ VALUE };
+        return new String[]{VALUE};
     }
 }

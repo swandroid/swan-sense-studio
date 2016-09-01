@@ -1,5 +1,6 @@
 package interdroid.swan.remote.cloud;
 
+import android.content.Intent;
 import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -12,6 +13,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import interdroid.swan.engine.EvaluationEngineService;
+import interdroid.swan.sensors.cuckoo.ProfilerSensor;
 import interdroid.swancore.crossdevice.Converter;
 import interdroid.swancore.swansong.Result;
 import interdroid.swancore.swansong.TimestampedValue;
@@ -36,7 +39,13 @@ public class FirebaseMessageService extends FirebaseMessagingService{
         Log.d(TAG, "Message body: "+ remoteMessage.getData().get("field"));
 
 
+        //TODO: add proper implementation for handling messages coming from cuckoo server
         String message = remoteMessage.getData().get("field");
+        if (message == null) {
+            Log.d(TAG, "it's cuckoo");
+            CloudManager.getCreatedInstance().sendCuckooValue(remoteMessage.getData().get("value"));
+            return;
+        }
 
         try {
             JSONObject jsonResult = new JSONObject(message);
@@ -75,7 +84,7 @@ public class FirebaseMessageService extends FirebaseMessagingService{
                 }
 
 
-                if(result!=null) {
+                if(result!=null && cloudManager!=null) {
                     cloudManager.sendResult(jsonResult.getString("id"), jsonResult.getString("action"), Converter.objectToString(result));
                 }
             }

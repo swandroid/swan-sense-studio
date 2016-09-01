@@ -6,6 +6,7 @@ import android.util.Log;
 
 import interdroid.swan.engine.EvaluationEngineService;
 import interdroid.swan.remote.IRemoteManager;
+import interdroid.swan.sensors.cuckoo.ProfilerSensor;
 
 /**
  * Created by Roshan Bharath Das on 27/06/16.
@@ -67,6 +68,14 @@ public class CloudManager implements IRemoteManager {
         //context.sendBroadcast(notifyIntent);
 
 
+    }
+
+    //TODO: remove after cuckoo test
+    public void sendCuckooValue(String newVal) {
+        Intent notifyIntent = new Intent(ProfilerSensor.ACTION_NEW_VALUE);
+//        notifyIntent.setClass(context, ProfilerSensor.class);
+        notifyIntent.putExtra("value", newVal);
+        context.sendBroadcast(notifyIntent);
     }
 
 

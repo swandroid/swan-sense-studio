@@ -35,6 +35,7 @@ public class EvaluationManager extends EvaluationManagerBase{
     public EvaluationManager(Context context, ProximityManagerI proximityManager) {
         super(context);
         this.mProximityManager = proximityManager;
+        CloudManager.getInstance(mContext); //TODO: remove after cuckoo test
     }
 
     @Override

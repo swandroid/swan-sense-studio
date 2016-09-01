@@ -186,19 +186,19 @@
             </intent-filter>
         </receiver>
 
-        <!--<service-->
-            <!--android:name=".remote.cloud.FirebaseMessageService">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="com.google.firebase.MESSAGING_EVENT"/>-->
-            <!--</intent-filter>-->
-        <!--</service>-->
+        <service
+            android:name=".remote.cloud.FirebaseMessageService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
 
-        <!--<service-->
-            <!--android:name=".remote.cloud.FirebaseTokenService">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>-->
-            <!--</intent-filter>-->
-        <!--</service>-->
+        <service
+            android:name=".remote.cloud.FirebaseTokenService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
 
         <service
             android:name=".engine.EvaluationEngineService"
