@@ -270,14 +270,34 @@ public abstract class AbstractSwanSensor extends AbstractSensorBase {
         }
 
         try {
-            String registeredValuePath = registeredValuePaths.get(id);
+            if (expressionIdsPerValuePath.containsKey(valuePath)) {
+                List<String> ids = expressionIdsPerValuePath.get(valuePath);
+
+                for (String exprId: ids) {
+                    Bundle config = registeredConfigurations.get(exprId);
+                    SensorDataKey sensorDataKey = new SensorDataKey(valuePath, config);
+                    addNewValue(sensorDataKey, new TimestampedValue(value, now));
+                }
+            }
+
+            if (expressionIdsPerValuePath.containsKey(ALL_VALUES)) {
+                List<String> ids = expressionIdsPerValuePath.get(ALL_VALUES);
+
+                for (String exprId: ids) {
+                    Bundle config = registeredConfigurations.get(exprId);
+                    SensorDataKey sensorDataKey = new SensorDataKey(valuePath, config);
+                    addNewValue(sensorDataKey, new TimestampedValue(value, now));
+                }
+            }
+
+           /* String registeredValuePath = registeredValuePaths.get(id);
             if (registeredValuePath.equalsIgnoreCase(valuePath) || registeredValuePath.equalsIgnoreCase(ALL_VALUES)) {
                 SensorDataKey sensorDataKey = new SensorDataKey(valuePath, registeredConfigurations.get(id));
                 addNewValue(sensorDataKey, new TimestampedValue(value, now));
             } else {
                 Log.e(TAG, "Value path \"" + valuePath + "\" not registered");
                 return;
-            }
+            }*/
         } catch (OutOfMemoryError e) {
             Log.d(TAG, "OutOfMemoryError");
             onDestroySensor();
