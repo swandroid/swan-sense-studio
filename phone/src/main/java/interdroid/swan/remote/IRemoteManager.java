@@ -5,9 +5,9 @@ package interdroid.swan.remote;
  */
 public interface IRemoteManager {
 
-    void registerExpression(String id, String expression);
+    void registerExpression(String id, String expression, String location);
 
-    void unregisterExpression(String id);
+    void unregisterExpression(String id, String location);
 
     void sendResult(String id, String action, String data);
 

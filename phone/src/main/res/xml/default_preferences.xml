@@ -67,6 +67,13 @@
             android:summary="The http request body for PUT, POST method to server"
             android:title="Http Body(for POST/PUT)" />
 
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:dialogTitle="Use Location"
+            android:key="server_use_location"
+            android:summary="Send sensor data in the context of a particular location"
+            android:title="Use Location" />
+
     </PreferenceCategory>
 
     <PreferenceCategory android:title="History Preferences">

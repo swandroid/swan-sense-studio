@@ -126,8 +126,12 @@ public class EvaluationEngineServiceBase extends Service {
 
                             long end = System.currentTimeMillis();
 
+                            long evaluationTime =(end-start);
+                            Log.e("Roshan", "Evalutation time in Phone (milliseconds) "+ evaluationTime);
+
                             // update with statistics: evaluationTime and evaluationDelay
                             head.evaluated((end - start), evaluationDelay);
+
 
                             if (head.update(result)) {
                                 Log.d(TAG, "Result updated: " + result);
