@@ -2,6 +2,10 @@ package interdroid.swan.remote.cloud;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import interdroid.swan.R;
@@ -25,21 +29,47 @@ public class CloudTestActivity extends Activity {
 
     private static final String TAG = "CloudTestActivity";
 
-    /* name of the sensor */
-   // final String MY_EXPRESSION = "cloud@test:value{ANY,1000} > 0";
-    final String MY_EXPRESSION = "cloud@test:value{ANY,0}";
+    final String MY_EXPRESSION = "cloud@profiler:value?case=0{ANY,0} > 1";
+
+   // final String MY_EXPRESSION = "cloud@profiler:value?case=1{ANY,0} > 1";
+
+  //  final String MY_EXPRESSION = "self@profiler:value?case=0{ANY,0} > 1";
+
+   // final String MY_EXPRESSION = "self@profiler:value?case=1{ANY,0} > 1";
+
     /* random id */
     public final String REQUEST_CODE = "cloud-test-light";
 
     TextView tv = null;
 
+    Button button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cloudtest);
 
+        addListenerOnButton();
+
+        new CountDownTimer(5*60000, 1000) {
+
+
+            @Override
+            public void onTick(long millisUntilFinished) {
+
+            }
+
+            @Override
+            public void onFinish() {
+                unregisterSWANSensor();
+            }
+
+        }.start();
+
         initialize();
+
+
+
 
     }
 
@@ -53,6 +83,25 @@ public class CloudTestActivity extends Activity {
     }
 
 
+    public void addListenerOnButton() {
+
+        button = (Button) findViewById(R.id.button);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                unregisterSWANSensor();
+
+
+            }
+        });
+
+    }
+
+
+
+
     /* Register expression to SWAN */
     private void registerSWANSensor(String myExpression){
 
@@ -61,7 +110,7 @@ public class CloudTestActivity extends Activity {
 
             if(checkExpression instanceof ValueExpression) {
 
-
+                final long[] startValue = {System.currentTimeMillis()};
                 ExpressionManager.registerValueExpression(this, String.valueOf(REQUEST_CODE),
                         (ValueExpression) ExpressionFactory.parse(myExpression),
                         new ValueExpressionListener() {
@@ -71,6 +120,11 @@ public class CloudTestActivity extends Activity {
                             public void onNewValues(String id,
                                                     TimestampedValue[] arg1) {
                                 if (arg1 != null && arg1.length > 0) {
+                                    long endValue = System.currentTimeMillis();
+                                    long result = (endValue- startValue[0]);
+                                    startValue[0] = endValue;
+                                    Log.e("CloudTestActivity","Time taken to get value result(milli seconds) "+result);
+
                                     String value = arg1[0].getValue().toString();
                                     tv.setText("Value = " + value+"\nTimestamp = "+arg1[0].getTimestamp());
 
@@ -84,11 +138,17 @@ public class CloudTestActivity extends Activity {
             }
             else if(checkExpression instanceof TriStateExpression){
 
+                final long[] startTriState = {System.currentTimeMillis()};
                 ExpressionManager.registerTriStateExpression(this, String.valueOf(REQUEST_CODE),
                         (TriStateExpression) ExpressionFactory.parse(myExpression), new TriStateExpressionListener() {
                             @Override
                             public void onNewState(String id, long timestamp, TriState newState) {
 
+                                long endTriState = System.currentTimeMillis();
+                                long resultState = (endTriState- startTriState[0]);
+                                startTriState[0] = endTriState;
+
+                                Log.e("CloudTestActivity","Time taken to get tristate result(milli seconds) "+resultState);
 
                                     tv.setText("Tristate ="+newState+"\nTimestamp = "+timestamp);
 
@@ -125,16 +185,20 @@ public class CloudTestActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterSWANSensor();
+      //  unregisterSWANSensor();
     }
 
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterSWANSensor();
+     //   unregisterSWANSensor();
 
     }
+
+
+
+
 
 
 
