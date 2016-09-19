@@ -9,7 +9,8 @@ public class GoogleEvent implements Parcelable{
     public String start;
     public String end;
 
-    public GoogleEvent(String end, String start, String location, String title) {
+    // the order of the parameters should be identical with the order in value paths array declaration
+    public GoogleEvent(String title, String location, String start, String end) {
         this.title = title;
         this.location = location;
         this.start = start;

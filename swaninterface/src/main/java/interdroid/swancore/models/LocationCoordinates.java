@@ -11,7 +11,7 @@ public class LocationCoordinates implements Parcelable {
     public float bearing = 0.0f;
     public float accuracy = 0.0f;
 
-    public LocationCoordinates(float bearing, double altitude, double latitude, float speed, float accuracy, double longitude) {
+    public LocationCoordinates(double latitude, double longitude, double altitude, float speed, float bearing, float accuracy) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.altitude = altitude;

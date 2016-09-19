@@ -86,8 +86,7 @@ public class RainSensor extends AbstractSwanSensor {
     public final void register(String id, String valuePath, Bundle configuration, final Bundle httpConfiguration, Bundle extraConfiguration) {
         super.register(id, valuePath, configuration, httpConfiguration, extraConfiguration);
 
-        RainPoller rainPoller = new RainPoller(id, valuePath,
-                configuration);
+        RainPoller rainPoller = new RainPoller(id, valuePath, configuration);
         activeThreads.put(id, rainPoller);
         rainPoller.start();
     }
@@ -132,10 +131,11 @@ public class RainSensor extends AbstractSwanSensor {
                         rainPrediction.addRainValue(time, value);
                     }
 
-                    putValueTrimSize(EXPECTED_MM, id, start, rainPrediction);
+                    configuration.putString(VALUE_PATH, EXPECTED_MM);
+                    putValueTrimSize(configuration, id, start, rainPrediction);
 
                 } catch (Exception e) {
-                    Log.e(TAG, e.getMessage());
+                    Log.e(TAG, e.toString());
                 }
 
 

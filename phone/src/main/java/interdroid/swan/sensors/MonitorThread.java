@@ -1,6 +1,7 @@
 package interdroid.swan.sensors;
 
 import android.content.ContentValues;
+import android.os.Bundle;
 
 import java.util.Map;
 
@@ -27,7 +28,11 @@ public class MonitorThread extends Thread {
                 System.out.println("change! " + previous + " -> " + values);
                 previous = values;
 //				sensor.putValues(toContentValues(values), System.currentTimeMillis());
-                sensor.putValueTrimSize(valuePath, null, System.currentTimeMillis(), toContentValues(values));
+                Bundle config = new Bundle();   //Switch to a bundle configuration component
+                for (String key: configuration.keySet()) {
+                    config.putString(key, (String) configuration.get(key));
+                }
+                sensor.putValueTrimSize(config, null, System.currentTimeMillis(), toContentValues(values));
             }
             try {
                 sleep(sensor.getPoller().getInterval(configuration, false));

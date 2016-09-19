@@ -116,10 +116,6 @@ public class GoogleCalendarSensor extends AbstractSwanSensor {
                 putValueTrimSize(LOCATION_NEXT_EVENT_FIELD, null, now, cursor.getString(1));
                 putValueTrimSize(START_TIME_NEXT_EVENT_FIELD, null, now, DateHelper.getDate(cursor.getLong(2)));
                 putValueTrimSize(END_TIME_NEXT_EVENT_FIELD, null, now, DateHelper.getDate(cursor.getLong(3)));
-
-//                putValueTrimSize(EVENT, null, System.currentTimeMillis(),
-//                        new GoogleEvent(cursor.getString(0), cursor.getString(1),
-//                                DateHelper.getDate(cursor.getLong(2)), DateHelper.getDate(cursor.getLong(3))));
             }
             cursor.close();
         }

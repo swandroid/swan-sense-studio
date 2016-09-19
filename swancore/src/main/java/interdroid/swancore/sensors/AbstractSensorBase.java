@@ -25,6 +25,7 @@ public abstract class AbstractSensorBase extends Service implements
         SensorInterface {
 
     private static final String TAG = "AbstractSensorBase";
+    public static final String VALUE_PATH = "value_path";
 
     /**
      * The sensor interface.
@@ -65,7 +66,7 @@ public abstract class AbstractSensorBase extends Service implements
     /**
      * The expression ids for each value path.
      */
-    protected final Map<String, List<String>> expressionIdsPerValuePath = new HashMap<String, List<String>>();
+    protected final Map<Bundle, List<String>> expressionIdsPerConfig = new HashMap<>();
 
     /**
      * Initializes the default configuration for this sensor.
@@ -104,27 +105,34 @@ public abstract class AbstractSensorBase extends Service implements
     private final Sensor.Stub mBinder = new Sensor.Stub() {
 
         @Override
-        public void register(final String id, final String valuePath,
-                             final Bundle configuration, final Bundle httpConfiguration, final Bundle extraConfiguration) throws RemoteException {
-            // value path exists and id is unique (enforced by evaluation
-            // engine)
+        public void register(final String id, final String valuePath, final Bundle configuration,
+                             final Bundle httpConfiguration, final Bundle extraConfiguration) throws RemoteException {
+
+            // value path exists and id is unique (enforced by evaluation engine)
             synchronized (mSensorInterface) {
                 try {
-                    Log.d(TAG, "Registering id: " + id + " value path: "
-                            + valuePath);
+                    configuration.putString(VALUE_PATH, valuePath);     // add value path as part of the configuration
+                    Log.d(TAG, "Registering id: " + id + " value path: " + valuePath);
+                    List<String> ids = expressionIdsPerConfig.get(configuration);
+
+                    if (ids == null) {
+                        ids = new ArrayList<>();
+                        expressionIdsPerConfig.put(configuration, ids);
+                    }
+
                     registeredConfigurations.put(id, configuration);
                     registeredValuePaths.put(id, valuePath);
                     registeredHttpConfigurations.put(id, httpConfiguration);
-                    List<String> ids = expressionIdsPerValuePath.get(valuePath);
-                    if (ids == null) {
-                        ids = new ArrayList<String>();
-                        expressionIdsPerValuePath.put(valuePath, ids);
-                    }
+
                     ids.add(id);
                     printState();
                     Log.d(TAG, "Registering with implementation.");
 
-                    mSensorInterface.register(id, valuePath, configuration, httpConfiguration, extraConfiguration);
+                    // if an expression was already registered with the same configuration
+                    // then do not call register on the sensor
+                    if (ids.size() == 1)
+                        mSensorInterface.register(id, valuePath, configuration, httpConfiguration, extraConfiguration);
+
                 } catch (Exception e) {
                     Log.e(TAG, "Caught exception while registering.", e);
                     throw new RemoteException();
@@ -134,9 +142,9 @@ public abstract class AbstractSensorBase extends Service implements
 
         @Override
         public void unregister(final String id) throws RemoteException {
-            registeredConfigurations.remove(id);
-            String valuePath = registeredValuePaths.remove(id);
-            expressionIdsPerValuePath.get(valuePath).remove(id);
+            Bundle configuration = registeredConfigurations.remove(id);
+            expressionIdsPerConfig.get(configuration).remove(id);
+            registeredValuePaths.remove(id);
             printState();
             mSensorInterface.unregister(id);
         }
@@ -162,7 +170,7 @@ public abstract class AbstractSensorBase extends Service implements
             Bundle info = new Bundle();
             info.putString("name", AbstractSensorBase.this.getClass().getSimpleName());
             int num = 0;
-            for (Map.Entry<String, List<String>> entry : expressionIdsPerValuePath
+            for (Map.Entry<Bundle, List<String>> entry : expressionIdsPerConfig
                     .entrySet()) {
                 num += entry.getValue().size();
             }
@@ -197,9 +205,9 @@ public abstract class AbstractSensorBase extends Service implements
             Log.d(TAG,
                     "valuepaths: " + key + ": " + registeredValuePaths.get(key));
         }
-        for (String key : expressionIdsPerValuePath.keySet()) {
+        for (Bundle key : expressionIdsPerConfig.keySet()) {
             Log.d(TAG, "expressionIds: " + key + ": "
-                    + expressionIdsPerValuePath.get(key));
+                    + expressionIdsPerConfig.get(key));
         }
     }
 
@@ -237,7 +245,7 @@ public abstract class AbstractSensorBase extends Service implements
     /**
      * Send a notification that data changed for the given id.
      *
-     * @param id the id of the value to notify for.
+     * @param ids the id of the expression to notify for.
      */
     protected final void notifyDataChangedForId(final String... ids) {
         Intent notifyIntent = new Intent(ACTION_NOTIFY);
@@ -253,16 +261,16 @@ public abstract class AbstractSensorBase extends Service implements
     /**
      * Send a notification that data for the given value path changed.
      *
-     * @param valuePath the value path to notify for.
+     * @param configuration the configuration of the expression to notify for.
      */
-    protected final void notifyDataChanged(final String valuePath) {
+    protected final void notifyDataChanged(final Bundle configuration) {
         List<String> notify = new ArrayList<String>();
 
         synchronized (mSensorInterface) {
             // can be null if multiple valuepaths are updated together and not
             // for all of them, there's an id registered.
-            if (expressionIdsPerValuePath.get(valuePath) != null) {
-                for (String id : expressionIdsPerValuePath.get(valuePath)) {
+            if (expressionIdsPerConfig.get(configuration) != null) {
+                for (String id : expressionIdsPerConfig.get(configuration)) {
                     notify.add(id);
                 }
             }
@@ -283,10 +291,10 @@ public abstract class AbstractSensorBase extends Service implements
      * @param values   the values
      * @return All readings in the timespan between timespan seconds ago and now
      */
-    protected static final List<TimestampedValue> getValuesForTimeSpan(
+    protected static List<TimestampedValue> getValuesForTimeSpan(
             final List<TimestampedValue> values, final long now,
             final long timespan) {
-        List<TimestampedValue> result = new ArrayList<TimestampedValue>();
+        List<TimestampedValue> result = new ArrayList<>();
         if (timespan == 0) {
             if (values != null && values.size() > 0) {
                 result.add(values.get(values.size() - 1));    //item in the last position has the latest timestamp

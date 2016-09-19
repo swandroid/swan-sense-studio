@@ -88,37 +88,37 @@ public class WifiSensor extends AbstractSwanSensor {
             for (ScanResult scanResult : results) {
                 Log.d(TAG, "Got WiFi: " + scanResult.level + ", "
                         + scanResult.SSID + ", " + scanResult.BSSID);
-                if (expressionIdsPerValuePath.containsKey(SSID_FIELD)) {
-                    putValueTrimSize(SSID_FIELD, null, now, scanResult.SSID);
-                }
-                if (expressionIdsPerValuePath.containsKey(BSSID_FIELD)) {
-                    putValueTrimSize(BSSID_FIELD, null, now, scanResult.BSSID);
-                }
-                if (expressionIdsPerValuePath.containsKey(LEVEL_FIELD)) {
-                    for (String id : registeredConfigurations.keySet()) {
-                        boolean matching = true;
-                        if (registeredConfigurations.get(id).containsKey(
-                                SSID_FIELD)) {
-                            matching = matching
-                                    && (registeredConfigurations.get(id)
-                                    .getString(SSID_FIELD)
-                                    .equals(scanResult.SSID));
-                        }
-                        if (registeredConfigurations.get(id).containsKey(
-                                BSSID_FIELD)) {
-                            matching = matching
-                                    && (registeredConfigurations.get(id)
-                                    .getString(BSSID_FIELD)
-                                    .equals(scanResult.BSSID));
-                        }
-                        if (matching) {
-                            Log.w(TAG, "matching result found!");
-                            putValueTrimSize(LEVEL_FIELD, null, now, scanResult.level);
-                        } else {
-                            Log.d(TAG, "No matching result found!");
-                        }
-                    }
-                }
+                //if (expressionIdsPerConfig.containsKey(SSID_FIELD)) {
+                putValueTrimSize(SSID_FIELD, null, now, scanResult.SSID);
+//                }
+//                if (expressionIdsPerConfig.containsKey(BSSID_FIELD)) {
+                putValueTrimSize(BSSID_FIELD, null, now, scanResult.BSSID);
+//                }
+//                if (expressionIdsPerConfig.containsKey(LEVEL_FIELD)) {
+//                    for (String id : registeredConfigurations.keySet()) {
+//                        boolean matching = true;
+//                        if (registeredConfigurations.get(id).containsKey(
+//                                SSID_FIELD)) {
+//                            matching = matching
+//                                    && (registeredConfigurations.get(id)
+//                                    .getString(SSID_FIELD)
+//                                    .equals(scanResult.SSID));
+//                        }
+//                        if (registeredConfigurations.get(id).containsKey(
+//                                BSSID_FIELD)) {
+//                            matching = matching
+//                                    && (registeredConfigurations.get(id)
+//                                    .getString(BSSID_FIELD)
+//                                    .equals(scanResult.BSSID));
+//                        }
+//                        if (matching) {
+//                            Log.w(TAG, "matching result found!");
+                putValueTrimSize(LEVEL_FIELD, null, now, scanResult.level);
+//                        } else {
+//                            Log.d(TAG, "No matching result found!");
+//                        }
+//                    }
+//                }
             }
         }
 
@@ -127,7 +127,7 @@ public class WifiSensor extends AbstractSwanSensor {
     /**
      * The thread we use to poll wifi.
      */
-    private Thread wifiPoller = new Thread() {
+    private final Thread wifiPoller = new Thread() {
         public void run() {
             while (!stopPolling) {
                 long start = System.currentTimeMillis();
@@ -138,10 +138,7 @@ public class WifiSensor extends AbstractSwanSensor {
                 try {
                     long waitTime = Math.max(
                             1,
-                            start
-                                    + currentConfiguration
-                                    .getLong(DISCOVERY_INTERVAL)
-                                    - System.currentTimeMillis());
+                            start + currentConfiguration.getLong(DISCOVERY_INTERVAL) - System.currentTimeMillis());
                     Log.d(TAG, "Waiting for " + waitTime + " ms.");
 
                     synchronized (wifiPoller) {
@@ -174,9 +171,10 @@ public class WifiSensor extends AbstractSwanSensor {
     public final void register(final String id, final String valuePath,
                                final Bundle configuration, final Bundle httpConfiguration, Bundle extraConfiguration) {
         super.register(id, valuePath, configuration, httpConfiguration, extraConfiguration);
+
         if (registeredConfigurations.size() == 1) {
-            registerReceiver(wifiReceiver, new IntentFilter(
-                    WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+            registerReceiver(wifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+
             if (!wifiPoller.isAlive()) {
                 wifiPoller.start();
             } else {
@@ -202,8 +200,7 @@ public class WifiSensor extends AbstractSwanSensor {
             }
         }
         if (keepDefault) {
-            currentConfiguration.putLong(DISCOVERY_INTERVAL,
-                    DEFAULT_DISCOVERY_INTERVAL);
+            currentConfiguration.putLong(DISCOVERY_INTERVAL, DEFAULT_DISCOVERY_INTERVAL);
         } else {
             currentConfiguration.putLong(DISCOVERY_INTERVAL, updatedPollRate);
         }
