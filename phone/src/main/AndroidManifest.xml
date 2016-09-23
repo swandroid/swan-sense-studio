@@ -33,6 +33,7 @@
     <uses-permission android:name="android.permission.WRITE_USER_DICTIONARY" />
     <uses-permission android:name="android.permission.NFC" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION"/>
     <uses-permission android:name="interdroid.vdb.permission.READ_DATABASE" />
     <uses-permission android:name="interdroid.vdb.permission.WRITE_DATABASE" />
     <!-- <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS_FULL "/> -->
@@ -1194,6 +1195,42 @@
                 <action android:name="interdroid.swan.sensor.DISCOVER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="interdroid.swan.sensors.impl.ActivityRecognitionSensor$ConfigurationActivity"
+            android:exported="true"
+            android:icon="@drawable/add_icon">
+
+            <meta-data
+                android:name="entityId"
+                android:value="activity" />
+
+            <meta-data
+                android:name="valuePaths"
+                android:value="type" />
+
+            <meta-data
+                android:name="delay"
+                android:value="3000" />
+
+            <meta-data
+                android:name="units"
+                android:value="" />
+
+            <meta-data
+                android:name="authority"
+                android:value="interdroid.swan.sensors.impl.activity" />
+
+            <intent-filter>
+                <action android:name="interdroid.swan.sensor.DISCOVER" />
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name="interdroid.swan.sensors.impl.ActivityRecognitionSensor"
+            android:exported="true"
+            android:process=":useractivitysensor">
+        </service>
 
         <service
             android:name="interdroid.swan.sensors.cuckoo.FlightSensor"

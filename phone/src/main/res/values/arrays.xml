@@ -502,4 +502,8 @@
     <string-array name="calendar_periods">
         <item>TODAY</item>
     </string-array>
+
+    <string-array name="user_activity_valuepaths">
+        <item>type</item>
+    </string-array>
 </resources>
