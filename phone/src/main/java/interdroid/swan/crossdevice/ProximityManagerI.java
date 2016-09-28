@@ -19,8 +19,6 @@ public interface ProximityManagerI {
 
     public void registerService();
 
-    public void disconnect();
-
     public void discoverPeers();
 
     public void registerExpression(String id, String expression, String resolvedLocation);

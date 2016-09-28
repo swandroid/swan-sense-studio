@@ -10,6 +10,7 @@ import android.media.MediaScannerConnection;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -36,6 +37,7 @@ import interdroid.swancore.swansong.Expression;
  * TODO stop client workers that are blocked waiting for results
  * TODO send just one valid result in BTServerWorker
  * TODO for tristate expressions sometimes there is no result
+ * TODO create Logger class
  */
 public class BTManager implements ProximityManagerI {
 
@@ -67,14 +69,14 @@ public class BTManager implements ProximityManagerI {
     private final int MAX_CONNECTIONS = 0;
     private final boolean LOG_ONLY_CRITICAL = false;
 
+    protected BluetoothAdapter btAdapter;
+    protected ConcurrentLinkedQueue<Object> evalQueue;
+    protected Handler handler;
+
     private Context context;
     private WifiReceiver wifiReceiver;
     private List<BTReceiver> btReceivers = new ArrayList<>();
-    private BluetoothAdapter btAdapter;
-    private ConcurrentLinkedQueue<Object> evalQueue;
-    private Handler handler;
     private boolean discovering = false;
-
     private boolean restarting = false;
     private long startTime = System.currentTimeMillis();
 
@@ -150,7 +152,7 @@ public class BTManager implements ProximityManagerI {
         }
     };
 
-    private final Thread evalThread = new Thread() {
+    protected final Thread evalThread = new Thread() {
         @Override
         public void run() {
             try {
@@ -258,26 +260,19 @@ public class BTManager implements ProximityManagerI {
         evalQueue = new ConcurrentLinkedQueue<Object>();
         handler = new Handler();
         wifiReceiver = new WifiReceiver(this);
+    }
+
+    public void init() {
+        if (btAdapter == null) {
+            log(TAG, "Bluetooth not supported", Log.ERROR, true);
+            return;
+        }
 
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         this.context.registerReceiver(mReceiver, filter); // Don't forget to unregister during onDestroy
-    }
 
-    // TODO this is not quite OK
-    public void registerService() {
-        String userFriendlyName = PreferenceManager.getDefaultSharedPreferences(context).getString("name", null);
-
-        if (userFriendlyName == null) {
-            log(TAG, "Name not set for device", Log.ERROR, true);
-            return;
-        }
-
-        btAdapter.setName(userFriendlyName);
-    }
-
-    public void init() {
         registerService();
 
         evalThread.start();
@@ -293,6 +288,18 @@ public class BTManager implements ProximityManagerI {
         }
 
         blockedWorkersChecker.run();
+    }
+
+    // TODO this is not quite OK
+    public void registerService() {
+        String userFriendlyName = PreferenceManager.getDefaultSharedPreferences(context).getString("name", null);
+
+        if (userFriendlyName == null) {
+            log(TAG, "Name not set for device", Log.ERROR, true);
+            return;
+        }
+
+        btAdapter.setName(userFriendlyName);
     }
 
     private void startReceivers() {
@@ -320,7 +327,6 @@ public class BTManager implements ProximityManagerI {
         context.unregisterReceiver(mReceiver);
     }
 
-    @Override
     public void disconnect() {
         for(BTSwanDevice swanDevice : nearbyDevices) {
             if (swanDevice.isConnectedToRemote()) {
@@ -492,7 +498,7 @@ public class BTManager implements ProximityManagerI {
         getContext().startService(intent);
     }
 
-    private void addToQueue(Object item) {
+    protected void addToQueue(Object item) {
         evalQueue.add(item);
         log(TAG, "item added to queue: " + item, Log.DEBUG);
         log(TAG, "[Queue] " + evalQueue, Log.DEBUG);
