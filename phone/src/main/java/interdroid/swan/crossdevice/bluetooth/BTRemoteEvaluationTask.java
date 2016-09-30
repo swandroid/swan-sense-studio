@@ -41,15 +41,6 @@ public class BTRemoteEvaluationTask {
         return null;
     }
 
-    public BTRemoteExpression getExpressionWithBaseId(String baseId) {
-        for(BTRemoteExpression expression : expressions) {
-            if(expression.getBaseId().equals(baseId)) {
-                return expression;
-            }
-        }
-        return null;
-    }
-
     public void removeExpression(BTRemoteExpression expression) {
         expressions.remove(expression);
     }

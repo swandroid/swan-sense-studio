@@ -61,7 +61,7 @@ public class BTManager implements ProximityManagerI {
     /* set this to true if you want only one server worker at a time, or false if you want multiple server workers in parallel */
     public static final boolean SYNC_RECEIVERS = true;
     /* set this to true if you want to prevent 2 devices connecting to each other at the same time */
-    public static final boolean SYNC_DEVICES = true;
+    public static final boolean SYNC_DEVICES = false;
     /* set SYNC_RECEIVERS to false if you set this to true */
     public static final boolean USE_WIFI = false;
     private final int BLOCKED_WORKERS_CHECKING_INTERVAL = 10000;
@@ -72,8 +72,8 @@ public class BTManager implements ProximityManagerI {
     protected BluetoothAdapter btAdapter;
     protected ConcurrentLinkedQueue<Object> evalQueue;
     protected Handler handler;
+    protected Context context;
 
-    private Context context;
     private WifiReceiver wifiReceiver;
     private List<BTReceiver> btReceivers = new ArrayList<>();
     private boolean discovering = false;
@@ -420,7 +420,7 @@ public class BTManager implements ProximityManagerI {
     }
 
     // we synchronize this to make sure that a client worker is not added while a connection is killed in cleanupConnections()
-    private synchronized void processQueueItem(Object item) {
+    protected synchronized void processQueueItem(Object item) {
         log(TAG, "processing " + item, Log.DEBUG, true);
 
         if(item instanceof BTRemoteEvaluationTask) {
@@ -440,7 +440,7 @@ public class BTManager implements ProximityManagerI {
         }
     }
 
-    private void updateEvaluationTask(BTRemoteEvaluationTask remoteEvalTask) {
+    protected void updateEvaluationTask(BTRemoteEvaluationTask remoteEvalTask) {
         List<BTRemoteExpression> toRemove = new ArrayList<BTRemoteExpression>();
 
         for(BTRemoteExpression expression : remoteEvalTask.getExpressions()) {
