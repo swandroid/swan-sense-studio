@@ -16,6 +16,7 @@ import interdroid.swancore.sensors.AbstractConfigurationActivity;
 public class ProfilerSensor extends AbstractCuckooSensor {
 
     public static final String VALUE = "value";
+    public static final String TIMESTAMP = "ts";
     public static final String ACTION_NEW_VALUE = "new_value";
 
     /**
@@ -64,7 +65,8 @@ public class ProfilerSensor extends AbstractCuckooSensor {
                     try {
                         int newVal = Integer.valueOf(intent.getExtras().getString(VALUE));
                         Log.d(TAG, newVal + "");
-                        putValueTrimSize(VALUE, null, System.currentTimeMillis(), newVal);
+                        long ts = Long.valueOf(intent.getExtras().getString(TIMESTAMP));
+                        putValueTrimSize(VALUE, null, ts, newVal);
                     } catch (Exception e) {
                         Log.e(TAG, e.toString());
                     }

@@ -12,6 +12,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import interdroid.swan.engine.EvaluationEngineService;
 import interdroid.swan.sensors.cuckoo.ProfilerSensor;
@@ -43,7 +44,9 @@ public class FirebaseMessageService extends FirebaseMessagingService{
         String message = remoteMessage.getData().get("field");
         if (message == null) {
             Log.d(TAG, "it's cuckoo");
-            CloudManager.getCreatedInstance().sendCuckooValue(remoteMessage.getData().get("value"));
+            String val = remoteMessage.getData().get("value");
+            String ts = remoteMessage.getData().get("ts");
+            CloudManager.getCreatedInstance().sendCuckooValue(val, ts);
             return;
         }
 

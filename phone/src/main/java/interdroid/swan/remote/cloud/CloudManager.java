@@ -71,10 +71,11 @@ public class CloudManager implements IRemoteManager {
     }
 
     //TODO: remove after cuckoo test
-    public void sendCuckooValue(String newVal) {
+    public void sendCuckooValue(String newVal, String ts) {
         Intent notifyIntent = new Intent(ProfilerSensor.ACTION_NEW_VALUE);
 //        notifyIntent.setClass(context, ProfilerSensor.class);
         notifyIntent.putExtra("value", newVal);
+        notifyIntent.putExtra("ts", ts);
         context.sendBroadcast(notifyIntent);
     }
 
