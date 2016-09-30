@@ -69,7 +69,7 @@ public class ProfilerSensor extends AbstractCuckooSensor {
                         Log.e(TAG, e.toString());
                     }
                 }
-                setResultCode(Activity.RESULT_OK);
+             //   setResultCode(Activity.RESULT_OK);
             }
         }, filter);
     }

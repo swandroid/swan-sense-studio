@@ -29,13 +29,13 @@ public class CloudTestActivity extends Activity {
 
     private static final String TAG = "CloudTestActivity";
 
-    final String MY_EXPRESSION = "cloud@profiler:value?case=0{ANY,0} > 1";
+   // final String MY_EXPRESSION = "cloud@profiler:value?case=0{ANY,0} > 1";
 
    // final String MY_EXPRESSION = "cloud@profiler:value?case=1{ANY,0} > 1";
 
-  //  final String MY_EXPRESSION = "self@profiler:value?case=0#delay=2000{ANY,0} > 1";
+  //  final String MY_EXPRESSION = "self@profiler:value?case=0#delay=1000{ANY,0} > 1";
 
-   // final String MY_EXPRESSION = "self@profiler:value?case=1#delay=1000{ANY,0} > 1";
+    final String MY_EXPRESSION = "self@profiler:value?case=1#delay=1000{ANY,0} > 1";
 
 //    final String MY_EXPRESSION = "self@profiler1:value?case=0#delay=1000{ANY,0} > 0";
 
@@ -44,7 +44,7 @@ public class CloudTestActivity extends Activity {
 
 
     /* random id */
-    public final String REQUEST_CODE = "cloud-test-light";
+    public final String REQUEST_CODE = "P";
 
     TextView tv = null;
 
