@@ -109,11 +109,16 @@ public class ActivityRecognitionSensor extends AbstractSwanSensor implements Goo
     }
 
     private void handleDetectedActivities(List<DetectedActivity> probableActivities) {
+        int maxConfidence = 0;
+        int type = 0;
         for (DetectedActivity activity : probableActivities) {
-            if (activity.getConfidence() >= 75) {
-                Log.e(getClass().getSimpleName(), activity.getType() + "");
-                putValueTrimSize(ACTIVITY_TYPE, null, System.currentTimeMillis(), activity.getType());
+            if (maxConfidence < activity.getConfidence()){
+                maxConfidence = activity.getConfidence();
+                type = activity.getType();
             }
         }
+
+        Log.e(getClass().getSimpleName(), type + "");
+        putValueTrimSize(ACTIVITY_TYPE, null, System.currentTimeMillis(), type);
     }
 }

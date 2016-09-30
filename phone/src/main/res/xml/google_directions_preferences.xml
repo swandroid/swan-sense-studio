@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="Value Path">
+        <ListPreference
+            android:title="Value Path"
+            android:summary="Select a Value Path"
+            android:key="valuepath"
+            android:entries="@array/google_directions_valuepaths"
+            android:entryValues="@array/google_directions_valuepaths" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Configuration">
+        <PreferenceScreen
+            android:key="origin"
+            android:title="Set Origin">
+            <EditTextPreference
+                android:key="origin_latitude"
+                android:title="Location Latitude"
+                android:summary="Set Location Latitude"
+                android:dialogTitle="Enter Location Latitude"/>
+            <EditTextPreference
+                android:key="origin_longitude"
+                android:title="Location Longitude"
+                android:summary="Set Location Longitude"
+                android:dialogTitle="Enter Location Longitude"/>
+        </PreferenceScreen>
+
+        <PreferenceScreen
+            android:key="destination"
+            android:title="Set Destination">
+            <EditTextPreference
+                android:key="destination_latitude"
+                android:title="Location Latitude"
+                android:summary="Set Location Latitude"
+                android:dialogTitle="Enter Location Latitude"/>
+            <EditTextPreference
+                android:key="destination_longitude"
+                android:title="Location Longitude"
+                android:summary="Set Location Longitude"
+                android:dialogTitle="Enter Location Longitude"/>
+        </PreferenceScreen>
+
+    </PreferenceCategory>
+</PreferenceScreen>

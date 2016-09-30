@@ -380,7 +380,6 @@ public abstract class AbstractSwanSensor extends AbstractSensorBase {
             keyConfig.putString(VALUE_PATH, valuePath);
             if (mSensorValues.containsKey(keyConfig)) {  //containsKey does not seem to work
                 allValues.put(keyConfig, mSensorValues.get(keyConfig));
-                break;
             }
         }
 

@@ -1226,6 +1226,52 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name="interdroid.swan.sensors.impl.GoogleDirectionsSensor$ConfigurationActivity"
+            android:exported="true"
+            android:icon="@drawable/add_icon">
+
+            <meta-data
+                android:name="entityId"
+                android:value="directions" />
+
+            <meta-data
+                android:name="valuePaths"
+                android:value="directions" />
+
+            <meta-data
+                android:name="origin_latitude"
+                android:value="52.3199984"/>
+            <meta-data
+                android:name="origin_longitude"
+                android:value="4.8715138"/>
+
+            <meta-data
+                android:name="destination_latitude"
+                android:value="52.3165652"/>
+            <meta-data
+                android:name="destination_longitude"
+                android:value="4.8681567"/>
+
+            <meta-data
+                android:name="units"
+                android:value="" />
+
+            <meta-data
+                android:name="authority"
+                android:value="interdroid.swan.sensors.impl.directions" />
+
+            <intent-filter>
+                <action android:name="interdroid.swan.sensor.DISCOVER" />
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name="interdroid.swan.sensors.impl.GoogleDirectionsSensor"
+            android:exported="true"
+            android:process=":googledirectionssensor">
+        </service>
+
         <service
             android:name="interdroid.swan.sensors.impl.ActivityRecognitionSensor"
             android:exported="true"
@@ -1386,7 +1432,8 @@
         <!-- TODO: add process tag-->
         <service
             android:name=".sensors.impl.GoogleCalendarSensor"
-            android:exported="true"/>
+            android:exported="true"
+            android:process=":googlecalendar"/>
 
         <service
             android:name=".sensors.impl.LogCatSensor"
