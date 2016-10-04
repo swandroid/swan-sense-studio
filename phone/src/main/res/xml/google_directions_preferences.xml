@@ -10,6 +10,12 @@
     </PreferenceCategory>
 
     <PreferenceCategory android:title="Configuration">
+        <ListPreference
+            android:title="Travel Mode"
+            android:summary="Select the Travel Mode"
+            android:key="travel_mode"
+            android:entries="@array/google_directions_travelmode"
+            android:entryValues="@array/google_directions_travelmode" />
         <PreferenceScreen
             android:key="origin"
             android:title="Set Origin">
@@ -17,12 +23,14 @@
                 android:key="origin_latitude"
                 android:title="Location Latitude"
                 android:summary="Set Location Latitude"
-                android:dialogTitle="Enter Location Latitude"/>
+                android:dialogTitle="Enter Origin Location Latitude"
+                android:defaultValue="52.3199984"/>
             <EditTextPreference
                 android:key="origin_longitude"
                 android:title="Location Longitude"
                 android:summary="Set Location Longitude"
-                android:dialogTitle="Enter Location Longitude"/>
+                android:dialogTitle="Enter Origin Location Longitude"
+                android:defaultValue="4.8715138"/>
         </PreferenceScreen>
 
         <PreferenceScreen
@@ -32,12 +40,14 @@
                 android:key="destination_latitude"
                 android:title="Location Latitude"
                 android:summary="Set Location Latitude"
-                android:dialogTitle="Enter Location Latitude"/>
+                android:dialogTitle="Enter Destination Location Latitude"
+                android:defaultValue="52.3165652"/>
             <EditTextPreference
                 android:key="destination_longitude"
                 android:title="Location Longitude"
                 android:summary="Set Location Longitude"
-                android:dialogTitle="Enter Location Longitude"/>
+                android:dialogTitle="Enter Destination Location Longitude"
+                android:defaultValue="4.8681567"/>
         </PreferenceScreen>
 
     </PreferenceCategory>

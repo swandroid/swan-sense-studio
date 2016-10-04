@@ -1229,29 +1229,33 @@
         <activity
             android:name="interdroid.swan.sensors.impl.GoogleDirectionsSensor$ConfigurationActivity"
             android:exported="true"
-            android:icon="@drawable/add_icon">
+            android:icon="@drawable/expandoff">
 
             <meta-data
                 android:name="entityId"
-                android:value="directions" />
+                android:value="google_directions" />
 
             <meta-data
                 android:name="valuePaths"
                 android:value="directions" />
 
             <meta-data
+                android:name="travel_mode"
+                android:value="required" />
+
+            <meta-data
                 android:name="origin_latitude"
-                android:value="52.3199984"/>
+                android:value="required"/>
             <meta-data
                 android:name="origin_longitude"
-                android:value="4.8715138"/>
+                android:value="required"/>
 
             <meta-data
                 android:name="destination_latitude"
-                android:value="52.3165652"/>
+                android:value="required"/>
             <meta-data
                 android:name="destination_longitude"
-                android:value="4.8681567"/>
+                android:value="required"/>
 
             <meta-data
                 android:name="units"

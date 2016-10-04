@@ -11,12 +11,16 @@ import com.google.maps.model.Unit;
 
 import interdroid.swan.R;
 import interdroid.swan.sensors.AbstractSwanSensor;
+import interdroid.swancore.models.GoogleDirections;
 import interdroid.swancore.sensors.AbstractConfigurationActivity;
 
 public class GoogleDirectionsSensor extends AbstractSwanSensor {
-    public static final String ORIGIN = "origin";
-    public static final String DESTINATION = "destination";
+    public static final String ORIGIN_LAT = "origin_latitude";
+    public static final String ORIGIN_LNG = "origin_longitude";
+    public static final String DESTINATION_LAT = "destination_latitude";
+    public static final String DESTINATION_LNG = "destination_longitude";
     public static final String DIRECTIONS = "directions";
+    private static final String TRAVEL_MODE = "travel_mode";
 
     private GeoApiContext geoApiContext;
 
@@ -29,19 +33,36 @@ public class GoogleDirectionsSensor extends AbstractSwanSensor {
     public void register(final String id, String valuePath, final Bundle configuration, Bundle httpConfiguration, Bundle extraConfiguration) {
         super.register(id, valuePath, configuration, httpConfiguration, extraConfiguration);
 
+        double originLat = Double.valueOf((String)configuration.get(ORIGIN_LAT));
+        double originLng = Double.valueOf((String)configuration.get(ORIGIN_LNG));
+        double destLat = Double.valueOf((String)configuration.get(DESTINATION_LAT));
+        double destLng = Double.valueOf((String)configuration.get(DESTINATION_LNG));
+        String travelModeString = configuration.getString(TRAVEL_MODE);
+
         try {
-            for (TravelMode travelMode: TravelMode.values()) {
-                DirectionsApi.newRequest(geoApiContext)
+//            for (final TravelMode travelMode: TravelMode.values()) {
+//                if (travelMode == TravelMode.TRANSIT || travelMode == TravelMode.UNKNOWN)
+//                    continue;
+            TravelMode travelMode = TravelMode.BICYCLING;
+            for (TravelMode mode: TravelMode.values()) {
+                if (mode.toString().equals(travelModeString)) {
+                    travelMode = mode;
+                    break;
+                }
+            }
+
+            final TravelMode finalTravelMode = travelMode;
+            DirectionsApi.newRequest(geoApiContext)
                         .mode(travelMode)
                         .units(Unit.METRIC)
-                        .origin(configuration.getString(ORIGIN))
-                        .destination(configuration.getString(DESTINATION))
+                        .origin(new com.google.maps.model.LatLng(originLat, originLng))
+                        .destination(new com.google.maps.model.LatLng(destLat, destLng))
                         .alternatives(false)
                         .setCallback(new PendingResult.Callback<DirectionsResult>() {
 
                             @Override
                             public void onResult(DirectionsResult result) {
-                                putValueTrimSize(configuration, id, System.currentTimeMillis(), result);
+                                putValueTrimSize(configuration, id, System.currentTimeMillis(), new GoogleDirections(result, finalTravelMode));
                             }
 
                             @Override
@@ -49,7 +70,7 @@ public class GoogleDirectionsSensor extends AbstractSwanSensor {
 
                             }
                         });
-            }
+//            }
 
         } catch (Exception e) {
             e.printStackTrace();

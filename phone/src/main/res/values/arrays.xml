@@ -510,4 +510,9 @@
     <string-array name="google_directions_valuepaths">
         <item>directions</item>
     </string-array>
+    <string-array name="google_directions_travelmode">
+        <item>BIKING</item>
+        <item>WALKING</item>
+        <item>DRIVING</item>
+        </string-array>
 </resources>

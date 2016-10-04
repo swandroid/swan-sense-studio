@@ -114,6 +114,7 @@ public class RainSensor extends AbstractSwanSensor {
 
                 String url = String.format(BASE_URL, configuration.get(LATITUDE),
                         configuration.get(LONGITUDE));
+                Log.d(getClass().getSimpleName(), url);
 
                 try {
                     RainPrediction rainPrediction = new RainPrediction(Double.valueOf((String)configuration.get(LATITUDE)),
@@ -123,12 +124,14 @@ public class RainSensor extends AbstractSwanSensor {
 
                     String line;
                     while ((line = r.readLine()) != null) {
-//                        Log.d(TAG, line);
-//                        Log.d(TAG, "Expected mm: " + Integer.parseInt(line.substring(0, 3)) + " at hour " + line.substring(4));
-
-                        float value = convertValueToMMPerHr(Integer.parseInt(line.substring(0, 3)));
-                        String time = line.substring(4);
-                        rainPrediction.addRainValue(time, value);
+                        try {
+                            float value = convertValueToMMPerHr(Integer.parseInt(line.substring(0, 3)));
+                            String time = line.substring(4);
+//                            Log.d(getClass().getSimpleName(), "new rain value: " + value + " " + time);
+                            rainPrediction.addRainValue(time, value);
+                        } catch (Exception e) {
+                            Log.e(TAG, e.toString());
+                        }
                     }
 
                     configuration.putString(VALUE_PATH, EXPECTED_MM);

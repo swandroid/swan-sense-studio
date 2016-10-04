@@ -48,6 +48,7 @@ dependencies {
     // compile project(':swansong')
     compile 'interdroid.swancore.swansong:swansong:1.0.3'
     compile 'com.google.android.gms:play-services-maps:9.0.2'
+    compile 'com.google.maps:google-maps-services:0.1.15'
 }
 
 
