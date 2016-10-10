@@ -13,7 +13,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -37,6 +36,7 @@ import interdroid.swan.rss_sensor.pojos.RssItem;
 import interdroid.swan.rss_sensor.pojos.RssSensorRequest;
 import interdroid.swan.rss_sensor.pojos.RssSensorResponse;
 import interdroid.swan.rss_sensor.pojos.RssUrlResponse;
+import interdroid.swan.rss_sensor.volley.VolleySingleton;
 
 /**
  * Created by steven on 05/11/15.
@@ -46,6 +46,7 @@ public class RssSensorCache {
     private static final String TAG = RssSensorCache.class.getSimpleName();
 
     private static final int CACHE_TIME_DIVIDER = 10; //1/CACHE_TIME_DIVIDER = is caching time allowed as new response;
+    private static final int TEST = 11;
 
     private static RssSensorCache sInstance;
 
@@ -63,6 +64,7 @@ public class RssSensorCache {
     private int mNumberOfVolleyErrors = 0;
     private int mNumberOfEncodingErrors = 0;
     private String mLastVolleyError = "";
+    private int mNumberOfRequests = 0;
     private int mNumberOfRequests1 = 0;
     private int mNumberOfRequests2 = 0;
 
@@ -107,6 +109,7 @@ public class RssSensorCache {
 //        mThreadPool.execute(new Runnable() {
 //            @Override
 //            public void run() {
+                mNumberOfRequests += 1;
                 if (rssSensorRequest.sensorUrlId == 1) {
                     mNumberOfRequests1 += 1;
                 } else if (rssSensorRequest.sensorUrlId == 2) {
@@ -117,7 +120,8 @@ public class RssSensorCache {
                     mRequestQueue = new LinkedList<>();
                 }
                 Log.d(TAG, "mRequestQueue.size(): " + mRequestQueue.size());
-                new ExportStringRequestToFile().execute(hasInternetConnection() + "", rssSensorRequest.sensorUrlId + "", mRequestQueue.size() + "");
+                new ExportStringRequestToFile().execute(hasInternetConnection() + "",
+                        rssSensorRequest.sensorUrlId + "", mRequestQueue.size() + "", System.currentTimeMillis() + "");
                 if (mRequestQueue.offer(rssSensorRequest) && mRequestQueue.size() == 1) {
                     Log.d(TAG, "mRequestQueue.size() after adding size == 1: " + mRequestQueue.size());
                     doRequest(rssSensorRequest);
@@ -314,7 +318,7 @@ public class RssSensorCache {
                 FileWriter f = new FileWriter(
                         Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString()
                                 + "/SwanRssLogs/all_responses.txt", true);
-                f.write("Request" + System.currentTimeMillis() + "\n");
+                f.write("Request" + params[3] + "\n");
                 f.write("Has internet connection" + params[0] + "\n");
                 f.write("Request id: " + params[1] + "\n");
                 f.write("Number of requests in queue before adding: " + params[2] + "\n");
@@ -475,7 +479,9 @@ public class RssSensorCache {
                 f.write(mNumberOfRequests1 + ";" + mNumberOfRequests2 + "\n");
                 f.write("numberOfVolleyErrors;numberOfEncodingErrors\n");
                 f.write(mNumberOfVolleyErrors + ";" + mNumberOfEncodingErrors + "\n");
-                f.write(mLastVolleyError);
+                if (mLastVolleyError != null) {
+                    f.write(mLastVolleyError);
+                }
                 f.close();
             } catch (IOException e) {
                 System.out.println(
@@ -500,10 +506,18 @@ public class RssSensorCache {
 
     private void doGetRequest(final RssSensorRequest rssSensorRequest, int line) {
         new ExportDoGetRequestToFile().execute(line + "");
-        RequestQueue queue = Volley.newRequestQueue(mContext);
+        //TODO: move rss and json to main project
+        //TODO: use singleton/Application context
+        VolleySingleton volleySingleton = VolleySingleton.getInstance(mContext.getApplicationContext());
+        RequestQueue queue = volleySingleton.getRequestQueue();
+
+        Log.d(TAG, "Do get request");
+        String url = rssSensorRequest.sensorUrl + "&call=" + mNumberOfRequests
+                + "&test=" + TEST + "&requestTime=" + System.currentTimeMillis();
+        Log.d(TAG, "url: " + url);
 
         // Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, rssSensorRequest.sensorUrl,
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -528,6 +542,7 @@ public class RssSensorCache {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                Log.d(TAG, "error response:" + error.getMessage());
                 mNumberOfVolleyErrors += 1;
                 mLastVolleyError = error.getMessage();
                 new ExportStringToFile().execute(mLastVolleyError);

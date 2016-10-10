@@ -180,7 +180,7 @@ public class RssSensor extends AbstractSwanSensor {
                 //TODO: get correct url from configuration, al gedaan denk
                 //doGetRequest(rssRequestComplete.url, valuePath, id, rssRequestComplete);
                 int sampleRate = configuration.getInt(SAMPLE_INTERVAL,
-                        mDefaultConfiguration.getInt(SAMPLE_INTERVAL));
+                        mDefaultConfiguration.getInt(SAMPLE_INTERVAL)) * 1000;
                 if (rssSensorRequest == null) {
                     rssSensorRequest = new RssSensorRequest(rssRequestComplete, id, sampleRate, this);
                 }
@@ -191,10 +191,8 @@ public class RssSensor extends AbstractSwanSensor {
                 try {
 					Thread.sleep(Math.max(
 							0,
-							configuration.getInt(SAMPLE_INTERVAL,
-                                    mDefaultConfiguration
-                                            .getInt(SAMPLE_INTERVAL))
-									+ mStart - System.currentTimeMillis()));
+                            sampleRate)
+									+ mStart - System.currentTimeMillis());
 				} catch (InterruptedException e) {
                     Log.w(TAG, "interrupted");
                     interrupted = true;
@@ -250,15 +248,18 @@ public class RssSensor extends AbstractSwanSensor {
     }
 
     private void parseRSS(String rss, String valuePath, String id, RssRequestComplete rssRequestComplete) {
+        StringReader in = new StringReader(rss);
 		try {
 			XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
 			XmlPullParser xpp = factory.newPullParser();
-            xpp.setInput(new StringReader(rss));
+            xpp.setInput(in);
             processList(readRss(xpp), valuePath, id, rssRequestComplete);
 		} catch (XmlPullParserException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            in.close();
         }
 	}
 
