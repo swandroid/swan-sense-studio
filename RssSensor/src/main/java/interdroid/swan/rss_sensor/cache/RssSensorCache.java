@@ -65,8 +65,8 @@ public class RssSensorCache {
     private int mNumberOfEncodingErrors = 0;
     private String mLastVolleyError = "";
     private int mNumberOfRequests = 0;
-    private int mNumberOfRequests1 = 0;
-    private int mNumberOfRequests2 = 0;
+//    private int mNumberOfRequests1 = 0;
+//    private int mNumberOfRequests2 = 0;
 
     private RssSensorCache(Context context) {
         mContext = context;
@@ -110,18 +110,18 @@ public class RssSensorCache {
 //            @Override
 //            public void run() {
                 mNumberOfRequests += 1;
-                if (rssSensorRequest.sensorUrlId == 1) {
-                    mNumberOfRequests1 += 1;
-                } else if (rssSensorRequest.sensorUrlId == 2) {
-                    mNumberOfRequests2 += 1;
-                }
+//                if (rssSensorRequest.sensorUrlId == 1) {
+//                    mNumberOfRequests1 += 1;
+//                } else if (rssSensorRequest.sensorUrlId == 2) {
+//                    mNumberOfRequests2 += 1;
+//                }
                 Log.d(TAG, "addRequestToQueue: " + rssSensorRequest.sensorId);
                 if (mRequestQueue == null) {
                     mRequestQueue = new LinkedList<>();
                 }
                 Log.d(TAG, "mRequestQueue.size(): " + mRequestQueue.size());
-                new ExportStringRequestToFile().execute(hasInternetConnection() + "",
-                        rssSensorRequest.sensorUrlId + "", mRequestQueue.size() + "", System.currentTimeMillis() + "");
+//                new ExportStringRequestToFile().execute(hasInternetConnection() + "",
+//                        rssSensorRequest.sensorUrlId + "", mRequestQueue.size() + "", System.currentTimeMillis() + "");
                 if (mRequestQueue.offer(rssSensorRequest) && mRequestQueue.size() == 1) {
                     Log.d(TAG, "mRequestQueue.size() after adding size == 1: " + mRequestQueue.size());
                     doRequest(rssSensorRequest);
@@ -472,11 +472,11 @@ public class RssSensorCache {
                         .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString());
                 FileWriter f = new FileWriter(
                         Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString()
-                                + "/SwanRssLogs/" + System.currentTimeMillis() + ".csv", true);
+                                + "/SwanRssLogs/" + System.currentTimeMillis() + "_" + TEST + ".csv", true);
                 f.write("timestamp;numberOfResponses;totalResponseSize;totalResponseSizeWithoutCache\n");
                 f.write(System.currentTimeMillis() + ";" + mNumberOfResponses + ";" + mTotalResponseSize + ";" + mTotalResponseSizeWithoutCache + "\n");
-                f.write("requests1;requests2\n");
-                f.write(mNumberOfRequests1 + ";" + mNumberOfRequests2 + "\n");
+//                f.write("requests1;requests2\n");
+//                f.write(mNumberOfRequests1 + ";" + mNumberOfRequests2 + "\n");
                 f.write("numberOfVolleyErrors;numberOfEncodingErrors\n");
                 f.write(mNumberOfVolleyErrors + ";" + mNumberOfEncodingErrors + "\n");
                 if (mLastVolleyError != null) {
@@ -485,7 +485,7 @@ public class RssSensorCache {
                 f.close();
             } catch (IOException e) {
                 System.out.println(
-                        "Failed to create file: " + System.currentTimeMillis() + ".csv");
+                        "Failed to create file: " + System.currentTimeMillis() + "_" + TEST + ".csv");
                 e.printStackTrace();
                 return null;
             }
@@ -505,7 +505,7 @@ public class RssSensorCache {
     }
 
     private void doGetRequest(final RssSensorRequest rssSensorRequest, int line) {
-        new ExportDoGetRequestToFile().execute(line + "");
+//        new ExportDoGetRequestToFile().execute(line + "");
         //TODO: move rss and json to main project
         //TODO: use singleton/Application context
         VolleySingleton volleySingleton = VolleySingleton.getInstance(mContext.getApplicationContext());
@@ -535,8 +535,8 @@ public class RssSensorCache {
                         Log.w(TAG, "Total response size: " + mTotalResponseSize);
                         Log.w(TAG, "Total with cache repsonse size: " + mTotalResponseSizeWithoutCache);
                         parseRSS(response, rssSensorRequest, System.currentTimeMillis());
-                        new ExportStringToFile().execute(response);
-                        new ExportSizeToFile().execute(responseSize + "");
+//                        new ExportStringToFile().execute(response);
+//                        new ExportSizeToFile().execute(responseSize + "");
                         removeFromQueueAndCheckForNextRequestSynchronized();
                     }
                 }, new Response.ErrorListener() {
@@ -545,8 +545,8 @@ public class RssSensorCache {
                 Log.d(TAG, "error response:" + error.getMessage());
                 mNumberOfVolleyErrors += 1;
                 mLastVolleyError = error.getMessage();
-                new ExportStringToFile().execute(mLastVolleyError);
-                new ExportSizeToFile().execute("response error");
+//                new ExportStringToFile().execute(mLastVolleyError);
+//                new ExportSizeToFile().execute("response error");
                 removeFromQueueAndCheckForNextRequestSynchronized();
             }
         }) {
