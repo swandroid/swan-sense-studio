@@ -1,5 +1,8 @@
 package interdroid.swan.sensors.cuckoo;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -19,7 +22,8 @@ public class ProfilerPoller implements CuckooPoller {
     private int[] intArray = new int[4];
     private static int i = 0;
     private int caseScenario = 0;
-    private static final String BASE_URL = "http://gps.buienradar.nl/getrr.php?lat=52.3&lon=4.87";
+    //private static final String BASE_URL = "http://gps.buienradar.nl/getrr.php?lat=52.3&lon=4.87";
+    private static final String BASE_URL = "https://thingspeak.com/channels/45572/field/3.json/";
 
     public ProfilerPoller() {
         intArray[0] = 0;
@@ -36,11 +40,25 @@ public class ProfilerPoller implements CuckooPoller {
             caseScenario = (Integer) map.get(CASE);
         }
 
+
         try {
+            String line;
             URLConnection conn = new URL(BASE_URL).openConnection();
             BufferedReader r = new BufferedReader(new InputStreamReader(
                     conn.getInputStream()));
-            String line = r.readLine();
+            // String line = r.readLine();
+            String jsonData = "";
+            while ((line = r.readLine()) != null) {
+                jsonData += line + "\n";
+            }
+
+
+            JSONObject jsonObject = new JSONObject(jsonData);
+            Object result1 = null;
+            int length = 0;
+
+            length = jsonObject.getJSONArray("feeds").length();
+            result1 = jsonObject.getJSONArray("feeds").getJSONObject(length - 1).get("field3");
 
         } catch (MalformedURLException e1) {
             // TODO Auto-generated catch block
@@ -48,6 +66,10 @@ public class ProfilerPoller implements CuckooPoller {
         } catch (IOException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (Exception e){
+//                e.printStackTrace();
         }
 
         if (caseScenario == 0) {

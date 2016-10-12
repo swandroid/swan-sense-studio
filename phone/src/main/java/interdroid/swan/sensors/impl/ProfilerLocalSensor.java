@@ -3,6 +3,9 @@ package interdroid.swan.sensors.impl;
 import android.os.Bundle;
 import android.util.Log;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -74,8 +77,9 @@ public class ProfilerLocalSensor extends AbstractSwanSensor {
     class ProfilerPoller extends Thread {
         public static final String SAMPLE_INTERVAL = "sample_interval";
 
-        private static final String BASE_URL = "http://gps.buienradar.nl/getrr.php?lat=52.3&lon=4.87";
+      //  private static final String BASE_URL = "http://gps.buienradar.nl/getrr.php?lat=52.3&lon=4.87";
 
+        private static final String BASE_URL = "https://thingspeak.com/channels/45572/field/3.json/";
         private Bundle configuration;
         private String valuePath;
         private String id;
@@ -104,11 +108,26 @@ public class ProfilerLocalSensor extends AbstractSwanSensor {
 
                 noOfTimes++;
 
+                String jsonData = "";
                 try {
+                    String line;
                     URLConnection conn = new URL(BASE_URL).openConnection();
                     BufferedReader r = new BufferedReader(new InputStreamReader(
                             conn.getInputStream()));
-                    String line = r.readLine();
+                    // String line = r.readLine();
+
+                    while ((line = r.readLine()) != null) {
+                        jsonData += line + "\n";
+                    }
+
+
+                    JSONObject jsonObject = new JSONObject(jsonData);
+                    Object result = null;
+                    int length = 0;
+
+                    length = jsonObject.getJSONArray("feeds").length();
+                    result = jsonObject.getJSONArray("feeds").getJSONObject(length - 1).get("field3");
+
 
                 } catch (MalformedURLException e1) {
                     // TODO Auto-generated catch block
@@ -116,6 +135,8 @@ public class ProfilerLocalSensor extends AbstractSwanSensor {
                 } catch (IOException e1) {
                     // TODO Auto-generated catch block
                     e1.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
 
                 if (caseScenario == 0) {

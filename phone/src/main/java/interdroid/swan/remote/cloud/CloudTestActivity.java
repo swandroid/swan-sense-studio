@@ -29,17 +29,21 @@ public class CloudTestActivity extends Activity {
 
     private static final String TAG = "CloudTestActivity";
 
-   // final String MY_EXPRESSION = "cloud@profiler:value?case=0{ANY,0} > 1";
+  //   final String MY_EXPRESSION = "cloud@profiler:value?case=0#delay=1000{ANY,0} > 1 && cloud@profilera:value?case=0#delay=1000{ANY,0} > 1";
 
-   // final String MY_EXPRESSION = "cloud@profiler:value?case=1{ANY,0} > 1";
+  //  final String MY_EXPRESSION = "cloud@profiler:value?case=0#delay=1000{ANY,0} > 1";
 
-  //  final String MY_EXPRESSION = "self@profiler:value?case=0#delay=1000{ANY,0} > 1";
+  //  final String MY_EXPRESSION = "cloud@profiler:value?case=1#delay=1000{ANY,0} > 1";
+
+ //   final String MY_EXPRESSION = "self@profiler:value?case=0#delay=1000{ANY,0} > 1  && self@profilera:value?case=0#delay=1000{ANY,0} > 1";
+
+ //   final String MY_EXPRESSION = "self@profiler:value?case=0#delay=1000{ANY,0} > 1";
 
     final String MY_EXPRESSION = "self@profiler:value?case=1#delay=1000{ANY,0} > 1";
 
-//    final String MY_EXPRESSION = "self@profiler1:value?case=0#delay=1000{ANY,0} > 0";
+  //     final String MY_EXPRESSION = "self@profiler1:value?case=0#delay=1000{ANY,0} > 1";
 
-   //  final String MY_EXPRESSION = "self@profiler1:value?case=1#delay=1000{ANY,0} > 1";
+  //   final String MY_EXPRESSION = "self@profiler1:value?case=1#delay=1000{ANY,0} > 1";
 
 
 
@@ -57,7 +61,7 @@ public class CloudTestActivity extends Activity {
 
         addListenerOnButton();
 
-        new CountDownTimer(5*60000, 1000) {
+        new CountDownTimer(15*60000, 1000) {
 
 
             @Override
