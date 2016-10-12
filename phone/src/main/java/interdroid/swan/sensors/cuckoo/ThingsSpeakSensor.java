@@ -78,7 +78,7 @@ public class ThingsSpeakSensor extends AbstractCuckooSensor {
 
                     if (intent.hasExtra(VALUE)) {
                         try {
-                            Object newVal = intent.getExtras().get(VALUE);
+                            Double newVal = Double.valueOf((String) intent.getExtras().get(VALUE));
                             Log.d(TAG, newVal + "");
                             long ts = Long.valueOf(intent.getExtras().getString(TIMESTAMP));
                             putValueTrimSize(vpath, null, ts, newVal);

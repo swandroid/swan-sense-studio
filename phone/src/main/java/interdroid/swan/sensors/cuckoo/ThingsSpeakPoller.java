@@ -1,7 +1,8 @@
 package interdroid.swan.sensors.cuckoo;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,8 +10,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,9 +44,6 @@ public class ThingsSpeakPoller implements CuckooPoller {
 		}
 
 		String url = String.format(BASE_URL, String.valueOf(channel_id));
-
-		long now = System.currentTimeMillis();
-
 		String jsonData ="";
 
 		try {
@@ -58,33 +54,25 @@ public class ThingsSpeakPoller implements CuckooPoller {
 			conn.setRequestProperty("Content-Type", "application/json");
 			conn.setRequestProperty("Accept", "application/json");
 
-			BufferedReader r = new BufferedReader(new InputStreamReader(
-					conn.getInputStream()));
+			BufferedReader r = new BufferedReader(new InputStreamReader( conn.getInputStream()));
 			while ((line = r.readLine()) != null) {
 				jsonData += line + "\n";
 			}
 
-
-			System.out.println(jsonData);
-
 			try {
+				JSONParser parser = new JSONParser();
+				Object res = parser.parse(jsonData);
+				JSONObject jsonObject = (JSONObject) res;
 
-				JSONObject jsonObject = new JSONObject(jsonData);
-
-				double data;
-				int length;
-
-
-				length = jsonObject.getJSONArray("feeds").length();
-				data = Double.valueOf((String) jsonObject.getJSONArray("feeds").getJSONObject(length-1).get("field1"));
-
+				JSONArray msg = (JSONArray)jsonObject.get("feeds");
+				int length = msg.size();
+				JSONObject feed = (JSONObject) msg.get(length-1);
+				Double data = Double.valueOf((String) feed.get("field1"));
 
 				System.out.println("dataaaaa "+data+ "length"+length +"valuepath"+valuePath);
-
 				result.put(VALUE, data);
 
-
-			} catch (JSONException e) {
+			} catch (ParseException e) {
 				e.printStackTrace();
 			}
 
