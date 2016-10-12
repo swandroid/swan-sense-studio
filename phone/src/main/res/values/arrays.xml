@@ -496,4 +496,18 @@
         <item>alternate_test</item>
     </string-array>
 
+    <string-array name="thingsspeak_valuepaths">
+        <item>a</item>
+        <item>b</item>
+        <item>c</item>
+        <item>d</item>
+        <item>e</item>
+        <item>f</item>
+        <item>g</item>
+        <item>n</item>
+        <item>i</item>
+        <item>j</item>
+        <item>k</item>
+    </string-array>
+
 </resources>
