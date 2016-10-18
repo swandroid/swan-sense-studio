@@ -135,7 +135,7 @@
     </string-array>
 
     <!-- types -->
-    <string-array name="train_types" >
+    <string-array name="train_types">
         <item>Intercity</item>
         <item>Sprinter</item>
         <item>Fyra</item>
@@ -415,7 +415,7 @@
     </string-array>
 
     <!-- alarm sensor regions -->
-    <string-array name="regions" >
+    <string-array name="regions">
         <item>all</item>
         <item>Amsterdam-Amstelland</item>
         <item>Brabant-Noord</item>
@@ -445,7 +445,7 @@
     </string-array>
 
     <!-- alarm sensor types -->
-    <string-array name="types" >
+    <string-array name="types">
         <item>all</item>
         <item>Fire Brigade</item>
         <item>Police</item>
@@ -455,7 +455,7 @@
     </string-array>
 
     <!-- alarm sensor type_values -->
-    <string-array name="type_values" >
+    <string-array name="type_values">
         <item>brandweer</item>
         <item>politie</item>
         <item>ambulance</item>
@@ -514,5 +514,8 @@
         <item>BIKING</item>
         <item>WALKING</item>
         <item>DRIVING</item>
-        </string-array>
+    </string-array>
+    <string-array name="weather_valuepaths">
+        <item>weather</item>
+    </string-array>
 </resources>

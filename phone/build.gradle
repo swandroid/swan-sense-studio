@@ -48,6 +48,7 @@ android {
 
 dependencies {
     //ant.importBuild 'src/main/buildgrammar.ant'
+    compile project(':ttn-android-sdk')
     compile project(':senseandroidlibrary')
     compile project(':swancore')
 
@@ -70,8 +71,6 @@ dependencies {
 
     compile 'com.android.support:recyclerview-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
-
-    compile project(':ttn-android-sdk')
 
     // butterknife for views injection
     compile 'com.jakewharton:butterknife:7.0.1'
