@@ -35,7 +35,7 @@ public class SensorValues {
         return null;
     }
 
-    public void addNewValue(Bundle configuration, TimestampedValue newValue) {
+    public synchronized void addNewValue(Bundle configuration, TimestampedValue newValue) {
         if (!containsKey(configuration)) {
             put(configuration, new ArrayList<TimestampedValue>());
         }

@@ -237,11 +237,7 @@
 
     <!-- calendar sensor -->
     <string-array name="calendar_valuepaths">
-        <item>all_values</item>
-        <item>title</item>
-        <item>location</item>
-        <item>start_time</item>
-        <item>end_time</item>
+        <item>events</item>
     </string-array>
 
     <!-- call sensor -->
@@ -302,8 +298,7 @@
 
     <!-- rain sensor -->
     <string-array name="rain_valuepaths">
-        <item>all_values</item>
-        <item>expected_mm</item>
+        <item>rain</item>
     </string-array>
 
     <!-- fitness sensor -->

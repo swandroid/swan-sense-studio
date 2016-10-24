@@ -33,7 +33,7 @@ public class RainSensor extends AbstractSwanSensor {
     }
 
     /*Value path */
-    public static final String EXPECTED_MM = "expected_mm";
+    public static final String RAIN_PREDICTION = "rain_prediction";
 
 
     /*Configuration */
@@ -56,16 +56,12 @@ public class RainSensor extends AbstractSwanSensor {
 	 * 000|18:25
 	 */
 
-
-    protected static final int HISTORY_SIZE = 10;
-
-
     private Map<String, RainPoller> activeThreads = new HashMap<String, RainPoller>();
 
 
     @Override
     public String[] getValuePaths() {
-        return new String[]{EXPECTED_MM};
+        return new String[]{RAIN_PREDICTION};
     }
 
     @Override
@@ -134,7 +130,6 @@ public class RainSensor extends AbstractSwanSensor {
                         }
                     }
 
-                    configuration.putString(VALUE_PATH, EXPECTED_MM);
                     putValueTrimSize(configuration, id, start, rainPrediction);
 
                 } catch (Exception e) {
@@ -172,15 +167,5 @@ public class RainSensor extends AbstractSwanSensor {
             rainPoller.interrupt();
         }
         super.onDestroySensor();
-    }
-
-    @Override
-    public String getModelClassName() {
-        return RainPrediction.class.getName();
-    }
-
-    @Override
-    public Class<?>[] getParameterTypes() {
-        return RainPrediction.class.getConstructors()[2].getParameterTypes();
     }
 }

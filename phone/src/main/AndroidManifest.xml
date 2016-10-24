@@ -577,7 +577,7 @@
                 android:value="google_calendar"/>
             <meta-data
                 android:name="valuePaths"
-                android:value="all_values,title,location,start_time,end_time"/>
+                android:value="events"/>
             <meta-data
                 android:name="sample_interval"
                 android:value="300000L"/>
@@ -743,10 +743,10 @@
 
             <meta-data
                 android:name="entityId"
-                android:value="rain"/>
+                android:value="buienradar"/>
             <meta-data
                 android:name="valuePaths"
-                android:value="all_values,expected_mm"/>
+                android:value="rain"/>
             <meta-data
                 android:name="latitude"
                 android:value="required"/>
@@ -768,7 +768,7 @@
 
             <meta-data
                 android:name="entityId"
-                android:value="weather"/>
+                android:value="darksky"/>
             <meta-data
                 android:name="valuePaths"
                 android:value="weather"/>

@@ -17,10 +17,7 @@ import interdroid.swancore.sensors.AbstractConfigurationActivity;
 
 public class GoogleCalendarSensor extends AbstractSwanSensor {
 
-    public static final String START_TIME_NEXT_EVENT_FIELD = "start_time_next_event";
-    public static final String END_TIME_NEXT_EVENT_FIELD = "end_time_next_event";
-    public static final String TITLE_NEXT_EVENT_FIELD = "title_next_event";
-    public static final String LOCATION_NEXT_EVENT_FIELD = "location_next_event";
+    public static final String EVENTS = "events";
 
     public static final String[] EVENT_PROJECTION = new String[]{
             CalendarContract.Events.TITLE,                              // 0
@@ -55,27 +52,12 @@ public class GoogleCalendarSensor extends AbstractSwanSensor {
 
     @Override
     public String[] getValuePaths() {
-        return new String[] {
-                TITLE_NEXT_EVENT_FIELD,
-                LOCATION_NEXT_EVENT_FIELD,
-                START_TIME_NEXT_EVENT_FIELD,
-                END_TIME_NEXT_EVENT_FIELD
-        };
+        return new String[] {EVENTS};
     }
 
     @Override
     public void onConnected() {
         SENSOR_NAME = "Google Calendar Sensor";
-    }
-
-    @Override
-    public String getModelClassName() {
-        return GoogleEvent.class.getName();
-    }
-
-    @Override
-    public Class<?>[] getParameterTypes() {
-        return GoogleEvent.class.getConstructors()[1].getParameterTypes();
     }
 
     private void queryEvents() {
@@ -100,22 +82,20 @@ public class GoogleCalendarSensor extends AbstractSwanSensor {
 
 //        System.out.println(DateHelper.getDate(DateHelper.getDateToday()));
 //        System.out.println(DateHelper.getDate(DateHelper.getDateTodayMidnight()));
-//        cursor = cr.query(uri, EVENT_PROJECTION, null, null, null);
         cursor = cr.query(uri, EVENT_PROJECTION, selection, selectionArgs, null);
 
         // Use the cursor to step through the returned records
         if (cursor != null) {
             while (cursor.moveToNext()) {
-                System.out.println(cursor.getString(0));
-                System.out.println(cursor.getString(1));
-                System.out.println(DateHelper.getDate(cursor.getLong(2)));
-                System.out.println(DateHelper.getDate(cursor.getLong(3)));
+//                System.out.println(cursor.getString(0));
+//                System.out.println(cursor.getString(1));
+//                System.out.println(DateHelper.getDate(cursor.getLong(2)));
+//                System.out.println(DateHelper.getDate(cursor.getLong(3)));
 
                 long now = System.currentTimeMillis();
-                putValueTrimSize(TITLE_NEXT_EVENT_FIELD, null, now, cursor.getString(0));
-                putValueTrimSize(LOCATION_NEXT_EVENT_FIELD, null, now, cursor.getString(1));
-                putValueTrimSize(START_TIME_NEXT_EVENT_FIELD, null, now, DateHelper.getDate(cursor.getLong(2)));
-                putValueTrimSize(END_TIME_NEXT_EVENT_FIELD, null, now, DateHelper.getDate(cursor.getLong(3)));
+                GoogleEvent event = new GoogleEvent(cursor.getString(0), cursor.getString(1),
+                        DateHelper.getDate(cursor.getLong(2)), DateHelper.getDate(cursor.getLong(3)));
+                putValueTrimSize(EVENTS, null, now, event);
             }
             cursor.close();
         }
