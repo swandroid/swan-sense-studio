@@ -44,11 +44,12 @@
     <!--android:name="android.hardware.nfc"-->
     <!--android:required="true" />-->
 
-    <application tools:replace="android:label"
+    <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher_swan"
         android:label="@string/swan_app_name"
-        android:largeHeap="true">
+        android:largeHeap="true"
+        tools:replace="android:label">
 
         <meta-data
             android:name="com.google.android.gms.version"
@@ -1414,10 +1415,10 @@
             android:exported="true"
             android:process=":screensensor"/>
 
-        <!-- TODO: add process tag-->
         <service
             android:name=".sensors.impl.LocationSensor"
-            android:exported="true"/>
+            android:exported="true"
+            android:process=":locationsensor"/>
 
         <service
             android:name=".sensors.impl.SmartLocationSensor"
@@ -1441,8 +1442,8 @@
 
         <service
             android:name=".sensors.impl.WeatherSensor"
-            android:exported="true"/>
-        <!--android:process=":weathersensor"/>-->
+            android:exported="true"
+            android:process=":weathersensor"/>
 
         <service
             android:name=".sensors.impl.FitnessSensor"
@@ -1467,7 +1468,6 @@
             android:exported="true"
             android:process=":calendarsensor"/>
 
-        <!-- TODO: add process tag-->
         <service
             android:name=".sensors.impl.GoogleCalendarSensor"
             android:exported="true"
