@@ -102,7 +102,7 @@ public class WeatherSensor extends AbstractSwanSensor {
                 Request request = new Request();
                 request.setLat(String.valueOf(configuration.get(LATITUDE)));
                 request.setLng(String.valueOf(configuration.get(LONGITUDE)));
-                request.setUnits(Request.Units.SI);
+                request.setUnits(Request.Units.CA);
                 request.setLanguage(Request.Language.ENGLISH);
                 request.addExcludeBlock(Request.Block.CURRENTLY);
 
