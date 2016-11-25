@@ -118,7 +118,8 @@
             android:name=".crossdevice.TestActivity"
             android:label="SWAN Lake Test"
             android:icon="@drawable/ic_launcher_swan"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

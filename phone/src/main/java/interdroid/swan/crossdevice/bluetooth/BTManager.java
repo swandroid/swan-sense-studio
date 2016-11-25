@@ -193,7 +193,7 @@ public class BTManager implements ProximityManagerI {
     }
 
     //TODO move this to a separate file
-    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+    protected final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
 
