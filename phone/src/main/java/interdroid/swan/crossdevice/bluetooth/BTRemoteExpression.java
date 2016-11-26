@@ -2,6 +2,10 @@ package interdroid.swan.crossdevice.bluetooth;
 
 import android.bluetooth.BluetoothDevice;
 
+import interdroid.swancore.swansong.Expression;
+import interdroid.swancore.swansong.ExpressionFactory;
+import interdroid.swancore.swansong.ExpressionParseException;
+
 /**
  * Created by vladimir on 3/17/16.
  */
@@ -44,14 +48,13 @@ public class BTRemoteExpression {
         this.id = id;
     }
 
-    public String getExpression() {
+    public Expression getExpression() throws ExpressionParseException {
+        return ExpressionFactory.parse(expression);
+    }
+
+    public String getExpressionAsString() {
         return expression;
     }
-
-    public void setExpression(String expression) {
-        this.expression = expression;
-    }
-
 
     @Override
     public String toString() {

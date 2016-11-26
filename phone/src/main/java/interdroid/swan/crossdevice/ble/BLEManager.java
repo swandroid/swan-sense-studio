@@ -5,7 +5,6 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
-import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattServer;
 import android.bluetooth.BluetoothGattServerCallback;
 import android.bluetooth.BluetoothGattService;
@@ -23,16 +22,18 @@ import android.content.Context;
 import android.content.IntentFilter;
 import android.util.Log;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import interdroid.swan.crossdevice.bluetooth.BTManager;
 import interdroid.swan.crossdevice.bluetooth.BTRemoteEvaluationTask;
+import interdroid.swancore.swanmain.ExpressionManager;
+import interdroid.swancore.swanmain.SensorInfo;
 
 /**
  * Created by vladimir on 9/23/16.
@@ -45,8 +46,9 @@ public class BLEManager extends BTManager {
     private static final int CHARACTERISTIC_CHANGE_INTERVAL = 5000;
     private static final UUID LIGHT_CHARACTERISTIC_UUID = UUID.fromString("ad847b73-3ce5-4b75-9330-6c952fa6f830");
     private static final UUID LIGHT_DESCRIPTOR_UUID = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
-    private static final UUID SWAN_SERVICE_UUID = UUID.fromString("11060915-f0e9-43b8-82b3-c3609d14313f");
+    protected static final UUID SWAN_SERVICE_UUID = UUID.fromString("11060915-f0e9-43b8-82b3-c3609d14313f");
 
+    private HashMap<String, BluetoothGattCharacteristic> sensorCharacteristicMap = new HashMap<>();
     private BluetoothGattServer bleServer;
     private BluetoothManager btManager;
     private long startTime;
@@ -91,65 +93,9 @@ public class BLEManager extends BTManager {
         public void onCharacteristicReadRequest(final BluetoothDevice device, int requestId, int offset, final BluetoothGattCharacteristic characteristic) {
             super.onCharacteristicReadRequest(device, requestId, offset, characteristic);
             Log.i(TAG, "received read request from " + device.getName());
-            // TODO register sensor
+
+            BLEServerWorker serverWorker = new BLEServerWorker(BLEManager.this, device, characteristic);
             bleServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, 0, characteristic.getValue());
-
-//            Runnable demoCharacteristicChange = new Runnable() {
-//                public void run() {
-//                    log(TAG, "[server] characteristic changed", Log.INFO, true);
-//
-//                    characteristic.setValue(characteristic.getStringValue(0) + "+");
-//                    bleServer.notifyCharacteristicChanged(device, characteristic, false);
-//                    handler.postDelayed(this, CHARACTERISTIC_CHANGE_INTERVAL);
-//                }
-//            };
-//            handler.postDelayed(demoCharacteristicChange, CHARACTERISTIC_CHANGE_INTERVAL);
-        }
-    };
-
-    private BluetoothGattCallback bleClientCallback = new BluetoothGattCallback() {
-        @Override
-        public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
-            super.onConnectionStateChange(gatt, status, newState);
-            Log.i(TAG, "[client] onConnectionStateChange: status = " + status + ", state = " + newState);
-
-            if (newState == BluetoothProfile.STATE_CONNECTED) {
-                Log.d(TAG, "[client] conn time = " + (System.currentTimeMillis() - startTime) + " ms");
-                gatt.discoverServices();
-            }
-        }
-
-        @Override
-        public void onServicesDiscovered(BluetoothGatt gatt, int status) {
-            super.onServicesDiscovered(gatt, status);
-            BluetoothGattService service = gatt.getService(SWAN_SERVICE_UUID);
-
-            if (service != null) {
-                BluetoothGattCharacteristic characteristic = service.getCharacteristic(LIGHT_CHARACTERISTIC_UUID);
-                gatt.setCharacteristicNotification(characteristic, true);
-                gatt.readCharacteristic(characteristic);
-            }
-        }
-
-        @Override
-        public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-            Log.d(TAG, "[client] onCharacteristicRead: " + characteristic.getStringValue(0) + " (" + (System.currentTimeMillis() - startTime) + " ms)");
-            super.onCharacteristicRead(gatt, characteristic, status);
-
-            if(LIGHT_CHARACTERISTIC_UUID.equals(characteristic.getUuid())) {
-                try { Thread.sleep(2000); } catch (InterruptedException e) {}
-                startTime = System.currentTimeMillis();
-                gatt.readCharacteristic(characteristic);
-            }
-        }
-
-        @Override
-        public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
-            super.onCharacteristicChanged(gatt, characteristic);
-
-            if(LIGHT_CHARACTERISTIC_UUID.equals(characteristic.getUuid())) {
-                Log.d(TAG, "[client] onCharacteristicChanged: " + characteristic.getStringValue(0));
-            }
         }
     };
 
@@ -217,12 +163,20 @@ public class BLEManager extends BTManager {
     private void initServer() {
         BluetoothGattService service = new BluetoothGattService(SWAN_SERVICE_UUID, BluetoothGattService.SERVICE_TYPE_PRIMARY);
 
-        BluetoothGattCharacteristic lightCharacteristic =
-                new BluetoothGattCharacteristic(LIGHT_CHARACTERISTIC_UUID,
-                        BluetoothGattCharacteristic.PROPERTY_READ | BluetoothGattCharacteristic.PROPERTY_WRITE | BluetoothGattCharacteristic.PROPERTY_NOTIFY,
-                        BluetoothGattCharacteristic.PERMISSION_READ | BluetoothGattCharacteristic.PERMISSION_WRITE);
-        lightCharacteristic.setValue("Hi there!");
-        service.addCharacteristic(lightCharacteristic);
+        // initialize characteristics
+        for(SensorInfo sensorInfo : ExpressionManager.getSensors(context)) {
+            for(String valuePath : sensorInfo.getValuePaths()) {
+                String sensorValuePath = sensorInfo.getEntity() + ":" + valuePath;
+                UUID uuid = UUID.nameUUIDFromBytes(sensorValuePath.getBytes());
+
+                BluetoothGattCharacteristic characteristic =
+                        new BluetoothGattCharacteristic(uuid,
+                                BluetoothGattCharacteristic.PROPERTY_READ | BluetoothGattCharacteristic.PROPERTY_WRITE | BluetoothGattCharacteristic.PROPERTY_NOTIFY,
+                                BluetoothGattCharacteristic.PERMISSION_READ | BluetoothGattCharacteristic.PERMISSION_WRITE);
+                service.addCharacteristic(characteristic);
+                sensorCharacteristicMap.put(sensorValuePath, characteristic);
+            }
+        }
 
         bleServer = btManager.openGattServer(context, bleServerCallback);
         bleServer.addService(service);
@@ -287,7 +241,9 @@ public class BLEManager extends BTManager {
             updateEvaluationTask(remoteEvalTask);
 
             if(remoteEvalTask.hasExpressions()) {
-                processEvalTask(remoteEvalTask);
+//                processEvalTask(remoteEvalTask);
+                BLEClientWorker clientWorker = new BLEClientWorker(this, remoteEvalTask);
+                clientWorker.start();
             }
         } else if(item instanceof Runnable) {
             // peer discovery or restart bluetooth
@@ -297,11 +253,29 @@ public class BLEManager extends BTManager {
         }
     }
 
+    @Deprecated
     private void processEvalTask(BTRemoteEvaluationTask remoteEvalTask) {
         BluetoothDevice device = remoteEvalTask.getSwanDevice().getBtDevice();
         startTime = System.currentTimeMillis();
-        device.connectGatt(context, false, bleClientCallback);
+//        device.connectGatt(context, false, bleClientCallback);
 //        connect(device);
+    }
+
+    protected BluetoothGattCharacteristic getCharacteristicForSensor(String sensorName) {
+        return sensorCharacteristicMap.get(sensorName);
+    }
+
+    protected String getSensorForCharacteristic(BluetoothGattCharacteristic characteristic) {
+        for(Map.Entry<String, BluetoothGattCharacteristic> entry : sensorCharacteristicMap.entrySet()) {
+            if(characteristic.equals(entry.getValue())) {
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
+
+    protected BluetoothGattServer getBleServer() {
+        return bleServer;
     }
 
     private void connect(BluetoothDevice device) {
