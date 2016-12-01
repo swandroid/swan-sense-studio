@@ -489,7 +489,7 @@ public class BTManager implements ProximityManagerI {
     /**
      * send expression to the evaluation engine
      */
-    protected void sendExprForEvaluation(String exprId, String exprAction, String exprSource, String exprData) {
+    public void sendExprForEvaluation(String exprId, String exprAction, String exprSource, String exprData) {
         Intent intent = new Intent(exprAction);
         intent.setClass(getContext(), EvaluationEngineService.class);
         intent.putExtra("id", exprId);

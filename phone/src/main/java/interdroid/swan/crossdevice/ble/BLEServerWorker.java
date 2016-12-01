@@ -31,13 +31,14 @@ public class BLEServerWorker {
 
     public void start() {
         try {
-            String sensorValuePath = bleManager.getSensorForCharacteristic(characteristic);
+            String sensorValuePath = bleManager.getSensorForUuid(characteristic.getUuid());
             String sensorEntity = sensorValuePath.split(":")[0];
             String valuePath = sensorValuePath.split(":")[1];
             SensorValueExpression expression = new SensorValueExpression(Expression.LOCATION_SELF,
                     sensorEntity, valuePath, null, HistoryReductionMode.DEFAULT_MODE.ANY, 1000, null);
 
-            ExpressionManager.registerValueExpression(bleManager.getContext(), "123", expression, new ValueExpressionListener() {
+            // TODO fix expr id
+            ExpressionManager.registerValueExpression(bleManager.getContext(), "123456", expression, new ValueExpressionListener() {
                 @Override
                 public void onNewValues(String id, TimestampedValue[] newValues) {
                     if (newValues != null && newValues.length > 0) {

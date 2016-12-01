@@ -14,11 +14,13 @@ public class BTRemoteExpression {
     private static int exprCounter = 0;
 
     private String id;
-    private String expression;
+    private String expressionString;
+    private Expression expression;
 
-    public BTRemoteExpression(String baseId, String expression) {
+    public BTRemoteExpression(String baseId, String expression) throws ExpressionParseException {
         this.id = getNewId(baseId);
-        this.expression = expression;
+        this.expressionString = expression;
+        this.expression = ExpressionFactory.parse(expressionString);
     }
 
     public void renewId() {
@@ -48,17 +50,17 @@ public class BTRemoteExpression {
         this.id = id;
     }
 
-    public Expression getExpression() throws ExpressionParseException {
-        return ExpressionFactory.parse(expression);
+    public Expression getExpression() {
+        return expression;
     }
 
-    public String getExpressionAsString() {
-        return expression;
+    public String getExpressionString() {
+        return expressionString;
     }
 
     @Override
     public String toString() {
-        return "RemoteExpr[" + id + ", " + expression + "]";
+        return "RemoteExpr[" + id + ", " + expressionString + "]";
     }
 
     @Override
