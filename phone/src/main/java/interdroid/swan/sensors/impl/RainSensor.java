@@ -45,7 +45,7 @@ public class RainSensor extends AbstractSwanSensor {
     public static final double DEFAULT_LONGITUDE = 4.886;
 
     /* Weather URL */
-    private static final String BASE_URL = "http://gps.buienradar.nl/getrr.php?lat=%s&lon=%s";
+    private static final String BASE_URL = "http://gpsgadget.buienradar.nl/data/raintext?lat=%s&lon=%s";
     /* Output :
 	 * 000|16:25 
 	 * 000|16:30 
@@ -106,44 +106,36 @@ public class RainSensor extends AbstractSwanSensor {
 
         public void run() {
             while (!isInterrupted()) {
-                long start = System.currentTimeMillis();
 
                 String url = String.format(BASE_URL, configuration.get(LATITUDE),
                         configuration.get(LONGITUDE));
                 Log.d(getClass().getSimpleName(), url);
 
+                RainPrediction rainPrediction = new RainPrediction(Double.valueOf((String)configuration.get(LATITUDE)),
+                        Double.valueOf((String)configuration.get(LONGITUDE)));
                 try {
-                    RainPrediction rainPrediction = new RainPrediction(Double.valueOf((String)configuration.get(LATITUDE)),
-                            Double.valueOf((String)configuration.get(LONGITUDE)));
                     URLConnection conn = new URL(url).openConnection();
                     BufferedReader r = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
                     String line;
                     while ((line = r.readLine()) != null) {
-                        try {
-                            float value = convertValueToMMPerHr(Integer.parseInt(line.substring(0, 3)));
-                            String time = line.substring(4);
-//                            Log.d(getClass().getSimpleName(), "new rain value: " + value + " " + time);
-                            rainPrediction.addRainValue(time, value);
-                        } catch (Exception e) {
-                            Log.e(TAG, e.toString());
-                        }
+                        float value = convertValueToMMPerHr(Integer.parseInt(line.substring(0, 3)));
+                        String time = line.substring(4);
+    //                            Log.d(getClass().getSimpleName(), "new rain value: " + value + " " + time);
+                        rainPrediction.addRainValue(time, value);
                     }
-
-                    putValueTrimSize(configuration, id, start, rainPrediction);
 
                 } catch (Exception e) {
                     Log.e(TAG, e.toString());
+
+                } finally {
+                    long start = System.currentTimeMillis();
+                    putValueTrimSize(configuration, id, start, rainPrediction);
                 }
 
 
                 try {
-                    Thread.sleep(Math.max(
-                            0,
-                            configuration.getLong(SAMPLE_INTERVAL,
-                                    mDefaultConfiguration
-                                            .getLong(SAMPLE_INTERVAL))
-                                    + start - System.currentTimeMillis()));
+                    Thread.sleep(DEFAULT_SAMPLE_INTERVAL);
                 } catch (InterruptedException e) {
                     return;
                 }

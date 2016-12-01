@@ -9,6 +9,9 @@ import android.os.Bundle;
 import android.provider.CalendarContract;
 import android.support.v4.app.ActivityCompat;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import interdroid.swan.R;
 import interdroid.swan.sensors.AbstractSwanSensor;
 import interdroid.swan.util.DateHelper;
@@ -86,17 +89,21 @@ public class GoogleCalendarSensor extends AbstractSwanSensor {
 
         // Use the cursor to step through the returned records
         if (cursor != null) {
+            List<GoogleEvent> events = new ArrayList<>();
             while (cursor.moveToNext()) {
 //                System.out.println(cursor.getString(0));
 //                System.out.println(cursor.getString(1));
 //                System.out.println(DateHelper.getDate(cursor.getLong(2)));
 //                System.out.println(DateHelper.getDate(cursor.getLong(3)));
 
-                long now = System.currentTimeMillis();
+
                 GoogleEvent event = new GoogleEvent(cursor.getString(0), cursor.getString(1),
                         DateHelper.getDate(cursor.getLong(2)), DateHelper.getDate(cursor.getLong(3)));
-                putValueTrimSize(EVENTS, null, now, event);
+                events.add(event);
+
             }
+            long now = System.currentTimeMillis();
+            putValueTrimSize(EVENTS, null, now, events);
             cursor.close();
         }
     }

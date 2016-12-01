@@ -22,11 +22,11 @@ public class SensorValues {
         return mSensorValues;
     }
 
-    public void put(Bundle configuration, ArrayList<TimestampedValue> timestampedValues) {
+    public synchronized void put(Bundle configuration, ArrayList<TimestampedValue> timestampedValues) {
         mSensorValues.put(configuration, timestampedValues);
     }
 
-    public List<TimestampedValue> get(Bundle configuration) {
+    public synchronized List<TimestampedValue> get(Bundle configuration) {
         for (Bundle key: mSensorValues.keySet()) {  //containsKey does not seem to work
             if (equalBundles(key, configuration)) {
                 return mSensorValues.get(key);

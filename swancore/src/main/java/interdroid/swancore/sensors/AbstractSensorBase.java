@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import interdroid.swancore.swansong.TimestampedValue;
 
@@ -269,18 +270,48 @@ public abstract class AbstractSensorBase extends Service implements
         synchronized (mSensorInterface) {
             // can be null if multiple valuepaths are updated together and not
             // for all of them, there's an id registered.
-            if (expressionIdsPerConfig.get(configuration) != null) {
-                for (String id : expressionIdsPerConfig.get(configuration)) {
-                    notify.add(id);
+            for (Bundle conf: expressionIdsPerConfig.keySet()) {
+                if (equalBundles(conf, configuration)) {
+                    for (String id : expressionIdsPerConfig.get(conf)) {
+                        notify.add(id);
+                    }
                 }
             }
+//            if (expressionIdsPerConfig.get(configuration) != null) {
+//                for (String id : expressionIdsPerConfig.get(configuration)) {
+//                    notify.add(id);
+//                }
+//            }
         }
 
         if (notify.size() > 0) {
             notifyDataChangedForId(notify.toArray(new String[notify.size()]));
         }
     }
+    private boolean equalBundles(Bundle one, Bundle two) {
+        if (one.size() != two.size())
+            return false;
 
+        Set<String> setOne = one.keySet();
+        Object valueOne;
+        Object valueTwo;
+
+        for (String key : setOne) {
+            valueOne = one.get(key);
+            valueTwo = two.get(key);
+
+            if (valueOne instanceof Bundle && valueTwo instanceof Bundle &&
+                    !equalBundles((Bundle) valueOne, (Bundle) valueTwo)) {
+                return false;
+            } else if (valueOne == null) {
+                if (valueTwo != null || !two.containsKey(key))
+                    return false;
+            } else if (!valueOne.equals(valueTwo))
+                return false;
+        }
+
+        return true;
+    }
     /**
      * Gets all readings from timespan seconds ago until now. Readings are returned in
      * reverse order (latest first). This is important for the expression

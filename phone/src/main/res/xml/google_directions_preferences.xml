@@ -16,6 +16,7 @@
             android:key="travel_mode"
             android:entries="@array/google_directions_travelmode"
             android:entryValues="@array/google_directions_travelmode" />
+
         <PreferenceScreen
             android:key="origin"
             android:title="Set Origin">
@@ -49,6 +50,15 @@
                 android:dialogTitle="Enter Destination Location Longitude"
                 android:defaultValue="4.8681567"/>
         </PreferenceScreen>
+
+        <CheckBoxPreference
+            android:key="use_alternatives"
+            android:title="Use Alternative routes"
+            android:defaultValue="false"/>
+
+        <EditTextPreference
+            android:key="waypoints"
+            android:title="Waypoints"/>
 
     </PreferenceCategory>
 </PreferenceScreen>

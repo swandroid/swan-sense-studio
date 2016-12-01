@@ -226,7 +226,7 @@ public abstract class AbstractSwanSensor extends AbstractSensorBase {
             onDestroySensor();
         }
 
-        checkMemoryAtRuntime();
+//        checkMemoryAtRuntime();
 
         if (id != null) {
             notifyDataChangedForId(id);

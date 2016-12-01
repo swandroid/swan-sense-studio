@@ -129,7 +129,7 @@ public class ExpressionManager {
         @Override
         public void onReceive(Context context, Intent intent) {
             String id = intent.getData().getFragment();
-            Log.d(TAG, "on receive");
+//            Log.d(TAG, "on receive");
             if (sListeners.containsKey(id)) {
                 if (intent.getAction().equals(ACTION_NEW_VALUES)) {
                     // do the conversion from Parcelable[] to
@@ -137,7 +137,7 @@ public class ExpressionManager {
                     Parcelable[] parcelables = (Parcelable[]) intent
                             .getParcelableArrayExtra(EXTRA_NEW_VALUES);
                     if (parcelables.length == 0) {
-                        Log.d(TAG, "Values list is empty, dont notify the app");
+//                        Log.d(TAG, "Values list is empty, dont notify the app");
                         return;
                     }
                     TimestampedValue[] timestampedValues = new TimestampedValue[parcelables.length];
@@ -455,7 +455,11 @@ public class ExpressionManager {
      * @param context
      */
     private static void unregisterReceiver(Context context) {
-        context.unregisterReceiver(sReceiver);
+        try {
+            context.unregisterReceiver(sReceiver);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
     }
 
 }

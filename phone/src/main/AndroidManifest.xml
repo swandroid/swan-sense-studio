@@ -1283,9 +1283,18 @@
             <meta-data
                 android:name="destination_latitude"
                 android:value="required"/>
+
             <meta-data
                 android:name="destination_longitude"
                 android:value="required"/>
+
+            <meta-data
+                android:name="use_alternatives"
+                android:value="required"/>
+
+            <meta-data
+                android:name="waypoint"
+                android:value="null"/>
 
             <meta-data
                 android:name="units"

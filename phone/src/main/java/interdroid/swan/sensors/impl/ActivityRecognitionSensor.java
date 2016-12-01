@@ -1,6 +1,5 @@
 package interdroid.swan.sensors.impl;
 
-import android.app.IntentService;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;

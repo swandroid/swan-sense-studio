@@ -47,6 +47,10 @@ public class RainPrediction implements Parcelable {
         rainValues.add(new RainValue(time, value));
     }
 
+    public void setRainValues(List<RainValue> rainValues) {
+        this.rainValues = rainValues;
+    }
+
     public List<RainValue> getRainValues() {
         return rainValues;
     }

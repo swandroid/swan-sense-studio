@@ -39,7 +39,7 @@ public class WeatherSensor extends AbstractSwanSensor {
 
     /*Configuration */
     public static final String SAMPLE_INTERVAL = "sample_interval";
-    public static final long DEFAULT_SAMPLE_INTERVAL = 5 * 60 * 1000;   // default update frequency is 5 minutes
+    public static final long DEFAULT_SAMPLE_INTERVAL = 30 * 60 * 1000;   // default update frequency is 30 minutes
     public static final String LATITUDE = "latitude";
     public static final double DEFAULT_LATITUDE = 52.3;
     public static final String LONGITUDE = "longitude";
@@ -95,7 +95,6 @@ public class WeatherSensor extends AbstractSwanSensor {
 
         public void run() {
             while (!isInterrupted()) {
-                final long start = System.currentTimeMillis();
 
                 RequestBuilder weather = new RequestBuilder();
 
@@ -109,6 +108,7 @@ public class WeatherSensor extends AbstractSwanSensor {
                 weather.getWeather(request, new Callback<WeatherResponse>() {
                     @Override
                     public void success(WeatherResponse weatherResponse, Response response) {
+                        final long start = System.currentTimeMillis();
                         putValueTrimSize(configuration, id, start, new WeatherForecast(weatherResponse));
                     }
 
@@ -119,11 +119,7 @@ public class WeatherSensor extends AbstractSwanSensor {
                 });
 
                 try {
-                    Thread.sleep(Math.max(
-                            0,
-                            configuration.getLong(SAMPLE_INTERVAL,
-                                    mDefaultConfiguration.getLong(SAMPLE_INTERVAL))
-                                    + start - System.currentTimeMillis()));
+                    Thread.sleep(DEFAULT_SAMPLE_INTERVAL);
                 } catch (InterruptedException e) {
                     return;
                 }
