@@ -22,6 +22,11 @@ public class BLEServerWorker {
     private BLEManager bleManager;
     private BluetoothDevice device;
     private BluetoothGattCharacteristic characteristic;
+    private static int curExpressionId = 0;
+
+    private synchronized int nextExpressionId() {
+        return curExpressionId++;
+    }
 
     public BLEServerWorker(BLEManager bleManager, BluetoothDevice device, BluetoothGattCharacteristic characteristic) {
         this.bleManager = bleManager;
@@ -37,8 +42,7 @@ public class BLEServerWorker {
             SensorValueExpression expression = new SensorValueExpression(Expression.LOCATION_SELF,
                     sensorEntity, valuePath, null, HistoryReductionMode.DEFAULT_MODE.ANY, 1000, null);
 
-            // TODO fix expr id
-            ExpressionManager.registerValueExpression(bleManager.getContext(), "123456", expression, new ValueExpressionListener() {
+            ExpressionManager.registerValueExpression(bleManager.getContext(), nextExpressionId() + "", expression, new ValueExpressionListener() {
                 @Override
                 public void onNewValues(String id, TimestampedValue[] newValues) {
                     if (newValues != null && newValues.length > 0) {

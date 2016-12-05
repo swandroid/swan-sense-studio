@@ -88,7 +88,7 @@ public class BTManager implements ProximityManagerI {
     /**
      * IMPORTANT the order of items in this list matters! (see SwanLakePlus)
      */
-    private Map<String, String> registeredExpressions = new HashMap<String, String>();
+    protected Map<String, String> registeredExpressions = new HashMap<String, String>();
 
     /* we schedule peer discovery to take place at regular intervals */
     Runnable nearbyPeersChecker = new Runnable() {

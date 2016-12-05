@@ -8,7 +8,6 @@ import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
 import android.util.Log;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -17,13 +16,12 @@ import interdroid.swan.crossdevice.bluetooth.BTRemoteEvaluationTask;
 import interdroid.swan.crossdevice.bluetooth.BTRemoteExpression;
 import interdroid.swan.engine.EvaluationEngineService;
 import interdroid.swancore.crossdevice.Converter;
-import interdroid.swancore.swansong.Expression;
 import interdroid.swancore.swansong.Result;
 import interdroid.swancore.swansong.SensorValueExpression;
 import interdroid.swancore.swansong.TimestampedValue;
 
 /**
- * Created by vladzy on 11/25/2016.
+ * Created by vladimir on 11/25/2016.
  */
 
 public class BLEClientWorker {
@@ -65,22 +63,14 @@ public class BLEClientWorker {
                         gatt.readCharacteristic(characteristic);
                     } else {
                         service = gatt.getService(BLEManager.SWAN_SERVICE_UUID);
-                        BluetoothGattCharacteristic characteristic = service.getCharacteristic(BLEManager.SWAN_REQUEST_UUID);
-                        characteristic.setValue("light:lux");
+                        BluetoothGattCharacteristic characteristic = service.getCharacteristic(BLEManager.SWAN_CHAR_REGISTER_UUID);
+                        characteristic.setValue(bleManager.uuidToBytes(serviceUuid));
                         gatt.writeCharacteristic(characteristic);
                     }
                 } catch (Exception e) {
                     Log.e(TAG, "cannot process remote expression", e);
                 }
             }
-        }
-
-        @Override
-        public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-            Log.d(TAG, "[client] onCharacteristicRead: " + characteristic.getStringValue(0));
-            super.onCharacteristicRead(gatt, characteristic, status);
-
-            //TODO
         }
 
         @Override

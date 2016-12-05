@@ -8,8 +8,6 @@ import android.bluetooth.BluetoothGattServer;
 import android.bluetooth.BluetoothGattServerCallback;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
-import android.bluetooth.BluetoothServerSocket;
-import android.bluetooth.BluetoothSocket;
 import android.bluetooth.le.AdvertiseCallback;
 import android.bluetooth.le.AdvertiseData;
 import android.bluetooth.le.AdvertiseSettings;
@@ -20,10 +18,7 @@ import android.content.Context;
 import android.content.IntentFilter;
 import android.util.Log;
 
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
+import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -37,15 +32,15 @@ import interdroid.swancore.swanmain.SensorInfo;
  *
  * TODO set characteristics properties accordingly
  * TODO send numbers instead of strings whenever possible
+ * TODO optimization: use one server worker per sensor/valuepath combination
  */
 public class BLEManager extends BTManager {
 
     private static final String TAG = "BLEManager";
     private static final int SCAN_PERIOD = 5000;
-    private static final int CHARACTERISTIC_CHANGE_INTERVAL = 5000;
     protected static final UUID SWAN_SERVICE_UUID = UUID.fromString("11060915-f0e9-43b8-82b3-c3609d14313f");
-    protected static final UUID SWAN_REQUEST_UUID = UUID.fromString("ad847b73-3ce5-4b75-9330-6c952fa6f830");
-    protected static final UUID SWAN_SENSOR_VALUE_UUID = UUID.fromString("c13e4329-fd71-4962-8cf3-7062317978ea");
+    protected static final UUID SWAN_CHAR_REGISTER_UUID = UUID.fromString("ad847b73-3ce5-4b75-9330-6c952fa6f830");
+    protected static final UUID SWAN_CHAR_UNREGISTER_UUID = UUID.fromString("06ad4ac5-ad7e-4884-ab2c-26d91faf4d42");
 
     private HashMap<UUID, String> uuidSensorMap = new HashMap<>();
     private BluetoothGattServer bleServer;
@@ -101,20 +96,20 @@ public class BLEManager extends BTManager {
         @Override
         public void onCharacteristicWriteRequest(BluetoothDevice device, int requestId, BluetoothGattCharacteristic characteristic, boolean preparedWrite, boolean responseNeeded, int offset, byte[] value) {
             super.onCharacteristicWriteRequest(device, requestId, characteristic, preparedWrite, responseNeeded, offset, value);
-            String reqSensorValuePath = new String(value);
-            Log.i(TAG, "received request from " + device.getName() + ": " + reqSensorValuePath);
+            UUID sensorValuePathUuid = bytesToUuid(value);
+            Log.i(TAG, "received request from " + device.getName() + " for: " + uuidSensorMap.get(sensorValuePathUuid));
 
-            UUID serviceUuid = UUID.nameUUIDFromBytes(reqSensorValuePath.getBytes());
-            BluetoothGattService service = new BluetoothGattService(serviceUuid, BluetoothGattService.SERVICE_TYPE_PRIMARY);
+            if(bleServer.getService(sensorValuePathUuid) == null) {
+                BluetoothGattService service = new BluetoothGattService(sensorValuePathUuid, BluetoothGattService.SERVICE_TYPE_PRIMARY);
+                BluetoothGattCharacteristic newCharacteristic =
+                        new BluetoothGattCharacteristic(sensorValuePathUuid,
+                                BluetoothGattCharacteristic.PROPERTY_READ | BluetoothGattCharacteristic.PROPERTY_WRITE | BluetoothGattCharacteristic.PROPERTY_NOTIFY,
+                                BluetoothGattCharacteristic.PERMISSION_READ | BluetoothGattCharacteristic.PERMISSION_WRITE);
+                service.addCharacteristic(newCharacteristic);
+                bleServer.addService(service);
+            }
 
-            UUID serviceCharacteristicUuid = UUID.nameUUIDFromBytes(reqSensorValuePath.getBytes());
-            BluetoothGattCharacteristic newCharacteristic =
-                    new BluetoothGattCharacteristic(serviceCharacteristicUuid,
-                            BluetoothGattCharacteristic.PROPERTY_READ | BluetoothGattCharacteristic.PROPERTY_WRITE | BluetoothGattCharacteristic.PROPERTY_NOTIFY,
-                            BluetoothGattCharacteristic.PERMISSION_READ | BluetoothGattCharacteristic.PERMISSION_WRITE);
-            service.addCharacteristic(newCharacteristic);
-            bleServer.addService(service); // TODO check if service doesn't exist already
-
+            //TODO here we can send back "not available" if the phone doesn't have the requested sensor
             bleServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, 0, "service added".getBytes());
         }
     };
@@ -134,7 +129,6 @@ public class BLEManager extends BTManager {
         if(btAdapter.isMultipleAdvertisementSupported()) {
             advertise();
             initServer();
-//            initReceiver();
         } else {
             log(TAG, "BLE advertising not supported", Log.ERROR, true);
         }
@@ -160,42 +154,18 @@ public class BLEManager extends BTManager {
         }
     }
 
-    private void initReceiver() {
-        new Thread() {
-            @Override
-            public void run() {
-                BluetoothServerSocket serverSocket = null;
-                try {
-                    serverSocket = btAdapter.listenUsingInsecureRfcommWithServiceRecord(BTManager.SERVICE_NAME, SWAN_SERVICE_UUID);
-                    BluetoothSocket btSocket = serverSocket.accept();
-
-                    if (btSocket != null) {
-                        OutputStream os = btSocket.getOutputStream();
-                        ObjectOutputStream outStream = new ObjectOutputStream(os);
-                        InputStream is = btSocket.getInputStream();
-                        ObjectInputStream inStream = new ObjectInputStream(is);
-
-                        while (true) {
-                            Object test = inStream.readObject();
-                            Log.d(TAG, "[server bt] received " + test);
-                            outStream.writeObject(test);
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
-    }
-
     private void initServer() {
         BluetoothGattService service = new BluetoothGattService(SWAN_SERVICE_UUID, BluetoothGattService.SERVICE_TYPE_PRIMARY);
 
-        BluetoothGattCharacteristic characteristic =
-                new BluetoothGattCharacteristic(SWAN_REQUEST_UUID,
-                        BluetoothGattCharacteristic.PROPERTY_READ | BluetoothGattCharacteristic.PROPERTY_WRITE | BluetoothGattCharacteristic.PROPERTY_NOTIFY,
-                        BluetoothGattCharacteristic.PERMISSION_READ | BluetoothGattCharacteristic.PERMISSION_WRITE);
-        service.addCharacteristic(characteristic);
+        BluetoothGattCharacteristic charRegister =
+                new BluetoothGattCharacteristic(SWAN_CHAR_REGISTER_UUID,
+                        BluetoothGattCharacteristic.PROPERTY_WRITE, BluetoothGattCharacteristic.PERMISSION_WRITE);
+        service.addCharacteristic(charRegister);
+
+        BluetoothGattCharacteristic charUnregister =
+                new BluetoothGattCharacteristic(SWAN_CHAR_UNREGISTER_UUID,
+                        BluetoothGattCharacteristic.PROPERTY_WRITE, BluetoothGattCharacteristic.PERMISSION_WRITE);
+        service.addCharacteristic(charUnregister);
 
         bleServer = btManager.openGattServer(context, bleServerCallback);
         bleServer.addService(service);
@@ -247,8 +217,11 @@ public class BLEManager extends BTManager {
         }, SCAN_PERIOD);
 
         btAdapter.getBluetoothLeScanner().startScan(scanCallback);
+    }
 
-//        btAdapter.startDiscovery();
+    @Override
+    public synchronized void registerExpression(String id, String expression, String resolvedLocation) {
+
     }
 
     @Override
@@ -260,7 +233,6 @@ public class BLEManager extends BTManager {
             updateEvaluationTask(remoteEvalTask);
 
             if(remoteEvalTask.hasExpressions()) {
-//                processEvalTask(remoteEvalTask);
                 BLEClientWorker clientWorker = new BLEClientWorker(this, remoteEvalTask);
                 clientWorker.start();
             }
@@ -272,12 +244,18 @@ public class BLEManager extends BTManager {
         }
     }
 
-    @Deprecated
-    private void processEvalTask(BTRemoteEvaluationTask remoteEvalTask) {
-        BluetoothDevice device = remoteEvalTask.getSwanDevice().getBtDevice();
-        startTime = System.currentTimeMillis();
-//        device.connectGatt(context, false, bleClientCallback);
-//        connect(device);
+    public static UUID bytesToUuid(byte[] bytes) {
+        ByteBuffer bb = ByteBuffer.wrap(bytes);
+        long firstLong = bb.getLong();
+        long secondLong = bb.getLong();
+        return new UUID(firstLong, secondLong);
+    }
+
+    public static byte[] uuidToBytes(UUID uuid) {
+        ByteBuffer bb = ByteBuffer.wrap(new byte[16]);
+        bb.putLong(uuid.getMostSignificantBits());
+        bb.putLong(uuid.getLeastSignificantBits());
+        return bb.array();
     }
 
     protected String getSensorForUuid(UUID uuid) {
@@ -288,31 +266,4 @@ public class BLEManager extends BTManager {
         return bleServer;
     }
 
-    private void connect(BluetoothDevice device) {
-        BluetoothSocket btSocket = null;
-
-        try {
-            btSocket = device.createInsecureRfcommSocketToServiceRecord(SWAN_SERVICE_UUID);
-            btSocket.connect();
-            Log.d(TAG, "[client bt] conn time = " + (System.currentTimeMillis() - startTime) + " ms)");
-
-            OutputStream os = btSocket.getOutputStream();
-            ObjectOutputStream outStream = new ObjectOutputStream(os);
-            InputStream is = btSocket.getInputStream();
-            ObjectInputStream inStream = new ObjectInputStream(is);
-
-            startTime = System.currentTimeMillis();
-            outStream.writeObject("Hi there!");
-
-            while(true) {
-                Object test = inStream.readObject();
-                Log.d(TAG, "[client bt] received " + test + " (" + (System.currentTimeMillis() - startTime) + " ms)");
-                Thread.sleep(2000);
-                startTime = System.currentTimeMillis();
-                outStream.writeObject(test);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 }
