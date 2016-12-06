@@ -18,11 +18,13 @@ import interdroid.swancore.swansong.TimestampedValue;
 public class BLEServerWorker {
 
     private static final String TAG = "BLEServerWorker";
+    private static int curExpressionId = 0;
 
     private BLEManager bleManager;
+
     private BluetoothDevice device;
     private BluetoothGattCharacteristic characteristic;
-    private static int curExpressionId = 0;
+    private String expressionId;
 
     private synchronized int nextExpressionId() {
         return curExpressionId++;
@@ -41,8 +43,9 @@ public class BLEServerWorker {
             String valuePath = sensorValuePath.split(":")[1];
             SensorValueExpression expression = new SensorValueExpression(Expression.LOCATION_SELF,
                     sensorEntity, valuePath, null, HistoryReductionMode.DEFAULT_MODE.ANY, 1000, null);
+            expressionId = nextExpressionId() + "";
 
-            ExpressionManager.registerValueExpression(bleManager.getContext(), nextExpressionId() + "", expression, new ValueExpressionListener() {
+            ExpressionManager.registerValueExpression(bleManager.getContext(), expressionId, expression, new ValueExpressionListener() {
                 @Override
                 public void onNewValues(String id, TimestampedValue[] newValues) {
                     if (newValues != null && newValues.length > 0) {
@@ -56,5 +59,17 @@ public class BLEServerWorker {
         } catch(Exception e) {
             Log.e(TAG, "error registering expression", e);
         }
+    }
+
+    public void stop() {
+        ExpressionManager.unregisterExpression(bleManager.getContext(), expressionId);
+    }
+
+    public BluetoothGattCharacteristic getCharacteristic() {
+        return characteristic;
+    }
+
+    public BluetoothDevice getDevice() {
+        return device;
     }
 }

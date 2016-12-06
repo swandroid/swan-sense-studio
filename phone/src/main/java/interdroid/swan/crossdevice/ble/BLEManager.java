@@ -19,13 +19,16 @@ import android.content.IntentFilter;
 import android.util.Log;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 import interdroid.swan.crossdevice.bluetooth.BTManager;
 import interdroid.swan.crossdevice.bluetooth.BTRemoteEvaluationTask;
 import interdroid.swancore.swanmain.ExpressionManager;
 import interdroid.swancore.swanmain.SensorInfo;
+import interdroid.swancore.swansong.Expression;
 
 /**
  * Created by vladimir on 9/23/16.
@@ -33,15 +36,20 @@ import interdroid.swancore.swanmain.SensorInfo;
  * TODO set characteristics properties accordingly
  * TODO send numbers instead of strings whenever possible
  * TODO optimization: use one server worker per sensor/valuepath combination
+ * TODO decouple this class from BTManager
+ * TODO fix register/unregister for a specific bluetooth ID
+ * TODO app crashes when BLE disconnects
  */
 public class BLEManager extends BTManager {
 
     private static final String TAG = "BLEManager";
-    private static final int SCAN_PERIOD = 5000;
+    private static final int SCAN_PERIOD = 2000;
     protected static final UUID SWAN_SERVICE_UUID = UUID.fromString("11060915-f0e9-43b8-82b3-c3609d14313f");
     protected static final UUID SWAN_CHAR_REGISTER_UUID = UUID.fromString("ad847b73-3ce5-4b75-9330-6c952fa6f830");
     protected static final UUID SWAN_CHAR_UNREGISTER_UUID = UUID.fromString("06ad4ac5-ad7e-4884-ab2c-26d91faf4d42");
 
+    private List<BLEClientWorker> clientWorkers = new ArrayList<>();
+    private List<BLEServerWorker> serverWorkers = new ArrayList<>();
     private HashMap<UUID, String> uuidSensorMap = new HashMap<>();
     private BluetoothGattServer bleServer;
     private BluetoothManager btManager;
@@ -88,9 +96,12 @@ public class BLEManager extends BTManager {
             super.onCharacteristicReadRequest(device, requestId, offset, characteristic);
             Log.i(TAG, "received read request from " + device.getName());
 
-            bleServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, 0, characteristic.getValue());
+            // it's very important to send this this empty response, otherwise further write operations won't work on the other side
+            bleServer.sendResponse(device, requestId, 0, 0, characteristic.getValue());
+
             BLEServerWorker serverWorker = new BLEServerWorker(BLEManager.this, device, characteristic);
             serverWorker.start();
+            addServerWorker(serverWorker);
         }
 
         @Override
@@ -99,18 +110,29 @@ public class BLEManager extends BTManager {
             UUID sensorValuePathUuid = bytesToUuid(value);
             Log.i(TAG, "received request from " + device.getName() + " for: " + uuidSensorMap.get(sensorValuePathUuid));
 
-            if(bleServer.getService(sensorValuePathUuid) == null) {
-                BluetoothGattService service = new BluetoothGattService(sensorValuePathUuid, BluetoothGattService.SERVICE_TYPE_PRIMARY);
-                BluetoothGattCharacteristic newCharacteristic =
-                        new BluetoothGattCharacteristic(sensorValuePathUuid,
-                                BluetoothGattCharacteristic.PROPERTY_READ | BluetoothGattCharacteristic.PROPERTY_WRITE | BluetoothGattCharacteristic.PROPERTY_NOTIFY,
-                                BluetoothGattCharacteristic.PERMISSION_READ | BluetoothGattCharacteristic.PERMISSION_WRITE);
-                service.addCharacteristic(newCharacteristic);
-                bleServer.addService(service);
-            }
+            if(characteristic.getUuid().equals(SWAN_CHAR_REGISTER_UUID)) {
+                if (bleServer.getService(sensorValuePathUuid) == null) {
+                    BluetoothGattService service = new BluetoothGattService(sensorValuePathUuid, BluetoothGattService.SERVICE_TYPE_PRIMARY);
+                    BluetoothGattCharacteristic newCharacteristic =
+                            new BluetoothGattCharacteristic(sensorValuePathUuid,
+                                    BluetoothGattCharacteristic.PROPERTY_READ | BluetoothGattCharacteristic.PROPERTY_WRITE | BluetoothGattCharacteristic.PROPERTY_NOTIFY,
+                                    BluetoothGattCharacteristic.PERMISSION_READ | BluetoothGattCharacteristic.PERMISSION_WRITE);
+                    service.addCharacteristic(newCharacteristic);
+                    bleServer.addService(service);
+                }
 
-            //TODO here we can send back "not available" if the phone doesn't have the requested sensor
-            bleServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, 0, "service added".getBytes());
+                //TODO here we can send back "not available" if the phone doesn't have the requested sensor
+                bleServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, 0, "service added".getBytes());
+            } else if(characteristic.getUuid().equals(SWAN_CHAR_UNREGISTER_UUID)) {
+                for(BLEServerWorker serverWorker : serverWorkers) {
+                    if(serverWorker.getCharacteristic().getUuid().equals(sensorValuePathUuid) && serverWorker.getDevice().equals(device)) {
+                        serverWorker.stop();
+                        BLEManager.this.serverWorkerDone(serverWorker);
+                    }
+                }
+
+                //TODO remove the service if no one is using it anymore
+            }
         }
     };
 
@@ -220,11 +242,6 @@ public class BLEManager extends BTManager {
     }
 
     @Override
-    public synchronized void registerExpression(String id, String expression, String resolvedLocation) {
-
-    }
-
-    @Override
     protected synchronized void processQueueItem(Object item) {
         log(TAG, "processing " + item, Log.DEBUG, true);
 
@@ -235,12 +252,26 @@ public class BLEManager extends BTManager {
             if(remoteEvalTask.hasExpressions()) {
                 BLEClientWorker clientWorker = new BLEClientWorker(this, remoteEvalTask);
                 clientWorker.start();
+                addClientWorker(clientWorker);
             }
         } else if(item instanceof Runnable) {
             // peer discovery or restart bluetooth
             ((Runnable) item).run();
         } else {
             log(TAG, "Item can't be processed: " + item, Log.ERROR);
+        }
+    }
+
+    @Override
+    public synchronized void unregisterExpression(String id, String expression, String resolvedLocation) {
+        super.unregisterExpression(id, expression, resolvedLocation);
+
+        if(resolvedLocation.equals(Expression.LOCATION_NEARBY)) {
+            for (BLEClientWorker clientWorker : clientWorkers) {
+                clientWorker.unregisterExpression(id);
+            }
+        } else {
+            //TODO
         }
     }
 
@@ -256,6 +287,26 @@ public class BLEManager extends BTManager {
         bb.putLong(uuid.getMostSignificantBits());
         bb.putLong(uuid.getLeastSignificantBits());
         return bb.array();
+    }
+
+    protected void addClientWorker(BLEClientWorker clientWorker) {
+        log(TAG, "client worker added to pool: " + clientWorker, Log.DEBUG, true);
+        clientWorkers.add(clientWorker);
+    }
+
+    protected void addServerWorker(BLEServerWorker serverWorker) {
+        log(TAG, "server worker added to pool: " + serverWorker, Log.DEBUG, true);
+        serverWorkers.add(serverWorker);
+    }
+
+    protected void clientWorkerDone(BLEClientWorker clientWorker) {
+        log(TAG, "client worker done " + clientWorker, Log.DEBUG, true);
+        clientWorkers.remove(clientWorker);
+    }
+
+    protected void serverWorkerDone(BLEServerWorker serverWorker) {
+        log(TAG, "server worker done " + serverWorker, Log.DEBUG, true);
+        serverWorkers.remove(serverWorker);
     }
 
     protected String getSensorForUuid(UUID uuid) {

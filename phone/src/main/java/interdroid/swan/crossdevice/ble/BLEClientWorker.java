@@ -30,12 +30,14 @@ public class BLEClientWorker {
 
     private BLEManager bleManager;
     private BTRemoteEvaluationTask remoteEvaluationTask;
+    private BluetoothGatt gatt;
 
     private BluetoothGattCallback bleClientCallback = new BluetoothGattCallback() {
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
             super.onConnectionStateChange(gatt, status, newState);
             Log.i(TAG, "onConnectionStateChange: status = " + status + ", state = " + newState);
+            BLEClientWorker.this.gatt = gatt;
 
             if (newState == BluetoothProfile.STATE_CONNECTED) {
                 gatt.discoverServices();
@@ -74,6 +76,11 @@ public class BLEClientWorker {
         }
 
         @Override
+        public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+            super.onCharacteristicRead(gatt, characteristic, status);
+        }
+
+        @Override
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
             super.onCharacteristicChanged(gatt, characteristic);
 
@@ -84,13 +91,16 @@ public class BLEClientWorker {
 
                 for (BTRemoteExpression remoteExpr : remoteEvaluationTask.getExpressions()) {
                     SensorValueExpression expression = (SensorValueExpression) remoteExpr.getExpression();
-                    TimestampedValue tValue = new TimestampedValue(Double.valueOf(characteristic.getStringValue(0)));
-                    Result result = new Result(new TimestampedValue[]{tValue}, tValue.getTimestamp());
 
                     if (sensor.equals(expression.getEntity()) && valuePath.equals(expression.getValuePath())) {
+                        TimestampedValue tValue = new TimestampedValue(Double.valueOf(characteristic.getStringValue(0)));
+                        Result result = new Result(new TimestampedValue[]{tValue}, tValue.getTimestamp());
+
                         bleManager.sendExprForEvaluation(remoteExpr.getBaseId(), EvaluationEngineService.ACTION_NEW_RESULT_REMOTE,
                                 remoteEvaluationTask.getSwanDevice().getName(), Converter.objectToString(result));
+
                     }
+
                 }
             } catch (Exception e) {
                 Log.e(TAG, "couldn't get new value for characteristic");
@@ -100,7 +110,10 @@ public class BLEClientWorker {
         @Override
         public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
             super.onCharacteristicWrite(gatt, characteristic, status);
-            gatt.discoverServices();
+
+            if(characteristic.getUuid().equals(BLEManager.SWAN_CHAR_REGISTER_UUID)) {
+                gatt.discoverServices();
+            }
         }
     };
 
@@ -112,5 +125,36 @@ public class BLEClientWorker {
     public void start() {
         BluetoothDevice device = remoteEvaluationTask.getSwanDevice().getBtDevice();
         device.connectGatt(bleManager.getContext(), false, bleClientCallback);
+    }
+
+    public void unregisterExpression(String exprId) {
+        BTRemoteExpression toRemove = null;
+
+        for(BTRemoteExpression remoteExpression : remoteEvaluationTask.getExpressions()) {
+            if(remoteExpression.getBaseId().equals(exprId) && gatt != null) {
+                SensorValueExpression expression = (SensorValueExpression) remoteExpression.getExpression();
+                String sensorValuePath = expression.getEntity() + ":" + expression.getValuePath();
+                UUID serviceUuid = UUID.nameUUIDFromBytes(sensorValuePath.getBytes());
+
+                BluetoothGattService service = gatt.getService(BLEManager.SWAN_SERVICE_UUID);
+                BluetoothGattCharacteristic characteristic = service.getCharacteristic(BLEManager.SWAN_CHAR_UNREGISTER_UUID);
+                characteristic.setValue(bleManager.uuidToBytes(serviceUuid));
+                gatt.writeCharacteristic(characteristic);
+
+                toRemove = remoteExpression;
+                break;
+            }
+        }
+
+        if(toRemove != null) {
+            remoteEvaluationTask.removeExpression(toRemove);
+
+            if(remoteEvaluationTask.getExpressions().isEmpty()) {
+                if(gatt != null) {
+                    gatt.close();
+                }
+                bleManager.clientWorkerDone(this);
+            }
+        }
     }
 }
