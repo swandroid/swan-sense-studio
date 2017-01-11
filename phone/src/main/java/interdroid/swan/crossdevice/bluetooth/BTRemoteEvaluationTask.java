@@ -7,10 +7,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import interdroid.swancore.swansong.ExpressionParseException;
+
 /**
  * Created by vladimir on 6/27/16.
  */
 public class BTRemoteEvaluationTask {
+
+    private static final String TAG = "BTRemoteEvaluationTask";
 
     private BTSwanDevice swanDevice;
     private List<BTRemoteExpression> expressions;
@@ -20,7 +24,11 @@ public class BTRemoteEvaluationTask {
         expressions = new ArrayList<BTRemoteExpression>();
 
         for(Map.Entry<String, String> entry : swanDevice.getRegisteredExpressions().entrySet()) {
-            expressions.add(new BTRemoteExpression(entry.getKey(), entry.getValue()));
+            try {
+                expressions.add(new BTRemoteExpression(entry.getKey(), entry.getValue()));
+            } catch (ExpressionParseException e) {
+                Log.d(TAG, "bad expression, won't add to task");
+            }
         }
     }
 
@@ -35,15 +43,6 @@ public class BTRemoteEvaluationTask {
     public BTRemoteExpression getRemoteExpression(String expressionId) {
         for(BTRemoteExpression expression : expressions) {
             if(expression.getId().equals(expressionId)) {
-                return expression;
-            }
-        }
-        return null;
-    }
-
-    public BTRemoteExpression getExpressionWithBaseId(String baseId) {
-        for(BTRemoteExpression expression : expressions) {
-            if(expression.getBaseId().equals(baseId)) {
                 return expression;
             }
         }

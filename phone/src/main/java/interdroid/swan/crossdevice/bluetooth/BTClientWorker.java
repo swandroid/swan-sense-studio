@@ -39,7 +39,7 @@ public class BTClientWorker extends BTWorker implements BTConnectionHandler {
 
             if(isConnectedToRemote()) {
                 for(BTRemoteExpression remoteExpression : remoteExpressions) {
-                    send(remoteExpression.getId(), EvaluationEngineService.ACTION_REGISTER_REMOTE, remoteExpression.getExpression());
+                    send(remoteExpression.getId(), EvaluationEngineService.ACTION_REGISTER_REMOTE, remoteExpression.getExpressionString());
                 }
             } else {
                 done();

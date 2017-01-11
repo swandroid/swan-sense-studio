@@ -10,6 +10,7 @@ import android.media.MediaScannerConnection;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -36,6 +37,7 @@ import interdroid.swancore.swansong.Expression;
  * TODO stop client workers that are blocked waiting for results
  * TODO send just one valid result in BTServerWorker
  * TODO for tristate expressions sometimes there is no result
+ * TODO create Logger class
  */
 public class BTManager implements ProximityManagerI {
 
@@ -59,7 +61,7 @@ public class BTManager implements ProximityManagerI {
     /* set this to true if you want only one server worker at a time, or false if you want multiple server workers in parallel */
     public static final boolean SYNC_RECEIVERS = true;
     /* set this to true if you want to prevent 2 devices connecting to each other at the same time */
-    public static final boolean SYNC_DEVICES = true;
+    public static final boolean SYNC_DEVICES = false;
     /* set SYNC_RECEIVERS to false if you set this to true */
     public static final boolean USE_WIFI = false;
     private final int BLOCKED_WORKERS_CHECKING_INTERVAL = 10000;
@@ -67,14 +69,14 @@ public class BTManager implements ProximityManagerI {
     private final int MAX_CONNECTIONS = 0;
     private final boolean LOG_ONLY_CRITICAL = false;
 
-    private Context context;
+    protected BluetoothAdapter btAdapter;
+    protected ConcurrentLinkedQueue<Object> evalQueue;
+    protected Handler handler;
+    protected Context context;
+
     private WifiReceiver wifiReceiver;
     private List<BTReceiver> btReceivers = new ArrayList<>();
-    private BluetoothAdapter btAdapter;
-    private ConcurrentLinkedQueue<Object> evalQueue;
-    private Handler handler;
     private boolean discovering = false;
-
     private boolean restarting = false;
     private long startTime = System.currentTimeMillis();
 
@@ -86,7 +88,7 @@ public class BTManager implements ProximityManagerI {
     /**
      * IMPORTANT the order of items in this list matters! (see SwanLakePlus)
      */
-    private Map<String, String> registeredExpressions = new HashMap<String, String>();
+    protected Map<String, String> registeredExpressions = new HashMap<String, String>();
 
     /* we schedule peer discovery to take place at regular intervals */
     Runnable nearbyPeersChecker = new Runnable() {
@@ -150,7 +152,7 @@ public class BTManager implements ProximityManagerI {
         }
     };
 
-    private final Thread evalThread = new Thread() {
+    protected final Thread evalThread = new Thread() {
         @Override
         public void run() {
             try {
@@ -191,7 +193,7 @@ public class BTManager implements ProximityManagerI {
     }
 
     //TODO move this to a separate file
-    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+    protected final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
 
@@ -258,26 +260,19 @@ public class BTManager implements ProximityManagerI {
         evalQueue = new ConcurrentLinkedQueue<Object>();
         handler = new Handler();
         wifiReceiver = new WifiReceiver(this);
+    }
+
+    public void init() {
+        if (btAdapter == null) {
+            log(TAG, "Bluetooth not supported", Log.ERROR, true);
+            return;
+        }
 
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         this.context.registerReceiver(mReceiver, filter); // Don't forget to unregister during onDestroy
-    }
 
-    // TODO this is not quite OK
-    public void registerService() {
-        String userFriendlyName = PreferenceManager.getDefaultSharedPreferences(context).getString("name", null);
-
-        if (userFriendlyName == null) {
-            log(TAG, "Name not set for device", Log.ERROR, true);
-            return;
-        }
-
-        btAdapter.setName(userFriendlyName);
-    }
-
-    public void init() {
         registerService();
 
         evalThread.start();
@@ -293,6 +288,18 @@ public class BTManager implements ProximityManagerI {
         }
 
         blockedWorkersChecker.run();
+    }
+
+    // TODO this is not quite OK
+    public void registerService() {
+        String userFriendlyName = PreferenceManager.getDefaultSharedPreferences(context).getString("name", null);
+
+        if (userFriendlyName == null) {
+            log(TAG, "Name not set for device", Log.ERROR, true);
+            return;
+        }
+
+        btAdapter.setName(userFriendlyName);
     }
 
     private void startReceivers() {
@@ -320,7 +327,6 @@ public class BTManager implements ProximityManagerI {
         context.unregisterReceiver(mReceiver);
     }
 
-    @Override
     public void disconnect() {
         for(BTSwanDevice swanDevice : nearbyDevices) {
             if (swanDevice.isConnectedToRemote()) {
@@ -414,7 +420,7 @@ public class BTManager implements ProximityManagerI {
     }
 
     // we synchronize this to make sure that a client worker is not added while a connection is killed in cleanupConnections()
-    private synchronized void processQueueItem(Object item) {
+    protected synchronized void processQueueItem(Object item) {
         log(TAG, "processing " + item, Log.DEBUG, true);
 
         if(item instanceof BTRemoteEvaluationTask) {
@@ -434,7 +440,7 @@ public class BTManager implements ProximityManagerI {
         }
     }
 
-    private void updateEvaluationTask(BTRemoteEvaluationTask remoteEvalTask) {
+    protected void updateEvaluationTask(BTRemoteEvaluationTask remoteEvalTask) {
         List<BTRemoteExpression> toRemove = new ArrayList<BTRemoteExpression>();
 
         for(BTRemoteExpression expression : remoteEvalTask.getExpressions()) {
@@ -483,7 +489,7 @@ public class BTManager implements ProximityManagerI {
     /**
      * send expression to the evaluation engine
      */
-    protected void sendExprForEvaluation(String exprId, String exprAction, String exprSource, String exprData) {
+    public void sendExprForEvaluation(String exprId, String exprAction, String exprSource, String exprData) {
         Intent intent = new Intent(exprAction);
         intent.setClass(getContext(), EvaluationEngineService.class);
         intent.putExtra("id", exprId);
@@ -492,7 +498,7 @@ public class BTManager implements ProximityManagerI {
         getContext().startService(intent);
     }
 
-    private void addToQueue(Object item) {
+    protected void addToQueue(Object item) {
         evalQueue.add(item);
         log(TAG, "item added to queue: " + item, Log.DEBUG);
         log(TAG, "[Queue] " + evalQueue, Log.DEBUG);

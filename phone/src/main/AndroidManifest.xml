@@ -120,9 +120,10 @@
         </activity>
         <activity
             android:name=".crossdevice.TestActivity"
-            android:icon="@drawable/ic_launcher_swan"
             android:label="SWAN Lake Test"
-            android:screenOrientation="portrait">
+            android:icon="@drawable/ic_launcher_swan"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -138,8 +139,8 @@
         </activity>
         <activity
             android:name=".remote.cloud.CloudTestActivity"
-            android:icon="@drawable/ic_launcher_swan"
             android:label="SWAN Cloud Test"
+            android:icon="@drawable/ic_launcher_swan"
             android:screenOrientation="portrait">
 
             <intent-filter>
@@ -1579,19 +1580,12 @@
         <service android:name="interdroid.swan.sensors.impl.wear.shared.SensorReceiverService">
             <intent-filter>
                 <!-- listeners receive events that match the action and data filters -->
-                <action android:name="com.google.android.gms.wearable.DATA_CHANGED"/>
-                <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED"/>
-                <action android:name="com.google.android.gms.wearable.CAPABILITY_CHANGED"/>
-                <action android:name="com.google.android.gms.wearable.CHANNEL_EVENT"/>
-
-                <data
-                    android:host="*"
-                    android:pathPrefix="/sensors/"
-                    android:scheme="wear"/>
-                <data
-                    android:host="*"
-                    android:pathPrefix="/expressionData/"
-                    android:scheme="wear"/>
+                <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
+                <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
+                <action android:name="com.google.android.gms.wearable.CAPABILITY_CHANGED" />
+                <action android:name="com.google.android.gms.wearable.CHANNEL_EVENT" />
+                <data android:scheme="wear" android:host="*" android:pathPrefix="/sensors/" />
+                <data android:scheme="wear" android:host="*" android:pathPrefix="/expressionData/" />
             </intent-filter>
         </service>
 
