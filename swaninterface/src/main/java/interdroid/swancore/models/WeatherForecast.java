@@ -3,9 +3,9 @@ package interdroid.swancore.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.maps.model.LatLng;
 import com.johnhiott.darkskyandroidlib.models.WeatherResponse;
 
 

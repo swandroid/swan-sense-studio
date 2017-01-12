@@ -3,8 +3,6 @@ package interdroid.swancore.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.google.android.gms.maps.model.LatLng;
-
 public class LocationCoordinates implements Parcelable {
     public double latitude = 0.0;
     public double longitude = 0.0;
@@ -20,10 +18,6 @@ public class LocationCoordinates implements Parcelable {
         this.speed = speed;
         this.bearing = bearing;
         this.accuracy = accuracy;
-    }
-
-    public LatLng getLatLng() {
-        return new LatLng(latitude, longitude);
     }
 
     protected LocationCoordinates(Parcel in) {

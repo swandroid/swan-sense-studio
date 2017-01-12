@@ -13,11 +13,6 @@ import org.joda.time.ReadablePartial;
 import org.joda.time.ReadablePeriod;
 
 import java.lang.reflect.Type;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Locale;
 
 public class ChronologyDeserializer implements JsonDeserializer<Chronology> {
 

@@ -26,10 +26,10 @@ ext {
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    buildToolsVersion "23.0.3"
 
     defaultConfig {
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 23
         versionCode 1
         versionName "1.0.1"
@@ -48,7 +48,6 @@ dependencies {
     // If you made local changes to the swansong, use:
     // compile project(':swansong')
     compile 'interdroid.swancore.swansong:swansong:1.0.3'
-    compile 'com.google.android.gms:play-services-maps:9.0.2'
     compile 'com.google.maps:google-maps-services:0.1.15'
     compile 'com.github.johnhiott:DarkSkyApi:v0.1.5'
 }

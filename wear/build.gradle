@@ -23,7 +23,7 @@ android {
 }
 
 dependencies {
-    compile 'com.google.android.gms:play-services-wearable:8.3.0'
+    compile 'com.google.android.gms:play-services-wearable:10.0.1'
     compile project(':swancore')
 
 }
