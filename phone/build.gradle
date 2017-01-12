@@ -2,11 +2,11 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion '23.0.2'
+    buildToolsVersion '23.0.3'
 
     defaultConfig {
         applicationId "interdroid.swan"
-        minSdkVersion 21
+        minSdkVersion 16
         targetSdkVersion 22 // please leave this to '22' as bluetooth discovery is not working properly in higher versions
         multiDexEnabled true
     }
@@ -41,10 +41,10 @@ dependencies {
     compile 'com.squareup.retrofit:retrofit:1.9.0'
     compile 'com.squareup.okhttp:okhttp:2.4.0'
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.4.0'
-    compile 'com.google.android.gms:play-services-ads:9.0.2'
-    compile 'com.google.android.gms:play-services-identity:9.0.2'
-    compile 'com.google.android.gms:play-services-gcm:9.0.2'
-    compile 'com.google.android.gms:play-services-wearable:9.0.2'
+    compile 'com.google.android.gms:play-services-ads:10.0.1'
+    compile 'com.google.android.gms:play-services-identity:10.0.1'
+    compile 'com.google.android.gms:play-services-gcm:10.0.1'
+    compile 'com.google.android.gms:play-services-wearable:10.0.1'
     compile 'org.altbeacon:android-beacon-library:2.8.1'
 
     compile 'com.android.support:recyclerview-v7:23.1.1'
@@ -70,11 +70,11 @@ dependencies {
     }
 
     //For firebase connection
-    compile 'com.google.firebase:firebase-messaging:9.0.2'
-    compile 'com.android.support:multidex:1.0.0'
+    compile 'com.google.firebase:firebase-messaging:10.0.1'
+    compile 'com.android.support:multidex:1.0.1'
 
 }
 
 
 //For firebase connection
-apply plugin: 'com.google.gms.google-services'
+//apply plugin: 'com.google.gms.google-services'
