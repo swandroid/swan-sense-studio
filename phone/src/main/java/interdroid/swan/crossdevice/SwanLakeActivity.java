@@ -43,9 +43,8 @@ import interdroid.sense.LoginActivity;
 import interdroid.sense.RegistrationActivity;
 import interdroid.sense.SettingsActivity;
 import interdroid.swan.R;
-import interdroid.swancore.swansong.Expression;
-import interdroid.swan.ttn.TtnActivity;
 import interdroid.swancore.crossdevice.Registry;
+import interdroid.swancore.swansong.Expression;
 import nl.sense_os.service.constants.SensePrefs;
 
 /**
@@ -252,7 +251,7 @@ public class SwanLakeActivity extends ListActivity {
                 startActivity(new Intent(this, SettingsActivity.class));
                 break;
             case R.id.action_ttn:
-                startActivity(new Intent(this, TtnActivity.class));
+//                startActivity(new Intent(this, TtnActivity.class));
                 break;
             case R.id.action_cuckoo_resources:
                 startActivity(new Intent(this, ResourcesActivity.class));

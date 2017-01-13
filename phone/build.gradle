@@ -25,30 +25,11 @@ android {
     android {
         useLibrary 'org.apache.http.legacy'
     }
-
-    packagingOptions {
-        exclude 'META-INF/maven/joda-time/joda-time/pom.properties'
-        exclude 'META-INF/maven/joda-time/joda-time/pom.xml'
-        pickFirst 'org/joda/time/format/messages.properties'
-        pickFirst 'org/joda/time/format/messages_cs.properties'
-        pickFirst 'org/joda/time/format/messages_da.properties'
-        pickFirst 'org/joda/time/format/messages_de.properties'
-        pickFirst 'org/joda/time/format/messages_en.properties'
-        pickFirst 'org/joda/time/format/messages_es.properties'
-        pickFirst 'org/joda/time/format/messages_fr.properties'
-        pickFirst 'org/joda/time/format/messages_it.properties'
-        pickFirst 'org/joda/time/format/messages_ja.properties'
-        pickFirst 'org/joda/time/format/messages_nl.properties'
-        pickFirst 'org/joda/time/format/messages_pl.properties'
-        pickFirst 'org/joda/time/format/messages_pt.properties'
-        pickFirst 'org/joda/time/format/messages_ru.properties'
-        pickFirst 'org/joda/time/format/messages_tr.properties'
-    }
 }
 
 dependencies {
     //ant.importBuild 'src/main/buildgrammar.ant'
-    compile project(':ttn-android-sdk')
+//    compile project(':ttn-android-sdk')
     compile project(':senseandroidlibrary')
     compile project(':swancore')
 
