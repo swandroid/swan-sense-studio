@@ -16,6 +16,8 @@ import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanResult;
 import android.content.Context;
 import android.content.IntentFilter;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 
 import java.nio.ByteBuffer;
@@ -40,6 +42,7 @@ import interdroid.swancore.swansong.Expression;
  * TODO fix register/unregister for a specific bluetooth ID
  * TODO app crashes when BLE disconnects
  */
+@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class BLEManager extends BTManager {
 
     private static final String TAG = "BLEManager";
@@ -226,6 +229,9 @@ public class BLEManager extends BTManager {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                if (btAdapter.getBluetoothLeScanner() == null)
+                    return;
+
                 btAdapter.getBluetoothLeScanner().stopScan(scanCallback);
 
                 log(TAG, "discovery finished", Log.INFO, true);
@@ -238,7 +244,8 @@ public class BLEManager extends BTManager {
             }
         }, SCAN_PERIOD);
 
-        btAdapter.getBluetoothLeScanner().startScan(scanCallback);
+        if (btAdapter.getBluetoothLeScanner() != null)
+            btAdapter.getBluetoothLeScanner().startScan(scanCallback);
     }
 
     @Override

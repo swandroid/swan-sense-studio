@@ -6,6 +6,8 @@ import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -24,6 +26,7 @@ import interdroid.swancore.swansong.TimestampedValue;
  * Created by vladimir on 11/25/2016.
  */
 
+@RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class BLEClientWorker {
 
     private static final String TAG = "BLEClientWorker";

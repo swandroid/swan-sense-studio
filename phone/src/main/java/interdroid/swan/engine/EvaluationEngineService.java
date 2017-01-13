@@ -21,7 +21,7 @@ public class EvaluationEngineService extends EvaluationEngineServiceBase{
     public void onCreate() {
         super.onCreate();
 
-        if (Build.VERSION.SDK_INT >= 21) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mProximityManager = new BLEManager(this);
 //        mProximityManager = new BTManager(this);
             mProximityManager.init();
@@ -35,7 +35,7 @@ public class EvaluationEngineService extends EvaluationEngineServiceBase{
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (Build.VERSION.SDK_INT >= 21) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mProximityManager.clean();
         }
     }
@@ -43,8 +43,8 @@ public class EvaluationEngineService extends EvaluationEngineServiceBase{
     @Override
     protected void sendUpdateToRemote(final String registrationId,
                                       final String expressionId, final Result result) {
-        // pusher is async
-        if (Build.VERSION.SDK_INT >= 21) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // pusher is async
             try {
                 if (mProximityManager.hasPeer(registrationId)) {
                     mProximityManager.send(registrationId, expressionId, ACTION_NEW_RESULT_REMOTE,
