@@ -7,9 +7,7 @@ import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.Bundle;
 import android.os.Looper;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import android.util.Log;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -17,8 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import interdroid.swan.R;
-import interdroid.swancore.sensors.AbstractConfigurationActivity;
 import interdroid.swan.sensors.AbstractSwanSensor;
+import interdroid.swancore.sensors.AbstractConfigurationActivity;
 
 /**
  * A sensor for location.
@@ -26,11 +24,6 @@ import interdroid.swan.sensors.AbstractSwanSensor;
  * @author rkemp &lt;rkemp@cs.vu.nl&gt;
  */
 public class SmartLocationSensor extends AbstractSwanSensor {
-    /**
-     * Access to logger.
-     */
-    private static final Logger LOG = LoggerFactory
-            .getLogger(SmartLocationSensor.class);
 
     private static final long SECOND = 1000; // ms
 
@@ -172,22 +165,22 @@ public class SmartLocationSensor extends AbstractSwanSensor {
         }
 
         public void onProviderDisabled(final String provider) {
-            LOG.debug("provider disabled: {}. I am using: {}", provider,
+            Log.d(getClass().getSimpleName(), "provider disabled: {}. I am using: {}" + provider +
                     currentProvider);
             if (provider.equals(currentProvider)) {
-                LOG.warn("location sensor disabled due to lack of provider");
+                Log.i(getClass().getSimpleName(), "location sensor disabled due to lack of provider");
             }
         }
 
         public void onProviderEnabled(final String provider) {
-            LOG.debug("provider enabled: {}", provider);
+            Log.d(getClass().getSimpleName(), "provider enabled: {}" + provider);
         }
 
         public void onStatusChanged(final String provider, final int status,
                                     final Bundle extras) {
             if (provider.equals(currentProvider)
                     && status != LocationProvider.AVAILABLE) {
-                LOG.warn("location sensor disabled because sensor unavailable");
+                Log.i(getClass().getSimpleName(), "location sensor disabled because sensor unavailable");
             }
 
         }
@@ -294,7 +287,7 @@ public class SmartLocationSensor extends AbstractSwanSensor {
             passiveProvider = (String) passive.get(null);
             mostAccurateProvider = passiveProvider;
         } catch (Exception e) {
-            LOG.warn("Caught exception checking for PASSIVE_PROVIDER.");
+            Log.i(getClass().getSimpleName(), "Caught exception checking for PASSIVE_PROVIDER.");
             mostAccurateProvider = LocationManager.NETWORK_PROVIDER;
         }
 

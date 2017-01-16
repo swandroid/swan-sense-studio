@@ -48,7 +48,7 @@ dependencies {
     // If you made local changes to the swansong, use:
     // compile project(':swansong')
     compile 'interdroid.swancore.swansong:swansong:1.0.3'
-    compile 'com.google.maps:google-maps-services:0.1.15'
+    compile 'com.google.maps:google-maps-services:0.1.17'
     compile 'com.github.johnhiott:DarkSkyApi:v0.1.5'
 }
 

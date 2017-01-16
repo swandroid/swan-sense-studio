@@ -49,7 +49,8 @@
         android:icon="@drawable/ic_launcher_swan"
         android:label="@string/swan_app_name"
         android:largeHeap="true"
-        tools:replace="android:label">
+        tools:replace="android:label"
+        android:name="android.support.multidex.MultiDexApplication">
 
         <meta-data
             android:name="com.google.android.gms.version"

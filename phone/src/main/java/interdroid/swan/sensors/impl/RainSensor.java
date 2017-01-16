@@ -4,9 +4,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
@@ -75,7 +73,6 @@ public class RainSensor extends AbstractSwanSensor {
     @Override
     public void onConnected() {
         SENSOR_NAME = "Rain";
-        Log.e(TAG, "No rain sensor found on device!");
     }
 
     @Override

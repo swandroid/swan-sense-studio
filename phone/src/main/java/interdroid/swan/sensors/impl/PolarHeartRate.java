@@ -7,9 +7,6 @@ import android.content.ContentValues;
 import android.os.Bundle;
 import android.util.Log;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -29,12 +26,6 @@ import interdroid.swan.sensors.AbstractSwanSensor;
  */
 public class PolarHeartRate extends AbstractSwanSensor {
     private static final String TAG = "PolarHeartRate Sensor";
-
-    /**
-     * Access to logger.
-     */
-    private static final Logger LOG =
-            LoggerFactory.getLogger(PolarHeartRate.class);
 
 
     /**
@@ -133,7 +124,7 @@ public class PolarHeartRate extends AbstractSwanSensor {
         @Override
         public void run() {
             try {
-                LOG.debug("Built input stream.");
+                Log.d(getClass().getSimpleName(), "Built input stream.");
                 boolean interrupted = false;
 
                 // Avoid pressure on the GC
@@ -149,7 +140,7 @@ public class PolarHeartRate extends AbstractSwanSensor {
                         int size = mStream.read();
                         int check = mStream.read();
                         if (check != (CHECK_MAX - size)) {
-                            LOG.debug("Bad packet. Skipping.");
+                            Log.d(getClass().getSimpleName(), "Bad packet. Skipping.");
                             continue;
                         }
                         // Index runs from 1 to 15 and repeats
@@ -171,8 +162,8 @@ public class PolarHeartRate extends AbstractSwanSensor {
                             sleep(POLL_DELAY);
                         } catch (InterruptedException e) {
                             interrupted = true;
-                            LOG.debug(
-                                    "Interrupted while waiting for reading: {}",
+                            Log.d(getClass().getSimpleName(),
+                                    "Interrupted while waiting for reading: {}" +
                                     interrupted());
                         }
                     }
@@ -180,14 +171,14 @@ public class PolarHeartRate extends AbstractSwanSensor {
 
 
             } catch (IOException e) {
-                LOG.error("Error creating socket.", e);
+                Log.e(getClass().getSimpleName(), "Error creating socket.", e);
             } finally {
-                LOG.debug("Closing bluetooth socket.");
+                Log.d(getClass().getSimpleName(), "Closing bluetooth socket.");
                 if (mStream != null) {
                     try {
                         mStream.close();
                     } catch (Exception e) {
-                        LOG.error("Error closing input stream", e);
+                        Log.e(getClass().getSimpleName(), "Error closing input stream", e);
                     }
                 }
             }
@@ -263,7 +254,7 @@ public class PolarHeartRate extends AbstractSwanSensor {
             for (BluetoothDevice device
                     : mBluetoothAdapter.getBondedDevices()) {
                 if (device.getName().equals(deviceName)) {
-                    LOG.debug("Found paired Polar iWL {}" + device);
+                    Log.d(getClass().getSimpleName(), "Found paired Polar iWL {}" + device);
 
                     UUID uuid = UUID.fromString(
                             "00001101-0000-1000-8000-00805F9B34FB");
@@ -279,7 +270,7 @@ public class PolarHeartRate extends AbstractSwanSensor {
                         found = true;
                         break;
                     } catch (IOException e) {
-                        LOG.error("Unable to connect to device.", e);
+                        Log.e(getClass().getSimpleName(), "Unable to connect to device.", e);
 
                     }
                 }
