@@ -122,6 +122,11 @@ public class ExpressionManager {
     private static boolean sReceiverRegistered = false;
 
     /**
+     * the context used to register sReceiver
+     */
+    private static Context sContext = null;
+
+    /**
      * Broadcast receiver used in case values have to be forwarded to listeners
      */
     private static BroadcastReceiver sReceiver = new BroadcastReceiver() {
@@ -333,6 +338,8 @@ public class ExpressionManager {
                 if (sListeners.size() == 0) {
                     sReceiverRegistered = true;
                     registerReceiver(context);
+                    /* we store the context, as we need it later in unregisterExpression */
+                    sContext = context;
                 }
                 sListeners.put(id, expressionListener);
             }
@@ -421,7 +428,12 @@ public class ExpressionManager {
         sListeners.remove(id);
         if (sListeners.size() == 0 && sReceiverRegistered) {
             sReceiverRegistered = false;
-            unregisterReceiver(context);
+            /* if we unregister context instead of sContext, then we have a problem for the following scenario:
+             * expression1 is registered in context A (so the receiver is registered for context A), then expression2 is registered
+             * in context B, then expression 1 is unregistered (but the receiver remains registered for context A),
+             * then expression 2 is unregistered, so the code below tries to unregister the receiver for context B,
+             * which is erroneous, as the receiver is registered for context A */
+            unregisterReceiver(sContext);
         }
         Intent intent = new Intent(ACTION_UNREGISTER);
         intent.putExtra("expressionId", id);

@@ -64,8 +64,9 @@ public class BTManager implements ProximityManagerI {
     public static final boolean SYNC_DEVICES = false;
     /* set SYNC_RECEIVERS to false if you set this to true */
     public static final boolean USE_WIFI = false;
+
+    protected final int PEER_DISCOVERY_INTERVAL = 20000;
     private final int BLOCKED_WORKERS_CHECKING_INTERVAL = 10000;
-    private final int PEER_DISCOVERY_INTERVAL = 60000;
     private final int MAX_CONNECTIONS = 0;
     private final boolean LOG_ONLY_CRITICAL = false;
 

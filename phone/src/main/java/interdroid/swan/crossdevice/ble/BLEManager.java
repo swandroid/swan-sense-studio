@@ -53,23 +53,6 @@ public class BLEManager extends BTManager {
     private HashMap<UUID, String> uuidSensorMap = new HashMap<>();
     private BluetoothGattServer bleServer;
     private BluetoothManager btManager;
-    private long startTime;
-
-    /* we schedule peer discovery to take place at regular intervals */
-    private Runnable nearbyPeersChecker = new Runnable() {
-        public void run() {
-            log(TAG, "discovery started", Log.INFO, true);
-            bcastLogMessage("discovery started");
-
-            discoverPeers();
-            setDiscovering(true);
-        }
-
-        @Override
-        public String toString() {
-            return "BLEDiscoveryEvent";
-        }
-    };
 
     private ScanCallback scanCallback = new ScanCallback() {
         @Override
@@ -149,8 +132,8 @@ public class BLEManager extends BTManager {
         }
 
         if(btAdapter.isMultipleAdvertisementSupported()) {
-            advertise();
             initServer();
+            advertise();
         } else {
             log(TAG, "BLE advertising not supported", Log.ERROR, true);
         }
@@ -168,7 +151,8 @@ public class BLEManager extends BTManager {
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         this.context.registerReceiver(mReceiver, filter); // Don't forget to unregister during onDestroy
 
-        addToQueue(nearbyPeersChecker);
+//        addToQueue(nearbyPeersChecker);
+        discoverPeers();
         evalThread.start();
 
         synchronized (evalThread) {
@@ -223,22 +207,25 @@ public class BLEManager extends BTManager {
     @Override
     public void discoverPeers() {
         // Stops scanning after a pre-defined scan period.
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                btAdapter.getBluetoothLeScanner().stopScan(scanCallback);
-
-                log(TAG, "discovery finished", Log.INFO, true);
-                bcastLogMessage("discovery finished");
-
-                setDiscovering(false);
-                synchronized (evalThread) {
-                    evalThread.notify();
-                }
-            }
-        }, SCAN_PERIOD);
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                btAdapter.getBluetoothLeScanner().stopScan(scanCallback);
+//                log(TAG, "discovery finished", Log.INFO, true);
+//                bcastLogMessage("discovery finished");
+//
+//                handler.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        discoverPeers();
+//                    }
+//                }, PEER_DISCOVERY_INTERVAL);
+//            }
+//        }, SCAN_PERIOD);
 
         btAdapter.getBluetoothLeScanner().startScan(scanCallback);
+        log(TAG, "discovery started", Log.INFO, true);
+        bcastLogMessage("discovery started");
     }
 
     @Override
