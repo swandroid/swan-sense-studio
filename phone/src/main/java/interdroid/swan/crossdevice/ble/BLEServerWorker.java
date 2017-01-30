@@ -26,7 +26,7 @@ public class BLEServerWorker {
     private BluetoothGattCharacteristic characteristic;
     private String expressionId;
 
-    private synchronized int nextExpressionId() {
+    private static synchronized int nextExpressionId() {
         return curExpressionId++;
     }
 
@@ -38,7 +38,7 @@ public class BLEServerWorker {
 
     public void start() {
         try {
-            String sensorValuePath = bleManager.getSensorForUuid(characteristic.getUuid());
+            final String sensorValuePath = bleManager.getSensorForUuid(characteristic.getUuid());
             String sensorEntity = sensorValuePath.split(":")[0];
             String valuePath = sensorValuePath.split(":")[1];
             SensorValueExpression expression = new SensorValueExpression(Expression.LOCATION_SELF,
@@ -50,9 +50,12 @@ public class BLEServerWorker {
                 public void onNewValues(String id, TimestampedValue[] newValues) {
                     if (newValues != null && newValues.length > 0) {
                         String value = newValues[0].getValue().toString();
-                        Log.d(TAG, "got new value for expression: " + value);
+                        Log.i(TAG, getDeviceName() + ": sending value for " + sensorValuePath + "(" + expressionId + ") to remote: " + value);
                         characteristic.setValue(value);
-                        bleManager.getBleServer().notifyCharacteristicChanged(device, characteristic, false);
+
+                        if(!bleManager.getBleServer().notifyCharacteristicChanged(device, characteristic, false)) {
+                            Log.e(TAG, getDeviceName() + ": couldn't send notification for new value");
+                        }
                     }
                 }
             });
@@ -71,5 +74,12 @@ public class BLEServerWorker {
 
     public BluetoothDevice getDevice() {
         return device;
+    }
+
+    public String getDeviceName() {
+        if(device.getName() != null) {
+            return device.getName();
+        }
+        return device.getAddress();
     }
 }

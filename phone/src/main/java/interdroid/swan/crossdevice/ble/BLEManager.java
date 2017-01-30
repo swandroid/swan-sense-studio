@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ThreadFactory;
 
 import interdroid.swan.crossdevice.bluetooth.BTManager;
 import interdroid.swan.crossdevice.bluetooth.BTRemoteEvaluationTask;
@@ -43,7 +44,7 @@ import interdroid.swancore.swansong.Expression;
 public class BLEManager extends BTManager {
 
     private static final String TAG = "BLEManager";
-    private static final int SCAN_PERIOD = 2000;
+    private static final int SCAN_PERIOD = 20000;
     protected static final UUID SWAN_SERVICE_UUID = UUID.fromString("11060915-f0e9-43b8-82b3-c3609d14313f");
     protected static final UUID SWAN_CHAR_REGISTER_UUID = UUID.fromString("ad847b73-3ce5-4b75-9330-6c952fa6f830");
     protected static final UUID SWAN_CHAR_UNREGISTER_UUID = UUID.fromString("06ad4ac5-ad7e-4884-ab2c-26d91faf4d42");
@@ -60,7 +61,7 @@ public class BLEManager extends BTManager {
             BluetoothDevice device = result.getDevice();
 
             if (device.getName() != null && device.getName().contains("SWAN")) {
-                log(TAG, "found nearby device " + device.getName(), Log.DEBUG);
+//                log(TAG, "found nearby device " + device.getName(), Log.DEBUG);
                 addNearbyDevice(device, null);
             }
         }
@@ -107,11 +108,17 @@ public class BLEManager extends BTManager {
                 //TODO here we can send back "not available" if the phone doesn't have the requested sensor
                 bleServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, 0, "service added".getBytes());
             } else if(characteristic.getUuid().equals(SWAN_CHAR_UNREGISTER_UUID)) {
+                ArrayList<BLEServerWorker> workersDone = new ArrayList<>();
+
                 for(BLEServerWorker serverWorker : serverWorkers) {
                     if(serverWorker.getCharacteristic().getUuid().equals(sensorValuePathUuid) && serverWorker.getDevice().equals(device)) {
                         serverWorker.stop();
-                        BLEManager.this.serverWorkerDone(serverWorker);
+                        workersDone.add(serverWorker);
                     }
+                }
+
+                for(BLEServerWorker serverWorker : workersDone) {
+                    BLEManager.this.serverWorkerDone(serverWorker);
                 }
 
                 //TODO remove the service if no one is using it anymore
@@ -207,21 +214,21 @@ public class BLEManager extends BTManager {
     @Override
     public void discoverPeers() {
         // Stops scanning after a pre-defined scan period.
-//        handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                btAdapter.getBluetoothLeScanner().stopScan(scanCallback);
-//                log(TAG, "discovery finished", Log.INFO, true);
-//                bcastLogMessage("discovery finished");
-//
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                btAdapter.getBluetoothLeScanner().stopScan(scanCallback);
+                log(TAG, "discovery finished", Log.INFO, true);
+                bcastLogMessage("discovery finished");
+
 //                handler.postDelayed(new Runnable() {
 //                    @Override
 //                    public void run() {
 //                        discoverPeers();
 //                    }
 //                }, PEER_DISCOVERY_INTERVAL);
-//            }
-//        }, SCAN_PERIOD);
+            }
+        }, SCAN_PERIOD);
 
         btAdapter.getBluetoothLeScanner().startScan(scanCallback);
         log(TAG, "discovery started", Log.INFO, true);
@@ -241,6 +248,12 @@ public class BLEManager extends BTManager {
                 clientWorker.start();
                 addClientWorker(clientWorker);
             }
+
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         } else if(item instanceof Runnable) {
             // peer discovery or restart bluetooth
             ((Runnable) item).run();
@@ -251,14 +264,21 @@ public class BLEManager extends BTManager {
 
     @Override
     public synchronized void unregisterExpression(String id, String expression, String resolvedLocation) {
+        ArrayList<BLEClientWorker> workersDone = new ArrayList<>();
         super.unregisterExpression(id, expression, resolvedLocation);
 
         if(resolvedLocation.equals(Expression.LOCATION_NEARBY)) {
             for (BLEClientWorker clientWorker : clientWorkers) {
-                clientWorker.unregisterExpression(id);
+                if(clientWorker.unregisterExpression(id)) {
+                    workersDone.add(clientWorker);
+                }
             }
         } else {
             //TODO
+        }
+
+        for(BLEClientWorker clientWorker : workersDone) {
+            clientWorkerDone(clientWorker);
         }
     }
 

@@ -40,7 +40,10 @@ public class BLEClientWorker {
             BLEClientWorker.this.gatt = gatt;
 
             if (newState == BluetoothProfile.STATE_CONNECTED) {
+                bleManager.bcastLogMessage("connected to " + remoteEvaluationTask.getSwanDevice());
                 gatt.discoverServices();
+            } else if(newState == BluetoothProfile.STATE_DISCONNECTED) {
+                bleManager.bcastLogMessage("disconnected from " + remoteEvaluationTask.getSwanDevice());
             }
         }
 
@@ -60,10 +63,12 @@ public class BLEClientWorker {
                     BluetoothGattService service = gatt.getService(serviceUuid);
 
                     if(service != null) {
+                        Log.d(TAG, remoteEvaluationTask.getSwanDevice() + ": found service " + sensorValuePath);
                         BluetoothGattCharacteristic characteristic = service.getCharacteristic(serviceUuid);
                         gatt.setCharacteristicNotification(characteristic, true);
                         gatt.readCharacteristic(characteristic);
                     } else {
+                        Log.d(TAG, remoteEvaluationTask.getSwanDevice() + ": service not found " + sensorValuePath + ", registering...");
                         service = gatt.getService(BLEManager.SWAN_SERVICE_UUID);
                         BluetoothGattCharacteristic characteristic = service.getCharacteristic(BLEManager.SWAN_CHAR_REGISTER_UUID);
                         characteristic.setValue(bleManager.uuidToBytes(serviceUuid));
@@ -78,6 +83,7 @@ public class BLEClientWorker {
         @Override
         public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
             super.onCharacteristicRead(gatt, characteristic, status);
+            Log.d(TAG, remoteEvaluationTask.getSwanDevice() + ": characteristic read " + characteristic);
         }
 
         @Override
@@ -88,6 +94,8 @@ public class BLEClientWorker {
                 String sensorValuePath = bleManager.getSensorForUuid(characteristic.getUuid());
                 String sensor = sensorValuePath.split(":")[0];
                 String valuePath = sensorValuePath.split(":")[1];
+
+                Log.d(TAG, remoteEvaluationTask.getSwanDevice() + ": new result for " + sensorValuePath);
 
                 for (BTRemoteExpression remoteExpr : remoteEvaluationTask.getExpressions()) {
                     SensorValueExpression expression = (SensorValueExpression) remoteExpr.getExpression();
@@ -110,6 +118,7 @@ public class BLEClientWorker {
         @Override
         public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
             super.onCharacteristicWrite(gatt, characteristic, status);
+            Log.d(TAG, remoteEvaluationTask.getSwanDevice() + ": characteristic wrote remotely " + characteristic);
 
             if(characteristic.getUuid().equals(BLEManager.SWAN_CHAR_REGISTER_UUID)) {
                 gatt.discoverServices();
@@ -127,7 +136,10 @@ public class BLEClientWorker {
         device.connectGatt(bleManager.getContext(), false, bleClientCallback);
     }
 
-    public void unregisterExpression(String exprId) {
+    /**
+     * return true if client worker finished all expressions
+     */
+    public boolean unregisterExpression(String exprId) {
         BTRemoteExpression toRemove = null;
 
         for(BTRemoteExpression remoteExpression : remoteEvaluationTask.getExpressions()) {
@@ -153,8 +165,10 @@ public class BLEClientWorker {
                 if(gatt != null) {
                     gatt.close();
                 }
-                bleManager.clientWorkerDone(this);
+                return true;
             }
         }
+
+        return false;
     }
 }

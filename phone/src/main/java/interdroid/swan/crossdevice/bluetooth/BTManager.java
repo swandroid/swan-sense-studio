@@ -540,7 +540,7 @@ public class BTManager implements ProximityManagerI {
             nearbyDevices.add(swanDevice);
             registerRemoteDevice(swanDevice);
         } else {
-            log(TAG, "device " + btDevice.getName() + " already present, won't add", Log.DEBUG);
+//            log(TAG, "device " + btDevice.getName() + " already present, won't add", Log.DEBUG);
             if(btConnection != null && btConnection.isConnected()) {
                 log(TAG, "updated connection for " + btDevice.getName(), Log.DEBUG);
                 swanDevice.setConnection(btConnection);
@@ -742,7 +742,7 @@ public class BTManager implements ProximityManagerI {
     /**
      * temporary method used for debug
      */
-    protected void bcastLogMessage(String message) {
+    public void bcastLogMessage(String message) {
         Intent logMsgIntent = new Intent();
         logMsgIntent.setAction(ACTION_LOG_MESSAGE);
         logMsgIntent.putExtra("log", message);
