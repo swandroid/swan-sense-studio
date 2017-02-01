@@ -34,21 +34,27 @@ public class BLEClientWorker {
 
     private BluetoothGattCallback bleClientCallback = new BluetoothGattCallback() {
         @Override
-        public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
+        public void onConnectionStateChange(final BluetoothGatt gatt, int status, int newState) {
             super.onConnectionStateChange(gatt, status, newState);
-            Log.i(TAG, "onConnectionStateChange: status = " + status + ", state = " + newState);
+            Log.i(TAG, remoteEvaluationTask.getSwanDevice() + ": onConnectionStateChange: status = " + status + ", state = " + newState);
             BLEClientWorker.this.gatt = gatt;
 
             if (newState == BluetoothProfile.STATE_CONNECTED) {
                 bleManager.bcastLogMessage("connected to " + remoteEvaluationTask.getSwanDevice());
-                gatt.discoverServices();
+
+                bleManager.enqueueTask(new Runnable() {
+                    @Override
+                    public void run() {
+                        gatt.discoverServices();
+                    }
+                });
             } else if(newState == BluetoothProfile.STATE_DISCONNECTED) {
                 bleManager.bcastLogMessage("disconnected from " + remoteEvaluationTask.getSwanDevice());
             }
         }
 
         @Override
-        public void onServicesDiscovered(BluetoothGatt gatt, int status) {
+        public void onServicesDiscovered(final BluetoothGatt gatt, int status) {
             super.onServicesDiscovered(gatt, status);
 
             // we make a copy of the original expressions list to avoid ConcurrentModificationException that occurs
@@ -64,15 +70,27 @@ public class BLEClientWorker {
 
                     if(service != null) {
                         Log.d(TAG, remoteEvaluationTask.getSwanDevice() + ": found service " + sensorValuePath);
-                        BluetoothGattCharacteristic characteristic = service.getCharacteristic(serviceUuid);
-                        gatt.setCharacteristicNotification(characteristic, true);
-                        gatt.readCharacteristic(characteristic);
+                        final BluetoothGattCharacteristic characteristic = service.getCharacteristic(serviceUuid);
+
+                        bleManager.enqueueTask(new Runnable() {
+                            @Override
+                            public void run() {
+                                gatt.setCharacteristicNotification(characteristic, true);
+                                gatt.readCharacteristic(characteristic);
+                            }
+                        });
                     } else {
                         Log.d(TAG, remoteEvaluationTask.getSwanDevice() + ": service not found " + sensorValuePath + ", registering...");
                         service = gatt.getService(BLEManager.SWAN_SERVICE_UUID);
-                        BluetoothGattCharacteristic characteristic = service.getCharacteristic(BLEManager.SWAN_CHAR_REGISTER_UUID);
+                        final BluetoothGattCharacteristic characteristic = service.getCharacteristic(BLEManager.SWAN_CHAR_REGISTER_UUID);
                         characteristic.setValue(bleManager.uuidToBytes(serviceUuid));
-                        gatt.writeCharacteristic(characteristic);
+
+                        bleManager.enqueueTask(new Runnable() {
+                            @Override
+                            public void run() {
+                                gatt.writeCharacteristic(characteristic);
+                            }
+                        });
                     }
                 } catch (Exception e) {
                     Log.e(TAG, "cannot process remote expression", e);
@@ -116,12 +134,17 @@ public class BLEClientWorker {
         }
 
         @Override
-        public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+        public void onCharacteristicWrite(final BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
             super.onCharacteristicWrite(gatt, characteristic, status);
             Log.d(TAG, remoteEvaluationTask.getSwanDevice() + ": characteristic wrote remotely " + characteristic);
 
             if(characteristic.getUuid().equals(BLEManager.SWAN_CHAR_REGISTER_UUID)) {
-                gatt.discoverServices();
+                bleManager.enqueueTask(new Runnable() {
+                    @Override
+                    public void run() {
+                        gatt.discoverServices();
+                    }
+                });
             }
         }
     };
@@ -132,8 +155,14 @@ public class BLEClientWorker {
     }
 
     public void start() {
-        BluetoothDevice device = remoteEvaluationTask.getSwanDevice().getBtDevice();
-        device.connectGatt(bleManager.getContext(), false, bleClientCallback);
+        final BluetoothDevice device = remoteEvaluationTask.getSwanDevice().getBtDevice();
+
+        bleManager.enqueueTask(new Runnable() {
+            @Override
+            public void run() {
+                device.connectGatt(bleManager.getContext(), false, bleClientCallback);
+            }
+        });
     }
 
     /**
@@ -149,9 +178,15 @@ public class BLEClientWorker {
                 UUID serviceUuid = UUID.nameUUIDFromBytes(sensorValuePath.getBytes());
 
                 BluetoothGattService service = gatt.getService(BLEManager.SWAN_SERVICE_UUID);
-                BluetoothGattCharacteristic characteristic = service.getCharacteristic(BLEManager.SWAN_CHAR_UNREGISTER_UUID);
+                final BluetoothGattCharacteristic characteristic = service.getCharacteristic(BLEManager.SWAN_CHAR_UNREGISTER_UUID);
                 characteristic.setValue(bleManager.uuidToBytes(serviceUuid));
-                gatt.writeCharacteristic(characteristic);
+
+                bleManager.enqueueTask(new Runnable() {
+                    @Override
+                    public void run() {
+                        gatt.writeCharacteristic(characteristic);
+                    }
+                });
 
                 toRemove = remoteExpression;
                 break;

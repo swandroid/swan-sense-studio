@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 
 import interdroid.swan.crossdevice.bluetooth.BTManager;
@@ -52,8 +53,24 @@ public class BLEManager extends BTManager {
     private List<BLEClientWorker> clientWorkers = new ArrayList<>();
     private List<BLEServerWorker> serverWorkers = new ArrayList<>();
     private HashMap<UUID, String> uuidSensorMap = new HashMap<>();
+    private LinkedBlockingQueue<Runnable> execQueue = new LinkedBlockingQueue<>();
     private BluetoothGattServer bleServer;
     private BluetoothManager btManager;
+
+    private Thread bleExecThread = new Thread() {
+        @Override
+        public void run() {
+            while(true) {
+                try {
+                    Runnable task = execQueue.take();
+                    task.run();
+                    sleep(250); // give some time to the bluetooth adapter to finish the task
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    };
 
     private ScanCallback scanCallback = new ScanCallback() {
         @Override
@@ -145,6 +162,7 @@ public class BLEManager extends BTManager {
             log(TAG, "BLE advertising not supported", Log.ERROR, true);
         }
 
+        // initialize sensors uuids
         for(SensorInfo sensor : ExpressionManager.getSensors(context)) {
             for(String valuePath : sensor.getValuePaths()) {
                 String sensorValuePath = sensor.getEntity() + ":" + valuePath;
@@ -160,6 +178,7 @@ public class BLEManager extends BTManager {
 
 //        addToQueue(nearbyPeersChecker);
         discoverPeers();
+        bleExecThread.start();
         evalThread.start();
 
         synchronized (evalThread) {
@@ -233,6 +252,14 @@ public class BLEManager extends BTManager {
         btAdapter.getBluetoothLeScanner().startScan(scanCallback);
         log(TAG, "discovery started", Log.INFO, true);
         bcastLogMessage("discovery started");
+    }
+
+    protected void enqueueTask(Runnable task) {
+        try {
+            execQueue.put(task);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

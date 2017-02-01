@@ -49,13 +49,18 @@ public class BLEServerWorker {
                 @Override
                 public void onNewValues(String id, TimestampedValue[] newValues) {
                     if (newValues != null && newValues.length > 0) {
-                        String value = newValues[0].getValue().toString();
-                        Log.i(TAG, getDeviceName() + ": sending value for " + sensorValuePath + "(" + expressionId + ") to remote: " + value);
+                        final String value = newValues[0].getValue().toString();
                         characteristic.setValue(value);
 
-                        if(!bleManager.getBleServer().notifyCharacteristicChanged(device, characteristic, false)) {
-                            Log.e(TAG, getDeviceName() + ": couldn't send notification for new value");
-                        }
+                        bleManager.enqueueTask(new Runnable() {
+                            @Override
+                            public void run() {
+                                Log.i(TAG, getDeviceName() + ": sending value for " + sensorValuePath + "(" + expressionId + ") to remote: " + value);
+                                if(!bleManager.getBleServer().notifyCharacteristicChanged(device, characteristic, false)) {
+                                    Log.e(TAG, getDeviceName() + ": couldn't send notification for new value");
+                                }
+                            }
+                        });
                     }
                 }
             });
