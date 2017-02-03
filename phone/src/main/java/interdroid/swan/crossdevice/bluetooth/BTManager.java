@@ -107,7 +107,7 @@ public class BTManager implements ProximityManagerI {
         }
     };
 
-    Runnable bluetoothRestart = new Runnable() {
+    protected Runnable bluetoothRestart = new Runnable() {
         public void run() {
             log(TAG, "stopping bluetooth...", Log.INFO, true);
             bcastLogMessage("stopping bluetooth...");

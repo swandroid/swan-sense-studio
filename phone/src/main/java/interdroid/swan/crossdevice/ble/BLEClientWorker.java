@@ -40,6 +40,7 @@ public class BLEClientWorker {
             BLEClientWorker.this.gatt = gatt;
 
             if (newState == BluetoothProfile.STATE_CONNECTED) {
+                Log.i(TAG, "connected to " + remoteEvaluationTask.getSwanDevice());
                 bleManager.bcastLogMessage("connected to " + remoteEvaluationTask.getSwanDevice());
 
                 bleManager.enqueueTask(new Runnable() {
@@ -49,6 +50,7 @@ public class BLEClientWorker {
                     }
                 });
             } else if(newState == BluetoothProfile.STATE_DISCONNECTED) {
+                Log.i(TAG, "disconnected from " + remoteEvaluationTask.getSwanDevice());
                 bleManager.bcastLogMessage("disconnected from " + remoteEvaluationTask.getSwanDevice());
             }
         }
@@ -76,6 +78,11 @@ public class BLEClientWorker {
                             @Override
                             public void run() {
                                 gatt.setCharacteristicNotification(characteristic, true);
+                            }
+                        });
+                        bleManager.enqueueTask(new Runnable() {
+                            @Override
+                            public void run() {
                                 gatt.readCharacteristic(characteristic);
                             }
                         });

@@ -41,6 +41,7 @@ import interdroid.swancore.swansong.Expression;
  * TODO decouple this class from BTManager
  * TODO fix register/unregister for a specific bluetooth ID
  * TODO app crashes when BLE disconnects
+ * TODO check if adapter is enabled
  */
 public class BLEManager extends BTManager {
 
@@ -88,17 +89,22 @@ public class BLEManager extends BTManager {
         @Override
         public void onConnectionStateChange(BluetoothDevice device, int status, int newState) {
             super.onConnectionStateChange(device, status, newState);
-            Log.i(TAG, "[server] onConnectionStateChange: status = " + status + ", state = " + newState);
+            Log.i(TAG, getDeviceName(device) + ": onConnectionStateChange: status = " + status + ", state = " + newState);
             // TODO handle here connections/disconnections
         }
 
         @Override
-        public void onCharacteristicReadRequest(final BluetoothDevice device, int requestId, int offset, final BluetoothGattCharacteristic characteristic) {
+        public void onCharacteristicReadRequest(final BluetoothDevice device, final int requestId, int offset, final BluetoothGattCharacteristic characteristic) {
             super.onCharacteristicReadRequest(device, requestId, offset, characteristic);
             Log.i(TAG, "received read request from " + device.getName());
 
-            // it's very important to send this this empty response, otherwise further write operations won't work on the other side
-            bleServer.sendResponse(device, requestId, 0, 0, characteristic.getValue());
+            enqueueTask(new Runnable() {
+                @Override
+                public void run() {
+                    // it's very important to send this this empty response, otherwise further write operations won't work on the other side
+                    bleServer.sendResponse(device, requestId, 0, 0, characteristic.getValue());
+                }
+            });
 
             BLEServerWorker serverWorker = new BLEServerWorker(BLEManager.this, device, characteristic);
             serverWorker.start();
@@ -106,10 +112,10 @@ public class BLEManager extends BTManager {
         }
 
         @Override
-        public void onCharacteristicWriteRequest(BluetoothDevice device, int requestId, BluetoothGattCharacteristic characteristic, boolean preparedWrite, boolean responseNeeded, int offset, byte[] value) {
+        public void onCharacteristicWriteRequest(final BluetoothDevice device, final int requestId, BluetoothGattCharacteristic characteristic, boolean preparedWrite, boolean responseNeeded, int offset, byte[] value) {
             super.onCharacteristicWriteRequest(device, requestId, characteristic, preparedWrite, responseNeeded, offset, value);
             UUID sensorValuePathUuid = bytesToUuid(value);
-            Log.i(TAG, "received request from " + device.getName() + " for: " + uuidSensorMap.get(sensorValuePathUuid));
+            Log.i(TAG, device.getName() + ": received write request for: " + uuidSensorMap.get(sensorValuePathUuid));
 
             if(characteristic.getUuid().equals(SWAN_CHAR_REGISTER_UUID)) {
                 if (bleServer.getService(sensorValuePathUuid) == null) {
@@ -122,8 +128,13 @@ public class BLEManager extends BTManager {
                     bleServer.addService(service);
                 }
 
-                //TODO here we can send back "not available" if the phone doesn't have the requested sensor
-                bleServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, 0, "service added".getBytes());
+                enqueueTask(new Runnable() {
+                    @Override
+                    public void run() {
+                        //TODO here we can send back "not available" if the phone doesn't have the requested sensor
+                        bleServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, 0, "service added".getBytes());
+                    }
+                });
             } else if(characteristic.getUuid().equals(SWAN_CHAR_UNREGISTER_UUID)) {
                 ArrayList<BLEServerWorker> workersDone = new ArrayList<>();
 
@@ -181,6 +192,8 @@ public class BLEManager extends BTManager {
         bleExecThread.start();
         evalThread.start();
 
+//        addToQueue(bluetoothRestart);
+
         synchronized (evalThread) {
             evalThread.notify();
         }
@@ -233,21 +246,21 @@ public class BLEManager extends BTManager {
     @Override
     public void discoverPeers() {
         // Stops scanning after a pre-defined scan period.
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                btAdapter.getBluetoothLeScanner().stopScan(scanCallback);
-                log(TAG, "discovery finished", Log.INFO, true);
-                bcastLogMessage("discovery finished");
-
-//                handler.postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        discoverPeers();
-//                    }
-//                }, PEER_DISCOVERY_INTERVAL);
-            }
-        }, SCAN_PERIOD);
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                btAdapter.getBluetoothLeScanner().stopScan(scanCallback);
+//                log(TAG, "discovery finished", Log.INFO, true);
+//                bcastLogMessage("discovery finished");
+//
+////                handler.postDelayed(new Runnable() {
+////                    @Override
+////                    public void run() {
+////                        discoverPeers();
+////                    }
+////                }, PEER_DISCOVERY_INTERVAL);
+//            }
+//        }, SCAN_PERIOD);
 
         btAdapter.getBluetoothLeScanner().startScan(scanCallback);
         log(TAG, "discovery started", Log.INFO, true);
@@ -349,6 +362,13 @@ public class BLEManager extends BTManager {
 
     protected BluetoothGattServer getBleServer() {
         return bleServer;
+    }
+
+    public String getDeviceName(BluetoothDevice device) {
+        if(device.getName() != null) {
+            return device.getName();
+        }
+        return device.getAddress();
     }
 
 }
