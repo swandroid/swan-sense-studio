@@ -379,7 +379,9 @@ public abstract class AbstractSwanSensor extends AbstractSensorBase {
             Bundle keyConfig = (Bundle) configuration.clone();
             keyConfig.putString(VALUE_PATH, valuePath);
             if (mSensorValues.containsKey(keyConfig)) {  //containsKey does not seem to work
-                allValues.put(keyConfig, mSensorValues.get(keyConfig));
+                List<TimestampedValue> values = getValuesForTimeSpan(mSensorValues.get(keyConfig),
+                        now, timespan);
+                allValues.put(keyConfig, values);
             }
         }
 
