@@ -4,10 +4,12 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattServer;
 import android.bluetooth.BluetoothGattServerCallback;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
+import android.bluetooth.BluetoothProfile;
 import android.bluetooth.le.AdvertiseCallback;
 import android.bluetooth.le.AdvertiseData;
 import android.bluetooth.le.AdvertiseSettings;
@@ -16,21 +18,26 @@ import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanResult;
 import android.content.Context;
 import android.content.IntentFilter;
+import android.os.ParcelUuid;
 import android.util.Log;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadFactory;
 
 import interdroid.swan.crossdevice.bluetooth.BTManager;
 import interdroid.swan.crossdevice.bluetooth.BTRemoteEvaluationTask;
+import interdroid.swan.crossdevice.bluetooth.BTRemoteExpression;
 import interdroid.swancore.swanmain.ExpressionManager;
 import interdroid.swancore.swanmain.SensorInfo;
 import interdroid.swancore.swansong.Expression;
+import interdroid.swancore.swansong.ExpressionFactory;
+import interdroid.swancore.swansong.ExpressionParseException;
+import interdroid.swancore.swansong.SensorValueExpression;
 
 /**
  * Created by vladimir on 9/23/16.
@@ -41,15 +48,17 @@ import interdroid.swancore.swansong.Expression;
  * TODO decouple this class from BTManager
  * TODO fix register/unregister for a specific bluetooth ID
  * TODO app crashes when BLE disconnects
- * TODO check if adapter is enabled
+ * TODO check if adapter is enabled at start
+ * TODO recognize Swan devices by UUID instead of device name
+ * TODO send new notification only after the previous one has been acknowledged by onNotificationSent()
  */
 public class BLEManager extends BTManager {
 
     private static final String TAG = "BLEManager";
     private static final int SCAN_PERIOD = 20000;
     protected static final UUID SWAN_SERVICE_UUID = UUID.fromString("11060915-f0e9-43b8-82b3-c3609d14313f");
-    protected static final UUID SWAN_CHAR_REGISTER_UUID = UUID.fromString("ad847b73-3ce5-4b75-9330-6c952fa6f830");
     protected static final UUID SWAN_CHAR_UNREGISTER_UUID = UUID.fromString("06ad4ac5-ad7e-4884-ab2c-26d91faf4d42");
+    protected static final UUID NOTIFY_DESC_UUID = UUID.fromString("00002902-0000-1000-8000-00805F9B34FB");
 
     private List<BLEClientWorker> clientWorkers = new ArrayList<>();
     private List<BLEServerWorker> serverWorkers = new ArrayList<>();
@@ -58,20 +67,47 @@ public class BLEManager extends BTManager {
     private BluetoothGattServer bleServer;
     private BluetoothManager btManager;
 
-    private Thread bleExecThread = new Thread() {
-        @Override
+    Runnable initTask = new Runnable() {
         public void run() {
-            while(true) {
+            discoverPeers();
+
+            if(btAdapter.isMultipleAdvertisementSupported()) {
                 try {
-                    Runnable task = execQueue.take();
-                    task.run();
-                    sleep(250); // give some time to the bluetooth adapter to finish the task
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    initServer();
+                    advertise();
+                } catch (ExpressionParseException e) {
+                    log(TAG, "couldn't initialize BLE server", Log.ERROR, true);
                 }
+            } else {
+                log(TAG, "BLE advertising not supported", Log.ERROR, true);
             }
         }
+
+        @Override
+        public String toString() {
+            return "DiscoveryEvent";
+        }
     };
+
+    private AdvertiseCallback advertisingCallback = new AdvertiseCallback() {
+        @Override
+        public void onStartSuccess(AdvertiseSettings settingsInEffect) {
+            super.onStartSuccess(settingsInEffect);
+            Log.e("BLE", "Advertising onStartSuccess: " + settingsInEffect);
+        }
+
+        @Override
+        public void onStartFailure(int errorCode) {
+            super.onStartFailure(errorCode);
+            Log.e("BLE", "Advertising onStartFailure: " + errorCode);
+        }
+    };
+
+    private AdvertiseSettings advertiseSettings = new AdvertiseSettings.Builder()
+            .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_LOW_LATENCY)
+            .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH)
+            .setConnectable(true)
+            .build();
 
     private ScanCallback scanCallback = new ScanCallback() {
         @Override
@@ -79,8 +115,25 @@ public class BLEManager extends BTManager {
             BluetoothDevice device = result.getDevice();
 
             if (device.getName() != null && device.getName().contains("SWAN")) {
-//                log(TAG, "found nearby device " + device.getName(), Log.DEBUG);
                 addNearbyDevice(device, null);
+
+                for(ParcelUuid parcelUuid : result.getScanRecord().getServiceUuids()) {
+                    UUID sensorValuePathUuid = parcelUuid.getUuid();
+
+                    if(bleServer.getService(sensorValuePathUuid) == null) {
+                        Log.d(TAG, "service " + getSensorForUuid(sensorValuePathUuid) + " not present, adding...");
+                        BluetoothGattService service = new BluetoothGattService(sensorValuePathUuid, BluetoothGattService.SERVICE_TYPE_PRIMARY);
+                        BluetoothGattCharacteristic newCharacteristic =
+                                new BluetoothGattCharacteristic(sensorValuePathUuid,
+                                        BluetoothGattCharacteristic.PROPERTY_READ | BluetoothGattCharacteristic.PROPERTY_WRITE | BluetoothGattCharacteristic.PROPERTY_NOTIFY,
+                                        BluetoothGattCharacteristic.PERMISSION_READ | BluetoothGattCharacteristic.PERMISSION_WRITE);
+                        BluetoothGattDescriptor desc = new BluetoothGattDescriptor(NOTIFY_DESC_UUID,
+                                BluetoothGattDescriptor.PERMISSION_WRITE | BluetoothGattDescriptor.PERMISSION_READ);
+                        newCharacteristic.addDescriptor(desc);
+                        service.addCharacteristic(newCharacteristic);
+                        bleServer.addService(service);
+                    }
+                }
             }
         }
     };
@@ -89,53 +142,33 @@ public class BLEManager extends BTManager {
         @Override
         public void onConnectionStateChange(BluetoothDevice device, int status, int newState) {
             super.onConnectionStateChange(device, status, newState);
-            Log.i(TAG, getDeviceName(device) + ": onConnectionStateChange: status = " + status + ", state = " + newState);
-            // TODO handle here connections/disconnections
-        }
+            Log.w(TAG, getDeviceName(device) + ": connection changed (status = " + status + ", state = " + newState + ")");
 
-        @Override
-        public void onCharacteristicReadRequest(final BluetoothDevice device, final int requestId, int offset, final BluetoothGattCharacteristic characteristic) {
-            super.onCharacteristicReadRequest(device, requestId, offset, characteristic);
-            Log.i(TAG, "received read request from " + device.getName());
+            if(newState == BluetoothProfile.STATE_DISCONNECTED) {
+                ArrayList<BLEServerWorker> workersDone = new ArrayList<>();
 
-            enqueueTask(new Runnable() {
-                @Override
-                public void run() {
-                    // it's very important to send this this empty response, otherwise further write operations won't work on the other side
-                    bleServer.sendResponse(device, requestId, 0, 0, characteristic.getValue());
+                for(BLEServerWorker serverWorker : serverWorkers) {
+                    if(serverWorker.getDevice().equals(device)) {
+                        serverWorker.stop();
+                        workersDone.add(serverWorker);
+                    }
                 }
-            });
 
-            BLEServerWorker serverWorker = new BLEServerWorker(BLEManager.this, device, characteristic);
-            serverWorker.start();
-            addServerWorker(serverWorker);
+                for(BLEServerWorker serverWorker : workersDone) {
+                    BLEManager.this.serverWorkerDone(serverWorker);
+                }
+            }
+
+            // TODO handle here connections/disconnections for client workers
         }
 
         @Override
         public void onCharacteristicWriteRequest(final BluetoothDevice device, final int requestId, BluetoothGattCharacteristic characteristic, boolean preparedWrite, boolean responseNeeded, int offset, byte[] value) {
             super.onCharacteristicWriteRequest(device, requestId, characteristic, preparedWrite, responseNeeded, offset, value);
             UUID sensorValuePathUuid = bytesToUuid(value);
-            Log.i(TAG, device.getName() + ": received write request for: " + uuidSensorMap.get(sensorValuePathUuid));
+            Log.w(TAG, getDeviceName(device) + ": received write request for: " + uuidSensorMap.get(sensorValuePathUuid));
 
-            if(characteristic.getUuid().equals(SWAN_CHAR_REGISTER_UUID)) {
-                if (bleServer.getService(sensorValuePathUuid) == null) {
-                    BluetoothGattService service = new BluetoothGattService(sensorValuePathUuid, BluetoothGattService.SERVICE_TYPE_PRIMARY);
-                    BluetoothGattCharacteristic newCharacteristic =
-                            new BluetoothGattCharacteristic(sensorValuePathUuid,
-                                    BluetoothGattCharacteristic.PROPERTY_READ | BluetoothGattCharacteristic.PROPERTY_WRITE | BluetoothGattCharacteristic.PROPERTY_NOTIFY,
-                                    BluetoothGattCharacteristic.PERMISSION_READ | BluetoothGattCharacteristic.PERMISSION_WRITE);
-                    service.addCharacteristic(newCharacteristic);
-                    bleServer.addService(service);
-                }
-
-                enqueueTask(new Runnable() {
-                    @Override
-                    public void run() {
-                        //TODO here we can send back "not available" if the phone doesn't have the requested sensor
-                        bleServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, 0, "service added".getBytes());
-                    }
-                });
-            } else if(characteristic.getUuid().equals(SWAN_CHAR_UNREGISTER_UUID)) {
+            if(characteristic.getUuid().equals(SWAN_CHAR_UNREGISTER_UUID)) {
                 ArrayList<BLEServerWorker> workersDone = new ArrayList<>();
 
                 for(BLEServerWorker serverWorker : serverWorkers) {
@@ -152,6 +185,30 @@ public class BLEManager extends BTManager {
                 //TODO remove the service if no one is using it anymore
             }
         }
+
+        @Override
+        public void onDescriptorWriteRequest(BluetoothDevice device, int requestId, BluetoothGattDescriptor descriptor, boolean preparedWrite, boolean responseNeeded, int offset, byte[] value) {
+            super.onDescriptorWriteRequest(device, requestId, descriptor, preparedWrite, responseNeeded, offset, value);
+
+            if(descriptor.getUuid().equals(BLEManager.NOTIFY_DESC_UUID)) {
+                BLEServerWorker serverWorker = new BLEServerWorker(BLEManager.this, device, descriptor.getCharacteristic());
+                serverWorker.start();
+                addServerWorker(serverWorker);
+            }
+
+            bleServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, value);
+        }
+
+        @Override
+        public void onNotificationSent(BluetoothDevice device, int status) {
+            super.onNotificationSent(device, status);
+
+            if(status == BluetoothGatt.GATT_SUCCESS) {
+                Log.w(TAG, getDeviceName(device) + ": notification sent succesfully");
+            } else {
+                Log.e(TAG, getDeviceName(device) + ": notification couldn't be sent");
+            }
+        }
     };
 
     public BLEManager(Context context) {
@@ -166,18 +223,14 @@ public class BLEManager extends BTManager {
             return;
         }
 
-        if(btAdapter.isMultipleAdvertisementSupported()) {
-            initServer();
-            advertise();
-        } else {
-            log(TAG, "BLE advertising not supported", Log.ERROR, true);
-        }
+        Log.d(TAG, "starting as " + btAdapter.getName());
+        bcastLogMessage("starting as " + btAdapter.getName());
 
         // initialize sensors uuids
         for(SensorInfo sensor : ExpressionManager.getSensors(context)) {
             for(String valuePath : sensor.getValuePaths()) {
                 String sensorValuePath = sensor.getEntity() + ":" + valuePath;
-                UUID sensorValuePathUuid = UUID.nameUUIDFromBytes(sensorValuePath.getBytes());
+                UUID sensorValuePathUuid = getUuidForSensorValuePath(sensorValuePath);
                 uuidSensorMap.put(sensorValuePathUuid, sensorValuePath);
             }
         }
@@ -187,12 +240,10 @@ public class BLEManager extends BTManager {
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         this.context.registerReceiver(mReceiver, filter); // Don't forget to unregister during onDestroy
 
-//        addToQueue(nearbyPeersChecker);
-        discoverPeers();
-        bleExecThread.start();
         evalThread.start();
 
-//        addToQueue(bluetoothRestart);
+        addToQueue(bluetoothRestart);
+        addToQueue(initTask);
 
         synchronized (evalThread) {
             evalThread.notify();
@@ -201,11 +252,6 @@ public class BLEManager extends BTManager {
 
     private void initServer() {
         BluetoothGattService service = new BluetoothGattService(SWAN_SERVICE_UUID, BluetoothGattService.SERVICE_TYPE_PRIMARY);
-
-        BluetoothGattCharacteristic charRegister =
-                new BluetoothGattCharacteristic(SWAN_CHAR_REGISTER_UUID,
-                        BluetoothGattCharacteristic.PROPERTY_WRITE, BluetoothGattCharacteristic.PERMISSION_WRITE);
-        service.addCharacteristic(charRegister);
 
         BluetoothGattCharacteristic charUnregister =
                 new BluetoothGattCharacteristic(SWAN_CHAR_UNREGISTER_UUID,
@@ -216,31 +262,18 @@ public class BLEManager extends BTManager {
         bleServer.addService(service);
     }
 
-    private void advertise() {
-        BluetoothLeAdvertiser bleAdvertiser = btAdapter.getBluetoothLeAdvertiser();
+    private void advertise() throws ExpressionParseException {
+        final BluetoothLeAdvertiser bleAdvertiser = btAdapter.getBluetoothLeAdvertiser();
+        AdvertiseData.Builder dataBuilder = new AdvertiseData.Builder().setIncludeDeviceName(true);
 
-        AdvertiseSettings settings = new AdvertiseSettings.Builder()
-                .setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_LOW_LATENCY)
-                .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH)
-                .setConnectable(true)
-                .build();
-        AdvertiseData data = new AdvertiseData.Builder()
-                .setIncludeDeviceName(true)
-                .build();
-        AdvertiseCallback advertisingCallback = new AdvertiseCallback() {
-            @Override
-            public void onStartSuccess(AdvertiseSettings settingsInEffect) {
-                super.onStartSuccess(settingsInEffect);
-            }
+        for(Map.Entry<String, String> expressionEntry : registeredExpressions.entrySet()) {
+            SensorValueExpression svExpression = (SensorValueExpression) ExpressionFactory.parse(expressionEntry.getValue());
+            String sensorValuePath = svExpression.getEntity() + ":" + svExpression.getValuePath();
+            UUID serviceUuid = getUuidForSensorValuePath(sensorValuePath);
+            dataBuilder.addServiceUuid(new ParcelUuid(serviceUuid));
+        }
 
-            @Override
-            public void onStartFailure(int errorCode) {
-                Log.e("BLE", "Advertising onStartFailure: " + errorCode);
-                super.onStartFailure(errorCode);
-            }
-        };
-
-        bleAdvertiser.startAdvertising(settings, data, advertisingCallback);
+        bleAdvertiser.startAdvertising(advertiseSettings, dataBuilder.build(), advertisingCallback);
     }
 
     @Override
@@ -263,16 +296,8 @@ public class BLEManager extends BTManager {
 //        }, SCAN_PERIOD);
 
         btAdapter.getBluetoothLeScanner().startScan(scanCallback);
-        log(TAG, "discovery started", Log.INFO, true);
+        log(TAG, "discovery started", Log.DEBUG, true);
         bcastLogMessage("discovery started");
-    }
-
-    protected void enqueueTask(Runnable task) {
-        try {
-            execQueue.put(task);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -288,18 +313,18 @@ public class BLEManager extends BTManager {
                 clientWorker.start();
                 addClientWorker(clientWorker);
             }
-
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
         } else if(item instanceof Runnable) {
             // peer discovery or restart bluetooth
             ((Runnable) item).run();
         } else {
             log(TAG, "Item can't be processed: " + item, Log.ERROR);
         }
+    }
+
+    @Override
+    public synchronized void registerExpression(String id, String expression, String resolvedLocation) {
+        super.registerExpression(id, expression, resolvedLocation);
+        //TODO readvertise expression
     }
 
     @Override
@@ -322,6 +347,12 @@ public class BLEManager extends BTManager {
         }
     }
 
+    protected UUID getUuidForSensorValuePath(String sensorValuePath) {
+        UUID uuid = UUID.nameUUIDFromBytes(sensorValuePath.getBytes());
+        String shortUuid = uuid.toString().split("-")[1];
+        return UUID.fromString("00002902-0000-1000-8000-00805F9B34FB".replace("2902", shortUuid));
+    }
+
     public static UUID bytesToUuid(byte[] bytes) {
         ByteBuffer bb = ByteBuffer.wrap(bytes);
         long firstLong = bb.getLong();
@@ -337,22 +368,22 @@ public class BLEManager extends BTManager {
     }
 
     protected void addClientWorker(BLEClientWorker clientWorker) {
-        log(TAG, "client worker added to pool: " + clientWorker, Log.DEBUG, true);
+        log(TAG, "client worker added to pool: " + clientWorker, Log.INFO, true);
         clientWorkers.add(clientWorker);
     }
 
     protected void addServerWorker(BLEServerWorker serverWorker) {
-        log(TAG, "server worker added to pool: " + serverWorker, Log.DEBUG, true);
+        log(TAG, "server worker added to pool: " + serverWorker.getDeviceName(), Log.WARN, true);
         serverWorkers.add(serverWorker);
     }
 
     protected void clientWorkerDone(BLEClientWorker clientWorker) {
-        log(TAG, "client worker done " + clientWorker, Log.DEBUG, true);
+        log(TAG, "client worker done " + clientWorker, Log.INFO, true);
         clientWorkers.remove(clientWorker);
     }
 
     protected void serverWorkerDone(BLEServerWorker serverWorker) {
-        log(TAG, "server worker done " + serverWorker, Log.DEBUG, true);
+        log(TAG, "server worker done " + serverWorker, Log.WARN, true);
         serverWorkers.remove(serverWorker);
     }
 

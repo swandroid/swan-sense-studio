@@ -2,6 +2,8 @@ package interdroid.swan.crossdevice.ble;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGattCharacteristic;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import interdroid.swancore.swanmain.ExpressionManager;
@@ -19,6 +21,7 @@ public class BLEServerWorker {
 
     private static final String TAG = "BLEServerWorker";
     private static int curExpressionId = 0;
+    private static double curVal = 0;
 
     private BLEManager bleManager;
 
@@ -49,18 +52,13 @@ public class BLEServerWorker {
                 @Override
                 public void onNewValues(String id, TimestampedValue[] newValues) {
                     if (newValues != null && newValues.length > 0) {
-                        final String value = newValues[0].getValue().toString();
+                        final String value = "" + curVal++; //newValues[0].getValue().toString();
                         characteristic.setValue(value);
+                        Log.w(TAG, getDeviceName() + ": sending value for " + sensorValuePath + "(" + expressionId + ") to remote: " + value);
 
-                        bleManager.enqueueTask(new Runnable() {
-                            @Override
-                            public void run() {
-                                Log.i(TAG, getDeviceName() + ": sending value for " + sensorValuePath + "(" + expressionId + ") to remote: " + value);
-                                if(!bleManager.getBleServer().notifyCharacteristicChanged(device, characteristic, false)) {
-                                    Log.e(TAG, getDeviceName() + ": couldn't send notification for new value");
-                                }
-                            }
-                        });
+                        if(!bleManager.getBleServer().notifyCharacteristicChanged(device, characteristic, false)) {
+                            Log.w(TAG, getDeviceName() + ": couldn't send notification for new value");
+                        }
                     }
                 }
             });

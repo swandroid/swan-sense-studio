@@ -106,23 +106,23 @@ public class TestActivity extends Activity {
             connectTo = "NEARBY";
         }
 
-        final String expression1 = connectTo + "@light:lux";
+//        final String expression1 = connectTo + "@light:lux";
 //        final String expression2 = connectTo + "@movement:x";
 //        final String expression3 = connectTo + "@gyroscope:x";
 //        final String expression4 = connectTo + "@magnetometer:x";
 //        final String expression5 = connectTo + "@battery:level";
-//        final String expression6 = connectTo + "@proximity:distance";
+        final String expression6 = connectTo + "@proximity:distance";
 //        final String expression7 = connectTo + "@sound:rms?audio_format=2#sample_interval=2000$server_storage=false{ANY,0}";
 //        String expression3 = connectTo + "@light:lux > 10.0";
 //        mExpression = connectTo + "@fitness:avg_speed$server_storage=false{ANY,0}";
 
         if (!mRegistered) {
-            registerSWANSensor(expression1, REQUEST_CODE_1);
+//            registerSWANSensor(expression1, REQUEST_CODE_1);
 //            registerSWANSensor(expression2, REQUEST_CODE_2);
 //            registerSWANSensor(expression3, REQUEST_CODE_3);
 //            registerSWANSensor(expression4, REQUEST_CODE_4);
 //            registerSWANSensor(expression5, REQUEST_CODE_5);
-//            registerSWANSensor(expression6, REQUEST_CODE_6);
+            registerSWANSensor(expression6, REQUEST_CODE_6);
 //            registerSWANSensor(expression7, REQUEST_CODE_7);
 //            handler.postDelayed(new Runnable() {
 //                @Override
@@ -202,12 +202,12 @@ public class TestActivity extends Activity {
 
     /* Unregister expression from SWAN */
     private void unregisterSWANSensor() {
-        ExpressionManager.unregisterExpression(this, String.valueOf(REQUEST_CODE_1));
+//        ExpressionManager.unregisterExpression(this, String.valueOf(REQUEST_CODE_1));
 //        ExpressionManager.unregisterExpression(this, String.valueOf(REQUEST_CODE_2));
 //        ExpressionManager.unregisterExpression(this, String.valueOf(REQUEST_CODE_3));
 //        ExpressionManager.unregisterExpression(this, String.valueOf(REQUEST_CODE_4));
 //        ExpressionManager.unregisterExpression(this, String.valueOf(REQUEST_CODE_5));
-//        ExpressionManager.unregisterExpression(this, String.valueOf(REQUEST_CODE_6));
+        ExpressionManager.unregisterExpression(this, String.valueOf(REQUEST_CODE_6));
 //        ExpressionManager.unregisterExpression(this, String.valueOf(REQUEST_CODE_7));
         mRegistered = false;
     }
