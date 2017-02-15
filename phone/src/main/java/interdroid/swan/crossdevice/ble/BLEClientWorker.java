@@ -49,6 +49,8 @@ public class BLEClientWorker {
             } else if(newState == BluetoothProfile.STATE_DISCONNECTED) {
                 Log.i(TAG, "disconnected from " + remoteEvaluationTask.getSwanDevice());
                 bleManager.bcastLogMessage("disconnected from " + remoteEvaluationTask.getSwanDevice());
+                gatt.close();
+                bleManager.clientWorkerDone(BLEClientWorker.this);
             }
         }
 
