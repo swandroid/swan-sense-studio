@@ -52,7 +52,7 @@ public class BLEServerWorker {
                 @Override
                 public void onNewValues(String id, TimestampedValue[] newValues) {
                     if (newValues != null && newValues.length > 0) {
-                        final String value = "" + curVal++; //newValues[0].getValue().toString();
+                        final String value = "" + newValues[0].getValue().toString();
                         characteristic.setValue(value);
                         Log.w(TAG, getDeviceName() + ": sending value for " + sensorValuePath + "(" + expressionId + ") to remote: " + value);
 

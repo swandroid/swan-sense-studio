@@ -109,7 +109,7 @@ public class BLEClientWorker {
                     SensorValueExpression expression = (SensorValueExpression) remoteExpr.getExpression();
 
                     if (sensor.equals(expression.getEntity()) && valuePath.equals(expression.getValuePath())) {
-                        TimestampedValue tValue = new TimestampedValue(Double.valueOf(characteristic.getStringValue(0)));
+                        TimestampedValue tValue = new TimestampedValue(characteristic.getStringValue(0));
                         Result result = new Result(new TimestampedValue[]{tValue}, tValue.getTimestamp());
 
                         bleManager.sendExprForEvaluation(remoteExpr.getBaseId(), EvaluationEngineService.ACTION_NEW_RESULT_REMOTE,

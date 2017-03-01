@@ -3,6 +3,7 @@ package interdroid.swan.crossdevice.queueapp;
 import android.os.Bundle;
 import android.app.Activity;
 import android.util.Log;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -18,28 +19,48 @@ import interdroid.swancore.swansong.ValueExpression;
 public class QueuyActivity extends Activity {
 
     private static final String TAG = "BLEQueuyApp";
-    private final int REQUEST_DISCOVERY = 888;
-    private final int REQUEST_DISTANCE = 999;
+    private final int REQUEST_QUEUE_LOCAL = 888;
+    private final int REQUEST_QUEUE_REMOTE = 999;
+
+    private TextView tvWaitingTime = null;
+    private TextView tvMaxWaitingTime = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_queuy);
-//        String discoveryExpression = "self@beacon_discovery:estimotenearable{ANY,0}";
-        String discoveryExpression = "self@beaconQueue:waitingTime{ANY,0}";
+        String queueLocalExpression = "self@beaconQueue:waitingTime{ANY,0}";
+        String queueRemoteExpression = "NEARBY@beaconQueue:waitingTime{ANY,0}";
+        tvWaitingTime = (TextView) findViewById(R.id.waitingTime);
+        tvMaxWaitingTime = (TextView) findViewById(R.id.maxWaitingTime);
 
         try {
-            ExpressionManager.registerValueExpression(this, String.valueOf(REQUEST_DISCOVERY),
-                    (ValueExpression) ExpressionFactory.parse(discoveryExpression),
+            ExpressionManager.registerValueExpression(this, String.valueOf(REQUEST_QUEUE_LOCAL),
+                    (ValueExpression) ExpressionFactory.parse(queueLocalExpression),
                 new ValueExpressionListener() {
                     /* Registering a listener to process new values from the registered sensor*/
                     @Override
                     public void onNewValues(String id, TimestampedValue[] arg1) {
                         if (arg1 != null && arg1.length > 0) {
-                            String value = arg1[0].getValue().toString();
-                            Log.w(TAG, "found beacon with id " + value);
-//                            ExpressionManager.unregisterExpression(QueuyActivity.this, String.valueOf(REQUEST_DISCOVERY));
-//                            getDistanceToBeacon(value);
+                            long waitingTime = (long) arg1[0].getValue();
+                            tvWaitingTime.setText("Waiting time: " + waitingTime);
+                        } else {
+                            Log.w(TAG, "value is null");
+                        }
+
+                    }
+                });
+
+            ExpressionManager.registerValueExpression(this, String.valueOf(REQUEST_QUEUE_REMOTE),
+                    (ValueExpression) ExpressionFactory.parse(queueRemoteExpression),
+                new ValueExpressionListener() {
+                    /* Registering a listener to process new values from the registered sensor*/
+                    @Override
+                    public void onNewValues(String id, TimestampedValue[] arg1) {
+                        if (arg1 != null && arg1.length > 0) {
+                            Log.d(TAG, "received " + arg1[0].getValue());
+                            String waitingTime = (String) arg1[0].getValue();
+                            tvMaxWaitingTime.setText("Max waiting time: " + waitingTime);
                         } else {
                             Log.w(TAG, "value is null");
                         }
@@ -53,29 +74,4 @@ public class QueuyActivity extends Activity {
         }
     }
 
-    private void getDistanceToBeacon(String beaconId) {
-        String distanceExpression = beaconId + "@beaconDistance:distance{ANY,0}";
-
-        try {
-            ExpressionManager.registerValueExpression(this, String.valueOf(REQUEST_DISTANCE),
-                    (ValueExpression) ExpressionFactory.parse(distanceExpression),
-                new ValueExpressionListener() {
-                    /* Registering a listener to process new values from the registered sensor*/
-                    @Override
-                    public void onNewValues(String id, TimestampedValue[] arg1) {
-                        if (arg1 != null && arg1.length > 0) {
-                            String value = arg1[0].getValue().toString();
-                            Log.w(TAG, "distance to beacon = " + value);
-                        } else {
-                            Log.w(TAG, "value is null");
-                        }
-
-                    }
-                });
-        } catch (SwanException e) {
-            e.printStackTrace();
-        } catch (ExpressionParseException e) {
-            e.printStackTrace();
-        }
-    }
 }
