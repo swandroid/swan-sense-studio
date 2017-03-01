@@ -403,6 +403,10 @@
         <item>previousMotionTime</item>
     </string-array>
 
+    <string-array name="beacon_queue_valuepths">
+        <item>waitingTime</item>
+    </string-array>
+
     <!-- alarm sensor -->
     <string-array name="alarm_valuepaths">
         <item>recent</item>
