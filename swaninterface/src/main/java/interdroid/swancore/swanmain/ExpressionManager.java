@@ -113,13 +113,13 @@ public class ExpressionManager {
      * Map containing all listeners currently in use, mapped by id of the
      * expression
      */
-    private static Map<String, ExpressionListener> sListeners = new HashMap<String, ExpressionListener>();
+    private static final Map<String, ExpressionListener> sListeners = new HashMap<>();
 
     /**
      * Boolean indicating whether we received a register to intercept broadcasts
      * and forward them to the respective listeners
      */
-    private static boolean sReceiverRegistered = false;
+    private volatile static boolean sReceiverRegistered = false;
 
     /**
      * Broadcast receiver used in case values have to be forwarded to listeners
@@ -130,33 +130,30 @@ public class ExpressionManager {
         public void onReceive(Context context, Intent intent) {
             String id = intent.getData().getFragment();
 //            Log.d(TAG, "on receive");
-            if (sListeners.containsKey(id)) {
-                if (intent.getAction().equals(ACTION_NEW_VALUES)) {
-                    // do the conversion from Parcelable[] to
-                    // TimestampedValue[], casting doesn't work
-                    Parcelable[] parcelables = (Parcelable[]) intent
-                            .getParcelableArrayExtra(EXTRA_NEW_VALUES);
-                    if (parcelables.length == 0) {
-//                        Log.d(TAG, "Values list is empty, dont notify the app");
-                        return;
-                    }
-                    TimestampedValue[] timestampedValues = new TimestampedValue[parcelables.length];
-                    System.arraycopy(parcelables, 0, timestampedValues, 0,
-                            parcelables.length);
-                    sListeners.get(id).onNewValues(id, timestampedValues);
-                } else if (intent.getAction().equals(ACTION_NEW_TRISTATE)) {
-                    sListeners
-                            .get(id)
-                            .onNewState(
-                                    id,
-                                    intent.getLongExtra(
-                                            EXTRA_NEW_TRISTATE_TIMESTAMP, 0),
-                                    TriState.valueOf(intent
-                                            .getStringExtra(EXTRA_NEW_TRISTATE)));
-                }
 
-            } else {
-                Log.d(TAG, "got spurious broadcast: " + intent.getDataString());
+            synchronized (sListeners) {
+                if (sListeners.containsKey(id)) {
+                    if (intent.getAction().equals(ACTION_NEW_VALUES)) {
+                        // do the conversion from Parcelable[] to
+                        // TimestampedValue[], casting doesn't work
+                        Parcelable[] parcelables = intent.getParcelableArrayExtra(EXTRA_NEW_VALUES);
+                        if (parcelables.length == 0) {
+//                        Log.d(TAG, "Values list is empty, dont notify the app");
+                            return;
+                        }
+                        TimestampedValue[] timestampedValues = new TimestampedValue[parcelables.length];
+                        System.arraycopy(parcelables, 0, timestampedValues, 0, parcelables.length);
+                        sListeners.get(id).onNewValues(id, timestampedValues);
+
+                    } else if (intent.getAction().equals(ACTION_NEW_TRISTATE)) {
+                        sListeners.get(id).onNewState(id,
+                                intent.getLongExtra(EXTRA_NEW_TRISTATE_TIMESTAMP, 0),
+                                TriState.valueOf(intent.getStringExtra(EXTRA_NEW_TRISTATE)));
+                    }
+
+                } else {
+                    Log.d(TAG, "got spurious broadcast: " + intent.getDataString());
+                }
             }
         }
     };
@@ -329,16 +326,19 @@ public class ExpressionManager {
                         + "' is reserved for internal use.");
             }
         }
-        if (sListeners.containsKey(id)) {
-            throw new SwanException("Listener already registered for id '" + id
-                    + "'");
-        } else {
-            if (expressionListener != null) {
-                if (sListeners.size() == 0) {
-                    sReceiverRegistered = true;
-                    registerReceiver(context);
+        synchronized (sListeners) {
+            if (sListeners.containsKey(id)) {
+                throw new SwanException("Listener already registered for id '" + id
+                        + "'");
+            } else {
+                if (expressionListener != null) {
+                    if (sListeners.size() == 0) {
+                        sReceiverRegistered = true;
+                        registerReceiver(context);
+                    }
+
+                    sListeners.put(id, expressionListener);
                 }
-                sListeners.put(id, expressionListener);
             }
         }
         Intent newTriState = new Intent(ACTION_NEW_TRISTATE);
@@ -422,11 +422,15 @@ public class ExpressionManager {
      * @param id      the id with which the expression was registered.
      */
     public static void unregisterExpression(Context context, String id) {
-        sListeners.remove(id);
-        if (sListeners.size() == 0 && sReceiverRegistered) {
-            sReceiverRegistered = false;
-            unregisterReceiver(context);
+        synchronized (sListeners) {
+            sListeners.remove(id);
+
+            if (sListeners.size() == 0 && sReceiverRegistered) {
+                sReceiverRegistered = false;
+                unregisterReceiver(context);
+            }
         }
+
         Intent intent = new Intent(ACTION_UNREGISTER);
         intent.putExtra("expressionId", id);
         context.sendBroadcast(intent);
@@ -439,13 +443,17 @@ public class ExpressionManager {
      *
      * @param context
      */
-    private static void registerReceiver(Context context) {
+    private synchronized static void registerReceiver(Context context) {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ACTION_NEW_TRISTATE);
         intentFilter.addAction(ACTION_NEW_VALUES);
         intentFilter.addDataScheme("swan");
         intentFilter.addDataAuthority(context.getPackageName(), null);
-        context.registerReceiver(sReceiver, intentFilter);
+        try {
+            context.registerReceiver(sReceiver, intentFilter);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -454,7 +462,7 @@ public class ExpressionManager {
      *
      * @param context
      */
-    private static void unregisterReceiver(Context context) {
+    private synchronized static void unregisterReceiver(Context context) {
         try {
             context.unregisterReceiver(sReceiver);
         } catch (IllegalArgumentException e) {

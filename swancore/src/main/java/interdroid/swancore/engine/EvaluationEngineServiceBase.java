@@ -134,7 +134,7 @@ public class EvaluationEngineServiceBase extends Service {
 
 
                             if (head.update(result)) {
-                                Log.d(TAG, "Result updated: " + result);
+                                Log.d(TAG, "Result updated: " + result + " for id " + head.getId());
                                 sendUpdate(head, result);
                             }
                             // re add the expression to the queue
@@ -496,9 +496,11 @@ public class EvaluationEngineServiceBase extends Service {
                         + "), should we kill the sensor?");
                 continue;
             }
-            // Log.d(TAG, "Got notification for: " + queued);
+             Log.d(TAG, "Got notification for: " + queued + " for id " + id);
             if (queued.getExpression() instanceof ValueExpression
                     || !queued.isDeferUntilGuaranteed()) {
+                Log.d(TAG, "Evaluate now");
+
                 // evaluate now!
                 synchronized (mEvaluationThread) {
                     // get it out the queue, update defer until, and put it

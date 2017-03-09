@@ -220,6 +220,7 @@ public abstract class AbstractSwanSensor extends AbstractSensorBase {
         }
 
         try {
+            Log.d(getClass().getSimpleName(), " New val for id " + id);
             mSensorValues.addNewValue(configuration, new TimestampedValue(value, now));
         } catch (OutOfMemoryError e) {
             Log.d(TAG, "OutOfMemoryError");
@@ -350,7 +351,7 @@ public abstract class AbstractSwanSensor extends AbstractSensorBase {
             }
 
             if (!mSensorValues.containsKey(registeredConfiguration)) {
-                Log.e(TAG, "No Values for this expression id");
+                Log.e(TAG, "No Values for this expression id="+id);
                 return null;
             }
 
@@ -559,6 +560,7 @@ public abstract class AbstractSwanSensor extends AbstractSensorBase {
 
     @Override
     public void onDestroySensor() {
+        Log.d(getClass().getSimpleName(), "on destroy sensor" + SENSOR_NAME);
         if (registeredConfigurations.size() == 0)
             flushData();
     }

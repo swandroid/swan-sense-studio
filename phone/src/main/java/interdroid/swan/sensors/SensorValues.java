@@ -18,7 +18,7 @@ public class SensorValues {
      */
     private volatile Map<Bundle, List<TimestampedValue>> mSensorValues = new HashMap<>();
 
-    public final Map<Bundle, List<TimestampedValue>> getValues() {
+    public synchronized final Map<Bundle, List<TimestampedValue>> getValues() {
         return mSensorValues;
     }
 
@@ -27,7 +27,7 @@ public class SensorValues {
     }
 
     public synchronized List<TimestampedValue> get(Bundle configuration) {
-        for (Bundle key: mSensorValues.keySet()) {  //containsKey does not seem to work
+        for (Bundle key : mSensorValues.keySet()) {  //containsKey does not seem to work
             if (equalBundles(key, configuration)) {
                 return mSensorValues.get(key);
             }
@@ -35,14 +35,15 @@ public class SensorValues {
         return null;
     }
 
-    public synchronized void addNewValue(Bundle configuration, TimestampedValue newValue) {
+    protected synchronized void addNewValue(Bundle configuration, TimestampedValue newValue) {
         if (!containsKey(configuration)) {
+            //Log.d(getClass().getSimpleName(), "Add new config value " + configuration.get("latitude"));
             put(configuration, new ArrayList<TimestampedValue>());
         }
         get(configuration).add(newValue);
     }
 
-    public boolean containsKey(Bundle keyConfig) {
+    protected synchronized boolean containsKey(Bundle keyConfig) {
         for (Bundle key: keys()) {  //containsKey does not seem to work
             if (equalBundles(key, keyConfig)) {
                 return true;
@@ -51,11 +52,11 @@ public class SensorValues {
         return false;
     }
 
-    public Set<Bundle> keys() {
+    protected synchronized Set<Bundle> keys() {
         return mSensorValues.keySet();
     }
 
-    public Collection<List<TimestampedValue>> values() {
+    public synchronized Collection<List<TimestampedValue>> values() {
         return mSensorValues.values();
     }
 

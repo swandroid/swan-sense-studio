@@ -35,7 +35,8 @@ public class WeatherSensor extends AbstractSwanSensor {
 
     /*Value path */
     public static final String WEATHER = "weather";
-
+    private volatile int registered = 0;
+    private volatile int sensed = 0;
 
     /*Configuration */
     public static final String SAMPLE_INTERVAL = "sample_interval";
@@ -64,7 +65,9 @@ public class WeatherSensor extends AbstractSwanSensor {
 
     @Override
     public void onConnected() {
-        ForecastApi.create("1ba93f8d745fee9e1bd0a570ddb4bddd");
+        SENSOR_NAME = "Weather";
+//        ForecastApi.create("1ba93f8d745fee9e1bd0a570ddb4bddd");   //vu.nl
+        ForecastApi.create("a9015be16561f3af3075774dc0d48655");
     }
 
     @Override
@@ -74,6 +77,8 @@ public class WeatherSensor extends AbstractSwanSensor {
         WeatherPoller weatherPoller = new WeatherPoller(id, valuePath, configuration);
         activeThreads.put(id, weatherPoller);
         weatherPoller.start();
+
+        Log.d(getClass().getSimpleName(), "Registered = " + (++registered));
     }
 
     @Override
@@ -110,6 +115,7 @@ public class WeatherSensor extends AbstractSwanSensor {
                     public void success(WeatherResponse weatherResponse, Response response) {
                         final long start = System.currentTimeMillis();
                         putValueTrimSize(configuration, id, start, new WeatherForecast(weatherResponse));
+                        System.out.println("Sensed = " + (++sensed));
                     }
 
                     @Override

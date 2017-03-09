@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
@@ -45,7 +46,7 @@ public class RainSensor extends AbstractSwanSensor {
     /* Weather URL */
     private static final String BASE_URL = "http://gpsgadget.buienradar.nl/data/raintext?lat=%s&lon=%s";
     /* Output :
-	 * 000|16:25 
+     * 000|16:25
 	 * 000|16:30 
 	 * 000|16:35 
 	 * 000|16:40
@@ -56,6 +57,8 @@ public class RainSensor extends AbstractSwanSensor {
 
     private Map<String, RainPoller> activeThreads = new HashMap<String, RainPoller>();
 
+    private volatile int registered = 0;
+    private volatile int sensed = 0;
 
     @Override
     public String[] getValuePaths() {
@@ -82,6 +85,8 @@ public class RainSensor extends AbstractSwanSensor {
         RainPoller rainPoller = new RainPoller(id, valuePath, configuration);
         activeThreads.put(id, rainPoller);
         rainPoller.start();
+
+        Log.d(getClass().getSimpleName(), "Registered = " + (++registered));
     }
 
     @Override
@@ -106,28 +111,43 @@ public class RainSensor extends AbstractSwanSensor {
 
                 String url = String.format(BASE_URL, configuration.get(LATITUDE),
                         configuration.get(LONGITUDE));
-                Log.d(getClass().getSimpleName(), url);
+//                Log.d(getClass().getSimpleName(), url);
 
-                RainPrediction rainPrediction = new RainPrediction(Double.valueOf((String)configuration.get(LATITUDE)),
-                        Double.valueOf((String)configuration.get(LONGITUDE)));
+                RainPrediction rainPrediction = new RainPrediction(Double.valueOf((String) configuration.get(LATITUDE)),
+                        Double.valueOf((String) configuration.get(LONGITUDE)));
+
+                String line;
+                long startTime = System.currentTimeMillis();
+                BufferedReader bufferedReader = null;
+
                 try {
                     URLConnection conn = new URL(url).openConnection();
-                    BufferedReader r = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-
-                    String line;
-                    while ((line = r.readLine()) != null) {
-                        float value = convertValueToMMPerHr(Integer.parseInt(line.substring(0, 3)));
-                        String time = line.substring(4);
-    //                            Log.d(getClass().getSimpleName(), "new rain value: " + value + " " + time);
-                        rainPrediction.addRainValue(time, value);
-                    }
+                    conn.setConnectTimeout(2000);
+                    conn.setReadTimeout(2000);
+                    bufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                    long elapsedTime = System.currentTimeMillis() - startTime;
+                    Log.d(getClass().getSimpleName(), "Total elapsed http request/response time in milliseconds: " + elapsedTime);
+                    Log.d(getClass().getSimpleName(), "Sensed = " + (++sensed));
 
                 } catch (Exception e) {
-                    Log.e(TAG, e.toString());
+                    bufferedReader = retry(url);
+                }
 
-                } finally {
-                    long start = System.currentTimeMillis();
-                    putValueTrimSize(configuration, id, start, rainPrediction);
+                if (bufferedReader == null) {
+                    putValueTrimSize(configuration, id, System.currentTimeMillis(), rainPrediction);
+                    return;
+                }
+
+                try {
+                    while ((line = bufferedReader.readLine()) != null) {
+                        float value = convertValueToMMPerHr(Integer.parseInt(line.substring(0, 3)));
+                        String time = line.substring(4);
+                        //Log.d(getClass().getSimpleName(), "new rain value: " + value + " " + time);
+                        rainPrediction.addRainValue(time, value);
+                    }
+                    putValueTrimSize(configuration, id, System.currentTimeMillis(), rainPrediction);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
 
 
@@ -137,6 +157,31 @@ public class RainSensor extends AbstractSwanSensor {
                     return;
                 }
             }
+        }
+
+        private BufferedReader retry(String url) {
+            Log.d(getClass().getSimpleName(), "Retry for url = " + url);
+
+            long startTime = System.currentTimeMillis();
+            BufferedReader bufferedReader = null;
+
+            try {
+                URLConnection conn = new URL(url).openConnection();
+                conn.setConnectTimeout(2000);
+                conn.setReadTimeout(2000);
+                bufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                long elapsedTime = System.currentTimeMillis() - startTime;
+                Log.d(getClass().getSimpleName(), "Total elapsed http request/response time in milliseconds: " + elapsedTime);
+
+            } catch (Exception e) {
+                Log.e(TAG, e.toString());
+                Log.d(getClass().getSimpleName(), url);
+                long elapsedTime = System.currentTimeMillis() - startTime;
+                Log.d(getClass().getSimpleName(), "Total elapsed http request/response time in milliseconds: " + elapsedTime);
+            } finally {
+                Log.d(getClass().getSimpleName(), "Sensed = " + (++sensed));
+            }
+            return bufferedReader;
         }
 
         /*
