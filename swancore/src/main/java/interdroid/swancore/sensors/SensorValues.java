@@ -1,4 +1,4 @@
-package interdroid.swan.sensors;
+package interdroid.swancore.sensors;
 
 import android.os.Bundle;
 
@@ -35,7 +35,7 @@ public class SensorValues {
         return null;
     }
 
-    protected synchronized void addNewValue(Bundle configuration, TimestampedValue newValue) {
+    public synchronized void addNewValue(Bundle configuration, TimestampedValue newValue) {
         if (!containsKey(configuration)) {
             //Log.d(getClass().getSimpleName(), "Add new config value " + configuration.get("latitude"));
             put(configuration, new ArrayList<TimestampedValue>());
@@ -43,7 +43,7 @@ public class SensorValues {
         get(configuration).add(newValue);
     }
 
-    protected synchronized boolean containsKey(Bundle keyConfig) {
+    public synchronized boolean containsKey(Bundle keyConfig) {
         for (Bundle key: keys()) {  //containsKey does not seem to work
             if (equalBundles(key, keyConfig)) {
                 return true;
@@ -52,7 +52,7 @@ public class SensorValues {
         return false;
     }
 
-    protected synchronized Set<Bundle> keys() {
+    public synchronized Set<Bundle> keys() {
         return mSensorValues.keySet();
     }
 
