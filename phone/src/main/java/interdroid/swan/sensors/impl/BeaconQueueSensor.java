@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import interdroid.swan.R;
+import interdroid.swan.crossdevice.beacon.AbstractBeaconSensor;
 import interdroid.swan.crossdevice.beacon.BeaconUtils;
 import interdroid.swancore.sensors.AbstractConfigurationActivity;
 
@@ -15,7 +16,7 @@ import interdroid.swancore.sensors.AbstractConfigurationActivity;
  * Created by vladimir on 2/28/17.
  */
 
-public class BeaconQueueSensor extends BeaconDiscoverySensor {
+public class BeaconQueueSensor extends AbstractBeaconSensor {
 
     private static final String TAG = "BeaconQueueSensor";
     private static final String WAITING_TIME = "waitingTime";
@@ -51,7 +52,6 @@ public class BeaconQueueSensor extends BeaconDiscoverySensor {
                     discoveryTime = System.currentTimeMillis();
                 } else {
                     waitingTime = System.currentTimeMillis() - discoveryTime;
-
                 }
 
                 // we set the new value for each registered expression

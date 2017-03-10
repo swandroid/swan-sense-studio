@@ -24,6 +24,7 @@ public class QueuyActivity extends Activity {
 
     private TextView tvWaitingTime = null;
     private TextView tvMaxWaitingTime = null;
+    private long maxWaitingTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +45,11 @@ public class QueuyActivity extends Activity {
                         if (arg1 != null && arg1.length > 0) {
                             long waitingTime = (long) arg1[0].getValue();
                             tvWaitingTime.setText("Waiting time: " + waitingTime);
+
+                            if(waitingTime > maxWaitingTime) {
+                                maxWaitingTime = waitingTime;
+                                tvMaxWaitingTime.setText("Max waiting time: " + maxWaitingTime);
+                            }
                         } else {
                             Log.w(TAG, "value is null");
                         }
@@ -59,8 +65,12 @@ public class QueuyActivity extends Activity {
                     public void onNewValues(String id, TimestampedValue[] arg1) {
                         if (arg1 != null && arg1.length > 0) {
                             Log.d(TAG, "received " + arg1[0].getValue());
-                            String waitingTime = (String) arg1[0].getValue();
-                            tvMaxWaitingTime.setText("Max waiting time: " + waitingTime);
+                            long waitingTime = Long.parseLong(arg1[0].getValue().toString());
+
+                            if(waitingTime > maxWaitingTime) {
+                                maxWaitingTime = waitingTime;
+                                tvMaxWaitingTime.setText("Max waiting time: " + maxWaitingTime);
+                            }
                         } else {
                             Log.w(TAG, "value is null");
                         }
