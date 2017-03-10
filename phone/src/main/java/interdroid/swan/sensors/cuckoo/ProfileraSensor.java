@@ -41,13 +41,13 @@ public class ProfileraSensor extends AbstractCuckooSensor {
 
         @Override
         public String getGCMSenderId() {
-            return "251697980958";
+            return "694645599892";
             //throw new RuntimeException("<EMPTY FOR GIT>");
         }
 
         @Override
         public String getGCMApiKey() {
-            return "AIzaSyCJoZbF36XS-2I83oe5ahuoEBRuqcU1u7M";
+            return "AIzaSyBfgGJHlN_XOkO5XxFM-BnGQ7gjRMHbF1I";
             //return "AIzaSyCHqnp0RwLhVUkX6MWJBW_5hfbKB93ynQ8";
             //throw new RuntimeException("<EMPTY FOR GIT>");
         }

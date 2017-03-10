@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Objects;
 
 import interdroid.swan.engine.EvaluationEngineService;
+import interdroid.swan.sensors.AbstractCuckooSensor;
 import interdroid.swan.sensors.cuckoo.ProfilerSensor;
 import interdroid.swancore.crossdevice.Converter;
 import interdroid.swancore.swansong.Result;
@@ -43,6 +44,8 @@ public class FirebaseMessageService extends FirebaseMessagingService{
         //TODO: add proper implementation for handling messages coming from cuckoo server
         String message = remoteMessage.getData().get("field");
         if (message == null) {
+
+            noOfTimes++;
             Log.d(TAG, "it's cuckoo");
             String val = remoteMessage.getData().get("value");
             String ts = remoteMessage.getData().get("ts");
@@ -56,6 +59,9 @@ public class FirebaseMessageService extends FirebaseMessagingService{
             Result result = null;
             if(jsonResult.has("id") && jsonResult.has("A") && jsonResult.has("data") && jsonResult.has("time")) {
 
+                if(noOfTimes==0){
+                    Log.e("Roshan", "CowbirdTime = " + (System.currentTimeMillis() - CloudCommunication.cowbirdTime));
+                }
 
                 if(jsonResult.getString("A").contentEquals("V")) {
 

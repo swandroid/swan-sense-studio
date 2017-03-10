@@ -293,8 +293,8 @@ public class ResourcesActivity extends ListActivity {
 					.setPositiveButton("OK", new Dialog.OnClickListener() {
 
 						public void onClick(DialogInterface dialog, int which) {
-							storeServerInDB(serverStringField.getText()
-									.toString());
+							//storeServerInDB(serverStringField.getText().toString());
+							storeServerInDB("169.254.48.255;;-1;1;-1;1;0,0;145.108.172.243;9001");
 						}
 					}).create();
 		}

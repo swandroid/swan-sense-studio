@@ -30,6 +30,7 @@ public class CloudCommunication {
 
     Bundle httpConfiguration = new Bundle();
 
+    public static long cowbirdTime = 0;
 
     public CloudCommunication() {
 
@@ -78,8 +79,10 @@ public class CloudCommunication {
                 serverData.clear();
                 serverData.put(Constant.ID, id);
                 serverData.put(Constant.TOKEN, FirebaseInstanceId.getInstance().getToken());
+                Log.d("Roshan", "Firebase token:"+ FirebaseInstanceId.getInstance().getToken());
                 //serverData.put("channel",valuePath);
                 serverData.put(Constant.EXPRESSION, expression);
+                cowbirdTime = System.currentTimeMillis();
                 serverConnection.useHttpMethod(serverData, cb);
 
 

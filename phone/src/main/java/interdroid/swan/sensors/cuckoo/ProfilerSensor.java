@@ -18,6 +18,7 @@ public class ProfilerSensor extends AbstractCuckooSensor {
     public static final String VALUE = "value";
     public static final String TIMESTAMP = "ts";
     public static final String ACTION_NEW_VALUE = "new_value";
+    public static int cuckooLogTime =0;
 
     /**
      * The configuration activity for this sensor.
@@ -39,13 +40,13 @@ public class ProfilerSensor extends AbstractCuckooSensor {
 
     @Override
     public String getGCMSenderId() {
-        return "251697980958";
+        return "694645599892";
         //throw new RuntimeException("<EMPTY FOR GIT>");
     }
 
     @Override
     public String getGCMApiKey() {
-        return "AIzaSyCJoZbF36XS-2I83oe5ahuoEBRuqcU1u7M";
+        return "AIzaSyBfgGJHlN_XOkO5XxFM-BnGQ7gjRMHbF1I";
         //return "AIzaSyCHqnp0RwLhVUkX6MWJBW_5hfbKB93ynQ8";
         //throw new RuntimeException("<EMPTY FOR GIT>");
     }
@@ -62,6 +63,12 @@ public class ProfilerSensor extends AbstractCuckooSensor {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (intent.hasExtra(VALUE)) {
+
+                    if(cuckooLogTime==0) {
+                        Log.e("Roshan", "CuckooTime = " + (System.currentTimeMillis() - AbstractCuckooSensor.CuckooTime));
+                        cuckooLogTime=1;
+                    }
+
                     try {
                         int newVal = Integer.valueOf(intent.getExtras().getString(VALUE));
                         Log.d(TAG, newVal + "");

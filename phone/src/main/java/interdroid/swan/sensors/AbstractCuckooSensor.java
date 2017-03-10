@@ -29,6 +29,8 @@ public abstract class AbstractCuckooSensor extends AbstractSwanSensor {
 
     private Resource remoteResource = null;
 
+    public static long CuckooTime = 0;
+
     private SharedPreferences prefs;
 
     private boolean mRegistering = false;
@@ -86,6 +88,7 @@ public abstract class AbstractCuckooSensor extends AbstractSwanSensor {
                     Log.d(TAG, "connecting to cuckoo");
                     try {
                         registerReceiver();
+                        CuckooTime = System.currentTimeMillis();
                         Cuckoo.register(AbstractCuckooSensor.this,
                                 remoteResource,
                                 prefs.getString(REGISTRATION_ID, null),

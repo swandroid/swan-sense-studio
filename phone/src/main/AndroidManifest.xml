@@ -1264,6 +1264,35 @@
             </intent-filter>
         </activity>
 
+
+        <activity
+            android:name=".sensors.impl.HomoProfilerSensor$ConfigurationActivity"
+            android:exported="true"
+            android:icon="@drawable/the_things_network_logo">
+
+            <meta-data
+                android:name="entityId"
+                android:value="homo" />
+
+            <meta-data
+                android:name="valuePaths"
+                android:value="value" />
+
+            <meta-data
+                android:name="units"
+                android:value="" />
+
+            <meta-data
+                android:name="delay"
+                android:value="1000" />
+
+            <intent-filter>
+                <action android:name="interdroid.swan.sensor.DISCOVER" />
+            </intent-filter>
+        </activity>
+
+
+
         <activity
             android:name=".sensors.cuckoo.ThingsSpeakSensor$ConfigurationActivity"
             android:exported="true"
@@ -1304,6 +1333,12 @@
             android:name=".sensors.impl.ProfilerLocalSensor"
             android:exported="true"
             android:process=":profilerlocalsensor">
+        </service>
+
+        <service
+            android:name=".sensors.impl.HomoProfilerSensor"
+            android:exported="true"
+            android:process=":homoprofilersensor">
         </service>
 
         <service
