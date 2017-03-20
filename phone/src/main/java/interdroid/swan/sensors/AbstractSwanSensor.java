@@ -11,15 +11,17 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import interdroid.swan.remote.ServerConnection;
-import interdroid.swancore.swansong.TimestampedValue;
 import interdroid.swancore.sensors.AbstractSensorBase;
+import interdroid.swancore.swansong.TimestampedValue;
 import nl.sense_os.platform.TrivialSensorRegistrator;
 import nl.sense_os.service.R;
 import nl.sense_os.service.commonsense.SensorRegistrator;
@@ -35,6 +37,7 @@ public abstract class AbstractSwanSensor extends AbstractSensorBase {
     public static String TAG = "Abstract Sensor";
 
     public static final String DELAY = "delay";
+    public static final String ALL_VALUES = "all_values";
 
     /**
      * State for sensor update rate
@@ -337,13 +340,81 @@ public abstract class AbstractSwanSensor extends AbstractSensorBase {
         if (mLastFlushed > (now - timespan))
             getLocalValues(now - timespan, mLastFlushed);
         try {
-            valuesForTimeSpan = getValuesForTimeSpan(getValues().get(registeredValuePaths.get(id)),
+            String registeredValuePath = registeredValuePaths.get(id);
+
+            // return all value path data if all is set
+            if (registeredValuePath.equalsIgnoreCase(ALL_VALUES)) {
+                return constructValues(now, timespan);
+            }
+
+            valuesForTimeSpan = getValuesForTimeSpan(getValues().get(registeredValuePath),
                     now, timespan);
         } catch (OutOfMemoryError e) {
             Log.e(TAG, "OutOfMemoryError");
             onDestroySensor();
         }
         return valuesForTimeSpan;
+    }
+
+    /**
+     * Construct list of values for expressions registered to ALL_VALUES.
+     *
+     * @param now
+     * @param timespan
+     * @return
+     */
+    private List<TimestampedValue> constructValues(final long now, final long timespan) {
+        List<TimestampedValue> valuesForTimeSpan = new ArrayList<>();
+        Map<String, List<TimestampedValue>> trimmedValues = new LinkedHashMap<>();
+
+        for (String valuePath : getValuePaths()) {
+            List<TimestampedValue> values = getValuesForTimeSpan(getValues().get(valuePath),
+                now, timespan);
+            trimmedValues.put(valuePath, values);
+        }
+
+        int counterKeys = trimmedValues.size();
+        if (counterKeys > 1) {
+            String[] keySet = new String[counterKeys];
+            trimmedValues.keySet().toArray(keySet);
+            int counterValues = trimmedValues.get(keySet[0]).size();
+
+            // Iterate through the values in the list and construct objects with all vpaths
+            for (int i = 0; i < counterValues; i++) {
+                long ts = 0;
+                Object[] parameters = new Object[counterKeys];
+
+                for (int j = 0; j < counterKeys; j++) {
+                    String key = keySet[j];
+                    List<TimestampedValue> valuesList = trimmedValues.get(key);
+
+                    if (valuesList.size() > i) {
+                        TimestampedValue tsValue = valuesList.get(i);
+                        if (tsValue != null) {
+                            parameters[j] = tsValue.getValue();
+                            ts = tsValue.getTimestamp();
+                        }
+                    }
+                }
+
+                try {
+                    Class<?> sensor = Class.forName(getModelClassName());
+                    Constructor constructor = sensor.getConstructor(getParameterTypes());
+                    Object newValue = constructor.newInstance(parameters);
+                    valuesForTimeSpan.add(new TimestampedValue(newValue, ts));
+                } catch (Exception e) {
+                    Log.e(TAG, e.getMessage());
+                }
+            }
+            System.out.println(valuesForTimeSpan.toString());
+            return valuesForTimeSpan;
+        }
+
+        if (counterKeys == 1) { // sensor has only one value_path, return corresponding list of values
+            return getValuesForTimeSpan(values.get(values.keySet().iterator().next()), now, timespan);
+        } else {
+            return null;
+        }
     }
 
     /**
