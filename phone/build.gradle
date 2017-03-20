@@ -73,6 +73,7 @@ dependencies {
     compile 'com.google.firebase:firebase-messaging:9.0.2'
     compile 'com.android.support:multidex:1.0.0'
 
+    compile project(path: ':swaninterface')
 }
 
 

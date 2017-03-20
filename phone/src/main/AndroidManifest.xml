@@ -677,7 +677,7 @@
                 android:value="movement" />
             <meta-data
                 android:name="valuePaths"
-                android:value="x,y,z,total" />
+                android:value="all_values,x,y,z,total" />
             <meta-data
                 android:name="accuracy"
                 android:value="3" />
