@@ -16,6 +16,7 @@ import android.bluetooth.le.AdvertiseSettings;
 import android.bluetooth.le.BluetoothLeAdvertiser;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanResult;
+import android.bluetooth.le.ScanSettings;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.os.ParcelUuid;
@@ -59,6 +60,9 @@ public class BLEManager extends BTManager {
     protected static final UUID SWAN_SERVICE_UUID = UUID.fromString("11060915-f0e9-43b8-82b3-c3609d14313f");
     protected static final UUID SWAN_CHAR_UNREGISTER_UUID = UUID.fromString("06ad4ac5-ad7e-4884-ab2c-26d91faf4d42");
     protected static final UUID NOTIFY_DESC_UUID = UUID.fromString("00002902-0000-1000-8000-00805F9B34FB");
+    // send sensor values in push mode or pull mode
+    protected static final boolean PUSH_MODE = true;
+    public static final int TIME_BETWEEN_REQUESTS = 1000;
 
     private List<BLEClientWorker> clientWorkers = new ArrayList<>();
     private List<BLEServerWorker> serverWorkers = new ArrayList<>();
@@ -117,21 +121,23 @@ public class BLEManager extends BTManager {
             if (device.getName() != null && device.getName().contains("SWAN")) {
                 addNearbyDevice(device, null);
 
-                for(ParcelUuid parcelUuid : result.getScanRecord().getServiceUuids()) {
-                    UUID sensorValuePathUuid = parcelUuid.getUuid();
+                if(result.getScanRecord().getServiceUuids() != null) { // sometimes this is null
+                    for (ParcelUuid parcelUuid : result.getScanRecord().getServiceUuids()) {
+                        UUID sensorValuePathUuid = parcelUuid.getUuid();
 
-                    if(bleServer.getService(sensorValuePathUuid) == null) {
-                        Log.d(TAG, "service " + getSensorForUuid(sensorValuePathUuid) + " not present, adding...");
-                        BluetoothGattService service = new BluetoothGattService(sensorValuePathUuid, BluetoothGattService.SERVICE_TYPE_PRIMARY);
-                        BluetoothGattCharacteristic newCharacteristic =
-                                new BluetoothGattCharacteristic(sensorValuePathUuid,
-                                        BluetoothGattCharacteristic.PROPERTY_READ | BluetoothGattCharacteristic.PROPERTY_WRITE | BluetoothGattCharacteristic.PROPERTY_NOTIFY,
-                                        BluetoothGattCharacteristic.PERMISSION_READ | BluetoothGattCharacteristic.PERMISSION_WRITE);
-                        BluetoothGattDescriptor desc = new BluetoothGattDescriptor(NOTIFY_DESC_UUID,
-                                BluetoothGattDescriptor.PERMISSION_WRITE | BluetoothGattDescriptor.PERMISSION_READ);
-                        newCharacteristic.addDescriptor(desc);
-                        service.addCharacteristic(newCharacteristic);
-                        bleServer.addService(service);
+                        if (bleServer.getService(sensorValuePathUuid) == null) {
+                            Log.d(TAG, "service " + getSensorForUuid(sensorValuePathUuid) + " not present, adding...");
+                            BluetoothGattService service = new BluetoothGattService(sensorValuePathUuid, BluetoothGattService.SERVICE_TYPE_PRIMARY);
+                            BluetoothGattCharacteristic newCharacteristic =
+                                    new BluetoothGattCharacteristic(sensorValuePathUuid,
+                                            BluetoothGattCharacteristic.PROPERTY_READ | BluetoothGattCharacteristic.PROPERTY_WRITE | BluetoothGattCharacteristic.PROPERTY_NOTIFY,
+                                            BluetoothGattCharacteristic.PERMISSION_READ | BluetoothGattCharacteristic.PERMISSION_WRITE);
+                            BluetoothGattDescriptor desc = new BluetoothGattDescriptor(NOTIFY_DESC_UUID,
+                                    BluetoothGattDescriptor.PERMISSION_WRITE | BluetoothGattDescriptor.PERMISSION_READ);
+                            newCharacteristic.addDescriptor(desc);
+                            service.addCharacteristic(newCharacteristic);
+                            bleServer.addService(service);
+                        }
                     }
                 }
             }
@@ -160,6 +166,15 @@ public class BLEManager extends BTManager {
             }
 
             // TODO handle here connections/disconnections for client workers
+        }
+
+        @Override
+        public void onCharacteristicReadRequest(BluetoothDevice device, int requestId, int offset, BluetoothGattCharacteristic characteristic) {
+            super.onCharacteristicReadRequest(device, requestId, offset, characteristic);
+
+            BLEServerWorker serverWorker = new BLEServerWorker(BLEManager.this, device, characteristic, requestId, offset);
+            serverWorker.start();
+            addServerWorker(serverWorker);
         }
 
         @Override

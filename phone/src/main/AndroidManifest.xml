@@ -1837,7 +1837,8 @@
 
         <activity
             android:name=".crossdevice.queueapp.QueuyActivity"
-            android:label="@string/title_activity_queuy">
+            android:label="@string/title_activity_queuy"
+            android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

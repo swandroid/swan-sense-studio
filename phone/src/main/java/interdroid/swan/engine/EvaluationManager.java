@@ -47,8 +47,9 @@ public class EvaluationManager extends EvaluationManagerBase{
 
             CloudManager.getInstance(mContext).registerExpression(id,expression.toParseString(),resolvedLocation);
 
-        }else if (resolvedLocation.equals(Expression.LOCATION_NEARBY) || mProximityManager.hasPeer(resolvedLocation)) {
+        }else if (resolvedLocation.equals(Expression.LOCATION_NEARBY) || mProximityManager.hasPeer(resolvedLocation) || resolvedLocation.length() <= 20) {
             // get sensor info from nearby devices
+            // IDs got from GCM have more than 20 characters
             mProximityManager.registerExpression(id, toCrossDeviceString(expression, resolvedLocation), resolvedLocation);
         } else {
             // send a push message with 'register' instead of 'initialize',
@@ -81,11 +82,11 @@ public class EvaluationManager extends EvaluationManagerBase{
 
         // we check if we have a wildcard as location or if the remote device is in proximity
         if (registrationId == null) {
-            if (toRegistrationId.equals(Expression.LOCATION_NEARBY) || mProximityManager.hasPeer(toRegistrationId)) {
+            if(toRegistrationId.equals(Expression.LOCATION_WEAR)){
                 registrationId = toRegistrationId;
             }
 
-            if(toRegistrationId.equals(Expression.LOCATION_WEAR)){
+            if (toRegistrationId.equals(Expression.LOCATION_NEARBY) || mProximityManager.hasPeer(toRegistrationId) || toRegistrationId.length() <= 20) {
                 registrationId = toRegistrationId;
             }
         }

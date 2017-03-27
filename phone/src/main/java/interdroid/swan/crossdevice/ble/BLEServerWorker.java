@@ -1,9 +1,8 @@
 package interdroid.swan.crossdevice.ble;
 
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 
 import interdroid.swancore.swanmain.ExpressionManager;
@@ -28,15 +27,25 @@ public class BLEServerWorker {
     private BluetoothDevice device;
     private BluetoothGattCharacteristic characteristic;
     private String expressionId;
+    private int requestId; // needed for pull method
+    private int offset; // needed for pull method
 
     private static synchronized int nextExpressionId() {
         return curExpressionId++;
     }
 
+    // constructor for push mode
     public BLEServerWorker(BLEManager bleManager, BluetoothDevice device, BluetoothGattCharacteristic characteristic) {
         this.bleManager = bleManager;
         this.device = device;
         this.characteristic = characteristic;
+    }
+
+    // constructor for pull mode
+    public BLEServerWorker(BLEManager bleManager, BluetoothDevice device, BluetoothGattCharacteristic characteristic, int requestId, int offset) {
+        this(bleManager, device, characteristic);
+        this.requestId = requestId;
+        this.offset = offset;
     }
 
     public void start() {
@@ -52,12 +61,22 @@ public class BLEServerWorker {
                 @Override
                 public void onNewValues(String id, TimestampedValue[] newValues) {
                     if (newValues != null && newValues.length > 0) {
-                        final String value = "" + newValues[0].getValue().toString();
-                        characteristic.setValue(value);
-                        Log.w(TAG, getDeviceName() + ": sending value for " + sensorValuePath + "(" + expressionId + ") to remote: " + value);
+                        try {
+                            final String value = "" + newValues[0].getValue().toString();
+                            characteristic.setValue(value);
+                            Log.w(TAG, getDeviceName() + ": sending value for " + sensorValuePath + "(" + expressionId + ") to remote: " + value);
 
-                        if(!bleManager.getBleServer().notifyCharacteristicChanged(device, characteristic, false)) {
-                            Log.w(TAG, getDeviceName() + ": couldn't send notification for new value");
+                            if(BLEManager.PUSH_MODE) {
+                                if (!bleManager.getBleServer().notifyCharacteristicChanged(device, characteristic, false)) {
+                                    Log.w(TAG, getDeviceName() + ": couldn't send notification for new value");
+                                }
+                            } else {
+                                bleManager.getBleServer().sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, value.getBytes());
+                                stop();
+                                bleManager.serverWorkerDone(BLEServerWorker.this);
+                            }
+                        } catch(Exception e) {
+                            Log.e(TAG, getDeviceName() + ": couldn't send new value to remote");
                         }
                     }
                 }
@@ -68,6 +87,7 @@ public class BLEServerWorker {
     }
 
     public void stop() {
+        Log.d(TAG, "stopping");
         ExpressionManager.unregisterExpression(bleManager.getContext(), expressionId);
     }
 

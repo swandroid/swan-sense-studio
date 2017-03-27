@@ -34,6 +34,7 @@ public class BLEClientWorker {
     private BLEManager bleManager;
     private BTRemoteEvaluationTask remoteEvaluationTask;
     private BluetoothGatt gatt;
+    private int connectionState = BluetoothProfile.STATE_DISCONNECTED;
 
     private BluetoothGattCallback bleClientCallback = new BluetoothGattCallback() {
         @Override
@@ -46,11 +47,18 @@ public class BLEClientWorker {
                 Log.i(TAG, "connected to " + remoteEvaluationTask.getSwanDevice() + ", discovering services...");
                 bleManager.bcastLogMessage("connected to " + remoteEvaluationTask.getSwanDevice());
                 gatt.discoverServices();
+                connectionState = BluetoothProfile.STATE_CONNECTED;
             } else if(newState == BluetoothProfile.STATE_DISCONNECTED) {
                 Log.i(TAG, "disconnected from " + remoteEvaluationTask.getSwanDevice());
                 bleManager.bcastLogMessage("disconnected from " + remoteEvaluationTask.getSwanDevice());
                 gatt.close();
-                bleManager.clientWorkerDone(BLEClientWorker.this);
+
+                if(connectionState == BluetoothProfile.STATE_DISCONNECTED) {
+                    start(); // retry to connect
+                } else {
+                    bleManager.clientWorkerDone(BLEClientWorker.this);
+                }
+                //TODO unregister expressions
             }
         }
 
@@ -73,15 +81,19 @@ public class BLEClientWorker {
                         Log.i(TAG, remoteEvaluationTask.getSwanDevice() + ": found service " + sensorValuePath);
                         final BluetoothGattCharacteristic characteristic = service.getCharacteristic(serviceUuid);
 
-                        gatt.setCharacteristicNotification(characteristic, true);
-                        gatt.requestConnectionPriority(BluetoothGatt.CONNECTION_PRIORITY_HIGH);
-                        BluetoothGattDescriptor descriptor = characteristic.getDescriptor(BLEManager.NOTIFY_DESC_UUID);
-                        descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
-                        gatt.writeDescriptor(descriptor);
+                        if(BLEManager.PUSH_MODE) {
+                            gatt.setCharacteristicNotification(characteristic, true);
+                            gatt.requestConnectionPriority(BluetoothGatt.CONNECTION_PRIORITY_HIGH);
+                            BluetoothGattDescriptor descriptor = characteristic.getDescriptor(BLEManager.NOTIFY_DESC_UUID);
+                            descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+                            gatt.writeDescriptor(descriptor);
+                        } else {
+                            gatt.readCharacteristic(characteristic);
+                        }
                     } else {
                         Log.i(TAG, remoteEvaluationTask.getSwanDevice() + ": service " + sensorValuePath + " not found, retrying in 2000ms...");
 
-                        new Handler().postDelayed(new Runnable() {
+                        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                             @Override
                             public void run() {
                                 gatt.discoverServices();
@@ -92,6 +104,24 @@ public class BLEClientWorker {
                     Log.e(TAG, "cannot process remote expression", e);
                 }
             }
+        }
+
+        @Override
+        public void onCharacteristicRead(final BluetoothGatt gatt, final BluetoothGattCharacteristic characteristic, int status) {
+            super.onCharacteristicRead(gatt, characteristic, status);
+
+            if(status == BluetoothGatt.GATT_SUCCESS) {
+                onCharacteristicChanged(gatt, characteristic);
+            } else {
+                Log.e(TAG, "couldn't read characteristic");
+            }
+
+            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    gatt.readCharacteristic(characteristic);
+                }
+            }, BLEManager.TIME_BETWEEN_REQUESTS);
         }
 
         @Override

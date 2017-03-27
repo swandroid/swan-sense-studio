@@ -1,5 +1,7 @@
 package interdroid.swan.sensors.impl;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import org.altbeacon.beacon.Beacon;
@@ -21,6 +23,7 @@ public class BeaconQueueSensor extends AbstractBeaconSensor {
     private static final String TAG = "BeaconQueueSensor";
     private static final String WAITING_TIME = "waitingTime";
     private static final int QUEUE_BEACON_MAJOR_ID = 4023;
+    private static final int UPDATE_INTERVAL = 5000;
 
     private long discoveryTime = 0;
 
@@ -46,17 +49,25 @@ public class BeaconQueueSensor extends AbstractBeaconSensor {
         for (Beacon beacon : beacons.values()) {
             // we check if the found beacon is a queue beacon by looking at its major id
             if(BeaconUtils.isAppleIBeacon(beacon) && beacon.getId2().toInt() == QUEUE_BEACON_MAJOR_ID) {
-                long waitingTime = 0;
-
                 if(discoveryTime == 0) {
+                    final Handler handler = new Handler(Looper.getMainLooper());
                     discoveryTime = System.currentTimeMillis();
-                } else {
-                    waitingTime = System.currentTimeMillis() - discoveryTime;
-                }
 
-                // we set the new value for each registered expression
-                for(Map.Entry<String, String> id : ids.entrySet()) {
-                    putValueTrimSize(WAITING_TIME, id.getKey(), time, waitingTime);
+                    Runnable updaterTask = new Runnable() {
+                        @Override
+                        public void run() {
+                            long waitingTime = System.currentTimeMillis() - discoveryTime;
+
+                            // we set the new value for each registered expression
+                            for(Map.Entry<String, String> id : ids.entrySet()) {
+                                putValueTrimSize(WAITING_TIME, id.getKey(), System.currentTimeMillis(), waitingTime);
+                            }
+
+                            handler.postDelayed(this, UPDATE_INTERVAL);
+                        }
+                    };
+
+                    handler.post(updaterTask);
                 }
             }
         }

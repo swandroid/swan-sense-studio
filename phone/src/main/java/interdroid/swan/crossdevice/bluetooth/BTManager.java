@@ -19,8 +19,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -65,7 +67,7 @@ public class BTManager implements ProximityManagerI {
     /* set SYNC_RECEIVERS to false if you set this to true */
     public static final boolean USE_WIFI = false;
 
-    protected final int PEER_DISCOVERY_INTERVAL = 20000;
+    protected final int PEER_DISCOVERY_INTERVAL = 40000;
     private final int BLOCKED_WORKERS_CHECKING_INTERVAL = 10000;
     private final int MAX_CONNECTIONS = 0;
     private final boolean LOG_ONLY_CRITICAL = false;
@@ -320,7 +322,8 @@ public class BTManager implements ProximityManagerI {
 
     @Override
     public void clean() {
-        for(Map.Entry<String, String> entry : registeredExpressions.entrySet()) {
+        // we make a copy of the set to avoid ConcurrentModificationException
+        for(Map.Entry<String, String> entry : new HashSet<>(registeredExpressions.entrySet())) {
             unregisterExpression(entry.getKey(), entry.getValue(), null);
         }
 
@@ -367,10 +370,9 @@ public class BTManager implements ProximityManagerI {
     public synchronized void registerExpression(String id, String expression, String resolvedLocation) {
         log(TAG, "registering expression " + id + ": " + expression, Log.DEBUG);
         boolean newTask = false;
+        registeredExpressions.put(resolvedLocation + ":" + id, expression);
 
         if (resolvedLocation.equals(Expression.LOCATION_NEARBY)) {
-            registeredExpressions.put(id, expression);
-
             for (BTSwanDevice swanDevice : nearbyDevices) {
                 swanDevice.registerExpression(id, expression);
                 // if this is the first registered expression, then start a new task
@@ -408,14 +410,20 @@ public class BTManager implements ProximityManagerI {
     @Override
     public synchronized void unregisterExpression(String id, String expression, String resolvedLocation) {
         log(TAG, "unregistering expression " + id + ": " + expression, Log.DEBUG);
-        registeredExpressions.remove(id);
+
+        // we create a copy set to avoid ConcurrentModificationExceptions
+        for(String exprId : new HashSet<>(registeredExpressions.keySet())) {
+            if(exprId.endsWith(id)) {
+                registeredExpressions.remove(exprId);
+            }
+        }
 
         for(BTSwanDevice swanDevice : nearbyDevices) {
             swanDevice.unregisterExpression(id);
         }
 
         if(registeredExpressions.isEmpty()) {
-            printLogs();
+//            printLogs();
             disconnect();
         }
     }
@@ -445,7 +453,8 @@ public class BTManager implements ProximityManagerI {
         List<BTRemoteExpression> toRemove = new ArrayList<BTRemoteExpression>();
 
         for(BTRemoteExpression expression : remoteEvalTask.getExpressions()) {
-            if(!registeredExpressions.containsKey(expression.getBaseId())) {
+            if(!registeredExpressions.containsKey(Expression.LOCATION_NEARBY + ":" + expression.getBaseId())
+                    && !registeredExpressions.containsKey(remoteEvalTask.getSwanDevice().getName() + ":" + expression.getBaseId())) {
                 toRemove.add(expression);
             }
         }
@@ -550,20 +559,27 @@ public class BTManager implements ProximityManagerI {
     }
 
     private void registerRemoteDevice(BTSwanDevice swanDevice) {
+        boolean registered = false;
+
         if (registeredExpressions.isEmpty()) {
             return;
         }
 
         for (Map.Entry<String, String> entry : registeredExpressions.entrySet()) {
-            swanDevice.registerExpression(entry.getKey(), entry.getValue());
+            if(entry.getKey().startsWith(swanDevice.getName()) || entry.getKey().startsWith(Expression.LOCATION_NEARBY)) {
+                swanDevice.registerExpression(entry.getKey().split(":")[1], entry.getValue());
+                registered = true;
+            }
         }
 
-        BTRemoteEvaluationTask evalTask = new BTRemoteEvaluationTask(swanDevice);
+        if(registered) {
+            BTRemoteEvaluationTask evalTask = new BTRemoteEvaluationTask(swanDevice);
 //        addToQueue(evalTask);
-        scheduleEvaluationTask(evalTask, TIME_BETWEEN_REQUESTS);
+            scheduleEvaluationTask(evalTask, TIME_BETWEEN_REQUESTS);
 
-        synchronized (evalThread) {
-            evalThread.notify();
+            synchronized (evalThread) {
+                evalThread.notify();
+            }
         }
     }
 
