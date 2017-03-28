@@ -148,6 +148,11 @@
         <item>z</item>
         <item>total</item>
     </string-array>
+    <!-- distance covered sensor -->
+    <string-array name="distance_covered_valuepaths">
+        <item>meters</item>
+        <item>steps</item>
+    </string-array>
 
     <!-- gyroscope sensor -->
     <string-array name="gyroscope_valuepaths">

@@ -664,6 +664,7 @@
                 android:name="units"
                 android:value="log" />
         </activity>
+
         <activity
             android:name=".sensors.impl.MovementSensor$ConfigurationActivity"
             android:exported="true"
@@ -688,6 +689,45 @@
                 android:name="units"
                 android:value="m/s2,m/s2,m/s2,m/s2" />
         </activity>
+
+
+        <activity
+            android:name=".sensors.impl.DistanceCoveredSensor$ConfigurationActivity"
+            android:exported="true"
+            android:icon="@drawable/movement_icon">
+            <intent-filter>
+                <action android:name="interdroid.swan.sensor.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="distancecovered" />
+            <meta-data
+                android:name="valuePaths"
+                android:value="meters,steps" />
+            <meta-data
+                android:name="accuracy"
+                android:value="3" />
+            <meta-data
+                android:name="delay"
+                android:value="200000" />
+            <meta-data
+                android:name="accuracy"
+                android:value="3" />
+            <meta-data
+                android:name="sensitivity"
+                android:value="required" />
+            <meta-data
+                android:name="sensitivity"
+                android:value="required" />
+            <meta-data
+                android:name="step_coeficient"
+                android:value="required" />
+            <meta-data
+                android:name="units"
+                android:value="m,steps" />
+        </activity>
+
         <activity
             android:name=".sensors.impl.RainSensor$ConfigurationActivity"
             android:exported="true"
@@ -1199,6 +1239,10 @@
             android:name=".sensors.impl.MovementSensor"
             android:exported="true"
             android:process=":movementsensor" />
+        <service
+            android:name=".sensors.impl.DistanceCoveredSensor"
+            android:exported="true"
+            android:process=":distancecoveredsensor" />
         <service
             android:name=".sensors.impl.SoundSensor"
             android:exported="true"
