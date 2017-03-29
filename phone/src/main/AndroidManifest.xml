@@ -169,6 +169,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".crossdevice.SharingSettingsActivity"
+            android:label="Sharing Settings"
+            android:screenOrientation="portrait" />
 
         <!-- engine stuff -->
         <receiver

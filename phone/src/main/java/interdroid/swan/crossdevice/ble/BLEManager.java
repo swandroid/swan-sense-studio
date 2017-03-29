@@ -19,7 +19,9 @@ import android.bluetooth.le.ScanResult;
 import android.bluetooth.le.ScanSettings;
 import android.content.Context;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.ParcelUuid;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import java.nio.ByteBuffer;
@@ -117,6 +119,7 @@ public class BLEManager extends BTManager {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
             BluetoothDevice device = result.getDevice();
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(BLEManager.this.context);
 
             if (device.getName() != null && device.getName().contains("SWAN")) {
                 addNearbyDevice(device, null);
@@ -124,8 +127,10 @@ public class BLEManager extends BTManager {
                 if(result.getScanRecord().getServiceUuids() != null) { // sometimes this is null
                     for (ParcelUuid parcelUuid : result.getScanRecord().getServiceUuids()) {
                         UUID sensorValuePathUuid = parcelUuid.getUuid();
+                        String sensorEntity = getSensorForUuid(sensorValuePathUuid).split(":")[0];
 
-                        if (bleServer.getService(sensorValuePathUuid) == null) {
+                        // check if the service isn't started and if the sensor is shareable
+                        if (bleServer.getService(sensorValuePathUuid) == null && sharedPref.getBoolean("sharing." + sensorEntity, false)) {
                             Log.d(TAG, "service " + getSensorForUuid(sensorValuePathUuid) + " not present, adding...");
                             BluetoothGattService service = new BluetoothGattService(sensorValuePathUuid, BluetoothGattService.SERVICE_TYPE_PRIMARY);
                             BluetoothGattCharacteristic newCharacteristic =
