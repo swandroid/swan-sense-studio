@@ -16,7 +16,6 @@ import android.bluetooth.le.AdvertiseSettings;
 import android.bluetooth.le.BluetoothLeAdvertiser;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanResult;
-import android.bluetooth.le.ScanSettings;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -30,11 +29,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.LinkedBlockingQueue;
 
 import interdroid.swan.crossdevice.bluetooth.BTManager;
 import interdroid.swan.crossdevice.bluetooth.BTRemoteEvaluationTask;
-import interdroid.swan.crossdevice.bluetooth.BTRemoteExpression;
 import interdroid.swancore.swanmain.ExpressionManager;
 import interdroid.swancore.swanmain.SensorInfo;
 import interdroid.swancore.swansong.Expression;
@@ -58,7 +55,8 @@ import interdroid.swancore.swansong.SensorValueExpression;
 public class BLEManager extends BTManager {
 
     private static final String TAG = "BLEManager";
-    private static final int SCAN_PERIOD = 20000;
+    private static final int SCAN_PERIOD = 2500;
+    protected static final int PEER_DISCOVERY_INTERVAL = 5000;
     protected static final UUID SWAN_SERVICE_UUID = UUID.fromString("11060915-f0e9-43b8-82b3-c3609d14313f");
     protected static final UUID SWAN_CHAR_UNREGISTER_UUID = UUID.fromString("06ad4ac5-ad7e-4884-ab2c-26d91faf4d42");
     protected static final UUID NOTIFY_DESC_UUID = UUID.fromString("00002902-0000-1000-8000-00805F9B34FB");
@@ -69,7 +67,6 @@ public class BLEManager extends BTManager {
     private List<BLEClientWorker> clientWorkers = new ArrayList<>();
     private List<BLEServerWorker> serverWorkers = new ArrayList<>();
     private HashMap<UUID, String> uuidSensorMap = new HashMap<>();
-    private LinkedBlockingQueue<Runnable> execQueue = new LinkedBlockingQueue<>();
     private BluetoothGattServer bleServer;
     private BluetoothManager btManager;
 
@@ -306,12 +303,12 @@ public class BLEManager extends BTManager {
 //                log(TAG, "discovery finished", Log.INFO, true);
 //                bcastLogMessage("discovery finished");
 //
-////                handler.postDelayed(new Runnable() {
-////                    @Override
-////                    public void run() {
-////                        discoverPeers();
-////                    }
-////                }, PEER_DISCOVERY_INTERVAL);
+//                handler.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        discoverPeers();
+//                    }
+//                }, PEER_DISCOVERY_INTERVAL);
 //            }
 //        }, SCAN_PERIOD);
 

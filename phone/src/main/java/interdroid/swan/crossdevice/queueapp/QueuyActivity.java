@@ -1,15 +1,18 @@
 package interdroid.swan.crossdevice.queueapp;
 
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.media.MediaScannerConnection;
 import android.os.Bundle;
 import android.app.Activity;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -25,8 +28,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.concurrent.ThreadLocalRandom;
 
 import interdroid.swan.R;
+import interdroid.swan.crossdevice.ble.BLEManager;
 import interdroid.swan.crossdevice.bluetooth.BTLogRecord;
 import interdroid.swan.crossdevice.bluetooth.BTManager;
 import interdroid.swancore.swanmain.ExpressionManager;
@@ -51,10 +56,13 @@ public class QueuyActivity extends Activity {
     private long waitingTime = 0;
     private long waitingTimestamp = 0;
     private long startTime = 0;
+    private long beaconDetectionTime = 0;
+    private long peerDetectionTime = 0;
     private int checkoutProgress = 0;
     private TreeMap<Long, Long> waitingTimeMap = new TreeMap<>();
     private ArrayList<QueuyLogRecord> logs = new ArrayList<>();
     private Handler handler = new Handler();
+    private StringBuilder logBuffer = new StringBuilder();
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
@@ -64,6 +72,7 @@ public class QueuyActivity extends Activity {
                 String message = intent.getStringExtra("log");
                 TextView tv = (TextView) findViewById(R.id.logBox);
                 tv.setText(message + "\n" + tv.getText());
+                logBuffer.append("\n# " + message);
             }
         }
     };
@@ -77,6 +86,17 @@ public class QueuyActivity extends Activity {
         tvCheckoutProgress = (TextView) findViewById(R.id.checkoutProgress);
         IntentFilter intentFilter = new IntentFilter(BTManager.ACTION_LOG_MESSAGE);
         registerReceiver(mReceiver, intentFilter);
+
+        // enable sharing for beaconQueue sensor
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPref.edit().putBoolean("sharing.beaconQueue", true).apply();
+
+        // include SWAN keyword in bluetooth name
+        BluetoothManager btManager = (BluetoothManager) this.getSystemService(Context.BLUETOOTH_SERVICE);
+        BluetoothAdapter btAdapter = btManager.getAdapter();
+        if(!btAdapter.getName().contains("SWAN")) {
+            btAdapter.setName("SWAN" + ThreadLocalRandom.current().nextInt(1000, 9999) + "-" + btAdapter.getName());
+        }
     }
 
     /* called when "start" button is pressed */
@@ -125,6 +145,11 @@ public class QueuyActivity extends Activity {
                                 waitingTime = (long) arg1[0].getValue();
                                 waitingTimestamp = System.currentTimeMillis();
                                 tvWaitingTime.setText("Waited time: " + waitingTime);
+
+                                if(beaconDetectionTime == 0) {
+                                    beaconDetectionTime = waitingTimestamp - startTime;
+                                    logBuffer.append("\n# detected queue");
+                                }
                             } else {
                                 Log.w(TAG, "value is null");
                             }
@@ -142,6 +167,10 @@ public class QueuyActivity extends Activity {
                                 Log.d(TAG, "received remote waiting time " + arg1[0].getValue());
                                 long waitingTime = Long.parseLong(arg1[0].getValue().toString());
                                 waitingTimeMap.put(System.currentTimeMillis(), waitingTime);
+
+                                if(peerDetectionTime == 0) {
+                                    peerDetectionTime = System.currentTimeMillis() - startTime;
+                                }
                             } else {
                                 Log.w(TAG, "value is null");
                             }
@@ -158,7 +187,7 @@ public class QueuyActivity extends Activity {
     /* called when "checkout" button is pressed */
     public void checkout(View view) {
         EditText checkoutEdit = (EditText) findViewById(R.id.checkoutTime);
-        double checkoutTime = Double.parseDouble(checkoutEdit.getText().toString()) * 60000;
+        double checkoutTime = Double.parseDouble(checkoutEdit.getText().toString()) * 1000;
         final double timeChunk = checkoutTime / 100;
 
         Runnable progressUpdater = new Runnable() {
@@ -177,12 +206,12 @@ public class QueuyActivity extends Activity {
         };
 
         handler.postDelayed(progressUpdater, (long)timeChunk);
-        printLogs(System.currentTimeMillis());
     }
 
     private void cleanup() {
         ExpressionManager.unregisterExpression(QueuyActivity.this, REQUEST_QUEUE_LOCAL);
         ExpressionManager.unregisterExpression(QueuyActivity.this, REQUEST_QUEUE_REMOTE);
+        unregisterReceiver(mReceiver);
         // we use this workaround to stop sending values to other phones
         BluetoothAdapter.getDefaultAdapter().disable();
     }
@@ -201,8 +230,11 @@ public class QueuyActivity extends Activity {
 
         try {
             FileWriter fw = new FileWriter(logFile);
+            fw.append("\nbeaconDetectionTime = " + beaconDetectionTime);
+            fw.append("\npeerDetectionTime = " + peerDetectionTime);
             fw.append("\n\n" + QueuyLogRecord.printHeader());
             fw.append("\n\n" + sb.toString());
+            fw.append("\n\n" + logBuffer.toString());
             fw.close();
 
             MediaScannerConnection.scanFile(this, new String[]{ logFile.getAbsolutePath() }, null, null);
