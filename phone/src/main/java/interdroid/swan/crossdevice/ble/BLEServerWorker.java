@@ -56,6 +56,7 @@ public class BLEServerWorker {
             SensorValueExpression expression = new SensorValueExpression(Expression.LOCATION_SELF,
                     sensorEntity, valuePath, null, HistoryReductionMode.DEFAULT_MODE.ANY, 1000, null);
             expressionId = nextExpressionId() + "";
+            Log.d(TAG, getDeviceName() + ": started server worker for service " + sensorValuePath);
 
             ExpressionManager.registerValueExpression(bleManager.getContext(), expressionId, expression, new ValueExpressionListener() {
                 @Override

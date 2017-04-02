@@ -57,7 +57,7 @@ public class BTManager implements ProximityManagerI {
     public static final String ACTION_NEARBY_DEVICE_FOUND = "interdroid.swan.crossdevice.bluetooth.ACTION_NEARBY_DEVICE_FOUND";
     public static final String ACTION_LOG_MESSAGE = "interdroid.swan.crossdevice.bluetooth.ACTION_LOG_MESSAGE";
     /* this should be configurable */
-    public static final int TIME_BETWEEN_REQUESTS = 4000;
+    public static final int TIME_BETWEEN_REQUESTS = 1000;
     /* set this to true if you want one connection per device, or false if you want one connection per worker */
     public static final boolean SHARED_CONNECTIONS = true;
     /* set this to true if you want only one server worker at a time, or false if you want multiple server workers in parallel */
@@ -69,7 +69,7 @@ public class BTManager implements ProximityManagerI {
 
     protected final int PEER_DISCOVERY_INTERVAL = 40000;
     private final int BLOCKED_WORKERS_CHECKING_INTERVAL = 10000;
-    private final int MAX_CONNECTIONS = 0;
+    private final int MAX_CONNECTIONS = 2;
     private final boolean LOG_ONLY_CRITICAL = false;
 
     protected BluetoothAdapter btAdapter;
@@ -81,12 +81,12 @@ public class BTManager implements ProximityManagerI {
     private List<BTReceiver> btReceivers = new ArrayList<>();
     private boolean discovering = false;
     private boolean restarting = false;
-    private long startTime = System.currentTimeMillis();
+    protected long startTime = System.currentTimeMillis();
 
+    protected List<BTSwanDevice> nearbyDevices = new ArrayList<>();
     private List<BTClientWorker> clientWorkers = new ArrayList<>();
     private List<BTServerWorker> serverWorkers = new ArrayList<>();
     private List<BTWorker> waitingWorkers = new ArrayList<>();
-    private List<BTSwanDevice> nearbyDevices = new ArrayList<>();
     private List<BTLogRecord> logRecords = new ArrayList<>();
     /**
      * IMPORTANT the order of items in this list matters! (see SwanLakePlus)
@@ -241,7 +241,7 @@ public class BTManager implements ProximityManagerI {
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
                 log(TAG, "discovery finished", Log.INFO, true);
                 bcastLogMessage("discovery finished");
-                scheduleQueueItem(nearbyPeersChecker, PEER_DISCOVERY_INTERVAL);
+//                scheduleQueueItem(nearbyPeersChecker, PEER_DISCOVERY_INTERVAL);
                 setDiscovering(false);
 
                 synchronized (evalThread) {
@@ -423,7 +423,7 @@ public class BTManager implements ProximityManagerI {
         }
 
         if(registeredExpressions.isEmpty()) {
-//            printLogs();
+            printLogs();
             disconnect();
         }
     }
@@ -765,7 +765,7 @@ public class BTManager implements ProximityManagerI {
         context.sendBroadcast(logMsgIntent);
     }
 
-    private void printLogs() {
+    protected void printLogs() {
         StringBuffer sb = new StringBuffer();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd-HHmm");
         String logSuffix = sdf.format(new Date());

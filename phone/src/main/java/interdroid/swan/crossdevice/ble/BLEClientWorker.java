@@ -12,6 +12,7 @@ import android.os.Looper;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -35,6 +36,24 @@ public class BLEClientWorker {
     private BTRemoteEvaluationTask remoteEvaluationTask;
     private BluetoothGatt gatt;
     private int connectionState = BluetoothProfile.STATE_DISCONNECTED;
+    private ArrayList<UUID> foundServices = new ArrayList<>();
+
+    private long startTime;
+    private long connTime;
+    private long discoveryTime;
+
+    public BLEClientWorker(BLEManager bleManager, BTRemoteEvaluationTask remoteEvaluationTask) {
+        this.bleManager = bleManager;
+        this.remoteEvaluationTask = remoteEvaluationTask;
+    }
+
+    public void start() {
+        final BluetoothDevice device = remoteEvaluationTask.getSwanDevice().getBtDevice();
+        Log.i(TAG, "connecting to " + device.getName() + "...");
+        bleManager.bcastLogMessage("connecting to " + device.getName() + "...");
+        startTime = System.currentTimeMillis();
+        device.connectGatt(bleManager.getContext(), false, bleClientCallback);
+    }
 
     private BluetoothGattCallback bleClientCallback = new BluetoothGattCallback() {
         @Override
@@ -48,6 +67,7 @@ public class BLEClientWorker {
                 bleManager.bcastLogMessage("connected to " + remoteEvaluationTask.getSwanDevice());
                 gatt.discoverServices();
                 connectionState = BluetoothProfile.STATE_CONNECTED;
+                connTime = System.currentTimeMillis();
             } else if(newState == BluetoothProfile.STATE_DISCONNECTED) {
                 Log.i(TAG, "disconnected from " + remoteEvaluationTask.getSwanDevice());
                 bleManager.bcastLogMessage("disconnected from " + remoteEvaluationTask.getSwanDevice());
@@ -65,6 +85,8 @@ public class BLEClientWorker {
         @Override
         public void onServicesDiscovered(final BluetoothGatt gatt, int status) {
             super.onServicesDiscovered(gatt, status);
+            discoveryTime = System.currentTimeMillis();
+            boolean allServicesDiscovered = true;
 
             // we make a copy of the original expressions list to avoid ConcurrentModificationException that occurs
             // when we iterate over the expressions while at the same time expressions are removed in onReceive()
@@ -78,48 +100,67 @@ public class BLEClientWorker {
                     BluetoothGattService service = gatt.getService(serviceUuid);
 
                     if(service != null) {
-                        Log.i(TAG, remoteEvaluationTask.getSwanDevice() + ": found service " + sensorValuePath);
-                        final BluetoothGattCharacteristic characteristic = service.getCharacteristic(serviceUuid);
+                        if(!foundServices.contains(serviceUuid)) {
+                            Log.i(TAG, remoteEvaluationTask.getSwanDevice() + ": found service " + sensorValuePath);
+                            final BluetoothGattCharacteristic characteristic = service.getCharacteristic(serviceUuid);
 
-                        if(BLEManager.PUSH_MODE) {
-                            gatt.setCharacteristicNotification(characteristic, true);
-                            gatt.requestConnectionPriority(BluetoothGatt.CONNECTION_PRIORITY_HIGH);
-                            BluetoothGattDescriptor descriptor = characteristic.getDescriptor(BLEManager.NOTIFY_DESC_UUID);
-                            descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
-                            gatt.writeDescriptor(descriptor);
-                        } else {
-                            gatt.readCharacteristic(characteristic);
+                            if (characteristic != null) {
+                                Log.d(TAG, "value for service " + sensorValuePath + " = " + characteristic.getStringValue(0));
+                                if (BLEManager.PUSH_MODE) {
+                                    gatt.setCharacteristicNotification(characteristic, true);
+                                    gatt.requestConnectionPriority(BluetoothGatt.CONNECTION_PRIORITY_HIGH);
+                                    BluetoothGattDescriptor descriptor = characteristic.getDescriptor(BLEManager.NOTIFY_DESC_UUID);
+                                    descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+                                    gatt.writeDescriptor(descriptor);
+                                } else {
+                                    Log.d(TAG, "requesting service " + sensorValuePath + "...");
+                                    foundServices.add(serviceUuid);
+                                    bleManager.addExecQueueItem(new BLEManager.ExecReadChar(characteristic, gatt));
+                                }
+                            } else {
+                                Log.i(TAG, remoteEvaluationTask.getSwanDevice() + ": characteristic for service " + sensorValuePath + " not found, retrying...");
+                                allServicesDiscovered = false;
+                            }
                         }
                     } else {
-                        Log.i(TAG, remoteEvaluationTask.getSwanDevice() + ": service " + sensorValuePath + " not found, retrying in 2000ms...");
-
-                        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                gatt.discoverServices();
-                            }
-                        }, 2000);
+                        Log.i(TAG, remoteEvaluationTask.getSwanDevice() + ": service " + sensorValuePath + " not found, retrying...");
+                        allServicesDiscovered = false;
                     }
                 } catch (Exception e) {
                     Log.e(TAG, "cannot process remote expression", e);
                 }
+            }
+
+            if(!allServicesDiscovered) {
+                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        gatt.discoverServices();
+                    }
+                }, 2000);
             }
         }
 
         @Override
         public void onCharacteristicRead(final BluetoothGatt gatt, final BluetoothGattCharacteristic characteristic, int status) {
             super.onCharacteristicRead(gatt, characteristic, status);
+            long reqDuration = System.currentTimeMillis() - bleManager.getStartTimeLastExecItem();
+            bleManager.setProcessing(false);
 
             if(status == BluetoothGatt.GATT_SUCCESS) {
+                BLELogRecord bleLogRecord = new BLELogRecord(startTime, bleManager.getStartTime(), reqDuration, connTime, discoveryTime, false);
+                bleManager.addLogRecord(bleLogRecord);
                 onCharacteristicChanged(gatt, characteristic);
             } else {
+                BLELogRecord bleLogRecord = new BLELogRecord(startTime, bleManager.getStartTime(), reqDuration, connTime, discoveryTime, true);
+                bleManager.addLogRecord(bleLogRecord);
                 Log.e(TAG, "couldn't read characteristic");
             }
 
             new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    gatt.readCharacteristic(characteristic);
+                    bleManager.addExecQueueItem(new BLEManager.ExecReadChar(characteristic, gatt));
                 }
             }, BLEManager.TIME_BETWEEN_REQUESTS);
         }
@@ -165,18 +206,6 @@ public class BLEClientWorker {
             Log.i(TAG, remoteEvaluationTask.getSwanDevice() + ": descriptor wrote succesfully");
         }
     };
-
-    public BLEClientWorker(BLEManager bleManager, BTRemoteEvaluationTask remoteEvaluationTask) {
-        this.bleManager = bleManager;
-        this.remoteEvaluationTask = remoteEvaluationTask;
-    }
-
-    public void start() {
-        final BluetoothDevice device = remoteEvaluationTask.getSwanDevice().getBtDevice();
-        Log.i(TAG, "connecting to " + device.getName() + "...");
-        bleManager.bcastLogMessage("connecting to " + device.getName() + "...");
-        device.connectGatt(bleManager.getContext(), false, bleClientCallback);
-    }
 
     /**
      * return true if client worker finished all expressions
