@@ -148,11 +148,13 @@ public class BLEClientWorker {
             bleManager.setProcessing(false);
 
             if(status == BluetoothGatt.GATT_SUCCESS) {
-                BLELogRecord bleLogRecord = new BLELogRecord(startTime, bleManager.getStartTime(), reqDuration, connTime, discoveryTime, false);
+                BLELogRecord bleLogRecord = new BLELogRecord(startTime, bleManager.getStartTime(), reqDuration,
+                        connTime, discoveryTime, remoteEvaluationTask.getExpressionIds().size(), false);
                 bleManager.addLogRecord(bleLogRecord);
                 onCharacteristicChanged(gatt, characteristic);
             } else {
-                BLELogRecord bleLogRecord = new BLELogRecord(startTime, bleManager.getStartTime(), reqDuration, connTime, discoveryTime, true);
+                BLELogRecord bleLogRecord = new BLELogRecord(startTime, bleManager.getStartTime(), reqDuration,
+                        connTime, discoveryTime, remoteEvaluationTask.getExpressionIds().size(), true);
                 bleManager.addLogRecord(bleLogRecord);
                 Log.e(TAG, "couldn't read characteristic");
             }
