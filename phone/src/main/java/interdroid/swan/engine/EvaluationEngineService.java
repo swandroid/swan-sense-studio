@@ -8,7 +8,7 @@ import java.io.IOException;
 import interdroid.swan.crossdevice.ProximityManagerI;
 import interdroid.swan.crossdevice.Pusher;
 import interdroid.swan.crossdevice.beacon.BeaconInitializer;
-import interdroid.swan.crossdevice.ble.BLEManager;
+import interdroid.swan.crossdevice.bluetooth.BTManager;
 import interdroid.swancore.crossdevice.Converter;
 import interdroid.swancore.engine.EvaluationEngineServiceBase;
 import interdroid.swancore.swansong.Result;
@@ -22,8 +22,8 @@ public class EvaluationEngineService extends EvaluationEngineServiceBase{
         super.onCreate();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mProximityManager = new BLEManager(this);
-//        mProximityManager = new BTManager(this);
+//            mProximityManager = new BLEManager(this);
+        mProximityManager = new BTManager(this);
             mProximityManager.init();
             BeaconInitializer.getInstance(getApplicationContext());
 
