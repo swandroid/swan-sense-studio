@@ -6,9 +6,11 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +29,7 @@ import interdroid.swancore.swansong.TimestampedValue;
 
 public abstract class AbstractSwanSensorBase extends AbstractSensorBase {
     public static String TAG = "Abstract Sensor";
+    public static final String ALL_VALUES = "all_values";
 
     public static final String DELAY = "delay";
 
@@ -39,7 +42,7 @@ public abstract class AbstractSwanSensorBase extends AbstractSensorBase {
     /**
      * The map of values for this sensor.
      */
-    private volatile Map<Bundle, List<TimestampedValue>> values = new HashMap<>();
+    private SensorValues mSensorValues = new SensorValues();
 
     /**
      * Sensor specific name, as it will appear on Sense.
@@ -68,13 +71,6 @@ public abstract class AbstractSwanSensorBase extends AbstractSensorBase {
 
     private long mReadings = 0;
     private long mLastReadingTimestamp = 0;
-
-    /**
-     * @return the values
-     */
-    public final Map<Bundle, List<TimestampedValue>> getValues() {
-        return values;
-    }
 
     @Override
     public void init() {
@@ -217,17 +213,36 @@ public abstract class AbstractSwanSensorBase extends AbstractSensorBase {
 //        }
 
         try {
-            getValues().get(configuration).add(new TimestampedValue(value, now));
+            Log.d(getClass().getSimpleName(), " New val for id " + id);
+            mSensorValues.addNewValue(configuration, new TimestampedValue(value, now));
         } catch (OutOfMemoryError e) {
             Log.d(TAG, "OutOfMemoryError");
             onDestroySensor();
         }
+
         checkMemoryAtRuntime();
 
         if (id != null) {
             notifyDataChangedForId(id);
         } else {
             notifyDataChanged(configuration);
+        }
+    }
+
+    /**
+     * Adds a value for the given value path to the history.
+     * We do not know what configuration it belongs to, so add to all
+     *
+     * @param valuePath the value path
+     * @param now       the current time
+     * @param value     the value
+     */
+    protected final void putValueTrimSize(final String valuePath,
+                                          final String id, final long now, final Object value /*, final int historySize*/) {
+        for (Bundle configValue: registeredConfigurations.values()) {
+            Bundle keyConfig = (Bundle) configValue.clone();
+            keyConfig.putString(VALUE_PATH, valuePath);
+            putValueTrimSize(keyConfig, id, now, value);
         }
     }
 
@@ -306,15 +321,34 @@ public abstract class AbstractSwanSensorBase extends AbstractSensorBase {
     @Override
     public final List<TimestampedValue> getValues(final String id,
                                                   final long now, final long timespan) {
-		/*
-		 * First check if we have all data in memory, otherwise fetch it from upper storage layer
+        /*
+         * First check if we have all data in memory, otherwise fetch it from upper storage layer
 		 */
         List<TimestampedValue> valuesForTimeSpan = null;
         if (mLastFlushed > (now - timespan))
             getLocalValues(now - timespan, mLastFlushed);
+
         try {
-            valuesForTimeSpan = getValuesForTimeSpan(getValues().get(registeredConfigurations.get(id)),
-                    now, timespan);
+            String registeredValuePath = registeredValuePaths.get(id);
+            if (registeredValuePath == null) {
+                Log.e(TAG, "No Value path registered");
+                return null;
+            }
+
+            Bundle registeredConfiguration = registeredConfigurations.get(id);
+
+            // return all value path data if all is set
+            if (registeredValuePath.equalsIgnoreCase(ALL_VALUES)) {
+                return constructValues(now, timespan, registeredConfiguration);
+            }
+
+            if (!mSensorValues.containsKey(registeredConfiguration)) {
+                Log.e(TAG, "No Values for this expression id="+id);
+                return null;
+            }
+
+            valuesForTimeSpan = getValuesForTimeSpan(mSensorValues.get(registeredConfiguration), now, timespan);
+
         } catch (OutOfMemoryError e) {
             Log.e(TAG, "OutOfMemoryError");
             onDestroySensor();
@@ -323,17 +357,79 @@ public abstract class AbstractSwanSensorBase extends AbstractSensorBase {
     }
 
     /**
+     * Construct list of values for expressions registered to ALL_VALUES.
+     *
+     * @param now
+     * @param timespan
+     * @param configuration
+     * @return
+     */
+    private List<TimestampedValue> constructValues(final long now, final long timespan, final Bundle configuration) {
+        List<TimestampedValue> valuesForTimeSpan = new ArrayList<>();
+        Map<Bundle, List<TimestampedValue>> allValues = new LinkedHashMap<>();
+
+        for (String valuePath : getValuePaths()) {
+            Bundle keyConfig = (Bundle) configuration.clone();
+            keyConfig.putString(VALUE_PATH, valuePath);
+            if (mSensorValues.containsKey(keyConfig)) {  //containsKey does not seem to work
+                List<TimestampedValue> values = getValuesForTimeSpan(mSensorValues.get(keyConfig),
+                        now, timespan);
+                allValues.put(keyConfig, values);
+            }
+        }
+
+        int counterKeys = allValues.size();
+        if (counterKeys > 1) {
+            Bundle[] keySet = new Bundle[counterKeys];
+            allValues.keySet().toArray(keySet);
+            int counterValues = allValues.get(keySet[0]).size();
+            for (int i = 0; i < counterValues; i++) {
+                long ts = 0;
+                Object[] parameters = new Object[counterKeys];
+                for (int j = 0; j < counterKeys; j++) {
+                    Bundle key = keySet[j];
+                    List<TimestampedValue> valuesList = allValues.get(key);
+                    if (valuesList.size() > i) {
+                        TimestampedValue tsValue = valuesList.get(i);
+                        if (tsValue != null) {
+                            parameters[j] = tsValue.getValue();
+                            ts = tsValue.getTimestamp();
+                        }
+                    }
+                }
+
+                try {
+                    Class<?> sensor = Class.forName(getModelClassName());
+                    Constructor constructor = sensor.getConstructor(getParameterTypes());
+                    Object newValue = constructor.newInstance(parameters);
+                    valuesForTimeSpan.add(new TimestampedValue(newValue, ts));
+                } catch (Exception e) {
+                    Log.e(TAG, e.getMessage());
+                }
+            }
+            System.out.println(valuesForTimeSpan.toString());
+            return valuesForTimeSpan;
+        } else {
+            if (counterKeys == 1) { // sensor has only one value_path, return corresponding list of values
+                return getValuesForTimeSpan(allValues.get(allValues.keySet().iterator().next()), now, timespan);
+            } else {
+                return null;
+            }
+        }
+    }
+
+    /**
      * Store data from memory to local storage. Called when all configurations unregistered from this sensor,
      * causing the service to destroy.
      */
     public void flushData() {
         Log.d(TAG, "Flush data to db");
-        for (final Bundle config : getValues().keySet()) {
-            if (getValues().get(config).size() == 0) {
-                Log.d(TAG, "No values to send for value path" + config);
+        for (final Bundle configuration : mSensorValues.keys()) {
+            if (mSensorValues.get(configuration).size() == 0) {
+                Log.d(TAG, "No values to send for value path" + configuration);
                 continue;
             }
-            insertDataInLocalStorage(config);
+            insertDataInLocalStorage(configuration);
         }
     }
 
@@ -439,20 +535,20 @@ public abstract class AbstractSwanSensorBase extends AbstractSensorBase {
     /**
      * Checks whether there are any readings in memory
      */
-    public boolean isMemoryEmpty() {
-        for (List<TimestampedValue> readingsList : getValues().values()) {
-            if (!readingsList.isEmpty())
-                return false;
-        }
-        return true;
-    }
+//    public boolean isMemoryEmpty() {
+//        for (List<TimestampedValue> readingsList : getValues().values()) {
+//            if (!readingsList.isEmpty())
+//                return false;
+//        }
+//        return true;
+//    }
 
     /**
      * Clears the values from the lit
      */
     private void clearData() {
-        for (List<TimestampedValue> readingsList : getValues().values())
-            readingsList.clear();
+//        for (List<TimestampedValue> readingsList : getValues().values())
+//            readingsList.clear();
     }
 
     @Override
