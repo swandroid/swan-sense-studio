@@ -72,6 +72,8 @@ public class BLEManager extends BTManager {
     protected static final UUID NOTIFY_DESC_UUID = UUID.fromString("00002902-0000-1000-8000-00805F9B34FB");
     // send sensor values in push mode or pull mode
     protected static final boolean PUSH_MODE = false;
+    protected static final boolean DISCOVERY_ALWAYS_ON = false;
+    protected static final boolean DISCOVERY_ONCE = true;
     public static final int TIME_BETWEEN_REQUESTS = 1000;
 
     private List<BLEClientWorker> clientWorkers = new ArrayList<>();
@@ -380,21 +382,25 @@ public class BLEManager extends BTManager {
     @Override
     public void discoverPeers() {
         // Stops scanning after a pre-defined scan period.
-//        handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                btAdapter.getBluetoothLeScanner().stopScan(scanCallback);
-//                log(TAG, "discovery finished", Log.INFO, true);
-//                bcastLogMessage("discovery finished");
-//
-//                handler.postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        discoverPeers();
-//                    }
-//                }, PEER_DISCOVERY_INTERVAL);
-//            }
-//        }, SCAN_PERIOD);
+        if(!DISCOVERY_ALWAYS_ON) {
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    btAdapter.getBluetoothLeScanner().stopScan(scanCallback);
+                    log(TAG, "discovery finished", Log.INFO, true);
+                    bcastLogMessage("discovery finished");
+
+                    if(!DISCOVERY_ONCE) {
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                discoverPeers();
+                            }
+                        }, SCAN_PERIOD);
+                    }
+                }
+            }, SCAN_PERIOD);
+        }
 
         btAdapter.getBluetoothLeScanner().startScan(scanCallback);
         log(TAG, "discovery started", Log.DEBUG, true);
@@ -491,6 +497,8 @@ public class BLEManager extends BTManager {
             fw.append("\n\n# failedRate = " + failedRate);
             fw.append("\n# avgReqTime = " + avgReqTime);
             fw.append("\n# avgSetupTime = " + avgSetupTime);
+            fw.append("\n# discovery always on = " + DISCOVERY_ALWAYS_ON);
+            fw.append("\n# discovery once = " + DISCOVERY_ONCE);
             fw.append("\n\n# " + BLELogRecord.printHeader());
             fw.append("\n\n" + sb.toString());
             fw.close();
