@@ -8,9 +8,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
 import interdroid.swan.R;
+import interdroid.swan.remote.ServerConnectionSocket;
 import interdroid.swancore.swanmain.ExpressionManager;
-import interdroid.swancore.swanmain.SensorInfo;
 import interdroid.swancore.swanmain.SwanException;
 import interdroid.swancore.swanmain.TriStateExpressionListener;
 import interdroid.swancore.swanmain.ValueExpressionListener;
@@ -25,9 +30,9 @@ import interdroid.swancore.swansong.ValueExpression;
 /**
  * Created by Roshan Bharath Das on 05/07/16.
  */
-public class CloudTestActivity extends Activity {
+public class CloudSendActivity extends Activity {
 
-    private static final String TAG = "CloudTestActivity";
+    private static final String TAG = "CloudSendActivity";
 
   //  final String MY_EXPRESSION = "cloud@profiler:value?case=0{ANY,0} > 1";
 
@@ -38,19 +43,27 @@ public class CloudTestActivity extends Activity {
   //  final String MY_EXPRESSION = "self@wear_movement:x{ANY,0}";
   //  final String MY_EXPRESSION = "wear@movement:x{ANY,0}";
 
-    final String MY_EXPRESSION = "cloud@profiler:value?case=1{ANY,0}";
+   // final String MY_EXPRESSION = "cloud@profiler:value?case=1{ANY,0} > 1";
 
- //   final String MY_EXPRESSION = "cloud@tree:branch{ANY,1000}";
   //  final String MY_EXPRESSION = "self@profiler:value?case=0{ANY,0} > 1";
 
-  //  final String MY_EXPRESSION = "self@light:lux{ANY,0}";
+    final String MY_EXPRESSION = "self@light:lux{ANY,0}";
+
+    final String url = "dsa-devel.labs.vu.nl";
+    //final String url = "localhost";
+    final int port = 7782;
+    final String cloudSensorName = "tree";
+    final String cloudSensorValuepath = "leaves";
+
 
     /* random id */
-    public final String REQUEST_CODE = "cloud-test-light";
+    public final String REQUEST_CODE = "cloud-send";
 
     TextView tv = null;
 
     Button button;
+
+    ServerConnectionSocket serverConnectionSocket =null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +98,10 @@ public class CloudTestActivity extends Activity {
     public void initialize(){
 
         tv = (TextView) findViewById(R.id.textView1);
+
+        serverConnectionSocket = new ServerConnectionSocket(url,port,REQUEST_CODE);
+        new Thread(serverConnectionSocket).start();
+
 
         registerSWANSensor(MY_EXPRESSION);
 
@@ -126,41 +143,71 @@ public class CloudTestActivity extends Activity {
                             /* Registering a listener to process new values from the registered sensor*/
                             @Override
                             public void onNewValues(String id,
-                                                    TimestampedValue[] arg1) {
-                                if (arg1 != null && arg1.length > 0) {
-                                    long endValue = System.currentTimeMillis();
-                                    long result = (endValue- startValue[0]);
-                                    startValue[0] = endValue;
-                                    Log.e("CloudTestActivity","Time taken to get value result(milli seconds) "+result);
+                                                    TimestampedValue[] newValues) {
+                                if (newValues != null && newValues.length > 0) {
+                                    JSONObject jsonObject = new JSONObject();
 
-                                    String value = arg1[0].getValue().toString();
-                                    tv.setText("Value = " + value+"\nTimestamp = "+arg1[0].getTimestamp());
+                                    try {
+                                        jsonObject.put("id", id);
+                                        jsonObject.put("A", "V");
+                                        jsonObject.put("data", newValues[0].getValue());
+                                        jsonObject.put("time", newValues[0].getTimestamp());
+                                        jsonObject.put("sensor", cloudSensorName);
+                                        jsonObject.put("valuepath", cloudSensorValuepath);
 
-                                } else {
-                                    tv.setText("Value = null");
+
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                    //Log.e("Roshan","Before writing data:"+jsonObject.toString());
+                                    //serverConnectionSocket.sendResult(jsonObject.toString());
+                                    //serverConnectionSocket.execute(jsonObject.toString());
+                                    try {
+                                        if(serverConnectionSocket.getObjectOutputStream()!=null){
+                                            //Log.e("Roshan","Writing data:"+jsonObject.toString());
+                                            serverConnectionSocket.getObjectOutputStream().writeObject(""+jsonObject.toString());
+                                        }
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+
                                 }
-
                             }
                         });
 
             }
             else if(checkExpression instanceof TriStateExpression){
 
-                final long[] startTriState = {System.currentTimeMillis()};
                 ExpressionManager.registerTriStateExpression(this, String.valueOf(REQUEST_CODE),
                         (TriStateExpression) ExpressionFactory.parse(myExpression), new TriStateExpressionListener() {
                             @Override
                             public void onNewState(String id, long timestamp, TriState newState) {
+                                JSONObject jsonObject = new JSONObject();
+                                //SendEmail.sendEmail();
+                                //sendFacebookMessage.sendResult(senderid, newState, ws);
+                                try {
+                                    jsonObject.put("id", id);
+                                    jsonObject.put("A", "T");
+                                    jsonObject.put("data", newState);
+                                    jsonObject.put("time", timestamp);
+                                    jsonObject.put("sensor", cloudSensorName);
+                                    jsonObject.put("valuepath", cloudSensorValuepath);
 
-                                long endTriState = System.currentTimeMillis();
-                                long resultState = (endTriState- startTriState[0]);
-                                startTriState[0] = endTriState;
 
-                                Log.e("CloudTestActivity","Time taken to get tristate result(milli seconds) "+resultState);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                //serverConnectionSocket.sendResult(jsonObject.toString());
+                                //serverConnectionSocket.execute(jsonObject.toString());
 
-                                    tv.setText("Tristate ="+newState+"\nTimestamp = "+timestamp);
-
-
+                                try {
+                                    if(serverConnectionSocket.getObjectOutputStream()!=null){
+                                        //Log.e("Roshan","Writing data:"+jsonObject.toString());
+                                        serverConnectionSocket.getObjectOutputStream().writeObject(""+jsonObject.toString());
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
 
                             }
                         });

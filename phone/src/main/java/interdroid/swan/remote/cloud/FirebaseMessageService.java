@@ -42,22 +42,22 @@ public class FirebaseMessageService extends FirebaseMessagingService{
             JSONObject jsonResult = new JSONObject(message);
 
             Result result = null;
-            if(jsonResult.has("id") && jsonResult.has("action") && jsonResult.has("data") && jsonResult.has("timestamp")) {
+            if(jsonResult.has("id") && jsonResult.has("A") && jsonResult.has("data") && jsonResult.has("time")) {
 
 
-                if(jsonResult.getString("action").contentEquals("register-value")) {
+                if(jsonResult.getString("A").contentEquals("V")) {
 
                     noOfTimes++;
 
                     TimestampedValue[]  timestampedValues = new TimestampedValue[1];
 
-                    timestampedValues[0] = new TimestampedValue(jsonResult.get("data"),(long) jsonResult.get("timestamp"));
+                    timestampedValues[0] = new TimestampedValue(jsonResult.get("data"),(long) jsonResult.get("time"));
 
-                    result = new Result(timestampedValues,(long) jsonResult.get("timestamp"));
+                    result = new Result(timestampedValues,(long) jsonResult.get("time"));
 
 
                 }
-                else if(jsonResult.getString("action").contentEquals("register-tristate")){
+                else if(jsonResult.getString("A").contentEquals("T")){
 
                     noOfTimes++;
                     TriState triState;
@@ -70,13 +70,13 @@ public class FirebaseMessageService extends FirebaseMessagingService{
                     else{
                         triState=TriState.UNDEFINED;
                     }
-                    result = new Result((long) jsonResult.get("timestamp"),triState);
+                    result = new Result((long) jsonResult.get("time"),triState);
                     result.setDeferUntilGuaranteed(false);
                 }
 
 
-                if(result!=null) {
-                    cloudManager.sendResult(jsonResult.getString("id"), jsonResult.getString("action"), Converter.objectToString(result));
+                if(result!=null && cloudManager!=null) {
+                    cloudManager.sendResult(jsonResult.getString("id"), jsonResult.getString("A"), Converter.objectToString(result));
                 }
             }
             else{
