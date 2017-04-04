@@ -63,7 +63,7 @@ public class CloudtestSensor extends AbstractSwanSensor {
     @Override
     public final void register(String id, String valuePath, Bundle configuration, final Bundle httpConfiguration, Bundle extraConfiguration) {
         super.register(id, valuePath, configuration, httpConfiguration, extraConfiguration);
-        
+
         CloudtestPoller cloudtestPoller = new CloudtestPoller(id, valuePath,
                 configuration);
         activeThreads.put(id, cloudtestPoller);

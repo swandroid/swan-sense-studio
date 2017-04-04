@@ -25,8 +25,14 @@ public class CloudCommunication {
     static String DEFAULT_URL = "http://dsa-devel.labs.vu.nl:9000";
     //static String DEFAULT_URL = "http://192.168.0.104:9000";
 
-    static String SWAN_REGISTER = "/swan/register/";
-    static String SWAN_UNREGISTER = "/swan/unregister/";
+    //static String SWAN_REGISTER = "/swan/register/";
+    //static String SWAN_UNREGISTER = "/swan/unregister/";
+
+    //added for vladimir's test
+    static String SWAN_REGISTER = "/swan/test/register/";
+    static String SWAN_UNREGISTER = "/swan/test/unregister/";
+
+
 
     Bundle httpConfiguration = new Bundle();
 

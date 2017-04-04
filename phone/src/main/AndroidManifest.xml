@@ -136,7 +136,7 @@
         <activity
             android:name=".remote.cloud.CloudTestActivity"
             android:icon="@drawable/ic_launcher_swan"
-            android:label="SWAN Cloud Test"
+            android:label="Receive Cloud"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
