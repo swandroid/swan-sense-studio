@@ -148,6 +148,11 @@
         <item>z</item>
         <item>total</item>
     </string-array>
+    <!-- distance covered sensor -->
+    <string-array name="distance_covered_valuepaths">
+        <item>meters</item>
+        <item>steps</item>
+    </string-array>
 
     <!-- gyroscope sensor -->
     <string-array name="gyroscope_valuepaths">
@@ -402,6 +407,10 @@
         <item>isMoving</item>
         <item>currentMotionTime</item>
         <item>previousMotionTime</item>
+    </string-array>
+
+    <string-array name="beacon_queue_valuepths">
+        <item>waitingTime</item>
     </string-array>
 
     <!-- alarm sensor -->

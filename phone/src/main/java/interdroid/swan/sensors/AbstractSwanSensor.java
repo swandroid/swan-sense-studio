@@ -20,8 +20,8 @@ import java.util.Map;
 import java.util.Set;
 
 import interdroid.swan.remote.ServerConnection;
-import interdroid.swancore.swansong.TimestampedValue;
 import interdroid.swancore.sensors.AbstractSensorBase;
+import interdroid.swancore.swansong.TimestampedValue;
 import nl.sense_os.platform.TrivialSensorRegistrator;
 import nl.sense_os.service.R;
 import nl.sense_os.service.commonsense.SensorRegistrator;

@@ -119,7 +119,12 @@ public class ExpressionManager {
      * Boolean indicating whether we received a register to intercept broadcasts
      * and forward them to the respective listeners
      */
-    private volatile static boolean sReceiverRegistered = false;
+    private static boolean sReceiverRegistered = false;
+
+    /**
+     * the context used to register sReceiver
+     */
+    private static Context sContext = null;
 
     /**
      * Broadcast receiver used in case values have to be forwarded to listeners
@@ -129,26 +134,28 @@ public class ExpressionManager {
         @Override
         public void onReceive(Context context, Intent intent) {
             String id = intent.getData().getFragment();
-//            Log.d(TAG, "on receive");
+            Log.d(TAG, "on receive");
 
             synchronized (sListeners) {
                 if (sListeners.containsKey(id)) {
                     if (intent.getAction().equals(ACTION_NEW_VALUES)) {
                         // do the conversion from Parcelable[] to
                         // TimestampedValue[], casting doesn't work
-                        Parcelable[] parcelables = intent.getParcelableArrayExtra(EXTRA_NEW_VALUES);
-                        if (parcelables.length == 0) {
-//                        Log.d(TAG, "Values list is empty, dont notify the app");
-                            return;
-                        }
+                        Parcelable[] parcelables = (Parcelable[]) intent
+                                .getParcelableArrayExtra(EXTRA_NEW_VALUES);
                         TimestampedValue[] timestampedValues = new TimestampedValue[parcelables.length];
-                        System.arraycopy(parcelables, 0, timestampedValues, 0, parcelables.length);
+                        System.arraycopy(parcelables, 0, timestampedValues, 0,
+                                parcelables.length);
                         sListeners.get(id).onNewValues(id, timestampedValues);
-
                     } else if (intent.getAction().equals(ACTION_NEW_TRISTATE)) {
-                        sListeners.get(id).onNewState(id,
-                                intent.getLongExtra(EXTRA_NEW_TRISTATE_TIMESTAMP, 0),
-                                TriState.valueOf(intent.getStringExtra(EXTRA_NEW_TRISTATE)));
+                        sListeners
+                                .get(id)
+                                .onNewState(
+                                        id,
+                                        intent.getLongExtra(
+                                                EXTRA_NEW_TRISTATE_TIMESTAMP, 0),
+                                        TriState.valueOf(intent
+                                                .getStringExtra(EXTRA_NEW_TRISTATE)));
                     }
 
                 } else {
@@ -326,6 +333,7 @@ public class ExpressionManager {
                         + "' is reserved for internal use.");
             }
         }
+        
         synchronized (sListeners) {
             if (sListeners.containsKey(id)) {
                 throw new SwanException("Listener already registered for id '" + id
@@ -335,8 +343,9 @@ public class ExpressionManager {
                     if (sListeners.size() == 0) {
                         sReceiverRegistered = true;
                         registerReceiver(context);
+                    /* we store the context, as we need it later in unregisterExpression */
+                        sContext = context;
                     }
-
                     sListeners.put(id, expressionListener);
                 }
             }
@@ -424,13 +433,16 @@ public class ExpressionManager {
     public static void unregisterExpression(Context context, String id) {
         synchronized (sListeners) {
             sListeners.remove(id);
-
             if (sListeners.size() == 0 && sReceiverRegistered) {
                 sReceiverRegistered = false;
-                unregisterReceiver(context);
+            /* if we unregister context instead of sContext, then we have a problem for the following scenario:
+             * expression1 is registered in context A (so the receiver is registered for context A), then expression2 is registered
+             * in context B, then expression 1 is unregistered (but the receiver remains registered for context A),
+             * then expression 2 is unregistered, so the code below tries to unregister the receiver for context B,
+             * which is erroneous, as the receiver is registered for context A */
+                unregisterReceiver(sContext);
             }
         }
-
         Intent intent = new Intent(ACTION_UNREGISTER);
         intent.putExtra("expressionId", id);
         context.sendBroadcast(intent);
@@ -449,6 +461,7 @@ public class ExpressionManager {
         intentFilter.addAction(ACTION_NEW_VALUES);
         intentFilter.addDataScheme("swan");
         intentFilter.addDataAuthority(context.getPackageName(), null);
+
         try {
             context.registerReceiver(sReceiver, intentFilter);
         } catch (Exception e) {
@@ -465,9 +478,8 @@ public class ExpressionManager {
     private synchronized static void unregisterReceiver(Context context) {
         try {
             context.unregisterReceiver(sReceiver);
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
 }

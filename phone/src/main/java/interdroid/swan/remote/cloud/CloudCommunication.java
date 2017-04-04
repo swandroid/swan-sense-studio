@@ -22,7 +22,8 @@ public class CloudCommunication {
 
     ServerConnection serverConnection;
 
-    static String DEFAULT_URL = "http://swan-cloud.herokuapp.com";
+    static String DEFAULT_URL = "http://dsa-devel.labs.vu.nl:9000";
+    //static String DEFAULT_URL = "http://192.168.0.104:9000";
 
     static String SWAN_REGISTER = "/swan/register/";
     static String SWAN_UNREGISTER = "/swan/unregister/";

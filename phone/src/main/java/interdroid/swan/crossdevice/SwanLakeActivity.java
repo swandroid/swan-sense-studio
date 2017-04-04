@@ -256,6 +256,9 @@ public class SwanLakeActivity extends ListActivity {
             case R.id.action_cuckoo_resources:
                 startActivity(new Intent(this, ResourcesActivity.class));
                 break;
+            case R.id.action_sharing_settings:
+                startActivity(new Intent(this, SharingSettingsActivity.class));
+                break;
             default:
                 break;
         }
