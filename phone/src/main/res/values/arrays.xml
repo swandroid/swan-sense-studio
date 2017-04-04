@@ -305,6 +305,11 @@
         <item>expected_mm</item>
     </string-array>
 
+    <!-- rain sensor -->
+    <string-array name="cloudtest_valuepaths">
+        <item>value</item>
+    </string-array>
+
     <!-- fitness sensor -->
     <string-array name="fitness_valuepaths">
         <item>avg_speed</item>

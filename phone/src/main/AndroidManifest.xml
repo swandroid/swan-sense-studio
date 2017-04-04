@@ -753,6 +753,31 @@
                 android:name="units"
                 android:value="mm/Hr" />
         </activity>
+
+
+        <activity
+            android:name=".sensors.impl.CloudtestSensor$ConfigurationActivity"
+            android:exported="true"
+            android:icon="@drawable/rain_icon">
+            <intent-filter>
+                <action android:name="interdroid.swan.sensor.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="cloudtest" />
+            <meta-data
+                android:name="valuePaths"
+                android:value="value" />
+            <meta-data
+                android:name="delay"
+                android:value="1000" />
+            <meta-data
+                android:name="units"
+                android:value="" />
+        </activity>
+
+
         <activity
             android:name=".sensors.impl.OVSensor$ConfigurationActivity"
             android:exported="true"
@@ -1280,6 +1305,11 @@
             android:name=".sensors.impl.RainSensor"
             android:exported="true"
             android:process=":rainsensor" />
+        <service
+            android:name=".sensors.impl.CloudtestSensor"
+            android:exported="true"
+            android:process=":cloudtestsensor" />
+
         <service
             android:name=".sensors.impl.FitnessSensor"
             android:exported="true"
