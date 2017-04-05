@@ -39,7 +39,7 @@ public class CloudSendActivity extends Activity {
     final String URL = "http://pvsge050.labs.vu.nl:9000/swan/test/send/";
     //final String URL = "http://192.168.1.8:9000/swan/test/send/";
 
-    final String DELAY = "3000";
+    final String DELAY = "1000";
 
     final String MY_EXPRESSION = "self@cloudtest:value?delay='"+DELAY+"'$" +
             "server_url="+URL+"~" +

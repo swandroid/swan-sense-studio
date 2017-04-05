@@ -47,6 +47,10 @@ public class CloudTestActivity extends Activity {
 
   //  final String MY_EXPRESSION = "self@light:lux{ANY,0}";
 
+    boolean firstReq = true;
+    long avgReqTime = 0;
+    int reqCount = 0;
+
     /* random id */
     public final String REQUEST_CODE = "cloud-test-light";
 
@@ -137,6 +141,14 @@ public class CloudTestActivity extends Activity {
                                     startValue[0] = endValue;
                                     Log.e("CloudTestActivity","Time taken to get value result(milli seconds) "+result);
 
+                                    // we skip the first req as it usually takes much longer
+                                    if(firstReq) {
+                                       firstReq = false;
+                                    } else {
+                                        avgReqTime += result;
+                                        reqCount++;
+                                    }
+
                                     String value = arg1[0].getValue().toString();
                                     tv.setText("Value = " + value+"\nTimestamp = "+arg1[0].getTimestamp());
 
@@ -147,7 +159,7 @@ public class CloudTestActivity extends Activity {
                                             public void run() {
                                                 registerSWANSensor(MY_EXPRESSION);
                                             }
-                                        }, 3000);
+                                        }, 1000);
                                     }
                                 } else {
                                     tv.setText("Value = null");
@@ -200,6 +212,7 @@ public class CloudTestActivity extends Activity {
 
         ExpressionManager.unregisterExpression(this, String.valueOf(REQUEST_CODE));
         stop = true;
+        Log.d(TAG, "avg request time = " + ((double)avgReqTime) / reqCount);
     }
 
 
