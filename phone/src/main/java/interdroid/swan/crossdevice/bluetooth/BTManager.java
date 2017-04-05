@@ -67,7 +67,7 @@ public class BTManager implements ProximityManagerI {
     /* set SYNC_RECEIVERS to false if you set this to true */
     public static final boolean USE_WIFI = false;
 
-    protected final int PEER_DISCOVERY_INTERVAL = 40000;
+    protected final int PEER_DISCOVERY_INTERVAL = 10000;
     private final int BLOCKED_WORKERS_CHECKING_INTERVAL = 10000;
     private final int MAX_CONNECTIONS = 2;
     private final boolean LOG_ONLY_CRITICAL = false;
@@ -241,11 +241,16 @@ public class BTManager implements ProximityManagerI {
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
                 log(TAG, "discovery finished", Log.INFO, true);
                 bcastLogMessage("discovery finished");
-//                scheduleQueueItem(nearbyPeersChecker, PEER_DISCOVERY_INTERVAL);
-                setDiscovering(false);
 
-                synchronized (evalThread) {
-                    evalThread.notify();
+                // sometimes we get this event at the beginning of execution without starting
+                // discovery first
+                if(isDiscovering()) {
+//                    scheduleQueueItem(nearbyPeersChecker, PEER_DISCOVERY_INTERVAL);
+                    setDiscovering(false);
+
+                    synchronized (evalThread) {
+                        evalThread.notify();
+                    }
                 }
             }
         }

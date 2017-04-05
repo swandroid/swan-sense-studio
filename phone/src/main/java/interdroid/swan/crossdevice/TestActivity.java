@@ -38,6 +38,7 @@ public class TestActivity extends Activity {
     final String SENSOR_NAME = "light";
 
     /* random id */
+    public final int REQUEST_CODE_0 = 012;
     public final int REQUEST_CODE_1 = 123;
     public final int REQUEST_CODE_2 = 234;
     public final int REQUEST_CODE_3 = 345;
@@ -98,6 +99,12 @@ public class TestActivity extends Activity {
 
     }
 
+    public void registerExpressionSelf(View view) {
+        EditText usernameEdit = (EditText) findViewById(R.id.username);
+        usernameEdit.setText("self");
+        registerExpression(view);
+    }
+
     /* button handler */
     public void registerExpression(View view) {
         EditText usernameEdit = (EditText) findViewById(R.id.username);
@@ -107,19 +114,22 @@ public class TestActivity extends Activity {
             connectTo = "NEARBY";
         }
 
+        final String expression0 = connectTo + "@cloudtest:value";
         final String expression1 = connectTo + "@light:lux";
         final String expression2 = connectTo + "@movement:x";
         final String expression3 = connectTo + "@gyroscope:x";
         final String expression4 = connectTo + "@magnetometer:x";
         final String expression5 = connectTo + "@battery:level";
         final String expression6 = connectTo + "@proximity:distance";
-        final String expression7 = connectTo + "@sound:rms?audio_format=2#sample_interval=2000$server_storage=false{ANY,0}";
+        final String expression7 = connectTo + "@pressure:pressure";
+//        final String expression7 = connectTo + "@sound:rms?audio_format=2#sample_interval=2000$server_storage=false{ANY,0}";
 //        final String beaconExpression = connectTo + "@beacon_discovery:estimotenearable{ANY,0}";
 //        String expression3 = connectTo + "@light:lux > 10.0";
 //        mExpression = connectTo + "@fitness:avg_speed$server_storage=false{ANY,0}";
 
         if (!mRegistered) {
-            registerSWANSensor(expression1, REQUEST_CODE_1);
+            registerSWANSensor(expression0, REQUEST_CODE_0);
+//            registerSWANSensor(expression1, REQUEST_CODE_1);
 //            registerSWANSensor(expression2, REQUEST_CODE_2);
 //            registerSWANSensor(expression3, REQUEST_CODE_3);
 //            registerSWANSensor(expression4, REQUEST_CODE_4);
@@ -204,7 +214,8 @@ public class TestActivity extends Activity {
 
     /* Unregister expression from SWAN */
     private void unregisterSWANSensor() {
-        ExpressionManager.unregisterExpression(this, String.valueOf(REQUEST_CODE_1));
+        ExpressionManager.unregisterExpression(this, String.valueOf(REQUEST_CODE_0));
+//        ExpressionManager.unregisterExpression(this, String.valueOf(REQUEST_CODE_1));
 //        ExpressionManager.unregisterExpression(this, String.valueOf(REQUEST_CODE_2));
 //        ExpressionManager.unregisterExpression(this, String.valueOf(REQUEST_CODE_3));
 //        ExpressionManager.unregisterExpression(this, String.valueOf(REQUEST_CODE_4));

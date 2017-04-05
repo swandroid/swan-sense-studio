@@ -3,6 +3,8 @@ package interdroid.swan.remote.cloud;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -47,6 +49,8 @@ public class CloudTestActivity extends Activity {
 
     /* random id */
     public final String REQUEST_CODE = "cloud-test-light";
+
+    boolean stop = false;
 
     TextView tv = null;
 
@@ -136,6 +140,15 @@ public class CloudTestActivity extends Activity {
                                     String value = arg1[0].getValue().toString();
                                     tv.setText("Value = " + value+"\nTimestamp = "+arg1[0].getTimestamp());
 
+                                    ExpressionManager.unregisterExpression(CloudTestActivity.this, String.valueOf(REQUEST_CODE));
+                                    if(!stop) {
+                                        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                registerSWANSensor(MY_EXPRESSION);
+                                            }
+                                        }, 3000);
+                                    }
                                 } else {
                                     tv.setText("Value = null");
                                 }
@@ -186,7 +199,7 @@ public class CloudTestActivity extends Activity {
     private void unregisterSWANSensor(){
 
         ExpressionManager.unregisterExpression(this, String.valueOf(REQUEST_CODE));
-
+        stop = true;
     }
 
 

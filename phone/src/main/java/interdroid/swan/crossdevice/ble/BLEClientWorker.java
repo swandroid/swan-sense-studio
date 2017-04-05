@@ -146,6 +146,7 @@ public class BLEClientWorker {
             super.onCharacteristicRead(gatt, characteristic, status);
             long reqDuration = System.currentTimeMillis() - bleManager.getStartTimeLastExecItem();
             bleManager.setProcessing(false);
+            Log.d(TAG, "request took " + reqDuration + "ms");
 
             if(status == BluetoothGatt.GATT_SUCCESS) {
                 BLELogRecord bleLogRecord = new BLELogRecord(startTime, bleManager.getStartTime(), reqDuration,

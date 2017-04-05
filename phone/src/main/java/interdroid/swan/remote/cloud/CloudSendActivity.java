@@ -52,8 +52,11 @@ public class CloudSendActivity extends Activity {
             "server_http_method=POST" +
             "{ANY,0}";
 
+    final String INIT_EXPRESSION = "cloud@profiler:value?case=1{ANY,0}";
+
     /* random id */
     public final String ID = "1236";
+    public final String INIT_ID = "1235";
 
     TextView tv = null;
 
@@ -94,7 +97,7 @@ public class CloudSendActivity extends Activity {
 
         tv = (TextView) findViewById(R.id.textView1);
 
-        registerSWANSensor(MY_EXPRESSION);
+        registerSWANSensor(INIT_EXPRESSION, INIT_ID);
 
     }
 
@@ -119,7 +122,7 @@ public class CloudSendActivity extends Activity {
 
 
     /* Register expression to SWAN */
-    private void registerSWANSensor(String myExpression){
+    private void registerSWANSensor(final String myExpression, String id){
 
         try {
             Expression checkExpression =  ExpressionFactory.parse(myExpression);
@@ -127,7 +130,7 @@ public class CloudSendActivity extends Activity {
             if(checkExpression instanceof ValueExpression) {
 
                 final long[] startValue = {System.currentTimeMillis()};
-                ExpressionManager.registerValueExpression(this, String.valueOf(ID),
+                ExpressionManager.registerValueExpression(this, String.valueOf(id),
                         (ValueExpression) ExpressionFactory.parse(myExpression),
                         new ValueExpressionListener() {
 
@@ -137,6 +140,12 @@ public class CloudSendActivity extends Activity {
                                                     TimestampedValue[] newValues) {
                                 if (newValues != null && newValues.length > 0) {
                                     Log.d(TAG, "new value:"+newValues[0].toString());
+
+                                    if(myExpression.equals(INIT_EXPRESSION)) {
+                                        registerSWANSensor(MY_EXPRESSION, ID);
+                                    } else {
+                                        ExpressionManager.unregisterExpression(CloudSendActivity.this, String.valueOf(ID));
+                                    }
                                 }
                             }
                         });

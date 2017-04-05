@@ -65,7 +65,7 @@ import interdroid.swancore.swansong.SensorValueExpression;
 public class BLEManager extends BTManager {
 
     private static final String TAG = "BLEManager";
-    private static final int SCAN_PERIOD = 2500;
+    private static final int SCAN_PERIOD = 20000;
     protected static final int PEER_DISCOVERY_INTERVAL = 5000;
     protected static final UUID SWAN_SERVICE_UUID = UUID.fromString("11060915-f0e9-43b8-82b3-c3609d14313f");
     protected static final UUID SWAN_CHAR_UNREGISTER_UUID = UUID.fromString("06ad4ac5-ad7e-4884-ab2c-26d91faf4d42");
