@@ -8,12 +8,17 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.firebase.iid.FirebaseInstanceId;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import interdroid.swan.R;
+import interdroid.swan.remote.Constant;
+import interdroid.swan.remote.ServerConnection;
 import interdroid.swan.remote.ServerConnectionSocket;
 import interdroid.swancore.swanmain.ExpressionManager;
 import interdroid.swancore.swanmain.SwanException;
@@ -26,6 +31,9 @@ import interdroid.swancore.swansong.TimestampedValue;
 import interdroid.swancore.swansong.TriState;
 import interdroid.swancore.swansong.TriStateExpression;
 import interdroid.swancore.swansong.ValueExpression;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * Created by Roshan Bharath Das on 05/07/16.
@@ -52,7 +60,10 @@ public class CloudSendActivity extends Activity {
             "server_http_method=POST" +
             "{ANY,0}";
 
+    final String MY_EXPRESSION1 = "self@cloudtest:value";
     final String INIT_EXPRESSION = "cloud@profiler:value?case=1{ANY,0}";
+
+    ServerConnection serverConnection = null;
 
     /* random id */
     public final String ID = "1236";
@@ -62,6 +73,20 @@ public class CloudSendActivity extends Activity {
 
     Button button;
 
+    protected Callback<Object> cb = new Callback<Object>() {
+        @Override
+        public void success(Object o, Response response) {
+
+            Log.d(TAG,"Success:"+response.toString());
+        }
+
+        @Override
+        public void failure(RetrofitError error) {
+
+            Log.d(TAG,"Failure:"+error);
+
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +121,16 @@ public class CloudSendActivity extends Activity {
     public void initialize(){
 
         tv = (TextView) findViewById(R.id.textView1);
+
+        Bundle httpConfiguration = new Bundle();
+        httpConfiguration.putString(Constant.SERVER_HTTP_METHOD,"POST");
+        httpConfiguration.putString(Constant.SERVER_HTTP_AUTHORIZATION,Constant.NULL);
+        httpConfiguration.putSerializable(Constant.SERVER_HTTP_HEADER,Constant.NULL);
+        httpConfiguration.putString(Constant.SERVER_HTTP_BODY,Constant.NULL);
+        httpConfiguration.putString(Constant.SERVER_HTTP_BODY_TYPE,"application/json");
+        httpConfiguration.putString(Constant.SERVER_URL, "http://pvsge050.labs.vu.nl:9000/swan/test/send/");
+
+        serverConnection = new ServerConnection(httpConfiguration);
 
         registerSWANSensor(INIT_EXPRESSION, INIT_ID);
 
@@ -142,8 +177,21 @@ public class CloudSendActivity extends Activity {
                                     Log.d(TAG, "new value:"+newValues[0].toString());
 
                                     if(myExpression.equals(INIT_EXPRESSION)) {
-                                        registerSWANSensor(MY_EXPRESSION, ID);
+                                        registerSWANSensor(MY_EXPRESSION1, ID);
                                     } else {
+                                        long endValue = System.currentTimeMillis();
+                                        long result = (endValue- startValue[0]);
+                                        startValue[0] = endValue;
+                                        Log.d(TAG, "swan took " + result + "ms");
+
+                                        HashMap<String, Object> serverData = new HashMap<String, Object>();
+
+                                        serverData.put("id", id);
+                                        //serverData.put("channel",valuePath);
+                                        serverData.put("field1", result + "");
+                                        serverData.put("time", System.currentTimeMillis());
+                                        serverConnection.useHttpMethod(serverData, cb);
+
                                         ExpressionManager.unregisterExpression(CloudSendActivity.this, String.valueOf(ID));
                                     }
                                 }

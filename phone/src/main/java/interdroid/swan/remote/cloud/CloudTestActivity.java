@@ -133,13 +133,12 @@ public class CloudTestActivity extends Activity {
 
                             /* Registering a listener to process new values from the registered sensor*/
                             @Override
-                            public void onNewValues(String id,
-                                                    TimestampedValue[] arg1) {
+                            public void onNewValues(String id, TimestampedValue[] arg1) {
                                 if (arg1 != null && arg1.length > 0) {
                                     long endValue = System.currentTimeMillis();
                                     long result = (endValue- startValue[0]);
                                     startValue[0] = endValue;
-                                    Log.e("CloudTestActivity","Time taken to get value result(milli seconds) "+result);
+                                    Log.e("CloudTestActivity","req time = "+result + " / swan time = " + arg1[0].getValue());
 
                                     // we skip the first req as it usually takes much longer
                                     if(firstReq) {
