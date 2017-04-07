@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import interdroid.swan.R;
 import interdroid.swancore.swanmain.ExpressionManager;
-import interdroid.swancore.swanmain.SensorInfo;
 import interdroid.swancore.swanmain.SwanException;
 import interdroid.swancore.swanmain.TriStateExpressionListener;
 import interdroid.swancore.swanmain.ValueExpressionListener;
@@ -47,9 +46,10 @@ public class CloudTestActivity extends Activity {
 
   //  final String MY_EXPRESSION = "self@light:lux{ANY,0}";
 
-    boolean firstReq = true;
     long avgReqTime = 0;
     int reqCount = 0;
+    boolean firstReq = true;
+    boolean validValue;
 
     /* random id */
     public final String REQUEST_CODE = "cloud-test-light";
@@ -67,20 +67,20 @@ public class CloudTestActivity extends Activity {
 
         addListenerOnButton();
 
-        new CountDownTimer(5*60000, 1000) {
-
-
-            @Override
-            public void onTick(long millisUntilFinished) {
-
-            }
-
-            @Override
-            public void onFinish() {
-                unregisterSWANSensor();
-            }
-
-        }.start();
+//        new CountDownTimer(5*60000, 1000) {
+//
+//
+//            @Override
+//            public void onTick(long millisUntilFinished) {
+//
+//            }
+//
+//            @Override
+//            public void onFinish() {
+//                unregisterSWANSensor();
+//            }
+//
+//        }.start();
 
         initialize();
 
@@ -125,8 +125,9 @@ public class CloudTestActivity extends Activity {
             Expression checkExpression =  ExpressionFactory.parse(myExpression);
 
             if(checkExpression instanceof ValueExpression) {
-
+                validValue = false;
                 final long[] startValue = {System.currentTimeMillis()};
+
                 ExpressionManager.registerValueExpression(this, String.valueOf(REQUEST_CODE),
                         (ValueExpression) ExpressionFactory.parse(myExpression),
                         new ValueExpressionListener() {
@@ -135,30 +136,36 @@ public class CloudTestActivity extends Activity {
                             @Override
                             public void onNewValues(String id, TimestampedValue[] arg1) {
                                 if (arg1 != null && arg1.length > 0) {
-                                    long endValue = System.currentTimeMillis();
-                                    long result = (endValue- startValue[0]);
-                                    startValue[0] = endValue;
-                                    Log.e("CloudTestActivity","req time = "+result + " / swan time = " + arg1[0].getValue());
+                                    long result = System.currentTimeMillis()- startValue[0];
 
                                     // we skip the first req as it usually takes much longer
                                     if(firstReq) {
-                                       firstReq = false;
-                                    } else {
-                                        avgReqTime += result;
-                                        reqCount++;
+                                        validValue = true;
                                     }
 
-                                    String value = arg1[0].getValue().toString();
-                                    tv.setText("Value = " + value+"\nTimestamp = "+arg1[0].getTimestamp());
+                                    if(validValue) {
+                                        String value = arg1[0].getValue().toString();
+                                        tv.setText("Value = " + value+"\nTimestamp = "+arg1[0].getTimestamp());
+                                        Log.e("CloudTestActivity","req time = "+result + " / swan time = " + arg1[0].getValue());
 
-                                    ExpressionManager.unregisterExpression(CloudTestActivity.this, String.valueOf(REQUEST_CODE));
-                                    if(!stop) {
-                                        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                registerSWANSensor(MY_EXPRESSION);
-                                            }
-                                        }, 1000);
+                                        if(!firstReq) {
+                                            avgReqTime += result;
+                                            reqCount++;
+                                        } else {
+                                            firstReq = false;
+                                        }
+
+                                        ExpressionManager.unregisterExpression(CloudTestActivity.this, String.valueOf(REQUEST_CODE));
+                                        if (!stop) {
+                                            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    registerSWANSensor(MY_EXPRESSION);
+                                                }
+                                            }, 1000);
+                                        }
+                                    } else {
+                                        validValue = true;
                                     }
                                 } else {
                                     tv.setText("Value = null");

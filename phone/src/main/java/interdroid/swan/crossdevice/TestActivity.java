@@ -128,10 +128,10 @@ public class TestActivity extends Activity {
 //        mExpression = connectTo + "@fitness:avg_speed$server_storage=false{ANY,0}";
 
         if (!mRegistered) {
-            registerSWANSensor(expression0, REQUEST_CODE_0);
-//            registerSWANSensor(expression1, REQUEST_CODE_1);
-//            registerSWANSensor(expression2, REQUEST_CODE_2);
-//            registerSWANSensor(expression3, REQUEST_CODE_3);
+//            registerSWANSensor(expression0, REQUEST_CODE_0);
+            registerSWANSensor(expression1, REQUEST_CODE_1);
+            registerSWANSensor(expression2, REQUEST_CODE_2);
+            registerSWANSensor(expression3, REQUEST_CODE_3);
 //            registerSWANSensor(expression4, REQUEST_CODE_4);
 //            registerSWANSensor(expression5, REQUEST_CODE_5);
 //            registerSWANSensor(expression6, REQUEST_CODE_6);
@@ -214,10 +214,10 @@ public class TestActivity extends Activity {
 
     /* Unregister expression from SWAN */
     private void unregisterSWANSensor() {
-        ExpressionManager.unregisterExpression(this, String.valueOf(REQUEST_CODE_0));
-//        ExpressionManager.unregisterExpression(this, String.valueOf(REQUEST_CODE_1));
-//        ExpressionManager.unregisterExpression(this, String.valueOf(REQUEST_CODE_2));
-//        ExpressionManager.unregisterExpression(this, String.valueOf(REQUEST_CODE_3));
+//        ExpressionManager.unregisterExpression(this, String.valueOf(REQUEST_CODE_0));
+        ExpressionManager.unregisterExpression(this, String.valueOf(REQUEST_CODE_1));
+        ExpressionManager.unregisterExpression(this, String.valueOf(REQUEST_CODE_2));
+        ExpressionManager.unregisterExpression(this, String.valueOf(REQUEST_CODE_3));
 //        ExpressionManager.unregisterExpression(this, String.valueOf(REQUEST_CODE_4));
 //        ExpressionManager.unregisterExpression(this, String.valueOf(REQUEST_CODE_5));
 //        ExpressionManager.unregisterExpression(this, String.valueOf(REQUEST_CODE_6));

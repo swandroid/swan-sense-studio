@@ -111,7 +111,8 @@ public class BLEClientWorker {
                                     gatt.requestConnectionPriority(BluetoothGatt.CONNECTION_PRIORITY_HIGH);
                                     BluetoothGattDescriptor descriptor = characteristic.getDescriptor(BLEManager.NOTIFY_DESC_UUID);
                                     descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
-                                    gatt.writeDescriptor(descriptor);
+//                                    gatt.writeDescriptor(descriptor);
+                                    bleManager.addExecQueueItem(new BLEManager.ExecWriteDesc(descriptor, gatt));
                                 } else {
                                     Log.d(TAG, "requesting service " + sensorValuePath + "...");
                                     foundServices.add(serviceUuid);
@@ -207,6 +208,7 @@ public class BLEClientWorker {
         public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
             super.onDescriptorWrite(gatt, descriptor, status);
             Log.i(TAG, remoteEvaluationTask.getSwanDevice() + ": descriptor wrote succesfully");
+            bleManager.setProcessing(false);
         }
     };
 

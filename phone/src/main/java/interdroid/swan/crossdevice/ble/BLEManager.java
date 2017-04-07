@@ -71,7 +71,7 @@ public class BLEManager extends BTManager {
     protected static final UUID SWAN_CHAR_UNREGISTER_UUID = UUID.fromString("06ad4ac5-ad7e-4884-ab2c-26d91faf4d42");
     protected static final UUID NOTIFY_DESC_UUID = UUID.fromString("00002902-0000-1000-8000-00805F9B34FB");
     // send sensor values in push mode or pull mode
-    protected static final boolean PUSH_MODE = false;
+    protected static final boolean PUSH_MODE = true;
     protected static final boolean DISCOVERY_ALWAYS_ON = false;
     protected static final boolean DISCOVERY_ONCE = true;
     public static final int TIME_BETWEEN_REQUESTS = 1000;
@@ -85,6 +85,21 @@ public class BLEManager extends BTManager {
     private ConcurrentLinkedQueue<Runnable> execQueue = new ConcurrentLinkedQueue<>();
     private long startTimeLastExecItem;
     private boolean processing = false;
+
+    public static class ExecWriteDesc implements Runnable {
+        private BluetoothGattDescriptor descriptor;
+        private BluetoothGatt gatt;
+
+        public ExecWriteDesc(BluetoothGattDescriptor descriptor, BluetoothGatt gatt) {
+            this.descriptor = descriptor;
+            this.gatt = gatt;
+        }
+
+        @Override
+        public void run() {
+            gatt.writeDescriptor(descriptor);
+        }
+    }
 
     public static class ExecReadChar implements Runnable {
         private BluetoothGattCharacteristic characteristic;
@@ -412,14 +427,14 @@ public class BLEManager extends BTManager {
         log(TAG, "processing " + item, Log.DEBUG, true);
 
         if(item instanceof BTRemoteEvaluationTask) {
-//            BTRemoteEvaluationTask remoteEvalTask = (BTRemoteEvaluationTask) item;
-//            updateEvaluationTask(remoteEvalTask);
-//
-//            if(remoteEvalTask.hasExpressions()) {
-//                BLEClientWorker clientWorker = new BLEClientWorker(this, remoteEvalTask);
-//                clientWorker.start();
-//                addClientWorker(clientWorker);
-//            }
+            BTRemoteEvaluationTask remoteEvalTask = (BTRemoteEvaluationTask) item;
+            updateEvaluationTask(remoteEvalTask);
+
+            if(remoteEvalTask.hasExpressions()) {
+                BLEClientWorker clientWorker = new BLEClientWorker(this, remoteEvalTask);
+                clientWorker.start();
+                addClientWorker(clientWorker);
+            }
         } else if(item instanceof Runnable) {
             // peer discovery or restart bluetooth
             ((Runnable) item).run();
