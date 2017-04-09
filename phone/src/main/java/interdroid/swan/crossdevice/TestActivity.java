@@ -14,6 +14,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 import interdroid.swancore.swanmain.ExpressionManager;
 import interdroid.swan.R;
 import interdroid.swancore.swanmain.SensorInfo;
@@ -46,12 +48,14 @@ public class TestActivity extends Activity {
     public final int REQUEST_CODE_5 = 567;
     public final int REQUEST_CODE_6 = 678;
     public final int REQUEST_CODE_7 = 789;
+    public final int REQUEST_CODE_8 = 890;
     public final int REQUEST_CODE_BEACON = 888;
 
     TextView tv = null;
     String mExpression;
     private boolean mRegistered = false;
     private Handler handler;
+    ArrayList<String> registeredExpr = new ArrayList<>();
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
@@ -122,7 +126,7 @@ public class TestActivity extends Activity {
         final String expression5 = connectTo + "@battery:level";
         final String expression6 = connectTo + "@proximity:distance";
         final String expression7 = connectTo + "@pressure:pressure";
-//        final String expression7 = connectTo + "@sound:rms?audio_format=2#sample_interval=2000$server_storage=false{ANY,0}";
+        final String expression8 = connectTo + "@sound:rms?audio_format=2#sample_interval=2000$server_storage=false{ANY,0}";
 //        final String beaconExpression = connectTo + "@beacon_discovery:estimotenearable{ANY,0}";
 //        String expression3 = connectTo + "@light:lux > 10.0";
 //        mExpression = connectTo + "@fitness:avg_speed$server_storage=false{ANY,0}";
@@ -130,12 +134,13 @@ public class TestActivity extends Activity {
         if (!mRegistered) {
 //            registerSWANSensor(expression0, REQUEST_CODE_0);
             registerSWANSensor(expression1, REQUEST_CODE_1);
-            registerSWANSensor(expression2, REQUEST_CODE_2);
-            registerSWANSensor(expression3, REQUEST_CODE_3);
+//            registerSWANSensor(expression2, REQUEST_CODE_2);
+//            registerSWANSensor(expression3, REQUEST_CODE_3);
 //            registerSWANSensor(expression4, REQUEST_CODE_4);
 //            registerSWANSensor(expression5, REQUEST_CODE_5);
 //            registerSWANSensor(expression6, REQUEST_CODE_6);
 //            registerSWANSensor(expression7, REQUEST_CODE_7);
+//            registerSWANSensor(expression8, REQUEST_CODE_8);
 //            registerSWANSensor(beaconExpression, REQUEST_CODE_BEACON);
 //            handler.postDelayed(new Runnable() {
 //                @Override
@@ -176,6 +181,8 @@ public class TestActivity extends Activity {
     /* Register expression to SWAN */
     private void registerSWANSensor(String myExpression, int requestCode) {
         try {
+            registeredExpr.add(String.valueOf(requestCode));
+
             ExpressionManager.registerValueExpression(this, String.valueOf(requestCode),
                     (ValueExpression) ExpressionFactory.parse(myExpression),
                     new ValueExpressionListener() {
@@ -214,15 +221,10 @@ public class TestActivity extends Activity {
 
     /* Unregister expression from SWAN */
     private void unregisterSWANSensor() {
-//        ExpressionManager.unregisterExpression(this, String.valueOf(REQUEST_CODE_0));
-        ExpressionManager.unregisterExpression(this, String.valueOf(REQUEST_CODE_1));
-        ExpressionManager.unregisterExpression(this, String.valueOf(REQUEST_CODE_2));
-        ExpressionManager.unregisterExpression(this, String.valueOf(REQUEST_CODE_3));
-//        ExpressionManager.unregisterExpression(this, String.valueOf(REQUEST_CODE_4));
-//        ExpressionManager.unregisterExpression(this, String.valueOf(REQUEST_CODE_5));
-//        ExpressionManager.unregisterExpression(this, String.valueOf(REQUEST_CODE_6));
-//        ExpressionManager.unregisterExpression(this, String.valueOf(REQUEST_CODE_7));
-//        ExpressionManager.unregisterExpression(this, String.valueOf(REQUEST_CODE_BEACON));
+        for(String regExprId : registeredExpr) {
+            ExpressionManager.unregisterExpression(this, regExprId);
+        }
+
         mRegistered = false;
     }
 

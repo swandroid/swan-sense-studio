@@ -69,7 +69,7 @@ public class BTManager implements ProximityManagerI {
 
     protected final int PEER_DISCOVERY_INTERVAL = 100;
     private final int BLOCKED_WORKERS_CHECKING_INTERVAL = 10000;
-    private final int MAX_CONNECTIONS = 2;
+    private final int MAX_CONNECTIONS = 3;
     private final boolean LOG_ONLY_CRITICAL = false;
 
     protected BluetoothAdapter btAdapter;
@@ -438,14 +438,14 @@ public class BTManager implements ProximityManagerI {
         log(TAG, "processing " + item, Log.DEBUG, true);
 
         if(item instanceof BTRemoteEvaluationTask) {
-//            BTRemoteEvaluationTask remoteEvalTask = (BTRemoteEvaluationTask) item;
-//            updateEvaluationTask(remoteEvalTask);
-//
-//            if(remoteEvalTask.hasExpressions()) {
-//                BTClientWorker clientWorker = new BTClientWorker(this, remoteEvalTask);
-//                addClientWorker(clientWorker);
-//                clientWorker.start();
-//            }
+            BTRemoteEvaluationTask remoteEvalTask = (BTRemoteEvaluationTask) item;
+            updateEvaluationTask(remoteEvalTask);
+
+            if(remoteEvalTask.hasExpressions()) {
+                BTClientWorker clientWorker = new BTClientWorker(this, remoteEvalTask);
+                addClientWorker(clientWorker);
+                clientWorker.start();
+            }
         } else if(item instanceof Runnable) {
             // peer discovery or restart bluetooth
             ((Runnable) item).run();

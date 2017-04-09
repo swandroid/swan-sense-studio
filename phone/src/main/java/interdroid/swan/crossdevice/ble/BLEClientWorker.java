@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
+import android.bluetooth.BluetoothGattServer;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
 import android.os.Handler;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import interdroid.swan.crossdevice.bluetooth.BTRemoteEvaluationTask;
 import interdroid.swan.crossdevice.bluetooth.BTRemoteExpression;
@@ -52,7 +54,93 @@ public class BLEClientWorker {
         Log.i(TAG, "connecting to " + device.getName() + "...");
         bleManager.bcastLogMessage("connecting to " + device.getName() + "...");
         startTime = System.currentTimeMillis();
+        execThread.start();
         device.connectGatt(bleManager.getContext(), false, bleClientCallback);
+    }
+
+    private ConcurrentLinkedQueue<Runnable> execQueue = new ConcurrentLinkedQueue<>();
+    private long startTimeLastExecItem;
+    private boolean processing = false;
+
+    public static class ExecWriteDesc implements Runnable {
+        private BluetoothGattDescriptor descriptor;
+        private BluetoothGatt gatt;
+
+        public ExecWriteDesc(BluetoothGattDescriptor descriptor, BluetoothGatt gatt) {
+            this.descriptor = descriptor;
+            this.gatt = gatt;
+        }
+
+        @Override
+        public void run() {
+            gatt.writeDescriptor(descriptor);
+        }
+    }
+
+    public static class ExecReadChar implements Runnable {
+        private BluetoothGattCharacteristic characteristic;
+        private BluetoothGatt gatt;
+
+        public ExecReadChar(BluetoothGattCharacteristic characteristic, BluetoothGatt gatt) {
+            this.characteristic = characteristic;
+            this.gatt = gatt;
+        }
+
+        @Override
+        public void run() {
+            gatt.readCharacteristic(characteristic);
+        }
+    }
+
+    public static class ExecAddService implements Runnable {
+        BluetoothGattServer bleServer;
+        BluetoothGattService service;
+
+        public ExecAddService(BluetoothGattServer bleServer, BluetoothGattService service) {
+            this.bleServer = bleServer;
+            this.service = service;
+        }
+
+        @Override
+        public void run() {
+            bleServer.addService(service);
+        }
+    }
+
+    protected final Thread execThread = new Thread() {
+        @Override
+        public void run() {
+            try {
+                while (true) {
+                    while (execQueue.isEmpty() || processing) {
+                        synchronized (this) {
+                            wait();
+                        }
+                    }
+
+                    Runnable item = execQueue.remove();
+                    startTimeLastExecItem = System.currentTimeMillis();
+                    item.run();
+                    setProcessing(true);
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "error in exec thread", e);
+            }
+        }
+    };
+
+    public void setProcessing(boolean processing) {
+        this.processing = processing;
+        synchronized (execThread) {
+            execThread.notify();
+        }
+    }
+
+    protected void addExecQueueItem(Runnable item) {
+        execQueue.add(item);
+        synchronized (execThread) {
+            execThread.notify();
+        }
     }
 
     private BluetoothGattCallback bleClientCallback = new BluetoothGattCallback() {
@@ -111,12 +199,13 @@ public class BLEClientWorker {
                                     gatt.requestConnectionPriority(BluetoothGatt.CONNECTION_PRIORITY_HIGH);
                                     BluetoothGattDescriptor descriptor = characteristic.getDescriptor(BLEManager.NOTIFY_DESC_UUID);
                                     descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
-//                                    gatt.writeDescriptor(descriptor);
-                                    bleManager.addExecQueueItem(new BLEManager.ExecWriteDesc(descriptor, gatt));
+//                                    bleManager.addExecQueueItem(new BLEManager.ExecWriteDesc(descriptor, gatt));
+                                    addExecQueueItem(new ExecWriteDesc(descriptor, gatt));
                                 } else {
                                     Log.d(TAG, "requesting service " + sensorValuePath + "...");
                                     foundServices.add(serviceUuid);
-                                    bleManager.addExecQueueItem(new BLEManager.ExecReadChar(characteristic, gatt));
+//                                    bleManager.addExecQueueItem(new BLEManager.ExecReadChar(characteristic, gatt));
+                                    addExecQueueItem(new ExecReadChar(characteristic, gatt));
                                 }
                             } else {
                                 Log.i(TAG, remoteEvaluationTask.getSwanDevice() + ": characteristic for service " + sensorValuePath + " not found, retrying...");
@@ -145,8 +234,10 @@ public class BLEClientWorker {
         @Override
         public void onCharacteristicRead(final BluetoothGatt gatt, final BluetoothGattCharacteristic characteristic, int status) {
             super.onCharacteristicRead(gatt, characteristic, status);
-            long reqDuration = System.currentTimeMillis() - bleManager.getStartTimeLastExecItem();
-            bleManager.setProcessing(false);
+//            long reqDuration = System.currentTimeMillis() - bleManager.getStartTimeLastExecItem();
+            long reqDuration = System.currentTimeMillis() - startTimeLastExecItem;
+//            bleManager.setProcessing(false);
+            setProcessing(false);
             Log.d(TAG, "request took " + reqDuration + "ms");
 
             if(status == BluetoothGatt.GATT_SUCCESS) {
@@ -164,7 +255,8 @@ public class BLEClientWorker {
             new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    bleManager.addExecQueueItem(new BLEManager.ExecReadChar(characteristic, gatt));
+//                    bleManager.addExecQueueItem(new BLEManager.ExecReadChar(characteristic, gatt));
+                    addExecQueueItem(new ExecReadChar(characteristic, gatt));
                 }
             }, BLEManager.TIME_BETWEEN_REQUESTS);
         }
@@ -208,7 +300,8 @@ public class BLEClientWorker {
         public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
             super.onDescriptorWrite(gatt, descriptor, status);
             Log.i(TAG, remoteEvaluationTask.getSwanDevice() + ": descriptor wrote succesfully");
-            bleManager.setProcessing(false);
+//            bleManager.setProcessing(false);
+            setProcessing(false);
         }
     };
 

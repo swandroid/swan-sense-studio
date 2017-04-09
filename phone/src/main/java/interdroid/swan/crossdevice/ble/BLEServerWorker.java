@@ -74,13 +74,13 @@ public class BLEServerWorker {
                                     Log.w(TAG, getDeviceName() + ": couldn't send notification for new value");
                                 }
 
-                                stop();
-                                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        start();
-                                    }
-                                }, BLEManager.TIME_BETWEEN_REQUESTS);
+//                                stop();
+//                                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+//                                    @Override
+//                                    public void run() {
+//                                        start();
+//                                    }
+//                                }, BLEManager.TIME_BETWEEN_REQUESTS);
                             } else {
                                 bleManager.getBleServer().sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, offset, value.getBytes());
                                 stop();
