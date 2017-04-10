@@ -3,6 +3,7 @@ package interdroid.swan.crossdevice.ble;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -55,8 +56,15 @@ public class BLEServerWorker {
             final String sensorValuePath = bleManager.getSensorForUuid(characteristic.getUuid());
             String sensorEntity = sensorValuePath.split(":")[0];
             String valuePath = sensorValuePath.split(":")[1];
+
+            Bundle bundle = new Bundle();
+            if(sensorEntity.equals("sound")) {
+                bundle.putString("audio_format", "2");
+                bundle.putString("sample_interval", "100");
+            }
+
             SensorValueExpression expression = new SensorValueExpression(Expression.LOCATION_SELF,
-                    sensorEntity, valuePath, null, HistoryReductionMode.DEFAULT_MODE.ANY, 1000, null);
+                    sensorEntity, valuePath, bundle, HistoryReductionMode.DEFAULT_MODE.ANY, 1000, null);
             expressionId = nextExpressionId() + "";
             Log.d(TAG, getDeviceName() + ": started server worker for service " + sensorValuePath);
 
