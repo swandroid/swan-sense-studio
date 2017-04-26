@@ -5,6 +5,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -108,6 +111,29 @@ public class TestActivity extends Activity {
         EditText usernameEdit = (EditText) findViewById(R.id.username);
         usernameEdit.setText("self");
         registerExpression(view);
+//        testLocation();
+    }
+
+    private void testLocation() {
+        // Acquire a reference to the system Location Manager
+        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+
+        // Define a listener that responds to location updates
+        LocationListener locationListener = new LocationListener() {
+            public void onLocationChanged(Location location) {
+                // Called when a new location is found by the network location provider.
+                Log.d(TAG, "got new location: " + location.getLatitude() + ", " + location.getLongitude());
+            }
+
+            public void onStatusChanged(String provider, int status, Bundle extras) {}
+
+            public void onProviderEnabled(String provider) {}
+
+            public void onProviderDisabled(String provider) {}
+        };
+
+        // Register the listener with the Location Manager to receive location updates
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
     }
 
     /* button handler */
@@ -141,9 +167,9 @@ public class TestActivity extends Activity {
 //            registerSWANSensor(expression4, REQUEST_CODE_4);
 //            registerSWANSensor(expression5, REQUEST_CODE_5);
 //            registerSWANSensor(expression6, REQUEST_CODE_6);
-            registerSWANSensor(expression7, REQUEST_CODE_7);
+//            registerSWANSensor(expression7, REQUEST_CODE_7);
 //            registerSWANSensor(expression8, REQUEST_CODE_8);
-//            registerSWANSensor(expression9, REQUEST_CODE_9);
+            registerSWANSensor(expression9, REQUEST_CODE_9);
 //            registerSWANSensor(beaconExpression, REQUEST_CODE_BEACON);
 //            handler.postDelayed(new Runnable() {
 //                @Override

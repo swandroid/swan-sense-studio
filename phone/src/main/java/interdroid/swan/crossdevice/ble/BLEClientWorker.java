@@ -161,8 +161,9 @@ public class BLEClientWorker {
                 bleManager.bcastLogMessage("disconnected from " + remoteEvaluationTask.getSwanDevice());
                 gatt.close();
 
-                if(connectionState == BluetoothProfile.STATE_DISCONNECTED) {
-                    start(); // retry to connect
+                if(connectionState != BluetoothProfile.STATE_DISCONNECTING) {
+                    // if not disconnected on demand, then retry to connect
+                    start();
                 } else {
                     bleManager.clientWorkerDone(BLEClientWorker.this);
                 }
@@ -334,6 +335,7 @@ public class BLEClientWorker {
 
             if(remoteEvaluationTask.getExpressions().isEmpty()) {
                 if(gatt != null) {
+                    connectionState = BluetoothProfile.STATE_DISCONNECTING;
                     gatt.close();
                 }
                 return true;
