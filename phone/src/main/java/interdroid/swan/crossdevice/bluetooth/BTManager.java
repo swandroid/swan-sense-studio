@@ -67,7 +67,7 @@ public class BTManager implements ProximityManagerI {
 
     protected final int PEER_DISCOVERY_INTERVAL = 100;
     private final int BLOCKED_WORKERS_CHECKING_INTERVAL = 10000;
-    private final int MAX_CONNECTIONS = 3;
+    private final int MAX_CONNECTIONS = 6;
     private final boolean LOG_ONLY_CRITICAL = false;
 
     protected BluetoothAdapter btAdapter;
