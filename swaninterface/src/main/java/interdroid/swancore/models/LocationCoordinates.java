@@ -3,7 +3,9 @@ package interdroid.swancore.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class LocationCoordinates implements Parcelable {
+import java.io.Serializable;
+
+public class LocationCoordinates implements Parcelable, Serializable {
     public double latitude = 0.0;
     public double longitude = 0.0;
     public double altitude = 0.0f;

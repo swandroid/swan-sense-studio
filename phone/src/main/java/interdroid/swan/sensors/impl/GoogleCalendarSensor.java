@@ -88,8 +88,8 @@ public class GoogleCalendarSensor extends AbstractSwanSensor {
         cursor = cr.query(uri, EVENT_PROJECTION, selection, selectionArgs, null);
 
         // Use the cursor to step through the returned records
+        List<GoogleEvent> events = new ArrayList<>();
         if (cursor != null) {
-            List<GoogleEvent> events = new ArrayList<>();
             while (cursor.moveToNext()) {
 //                System.out.println(cursor.getString(0));
 //                System.out.println(cursor.getString(1));
@@ -102,9 +102,11 @@ public class GoogleCalendarSensor extends AbstractSwanSensor {
                 events.add(event);
 
             }
-            long now = System.currentTimeMillis();
-            putValueTrimSize(EVENTS, null, now, events);
+
             cursor.close();
         }
+
+        long now = System.currentTimeMillis();
+        putValueTrimSize(EVENTS, null, now, events);
     }
 }

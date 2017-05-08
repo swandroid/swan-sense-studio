@@ -23,7 +23,7 @@ public class EvaluationEngineService extends EvaluationEngineServiceBase{
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 //            mProximityManager = new BLEManager(this);
-        mProximityManager = new BTManager(this);
+            mProximityManager = new BTManager(this);
             mProximityManager.init();
             BeaconInitializer.getInstance(getApplicationContext());
 
