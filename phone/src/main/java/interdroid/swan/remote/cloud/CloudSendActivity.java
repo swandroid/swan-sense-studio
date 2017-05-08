@@ -8,12 +8,17 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.firebase.iid.FirebaseInstanceId;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import interdroid.swan.R;
+import interdroid.swan.remote.Constant;
+import interdroid.swan.remote.ServerConnection;
 import interdroid.swan.remote.ServerConnectionSocket;
 import interdroid.swancore.swanmain.ExpressionManager;
 import interdroid.swancore.swanmain.SwanException;
@@ -26,6 +31,9 @@ import interdroid.swancore.swansong.TimestampedValue;
 import interdroid.swancore.swansong.TriState;
 import interdroid.swancore.swansong.TriStateExpression;
 import interdroid.swancore.swansong.ValueExpression;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * Created by Roshan Bharath Das on 05/07/16.
@@ -34,36 +42,51 @@ public class CloudSendActivity extends Activity {
 
     private static final String TAG = "CloudSendActivity";
 
-  //  final String MY_EXPRESSION = "cloud@profiler:value?case=0{ANY,0} > 1";
-
-   // final String MY_EXPRESSION = "wear@heartrate:heart_rate{ANY,1000}";
-  //  final String MY_EXPRESSION = "self@wear_heartrate:heart_rate{ANY,0}";
 
 
-  //  final String MY_EXPRESSION = "self@wear_movement:x{ANY,0}";
-  //  final String MY_EXPRESSION = "wear@movement:x{ANY,0}";
+    final String URL = "http://pvsge050.labs.vu.nl:9000/swan/test/send/";
+    //final String URL = "http://192.168.1.8:9000/swan/test/send/";
 
-   // final String MY_EXPRESSION = "cloud@profiler:value?case=1{ANY,0} > 1";
+    final String DELAY = "1000";
 
-  //  final String MY_EXPRESSION = "self@profiler:value?case=0{ANY,0} > 1";
+    final String MY_EXPRESSION = "self@cloudtest:value?delay='"+DELAY+"'$" +
+            "server_url="+URL+"~" +
+            "server_use_location=false~" +
+            "server_http_authorization=NoAuth~" +
+            "server_storage=TRUE~" +
+            "server_http_body_type=application/json~" +
+            "server_http_header=null~" +
+            "server_http_body=null~" +
+            "server_http_method=POST" +
+            "{ANY,0}";
 
-    final String MY_EXPRESSION = "self@light:lux{ANY,0}";
+    final String MY_EXPRESSION1 = "self@cloudtest:value";
+    final String INIT_EXPRESSION = "cloud@profiler:value?case=1{ANY,0}";
 
-    final String url = "dsa-devel.labs.vu.nl";
-    //final String url = "localhost";
-    final int port = 7782;
-    final String cloudSensorName = "tree";
-    final String cloudSensorValuepath = "leaves";
-
+    ServerConnection serverConnection = null;
 
     /* random id */
-    public final String REQUEST_CODE = "cloud-send";
+    public final String ID = "1236";
+    public final String INIT_ID = "1235";
 
     TextView tv = null;
 
     Button button;
 
-    ServerConnectionSocket serverConnectionSocket =null;
+    protected Callback<Object> cb = new Callback<Object>() {
+        @Override
+        public void success(Object o, Response response) {
+
+            Log.d(TAG,"Success:"+response.toString());
+        }
+
+        @Override
+        public void failure(RetrofitError error) {
+
+            Log.d(TAG,"Failure:"+error);
+
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,11 +122,17 @@ public class CloudSendActivity extends Activity {
 
         tv = (TextView) findViewById(R.id.textView1);
 
-        serverConnectionSocket = new ServerConnectionSocket(url,port,REQUEST_CODE);
-        new Thread(serverConnectionSocket).start();
+        Bundle httpConfiguration = new Bundle();
+        httpConfiguration.putString(Constant.SERVER_HTTP_METHOD,"POST");
+        httpConfiguration.putString(Constant.SERVER_HTTP_AUTHORIZATION,Constant.NULL);
+        httpConfiguration.putSerializable(Constant.SERVER_HTTP_HEADER,Constant.NULL);
+        httpConfiguration.putString(Constant.SERVER_HTTP_BODY,Constant.NULL);
+        httpConfiguration.putString(Constant.SERVER_HTTP_BODY_TYPE,"application/json");
+        httpConfiguration.putString(Constant.SERVER_URL, "http://pvsge050.labs.vu.nl:9000/swan/test/send/");
 
+        serverConnection = new ServerConnection(httpConfiguration);
 
-        registerSWANSensor(MY_EXPRESSION);
+        registerSWANSensor(INIT_EXPRESSION, INIT_ID);
 
     }
 
@@ -128,7 +157,7 @@ public class CloudSendActivity extends Activity {
 
 
     /* Register expression to SWAN */
-    private void registerSWANSensor(String myExpression){
+    private void registerSWANSensor(final String myExpression, String id){
 
         try {
             Expression checkExpression =  ExpressionFactory.parse(myExpression);
@@ -136,7 +165,7 @@ public class CloudSendActivity extends Activity {
             if(checkExpression instanceof ValueExpression) {
 
                 final long[] startValue = {System.currentTimeMillis()};
-                ExpressionManager.registerValueExpression(this, String.valueOf(REQUEST_CODE),
+                ExpressionManager.registerValueExpression(this, String.valueOf(id),
                         (ValueExpression) ExpressionFactory.parse(myExpression),
                         new ValueExpressionListener() {
 
@@ -145,77 +174,31 @@ public class CloudSendActivity extends Activity {
                             public void onNewValues(String id,
                                                     TimestampedValue[] newValues) {
                                 if (newValues != null && newValues.length > 0) {
-                                    JSONObject jsonObject = new JSONObject();
+                                    Log.d(TAG, "new value:"+newValues[0].toString());
 
-                                    try {
-                                        jsonObject.put("id", id);
-                                        jsonObject.put("A", "V");
-                                        jsonObject.put("data", newValues[0].getValue());
-                                        jsonObject.put("time", newValues[0].getTimestamp());
-                                        jsonObject.put("sensor", cloudSensorName);
-                                        jsonObject.put("valuepath", cloudSensorValuepath);
+                                    if(myExpression.equals(INIT_EXPRESSION)) {
+                                        registerSWANSensor(MY_EXPRESSION1, ID);
+                                    } else {
+                                        long endValue = System.currentTimeMillis();
+                                        long result = (endValue- startValue[0]);
+                                        startValue[0] = endValue;
+                                        Log.d(TAG, "swan took " + result + "ms");
 
+                                        HashMap<String, Object> serverData = new HashMap<String, Object>();
 
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
+                                        serverData.put("id", id);
+                                        //serverData.put("channel",valuePath);
+                                        serverData.put("field1", result + "");
+                                        serverData.put("time", System.currentTimeMillis());
+                                        serverConnection.useHttpMethod(serverData, cb);
+
+                                        ExpressionManager.unregisterExpression(CloudSendActivity.this, String.valueOf(ID));
                                     }
-                                    //Log.e("Roshan","Before writing data:"+jsonObject.toString());
-                                    //serverConnectionSocket.sendResult(jsonObject.toString());
-                                    //serverConnectionSocket.execute(jsonObject.toString());
-                                    try {
-                                        if(serverConnectionSocket.getObjectOutputStream()!=null){
-                                            //Log.e("Roshan","Writing data:"+jsonObject.toString());
-                                            serverConnectionSocket.getObjectOutputStream().writeObject(""+jsonObject.toString());
-                                        }
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-
                                 }
                             }
                         });
 
             }
-            else if(checkExpression instanceof TriStateExpression){
-
-                ExpressionManager.registerTriStateExpression(this, String.valueOf(REQUEST_CODE),
-                        (TriStateExpression) ExpressionFactory.parse(myExpression), new TriStateExpressionListener() {
-                            @Override
-                            public void onNewState(String id, long timestamp, TriState newState) {
-                                JSONObject jsonObject = new JSONObject();
-                                //SendEmail.sendEmail();
-                                //sendFacebookMessage.sendResult(senderid, newState, ws);
-                                try {
-                                    jsonObject.put("id", id);
-                                    jsonObject.put("A", "T");
-                                    jsonObject.put("data", newState);
-                                    jsonObject.put("time", timestamp);
-                                    jsonObject.put("sensor", cloudSensorName);
-                                    jsonObject.put("valuepath", cloudSensorValuepath);
-
-
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                                //serverConnectionSocket.sendResult(jsonObject.toString());
-                                //serverConnectionSocket.execute(jsonObject.toString());
-
-                                try {
-                                    if(serverConnectionSocket.getObjectOutputStream()!=null){
-                                        //Log.e("Roshan","Writing data:"+jsonObject.toString());
-                                        serverConnectionSocket.getObjectOutputStream().writeObject(""+jsonObject.toString());
-                                    }
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-
-                            }
-                        });
-
-
-            }
-
-
 
 
         } catch (SwanException e) {
@@ -232,7 +215,7 @@ public class CloudSendActivity extends Activity {
     /* Unregister expression from SWAN */
     private void unregisterSWANSensor(){
 
-        ExpressionManager.unregisterExpression(this, String.valueOf(REQUEST_CODE));
+        ExpressionManager.unregisterExpression(this, String.valueOf(ID));
 
     }
 

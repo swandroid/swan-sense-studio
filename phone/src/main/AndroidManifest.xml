@@ -1,48 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          package="interdroid.swan"
-          android:versionCode="1"
-          android:versionName="1.0"
-          tools:ignore="ExportedService,ExportedReceiver">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="interdroid.swan"
+    android:versionCode="1"
+    android:versionName="1.0"
+    tools:ignore="ExportedService,ExportedReceiver"> <!-- <uses-sdk -->
+    <!-- android:minSdkVersion="16" -->
+    <!-- android:targetSdkVersion="22" /> -->
+    <uses-sdk tools:overrideLibrary="org.ttn.android.sdk" />
 
-    <!--<uses-sdk-->
-    <!--android:minSdkVersion="16"-->
-    <!--android:targetSdkVersion="22" />-->
-
-    <uses-sdk tools:overrideLibrary="org.ttn.android.sdk"/>
-
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
-    <uses-permission android:name="android.permission.BLUETOOTH"/>
-    <uses-permission android:name="android.permission.BODY_SENSORS"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.VIBRATE"/>
-    <uses-permission android:name="android.permission.CALL_PHONE"/>
-    <uses-permission android:name="android.permission.READ_LOGS"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_USER_DICTIONARY"/>
-    <uses-permission android:name="android.permission.WRITE_USER_DICTIONARY"/>
-    <uses-permission android:name="android.permission.NFC"/>
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BODY_SENSORS" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!-- <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" /> -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.READ_LOGS" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_USER_DICTIONARY" />
+    <uses-permission android:name="android.permission.WRITE_USER_DICTIONARY" />
+    <uses-permission android:name="android.permission.NFC" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="interdroid.vdb.permission.READ_DATABASE" />
+    <uses-permission android:name="interdroid.vdb.permission.WRITE_DATABASE" />
     <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION"/>
-    <uses-permission android:name="interdroid.vdb.permission.READ_DATABASE"/>
-    <uses-permission android:name="interdroid.vdb.permission.WRITE_DATABASE"/>
     <!-- <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS_FULL "/> -->
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
     <uses-permission android:name="android.permission.READ_CALENDAR"/>
 
-    <!--<uses-feature-->
-    <!--android:name="android.hardware.nfc"-->
-    <!--android:required="true" />-->
+    <!-- <uses-feature -->
+    <!-- android:name="android.hardware.nfc" -->
+    <!-- android:required="true" /> -->
+    <uses-feature android:name="android.hardware.location.network" />
+    <uses-feature android:name="android.hardware.location.gps" />
 
     <application
         android:allowBackup="true"
@@ -124,8 +123,8 @@
         </activity>
         <activity
             android:name=".crossdevice.TestActivity"
-            android:label="SWAN Lake Test"
             android:icon="@drawable/ic_launcher_swan"
+            android:label="SWAN Lake Test"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
@@ -144,7 +143,7 @@
         <activity
             android:name=".remote.cloud.CloudTestActivity"
             android:icon="@drawable/ic_launcher_swan"
-            android:label="SWAN Cloud Test"
+            android:label="Receive Cloud"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -720,24 +719,24 @@
             android:exported="true"
             android:icon="@drawable/movement_icon">
             <intent-filter>
-                <action android:name="interdroid.swan.sensor.DISCOVER"/>
+                <action android:name="interdroid.swan.sensor.DISCOVER" />
             </intent-filter>
 
             <meta-data
                 android:name="entityId"
-                android:value="movement"/>
+                android:value="movement" />
             <meta-data
                 android:name="valuePaths"
                 android:value="all_values,x,y,z,total" />
             <meta-data
                 android:name="accuracy"
-                android:value="3"/>
+                android:value="3" />
             <meta-data
                 android:name="delay"
-                android:value="200000"/>
+                android:value="200000" />
             <meta-data
                 android:name="units"
-                android:value="m/s2,m/s2,m/s2,m/s2"/>
+                android:value="m/s2,m/s2,m/s2,m/s2" />
         </activity>
 
 
@@ -797,7 +796,7 @@
                 android:value="mm/hour"/>
         </activity>
 
-        <activity
+ 		<activity
             android:name=".sensors.impl.WeatherSensor$ConfigurationActivity"
             android:exported="true"
             android:icon="@drawable/rain_icon">
@@ -821,6 +820,29 @@
                 android:name="units"
                 android:value=""/>
         </activity>
+
+        <activity
+            android:name=".sensors.impl.CloudtestSensor$ConfigurationActivity"
+            android:exported="true"
+            android:icon="@drawable/rain_icon">
+            <intent-filter>
+                <action android:name="interdroid.swan.sensor.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="cloudtest" />
+            <meta-data
+                android:name="valuePaths"
+                android:value="value" />
+            <meta-data
+                android:name="delay"
+                android:value="1000" />
+            <meta-data
+                android:name="units"
+                android:value="" />
+        </activity>
+
 
         <activity
             android:name=".sensors.impl.OVSensor$ConfigurationActivity"
@@ -1453,6 +1475,11 @@
             android:name=".sensors.impl.WeatherSensor"
             android:exported="true"
             android:process=":weathersensor"/>
+
+		<service
+            android:name=".sensors.impl.CloudtestSensor"
+            android:exported="true"
+            android:process=":cloudtestsensor" />
 
         <service
             android:name=".sensors.impl.FitnessSensor"

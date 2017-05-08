@@ -65,13 +65,12 @@ import interdroid.swancore.swansong.SensorValueExpression;
 public class BLEManager extends BTManager {
 
     private static final String TAG = "BLEManager";
-    private static final int SCAN_PERIOD = 2500;
+    private static final int SCAN_PERIOD = 10000;
     protected static final int PEER_DISCOVERY_INTERVAL = 5000;
     protected static final UUID SWAN_SERVICE_UUID = UUID.fromString("11060915-f0e9-43b8-82b3-c3609d14313f");
     protected static final UUID SWAN_CHAR_UNREGISTER_UUID = UUID.fromString("06ad4ac5-ad7e-4884-ab2c-26d91faf4d42");
     protected static final UUID NOTIFY_DESC_UUID = UUID.fromString("00002902-0000-1000-8000-00805F9B34FB");
-    // send sensor values in push mode or pull mode
-    protected static final boolean PUSH_MODE = false;
+    protected static final boolean PUSH_MODE = true; // send sensor values in push mode or pull mode
     protected static final boolean DISCOVERY_ALWAYS_ON = false;
     protected static final boolean DISCOVERY_ONCE = true;
     public static final int TIME_BETWEEN_REQUESTS = 1000;
@@ -85,6 +84,21 @@ public class BLEManager extends BTManager {
     private ConcurrentLinkedQueue<Runnable> execQueue = new ConcurrentLinkedQueue<>();
     private long startTimeLastExecItem;
     private boolean processing = false;
+
+    public static class ExecWriteDesc implements Runnable {
+        private BluetoothGattDescriptor descriptor;
+        private BluetoothGatt gatt;
+
+        public ExecWriteDesc(BluetoothGattDescriptor descriptor, BluetoothGatt gatt) {
+            this.descriptor = descriptor;
+            this.gatt = gatt;
+        }
+
+        @Override
+        public void run() {
+            gatt.writeDescriptor(descriptor);
+        }
+    }
 
     public static class ExecReadChar implements Runnable {
         private BluetoothGattCharacteristic characteristic;
@@ -202,7 +216,7 @@ public class BLEManager extends BTManager {
                         String sensorEntity = getSensorForUuid(sensorValuePathUuid).split(":")[0];
 
                         // check if the service isn't started and if the sensor is shareable
-                        if (bleServer.getService(sensorValuePathUuid) == null && sharedPref.getBoolean("sharing." + sensorEntity, false)) {
+                        if (bleServer != null && bleServer.getService(sensorValuePathUuid) == null && sharedPref.getBoolean("sharing." + sensorEntity, false)) {
                             Log.d(TAG, "service " + getSensorForUuid(sensorValuePathUuid) + " not present, adding...");
                             final BluetoothGattService service = new BluetoothGattService(sensorValuePathUuid, BluetoothGattService.SERVICE_TYPE_PRIMARY);
                             BluetoothGattCharacteristic newCharacteristic =
