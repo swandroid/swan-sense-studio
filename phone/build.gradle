@@ -4,7 +4,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'io.fabric.tools:gradle:1.+'
+        classpath 'io.fabric.tools:gradle:1.22.1'
     }
 }
 apply plugin: 'com.android.application'
@@ -17,7 +17,7 @@ repositories {
 
 android {
     compileSdkVersion 23
-    buildToolsVersion '25.0.0'
+    buildToolsVersion '25.0.2'
 
     defaultConfig {
         applicationId "interdroid.swan"
@@ -59,8 +59,8 @@ dependencies {
     // compile 'com.squareup.okhttp:okhttp:2.4.0'
 //    compile 'com.squareup.okhttp:okhttp-urlconnection:2.4.0'
 
-    compile 'com.google.android.gms:play-services-wearable:10.0.1'
-    compile 'com.google.android.gms:play-services-location:10.0.1'
+    compile 'com.google.android.gms:play-services-wearable:10.2.1'
+    compile 'com.google.android.gms:play-services-location:10.2.1'
 //    compile 'com.google.android.gms:play-services-maps:10.0.1'
 
     compile 'org.altbeacon:android-beacon-library:2.8.1'
@@ -72,6 +72,7 @@ dependencies {
     //compile 'com.jakewharton:butterknife:7.0.1'
 
     compile 'com.google.maps:google-maps-services:0.1.17'
+
 //    compile 'com.akexorcist:googledirectionlibrary:1.0.5'
 //    compile ('com.github.jd-alexander:library:1.1.0') {     // KitKat
 //        exclude group: 'com.google.android.gms' //by artifact name
@@ -95,8 +96,6 @@ dependencies {
     compile 'com.google.firebase:firebase-core:10.2.1'
     compile 'com.google.firebase:firebase-messaging:10.2.1'
     compile 'com.android.support:multidex:1.0.1'
-
-    compile project(path: ':swaninterface')
 
     //For firebase connection
     //apply plugin: 'com.google.gms.google-services'

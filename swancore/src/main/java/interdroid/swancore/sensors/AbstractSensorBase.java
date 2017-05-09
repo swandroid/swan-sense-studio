@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import interdroid.swancore.swansong.TimestampedValue;
 
@@ -53,7 +54,7 @@ public abstract class AbstractSensorBase extends Service implements
     /**
      * The registered configurations for the sensor.
      */
-    protected final Map<String, Bundle> registeredConfigurations = new HashMap<String, Bundle>();
+    protected final Map<String, Bundle> registeredConfigurations = new ConcurrentHashMap<>();
 
     /**
      * The value paths registered as watched.

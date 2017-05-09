@@ -13,6 +13,9 @@ public class LocationCoordinates implements Parcelable, Serializable {
     public float bearing = 0.0f;
     public float accuracy = 0.0f;
 
+    public LocationCoordinates() {
+    }
+
     public LocationCoordinates(double latitude, double longitude, double altitude, float speed, float bearing, float accuracy) {
         this.latitude = latitude;
         this.longitude = longitude;
