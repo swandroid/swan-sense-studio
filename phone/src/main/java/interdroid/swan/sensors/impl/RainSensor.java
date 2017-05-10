@@ -44,7 +44,7 @@ public class RainSensor extends AbstractSwanSensor {
     public static final double DEFAULT_LONGITUDE = 4.886;
 
     /* Weather URL */
-    private static final String BASE_URL = "http://gps.buienradar.nl/getrr.php?lat=%s&lon=%s";
+    private static final String BASE_URL = "http://gpsgadget.buienradar.nl/data/raintext/?lat=%s&lon=%s";
     /* Output :
 	 * 000|16:25 
 	 * 000|16:30 
@@ -101,22 +101,28 @@ public class RainSensor extends AbstractSwanSensor {
         private Bundle configuration;
         private String valuePath;
         private String id;
+        String url;
 
         RainPoller(String id, String valuePath, Bundle configuration) {
             this.id = id;
             this.configuration = configuration;
             this.valuePath = valuePath;
+
+            if(configuration.get(LATITUDE)==null||configuration.get(LONGITUDE)==null){
+                url = String.format(BASE_URL, DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
+            }else {
+                url = String.format(BASE_URL, configuration.get(LATITUDE),
+                        configuration.get(LONGITUDE));
+            }
         }
 
         public void run() {
             while (!isInterrupted()) {
                 long start = System.currentTimeMillis();
 
-                String url = String.format(BASE_URL, configuration.get(LATITUDE),
-                        configuration.get(LONGITUDE));
-
 
                 try {
+                    Log.e(TAG, "URL: " + url);
                     URLConnection conn = new URL(url).openConnection();
                     BufferedReader r = new BufferedReader(new InputStreamReader(
                             conn.getInputStream()));
