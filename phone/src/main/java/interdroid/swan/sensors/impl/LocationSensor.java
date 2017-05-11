@@ -174,7 +174,7 @@ public class LocationSensor extends AbstractSwanSensor {
 
     @Override
     public Class<?>[] getParameterTypes() {
-        return LocationCoordinates.class.getConstructors()[0].getParameterTypes();
+        return LocationCoordinates.class.getConstructors()[1].getParameterTypes();
     }
 
     /**
