@@ -14,14 +14,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import interdroid.swancore.sensors.Sensor;
+import interdroid.swancore.sensors.TimeSensor;
 import interdroid.swancore.swanmain.ExpressionManager;
 import interdroid.swancore.swanmain.SensorConfigurationException;
 import interdroid.swancore.swanmain.SensorInfo;
 import interdroid.swancore.swanmain.SwanException;
-
-import interdroid.swancore.crossdevice.Registry;
-import interdroid.swancore.sensors.Sensor;
-import interdroid.swancore.sensors.TimeSensor;
 import interdroid.swancore.swansong.BinaryLogicOperator;
 import interdroid.swancore.swansong.Comparator;
 import interdroid.swancore.swansong.ComparatorResult;
@@ -652,7 +650,7 @@ public class EvaluationManagerBase {
                 // TODO make this a constant (configurable?)
                 result.setDeferUntil(now + 1000);
                 result.setDeferUntilGuaranteed(false);
-                Log.d(TAG, "Deferred until: " + (now + 1000));
+                //Log.d(TAG, "Deferred until: " + (now + 1000));
                 return result;
             }
 

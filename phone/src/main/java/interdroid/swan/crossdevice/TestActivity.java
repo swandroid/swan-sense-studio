@@ -50,6 +50,7 @@ public class TestActivity extends Activity {
     public final int REQUEST_CODE_7 = 789;
     public final int REQUEST_CODE_8 = 890;
     public final int REQUEST_CODE_9 = 901;
+    public final int REQUEST_CODE_10 = 902;
     public final int REQUEST_CODE_BEACON = 888;
 
     TextView tv = null;
@@ -77,8 +78,14 @@ public class TestActivity extends Activity {
         tv = (TextView) findViewById(R.id.textView1);
         handler = new Handler();
 
+        EditText username = (EditText) findViewById(R.id.username);
+//        username.setText("SWAN-1493731549138");     //5X
+//        username.setText("SWAN-1493912820362");   //6P
+        username.setText("SWAN-1493727308701");   //5
+
         IntentFilter intentFilter = new IntentFilter(BTManager.ACTION_LOG_MESSAGE);
         registerReceiver(mReceiver, intentFilter);
+//        throw new RuntimeException("Test");
 
 //        initialize();
 //        testSensor();
@@ -122,11 +129,14 @@ public class TestActivity extends Activity {
                 Log.d(TAG, "got new location: " + location.getLatitude() + ", " + location.getLongitude());
             }
 
-            public void onStatusChanged(String provider, int status, Bundle extras) {}
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+            }
 
-            public void onProviderEnabled(String provider) {}
+            public void onProviderEnabled(String provider) {
+            }
 
-            public void onProviderDisabled(String provider) {}
+            public void onProviderDisabled(String provider) {
+            }
         };
 
         // Register the listener with the Location Manager to receive location updates
@@ -151,7 +161,8 @@ public class TestActivity extends Activity {
         final String expression6 = connectTo + "@proximity:distance";
         final String expression7 = connectTo + "@pressure:pressure";
         final String expression8 = connectTo + "@sound:rms?audio_format=2#sample_interval=100$server_storage=false{ANY,0}";
-        final String expression9 = connectTo + "@location:latitude?provider='gps'";
+        final String expression9 = connectTo + "@location:latitude?provider=network";
+        final String expression10 = connectTo + "@location:longitude?provider=network";
 //        final String beaconExpression = connectTo + "@beacon_discovery:estimotenearable{ANY,0}";
 //        String expression3 = connectTo + "@light:lux > 10.0";
 //        mExpression = connectTo + "@fitness:avg_speed$server_storage=false{ANY,0}";
@@ -166,7 +177,8 @@ public class TestActivity extends Activity {
 //            registerSWANSensor(expression6, REQUEST_CODE_6);
 //            registerSWANSensor(expression7, REQUEST_CODE_7);
 //            registerSWANSensor(expression8, REQUEST_CODE_8);
-            registerSWANSensor(expression9, REQUEST_CODE_9);
+//            registerSWANSensor(expression9, REQUEST_CODE_9);
+//            registerSWANSensor(expression10, REQUEST_CODE_10);
 //            registerSWANSensor(beaconExpression, REQUEST_CODE_BEACON);
 //            handler.postDelayed(new Runnable() {
 //                @Override
@@ -174,6 +186,53 @@ public class TestActivity extends Activity {
 //                    registerSWANSensor(expression2, REQUEST_CODE_2);
 //                }
 //            }, 30000);
+
+
+            // LAT
+            registeredExpr.add(String.valueOf(REQUEST_CODE_9));
+            registeredExpr.add(String.valueOf(REQUEST_CODE_10));
+
+            try {
+                ExpressionManager.registerValueExpression(this, String.valueOf(REQUEST_CODE_9),
+                        (ValueExpression) ExpressionFactory.parse(expression9),
+                        new ValueExpressionListener() {
+                            /* Registering a listener to process new values from the registered sensor*/
+                            @Override
+                            public void onNewValues(String id, TimestampedValue[] newValues) {
+                                //                                }
+                                if (newValues != null && newValues.length > 0) {
+                                    String value = newValues[0].getValue().toString();
+                                    tv.setText("Lat = " + value + "\n" + tv.getText());
+                                    Log.d(TAG, "got new value = " + value);
+
+                                } else {
+                                    tv.setText("Value = null");
+                                }
+
+                            }
+                        });
+
+                ExpressionManager.registerValueExpression(this, String.valueOf(REQUEST_CODE_10),
+                        (ValueExpression) ExpressionFactory.parse(expression10),
+                        new ValueExpressionListener() {
+                            /* Registering a listener to process new values from the registered sensor*/
+                            @Override
+                            public void onNewValues(String id, TimestampedValue[] newValues) {
+                                if (newValues != null && newValues.length > 0) {
+                                    String value = newValues[0].getValue().toString();
+                                    tv.setText("Longitude = " + value + "\n" + tv.getText());
+                                    Log.d(TAG, "got new value = " + value);
+
+                                } else {
+                                    tv.setText("Value = null");
+                                }
+
+                            }
+                        });
+                mRegistered = true;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
         } else {
             Log.d(TAG, "Already registered");
@@ -214,11 +273,22 @@ public class TestActivity extends Activity {
                     new ValueExpressionListener() {
                         /* Registering a listener to process new values from the registered sensor*/
                         @Override
-                        public void onNewValues(String id, TimestampedValue[] arg1) {
-                            if (arg1 != null && arg1.length > 0) {
-                                String value = arg1[0].getValue().toString();
-                                tv.setText("Value = " + value);
+                        public void onNewValues(String id, TimestampedValue[] newValues) {
+//                            if(newValues.length > 0) {
+//                                TimestampedValue tsVal = newValues[0];
+//
+//                                if (tsVal.getValue() instanceof LocationCoordinates) {
+//                                    final LocationCoordinates location = (LocationCoordinates) tsVal.getValue();
+//                                    // String value = arg1[0].getValue().toString();
+//                                    //tv.setText("Value = " + value);
+//                                    tv.setText("Received new value=" + location.longitude + "," + location.latitude +
+//                                            "\n" + tv.getText());
+//                                }
+                            if (newValues != null && newValues.length > 0) {
+                                String value = newValues[0].getValue().toString();
+                                tv.setText("Value = " + value + "\n" + tv.getText());
                                 Log.d(TAG, "got new value = " + value);
+
                             } else {
                                 tv.setText("Value = null");
                             }
@@ -248,7 +318,7 @@ public class TestActivity extends Activity {
 
     /* Unregister expression from SWAN */
     private void unregisterSWANSensor() {
-        for(String regExprId : registeredExpr) {
+        for (String regExprId : registeredExpr) {
             ExpressionManager.unregisterExpression(this, regExprId);
         }
 

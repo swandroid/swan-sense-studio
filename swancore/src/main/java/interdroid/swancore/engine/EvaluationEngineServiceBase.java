@@ -92,7 +92,7 @@ public class EvaluationEngineServiceBase extends Service {
                     }
                 } else {
                     long deferUntil = head.getDeferUntil();
-                    Log.d(TAG, "Defer until: " + deferUntil);
+                    //Log.d(TAG, "Defer until: " + deferUntil);
 
                     if (deferUntil <= System.currentTimeMillis()) {
                         // evaluate now
@@ -157,7 +157,7 @@ public class EvaluationEngineServiceBase extends Service {
                                                 - System.currentTimeMillis());
                                 // Log.d(TAG, "Waiting for " + waitTime +
                                 // " ms.");
-                                Log.d(TAG, "Putting evaluation thread on wait for " + waitTime);
+                                //Log.d(TAG, "Putting evaluation thread on wait for " + waitTime);
                                 mEvaluationThread.wait(waitTime);
                                 // Log.d(TAG, "Done waiting for " + waitTime
                                 // + " ms.");
