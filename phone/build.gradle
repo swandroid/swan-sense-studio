@@ -1,5 +1,10 @@
 apply plugin: 'com.android.application'
 
+repositories {
+    maven { url 'https://maven.fabric.io/public' }
+}
+
+
 android {
     compileSdkVersion 23
     buildToolsVersion '25.0.0'
@@ -75,7 +80,6 @@ dependencies {
     compile 'com.android.support:multidex:1.0.0'
 
     compile project(path: ':swaninterface')
-
 }
 
 

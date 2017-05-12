@@ -1,5 +1,8 @@
 apply plugin: 'com.android.application'
 
+repositories {
+    maven { url 'https://maven.fabric.io/public' }
+}
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
