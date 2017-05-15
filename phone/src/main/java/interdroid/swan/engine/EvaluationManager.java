@@ -2,22 +2,22 @@ package interdroid.swan.engine;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 
+import interdroid.swan.crossdevice.ProximityManagerI;
+import interdroid.swan.crossdevice.Pusher;
 import interdroid.swan.remote.cloud.CloudManager;
 import interdroid.swan.sensors.impl.wear.shared.RemoteSensorManager;
+import interdroid.swancore.crossdevice.Registry;
 import interdroid.swancore.engine.EvaluationEngineServiceBase;
 import interdroid.swancore.engine.EvaluationManagerBase;
-import interdroid.swan.crossdevice.Pusher;
-import interdroid.swancore.crossdevice.Registry;
-import interdroid.swan.crossdevice.ProximityManagerI;
+import interdroid.swancore.engine.SensorSetupFailedException;
 import interdroid.swancore.swansong.ComparisonExpression;
 import interdroid.swancore.swansong.ConstantValueExpression;
 import interdroid.swancore.swansong.Expression;
 import interdroid.swancore.swansong.LogicExpression;
 import interdroid.swancore.swansong.MathValueExpression;
 import interdroid.swancore.swansong.SensorValueExpression;
-
-import interdroid.swancore.engine.SensorSetupFailedException;
 
 
 public class EvaluationManager extends EvaluationManagerBase{
@@ -163,7 +163,9 @@ public class EvaluationManager extends EvaluationManagerBase{
         } else if (expression instanceof ConstantValueExpression) {
             return ((ConstantValueExpression) expression).toParseString();
         }
-        throw new RuntimeException("Unknown expression type: " + expression);
+//        throw new RuntimeException("Unknown expression type: " + expression);
+        Log.e(getClass().getSimpleName(), "Unknown expression type: " + expression);
+        return null;
     }
 
     // send a push message with 'unregister'
@@ -187,17 +189,22 @@ public class EvaluationManager extends EvaluationManagerBase{
             String fromRegistrationId = Registry.get(mContext,
                     Expression.LOCATION_SELF);
             if (fromRegistrationId == null) {
-                throw new RuntimeException(
-                        "Device not registered with Google Cloud Messaging, unable to use remote sensors.");
+//                throw new RuntimeException(
+//                        "Device not registered with Google Cloud Messaging, unable to use remote sensors.");
+                Log.e(getClass().getSimpleName(), "Device not registered with Google Cloud Messaging, unable to use remote sensors.");
+                return;
             }
 
             String toRegistrationId = Registry.get(mContext,
                     expression.getLocation());
             if (toRegistrationId == null) {
                 // this should not happen, kill swan
-                throw new RuntimeException(
-                        "No registration id known for location: "
+//                throw new RuntimeException(
+//                        "No registration id known for location: "
+//                                + expression.getLocation());
+                Log.e(getClass().getSimpleName(), "No registration id known for location: "
                                 + expression.getLocation());
+                return;
             }
             // resolve all remote locations in the expression with respect to the
             // new location.
