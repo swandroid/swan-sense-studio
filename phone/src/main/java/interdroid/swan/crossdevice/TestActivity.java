@@ -79,9 +79,9 @@ public class TestActivity extends Activity {
         handler = new Handler();
 
         EditText username = (EditText) findViewById(R.id.username);
-//        username.setText("SWAN-1493731549138");     //5X
+        username.setText("SWAN-1493731549138");     //5X
 //        username.setText("SWAN-1493912820362");   //6P
-        username.setText("SWAN-1493727308701");   //5
+//        username.setText("SWAN-1493727308701");   //5
 
         IntentFilter intentFilter = new IntentFilter(BTManager.ACTION_LOG_MESSAGE);
         registerReceiver(mReceiver, intentFilter);
@@ -161,8 +161,8 @@ public class TestActivity extends Activity {
         final String expression6 = connectTo + "@proximity:distance";
         final String expression7 = connectTo + "@pressure:pressure";
         final String expression8 = connectTo + "@sound:rms?audio_format=2#sample_interval=100$server_storage=false{ANY,0}";
-        final String expression9 = connectTo + "@location:latitude?provider=network";
-        final String expression10 = connectTo + "@location:longitude?provider=network";
+        final String expression9 = connectTo + "@location:latitude?provider=gps";
+        final String expression10 = connectTo + "@location:longitude?provider=gps";
 //        final String beaconExpression = connectTo + "@beacon_discovery:estimotenearable{ANY,0}";
 //        String expression3 = connectTo + "@light:lux > 10.0";
 //        mExpression = connectTo + "@fitness:avg_speed$server_storage=false{ANY,0}";

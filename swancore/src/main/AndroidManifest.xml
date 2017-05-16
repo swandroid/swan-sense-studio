@@ -6,6 +6,9 @@
         android:label="@string/app_name"
         android:supportsRtl="true">
 
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="842333319b29b4a2fa4c1a784567e01b374c2125" />
 
     </application>
 

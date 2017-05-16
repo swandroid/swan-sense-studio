@@ -99,19 +99,24 @@ public class RainSensor extends AbstractSwanSensor {
         private Bundle configuration;
         private String valuePath;
         private String id;
+        String url;
 
         RainPoller(String id, String valuePath, Bundle configuration) {
             this.id = id;
             this.configuration = configuration;
             this.valuePath = valuePath;
+
+            if(configuration.get(LATITUDE)==null||configuration.get(LONGITUDE)==null){
+                url = String.format(BASE_URL, DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
+            }else {
+                url = String.format(BASE_URL, configuration.get(LATITUDE),
+                        configuration.get(LONGITUDE));
+            }
         }
 
         public void run() {
             while (!isInterrupted()) {
 
-                String url = String.format(BASE_URL, configuration.get(LATITUDE),
-                        configuration.get(LONGITUDE));
-//                Log.d(getClass().getSimpleName(), url);
 
                 RainPrediction rainPrediction = new RainPrediction(Double.valueOf((String) configuration.get(LATITUDE)),
                         Double.valueOf((String) configuration.get(LONGITUDE)));
@@ -121,6 +126,7 @@ public class RainSensor extends AbstractSwanSensor {
                 BufferedReader bufferedReader = null;
 
                 try {
+                    Log.e(TAG, "URL: " + url);
                     URLConnection conn = new URL(url).openConnection();
                     conn.setConnectTimeout(2000);
                     conn.setReadTimeout(2000);

@@ -426,7 +426,7 @@ public class BTManager implements ProximityManagerI {
         }
 
         if(registeredExpressions.isEmpty()) {
-            printLogs();
+//            printLogs();
             disconnect();
         }
     }

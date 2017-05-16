@@ -7,6 +7,8 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +17,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import interdroid.swancore.swansong.TimestampedValue;
+import io.fabric.sdk.android.Fabric;
 
 /**
  * This class is the abstract base for all Sensor services. Sensor implementors
@@ -95,6 +98,7 @@ public abstract class AbstractSensorBase extends Service implements
      */
     @Override
     public final void onCreate() {
+        Fabric.with(this, new Crashlytics());
         mStartTime = System.currentTimeMillis();
         init();
         initDefaultConfiguration(mDefaultConfiguration);
