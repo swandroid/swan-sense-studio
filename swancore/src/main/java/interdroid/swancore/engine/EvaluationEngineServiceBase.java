@@ -15,20 +15,23 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.PriorityQueue;
 
 import interdroid.swancore.R;
+import interdroid.swancore.crossdevice.Converter;
+import interdroid.swancore.sensors.SensorInterface;
 import interdroid.swancore.swanmain.ExpressionManager;
 import interdroid.swancore.swanmain.SensorConfigurationException;
 import interdroid.swancore.swanmain.SwanException;
-import interdroid.swancore.crossdevice.Converter;
-import interdroid.swancore.sensors.SensorInterface;
 import interdroid.swancore.swansong.Expression;
 import interdroid.swancore.swansong.ExpressionFactory;
 import interdroid.swancore.swansong.Result;
 import interdroid.swancore.swansong.ValueExpression;
+import io.fabric.sdk.android.Fabric;
 
 public class EvaluationEngineServiceBase extends Service {
 
@@ -316,6 +319,7 @@ public class EvaluationEngineServiceBase extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         // we can get several actions here, both from the API and from the
         // Sensors as well as from the Boot event
+        Fabric.with(this, new Crashlytics());
         if (intent == null) {
             Log.d(TAG,
                     "huh? intent is null! This should never happen!! We will try to restore...");

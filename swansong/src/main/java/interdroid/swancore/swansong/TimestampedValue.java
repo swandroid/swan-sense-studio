@@ -126,7 +126,7 @@ public class TimestampedValue implements Serializable, Parcelable,
         double sumValues = 0.0;
 
         for (TimestampedValue value : values) {
-            sumValues += (Double) value.mValue;
+            sumValues += Double.valueOf(value.mValue.toString());
         }
         return new TimestampedValue(sumValues / values.size(),
                 values.get(0).mTimestamp);
