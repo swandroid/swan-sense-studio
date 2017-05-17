@@ -96,7 +96,7 @@ public class CloudtestSensor extends AbstractSwanSensor {
 
                     i ^= 1;
 
-                    putValueTrimSize(valuePath, id, start, i);
+                    putValueTrimSize(valuePath, id, start, (double)i);
 
                 try {
                     Thread.sleep(configuration.getInt(DELAY,mDefaultConfiguration.getInt(DELAY)));

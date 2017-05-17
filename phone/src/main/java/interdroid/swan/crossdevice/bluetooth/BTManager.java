@@ -300,14 +300,9 @@ public class BTManager implements ProximityManagerI {
 
     // TODO this is not quite OK
     public void registerService() {
-        String userFriendlyName = PreferenceManager.getDefaultSharedPreferences(context).getString("name", null);
-
-        if (userFriendlyName == null) {
-            log(TAG, "Name not set for device", Log.ERROR, true);
-            return;
+        if(!btAdapter.getName().toUpperCase().contains("SWAN")) {
+            btAdapter.setName(btAdapter.getName() + "_SWAN");
         }
-
-        btAdapter.setName(userFriendlyName);
     }
 
     private void startReceivers() {

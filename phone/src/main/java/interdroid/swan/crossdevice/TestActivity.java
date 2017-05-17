@@ -145,7 +145,7 @@ public class TestActivity extends Activity {
             connectTo = "NEARBY";
         }
 
-        final String expression0 = connectTo + "@cloudtest:value";
+        final String expression0 = connectTo + "@cloudtest:value?delay='1000'{MIN,1000}";
         final String expression1 = connectTo + "@light:lux";
         final String expression2 = connectTo + "@movement:x";
         final String expression3 = connectTo + "@gyroscope:x";
@@ -161,7 +161,7 @@ public class TestActivity extends Activity {
 
         if (!mRegistered) {
 //            registerSWANSensor(expression0, REQUEST_CODE_0);
-//            registerSWANSensor(expression1, REQUEST_CODE_1);
+            registerSWANSensor(expression1, REQUEST_CODE_1);
 //            registerSWANSensor(expression2, REQUEST_CODE_2);
 //            registerSWANSensor(expression3, REQUEST_CODE_3);
 //            registerSWANSensor(expression4, REQUEST_CODE_4);
@@ -169,7 +169,7 @@ public class TestActivity extends Activity {
 //            registerSWANSensor(expression6, REQUEST_CODE_6);
 //            registerSWANSensor(expression7, REQUEST_CODE_7);
 //            registerSWANSensor(expression8, REQUEST_CODE_8);
-            registerSWANSensor(expression9, REQUEST_CODE_9);
+//            registerSWANSensor(expression9, REQUEST_CODE_9);
 //            registerSWANSensor(beaconExpression, REQUEST_CODE_BEACON);
 //            handler.postDelayed(new Runnable() {
 //                @Override
