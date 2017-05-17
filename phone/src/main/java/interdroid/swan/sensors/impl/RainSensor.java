@@ -120,16 +120,16 @@ public class RainSensor extends AbstractSwanSensor {
             while (!isInterrupted()) {
                 long start = System.currentTimeMillis();
 
-
                 try {
                     Log.e(TAG, "URL: " + url);
                     URLConnection conn = new URL(url).openConnection();
-                    BufferedReader r = new BufferedReader(new InputStreamReader(
-                            conn.getInputStream()));
+                    BufferedReader r = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                     String line = r.readLine();
-                    Log.e(TAG, "Rain Sensor Value: " + Integer.parseInt(line.substring(0, 3)));
-                    float value = convertValueToMMPerHr(Integer.parseInt(line.substring(0, 3)));
-                    putValueTrimSize(valuePath, id, start, value);
+                    if (line != null) {
+                        Log.e(TAG, "Rain Sensor Value: " + Integer.parseInt(line.substring(0, 3)));
+                        float value = convertValueToMMPerHr(Integer.parseInt(line.substring(0, 3)));
+                        putValueTrimSize(valuePath, id, start, value);
+                    }
 
                 } catch (MalformedURLException e1) {
                     // TODO Auto-generated catch block
