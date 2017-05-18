@@ -39,9 +39,12 @@ public class CloudTestActivity extends Activity {
   //  final String MY_EXPRESSION = "self@wear_movement:x{ANY,0}";
   //  final String MY_EXPRESSION = "wear@movement:x{ANY,0}";
 
-    final String MY_EXPRESSION = "cloud@profiler:value?case=1{ANY,0}";
+//    final String MY_EXPRESSION = "cloud@profiler:value?case=1{ANY,0}";
 
- //   final String MY_EXPRESSION = "cloud@tree:branch{ANY,1000}";
+    final String MY_EXPRESSION = "self@cloudtest:value?delay='1000'{MEAN,1000}";
+
+
+    //   final String MY_EXPRESSION = "cloud@tree:branch{ANY,1000}";
   //  final String MY_EXPRESSION = "self@profiler:value?case=0{ANY,0} > 1";
 
   //  final String MY_EXPRESSION = "self@light:lux{ANY,0}";

@@ -49,7 +49,7 @@ public class CloudSendActivity extends Activity {
 
     final String DELAY = "1000";
 
-    final String MY_EXPRESSION = "self@cloudtest:value?delay='"+DELAY+"'$" +
+  /*  final String MY_EXPRESSION = "self@cloudtest:value?delay='"+DELAY+"'$" +
             "server_url="+URL+"~" +
             "server_use_location=false~" +
             "server_http_authorization=NoAuth~" +
@@ -59,6 +59,8 @@ public class CloudSendActivity extends Activity {
             "server_http_body=null~" +
             "server_http_method=POST" +
             "{ANY,0}";
+            */
+    final String MY_EXPRESSION ="self@cloudtest:value?delay='1000'{MEAN,1000}";
 
     final String MY_EXPRESSION1 = "self@cloudtest:value";
     final String INIT_EXPRESSION = "cloud@profiler:value?case=1{ANY,0}";
@@ -110,13 +112,18 @@ public class CloudSendActivity extends Activity {
 
         }.start();
 
-        initialize();
-
+        //initialize();
+        initializeSimple();
 
 
 
     }
 
+
+    public void initializeSimple(){
+
+        registerSWANSensorSimple(MY_EXPRESSION, ID);
+    }
 
     public void initialize(){
 
@@ -154,6 +161,43 @@ public class CloudSendActivity extends Activity {
     }
 
 
+    /* Register expression to SWAN */
+    private void registerSWANSensorSimple(final String myExpression, String id){
+
+        try {
+            Expression checkExpression =  ExpressionFactory.parse(myExpression);
+
+            if(checkExpression instanceof ValueExpression) {
+
+                //final long[] startValue = {System.currentTimeMillis()};
+                ExpressionManager.registerValueExpression(this, String.valueOf(id),
+                        (ValueExpression) ExpressionFactory.parse(myExpression),
+                        new ValueExpressionListener() {
+
+                            /* Registering a listener to process new values from the registered sensor*/
+                            @Override
+                            public void onNewValues(String id,
+                                                    TimestampedValue[] newValues) {
+                                if (newValues != null && newValues.length > 0) {
+                                    Log.d(TAG, "new value:"+newValues[0].toString());
+
+                                }
+                            }
+                        });
+
+            }
+
+
+        } catch (SwanException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (ExpressionParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+
+    }
 
 
     /* Register expression to SWAN */
