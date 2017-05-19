@@ -469,7 +469,7 @@ public class BLEManager extends BTManager {
     }
 
     @Override
-    protected void printLogs() {
+    protected void processLogs() {
         StringBuffer sb = new StringBuffer();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd-HHmm");
         String logSuffix = sdf.format(new Date());

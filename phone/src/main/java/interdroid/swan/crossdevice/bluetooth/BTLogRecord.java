@@ -12,13 +12,16 @@ public class BTLogRecord {
     public long swanDuration; //time taken by swan to process the request
     public long connDuration;
     public int sensors;
+    public int dataTransferred;
     public boolean failed;
     public boolean client;
+    public String remoteMacAddress;
 
-    public BTLogRecord(long startTimeApp, boolean client) {
+    public BTLogRecord(long startTimeApp, boolean client, String remoteMac) {
         this.startTime = System.currentTimeMillis();
         this.startTimeApp = startTimeApp;
         this.client = client;
+        this.remoteMacAddress = remoteMac;
     }
 
     public static String printHeader() {

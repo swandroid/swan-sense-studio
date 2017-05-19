@@ -19,13 +19,12 @@ public class BTClientWorker extends BTWorker implements BTConnectionHandler {
 
     private BTRemoteEvaluationTask remoteEvaluationTask;
     private int remoteTimeToNextRequest = 0;
-    private HashMap<BTRemoteExpression, Long> exprTimeMap = new HashMap<>();
 
     public BTClientWorker(BTManager btManager, BTRemoteEvaluationTask remoteEvaluationTask) {
         this.btManager = btManager;
         this.remoteEvaluationTask = remoteEvaluationTask;
         this.swanDevice = remoteEvaluationTask.getSwanDevice();
-        logRecord = new BTLogRecord(btManager.getStartTime(), true);
+        logRecord = new BTLogRecord(btManager.getStartTime(), true, swanDevice.getBtDevice().getAddress());
         logRecord.sensors = remoteEvaluationTask.getExpressions().size();
     }
 
@@ -40,7 +39,6 @@ public class BTClientWorker extends BTWorker implements BTConnectionHandler {
 
             if(isConnectedToRemote()) {
                 for(BTRemoteExpression remoteExpression : remoteExpressions) {
-                    exprTimeMap.put(remoteExpression, System.currentTimeMillis());
                     send(remoteExpression.getId(), EvaluationEngineService.ACTION_REGISTER_REMOTE, remoteExpression.getExpressionString());
                 }
             } else {
@@ -87,6 +85,8 @@ public class BTClientWorker extends BTWorker implements BTConnectionHandler {
 
     @Override
     public void onReceive(HashMap<String, String> dataMap) throws Exception {
+        logRecord.dataTransferred += getObjectSize(dataMap);
+
         String exprAction = dataMap.get("action");
         String exprSource = dataMap.get("source");
         String exprId = dataMap.get("id");
@@ -113,10 +113,6 @@ public class BTClientWorker extends BTWorker implements BTConnectionHandler {
                     if(swanDuration != null) {
                         logRecord.swanDuration = Integer.parseInt(swanDuration);
                     }
-
-                    long reqTime = System.currentTimeMillis() - exprTimeMap.get(remoteExpression);
-//                    BTLogRecord btLogRecord = new BTLogRecord(startTime, btManager.getStartTime(), reqDuration,
-//                            connTime, discoveryTime, remoteEvaluationTask.getExpressionIds().size(), false);
 
                     btManager.sendExprForEvaluation(remoteExpression.getBaseId(), exprAction, exprSource, exprData);
                     send(exprId, EvaluationEngineService.ACTION_UNREGISTER_REMOTE, null);

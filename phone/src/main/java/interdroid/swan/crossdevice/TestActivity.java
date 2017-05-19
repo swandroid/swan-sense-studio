@@ -69,6 +69,19 @@ public class TestActivity extends Activity {
                 String message = intent.getStringExtra("log");
                 TextView tv = (TextView) findViewById(R.id.result);
                 tv.setText(message + "\n" + tv.getText());
+            } else if(BTManager.ACTION_LOG_METRICS.equals(action)) {
+                String message = intent.getLongExtra("time", 0) + "\n" +
+                        intent.getStringExtra("sourceMac") + "\n" +
+                        intent.getStringExtra("destinationMac") + "\n" +
+                        intent.getDoubleExtra("reqCount", 0) + "\n" +
+                        intent.getDoubleExtra("failedReqCount", 0) + "\n" +
+                        intent.getDoubleExtra("avgReqTime", 0) + "\n" +
+                        intent.getDoubleExtra("avgConnTime", 0) + "\n" +
+                        intent.getDoubleExtra("avgCommTime", 0) + "\n" +
+                        intent.getDoubleExtra("avgSwanTime", 0) + "\n" +
+                        intent.getDoubleExtra("avgDataTransferred", 0);
+                TextView tv = (TextView) findViewById(R.id.result);
+                tv.setText(message + "\n" + tv.getText());
             }
         }
     };
@@ -81,6 +94,7 @@ public class TestActivity extends Activity {
         handler = new Handler();
 
         IntentFilter intentFilter = new IntentFilter(BTManager.ACTION_LOG_MESSAGE);
+        intentFilter.addAction(BTManager.ACTION_LOG_METRICS);
         registerReceiver(mReceiver, intentFilter);
 
 //        initialize();

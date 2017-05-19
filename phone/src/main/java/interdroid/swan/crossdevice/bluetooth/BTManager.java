@@ -56,6 +56,7 @@ public class BTManager implements ProximityManagerI {
     protected final static String SERVICE_NAME = "swanlake";
     public static final String ACTION_NEARBY_DEVICE_FOUND = "interdroid.swan.crossdevice.bluetooth.ACTION_NEARBY_DEVICE_FOUND";
     public static final String ACTION_LOG_MESSAGE = "interdroid.swan.crossdevice.bluetooth.ACTION_LOG_MESSAGE";
+    public static final String ACTION_LOG_METRICS = "interdroid.swan.crossdevice.bluetooth.ACTION_LOG_METRICS";
     /* this should be configurable */
     public static final int TIME_BETWEEN_REQUESTS = 1000;
     /* set this to true if you want one connection per device, or false if you want one connection per worker */
@@ -70,7 +71,9 @@ public class BTManager implements ProximityManagerI {
     protected final int PEER_DISCOVERY_INTERVAL = 100;
     private final int BLOCKED_WORKERS_CHECKING_INTERVAL = 10000;
     private final int MAX_CONNECTIONS = 6;
+
     private final boolean LOG_ONLY_CRITICAL = false;
+    private final boolean WRITE_LOGS_TO_FILE = false;
 
     protected BluetoothAdapter btAdapter;
     protected ConcurrentLinkedQueue<Object> evalQueue;
@@ -423,7 +426,6 @@ public class BTManager implements ProximityManagerI {
         }
 
         if(registeredExpressions.isEmpty()) {
-//            printLogs();
             disconnect();
         }
     }
@@ -765,7 +767,7 @@ public class BTManager implements ProximityManagerI {
         context.sendBroadcast(logMsgIntent);
     }
 
-    protected void printLogs() {
+    protected void processLogs() {
         StringBuffer sb = new StringBuffer();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd-HHmm");
         String logSuffix = sdf.format(new Date());
@@ -780,12 +782,15 @@ public class BTManager implements ProximityManagerI {
         double avgConnTime = 0;
         double avgCommTime = 0;
         double avgSwanTime = 0;
+        double avgDataTransferred = 0;
         double successCount = 0;
+        String remoteMacAddress = "";
 
         for(BTLogRecord logRec : logRecords) {
             // we log only logs by client workers
             if(logRec.client) {
                 reqCount++;
+                remoteMacAddress = logRec.remoteMacAddress;
 
                 if(logRec.failed) {
                     failedReq++;
@@ -795,6 +800,7 @@ public class BTManager implements ProximityManagerI {
                     avgConnTime += logRec.connDuration;
                     avgCommTime += logRec.totalDuration - logRec.swanDuration;
                     avgSwanTime += logRec.swanDuration;
+                    avgDataTransferred += logRec.dataTransferred;
 
                     sb.append((int)successCount + "\t" + logRec.toString() + "\n");
                 }
@@ -807,33 +813,53 @@ public class BTManager implements ProximityManagerI {
             avgConnTime = avgConnTime / successCount;
             avgCommTime = avgCommTime / successCount;
             avgSwanTime = avgSwanTime / successCount;
+            avgDataTransferred = avgDataTransferred / successCount;
         }
 
-        try {
-            FileWriter fw = new FileWriter(logFile);
-            fw.append("\n# phones = " + (nearbyDevices.size() + 1));
-            fw.append("\n# shared connections = " + SHARED_CONNECTIONS);
-            fw.append("\n# max connections = " + MAX_CONNECTIONS);
-            fw.append("\n# sample interval = " + TIME_BETWEEN_REQUESTS);
-            fw.append("\n# sync receivers = " + SYNC_RECEIVERS);
-            fw.append("\n# receivers = " + btReceivers.size());
-            fw.append("\n# wifi enabled = " + USE_WIFI);
-            fw.append("\n\n# failedRate = " + failedRate);
-            fw.append("\n# avgReqTime = " + avgReqTime);
-            fw.append("\n# avgConnTime = " + avgConnTime);
-            fw.append("\n# avgCommTime = " + avgCommTime);
-            fw.append("\n# avgSwanTime = " + avgSwanTime);
-            fw.append("\n\n# Idx\t" + BTLogRecord.printHeader());
-            fw.append("\n\n" + sb.toString());
-            fw.close();
+        Intent logIntent = new Intent();
+        logIntent.setAction(ACTION_LOG_METRICS);
+        logIntent.putExtra("time", System.currentTimeMillis());
+        logIntent.putExtra("sourceMac", getMacAddress());
+        logIntent.putExtra("destinationMac", remoteMacAddress);
+        logIntent.putExtra("reqCount", reqCount);
+        logIntent.putExtra("failedReqCount", failedReq);
+        logIntent.putExtra("avgReqTime", avgReqTime);
+        logIntent.putExtra("avgConnTime", avgConnTime);
+        logIntent.putExtra("avgCommTime", avgCommTime);
+        logIntent.putExtra("avgSwanTime", avgSwanTime);
+        logIntent.putExtra("avgDataTransferred", avgDataTransferred);
+        logIntent.putExtra("extra1", "");
+        logIntent.putExtra("extra2", "");
+        logIntent.putExtra("extra3", "");
+        context.sendBroadcast(logIntent);
 
-            logRecords.clear();
-            startTime = 0;
+        if(WRITE_LOGS_TO_FILE) {
+            try {
+                FileWriter fw = new FileWriter(logFile);
+                fw.append("\n# phones = " + (nearbyDevices.size() + 1));
+                fw.append("\n# shared connections = " + SHARED_CONNECTIONS);
+                fw.append("\n# max connections = " + MAX_CONNECTIONS);
+                fw.append("\n# sample interval = " + TIME_BETWEEN_REQUESTS);
+                fw.append("\n# sync receivers = " + SYNC_RECEIVERS);
+                fw.append("\n# receivers = " + btReceivers.size());
+                fw.append("\n# wifi enabled = " + USE_WIFI);
+                fw.append("\n\n# failedRate = " + failedRate);
+                fw.append("\n# avgReqTime = " + avgReqTime);
+                fw.append("\n# avgConnTime = " + avgConnTime);
+                fw.append("\n# avgCommTime = " + avgCommTime);
+                fw.append("\n# avgSwanTime = " + avgSwanTime);
+                fw.append("\n\n# Idx\t" + BTLogRecord.printHeader());
+                fw.append("\n\n" + sb.toString());
+                fw.close();
 
-            MediaScannerConnection.scanFile(context, new String[]{ logFile.getAbsolutePath() }, null, null);
-            log(TAG, "log printed", Log.INFO, true);
-        } catch (IOException e) {
-            log(TAG, "couldn't write log", Log.ERROR, true, e);
+                logRecords.clear();
+                startTime = 0;
+
+                MediaScannerConnection.scanFile(context, new String[]{logFile.getAbsolutePath()}, null, null);
+                log(TAG, "log printed", Log.INFO, true);
+            } catch (IOException e) {
+                log(TAG, "couldn't write log", Log.ERROR, true, e);
+            }
         }
     }
 

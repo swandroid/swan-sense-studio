@@ -56,6 +56,7 @@ public class BTSwanDevice implements BTConnectionHandler {
         if(serverWorker != null) {
             serverWorker.onDisconnected(e);
         }
+        btManager.processLogs();
     }
 
     public String getName() {
