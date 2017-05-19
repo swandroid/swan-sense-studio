@@ -28,8 +28,8 @@ dependencies {
 
     // NOTE: for jcenter export option, we set the swansong as dependecy here
     // If you made local changes to the swansong, use:
-    //compile project(':swaninterface')
-    compile 'interdroid.swancore.swanmain:swaninterface:1.0.4'
+    compile project(':swaninterface')
+    //compile 'interdroid.swancore.swanmain:swaninterface:1.0.4'
     compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
         transitive = true;
     }
