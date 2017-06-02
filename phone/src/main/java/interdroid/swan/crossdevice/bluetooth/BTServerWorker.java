@@ -24,7 +24,7 @@ public class BTServerWorker extends BTWorker implements BTConnectionHandler {
         this.btManager = btManager;
         this.swanDevice = swanDevice;
         this.connection = btConnection;
-        logRecord = new BTLogRecord(btManager.getStartTime(), false);
+        logRecord = new BTLogRecord(btManager.getStartTime(), false, swanDevice.getBtDevice().getAddress());
     }
 
     @Override
@@ -44,6 +44,8 @@ public class BTServerWorker extends BTWorker implements BTConnectionHandler {
 
     @Override
     public void onReceive(HashMap<String, String> dataMap) {
+        logRecord.dataTransferred += getObjectSize(dataMap);
+
         String exprAction = dataMap.get("action");
         String exprSource = dataMap.get("source");
         String exprId = dataMap.get("id");

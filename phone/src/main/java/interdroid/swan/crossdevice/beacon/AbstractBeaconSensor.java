@@ -63,12 +63,13 @@ public abstract class AbstractBeaconSensor extends AbstractSwanSensor {
 
     @Override
     public void unregister(String id) {
-
-
         lock.lock();
         ids.remove(id);
         Log.d(TAG, "UNRegister " + id + " " + ids.toString());
-        BeaconSingleton.getInstance().removeSensor(this);
+        // if there are no other expressions registered for this sensor, remove it
+        if(ids.isEmpty()) {
+            BeaconSingleton.getInstance().removeSensor(this);
+        }
         lock.unlock();
     }
 

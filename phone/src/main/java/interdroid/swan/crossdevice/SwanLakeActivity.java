@@ -33,6 +33,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import java.io.IOException;
@@ -46,6 +47,7 @@ import interdroid.swan.R;
 import interdroid.swancore.swansong.Expression;
 import interdroid.swan.ttn.TtnActivity;
 import interdroid.swancore.crossdevice.Registry;
+import io.fabric.sdk.android.Fabric;
 import nl.sense_os.service.constants.SensePrefs;
 
 /**
@@ -67,6 +69,8 @@ public class SwanLakeActivity extends ListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
+
         final ListView listView = getListView();
         listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         listView.setMultiChoiceModeListener(new MultiChoiceModeListener() {
@@ -256,6 +260,9 @@ public class SwanLakeActivity extends ListActivity {
                 break;
             case R.id.action_cuckoo_resources:
                 startActivity(new Intent(this, ResourcesActivity.class));
+                break;
+            case R.id.action_sharing_settings:
+                startActivity(new Intent(this, SharingSettingsActivity.class));
                 break;
             default:
                 break;

@@ -18,13 +18,13 @@ public class BTClientWorker extends BTWorker implements BTConnectionHandler {
     private static final String TAG = "BTClientWorker";
 
     private BTRemoteEvaluationTask remoteEvaluationTask;
-    int remoteTimeToNextRequest = 0;
+    private int remoteTimeToNextRequest = 0;
 
     public BTClientWorker(BTManager btManager, BTRemoteEvaluationTask remoteEvaluationTask) {
         this.btManager = btManager;
         this.remoteEvaluationTask = remoteEvaluationTask;
         this.swanDevice = remoteEvaluationTask.getSwanDevice();
-        logRecord = new BTLogRecord(btManager.getStartTime(), true);
+        logRecord = new BTLogRecord(btManager.getStartTime(), true, swanDevice.getBtDevice().getAddress());
         logRecord.sensors = remoteEvaluationTask.getExpressions().size();
     }
 
@@ -39,7 +39,7 @@ public class BTClientWorker extends BTWorker implements BTConnectionHandler {
 
             if(isConnectedToRemote()) {
                 for(BTRemoteExpression remoteExpression : remoteExpressions) {
-                    send(remoteExpression.getId(), EvaluationEngineService.ACTION_REGISTER_REMOTE, remoteExpression.getExpression());
+                    send(remoteExpression.getId(), EvaluationEngineService.ACTION_REGISTER_REMOTE, remoteExpression.getExpressionString());
                 }
             } else {
                 done();
@@ -85,6 +85,8 @@ public class BTClientWorker extends BTWorker implements BTConnectionHandler {
 
     @Override
     public void onReceive(HashMap<String, String> dataMap) throws Exception {
+        logRecord.dataTransferred += getObjectSize(dataMap);
+
         String exprAction = dataMap.get("action");
         String exprSource = dataMap.get("source");
         String exprId = dataMap.get("id");

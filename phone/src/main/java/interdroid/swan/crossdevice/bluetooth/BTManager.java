@@ -10,6 +10,7 @@ import android.media.MediaScannerConnection;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -18,8 +19,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -36,6 +39,7 @@ import interdroid.swancore.swansong.Expression;
  * TODO stop client workers that are blocked waiting for results
  * TODO send just one valid result in BTServerWorker
  * TODO for tristate expressions sometimes there is no result
+ * TODO create Logger class
  */
 public class BTManager implements ProximityManagerI {
 
@@ -52,41 +56,45 @@ public class BTManager implements ProximityManagerI {
     protected final static String SERVICE_NAME = "swanlake";
     public static final String ACTION_NEARBY_DEVICE_FOUND = "interdroid.swan.crossdevice.bluetooth.ACTION_NEARBY_DEVICE_FOUND";
     public static final String ACTION_LOG_MESSAGE = "interdroid.swan.crossdevice.bluetooth.ACTION_LOG_MESSAGE";
+    public static final String ACTION_LOG_METRICS = "interdroid.swan.crossdevice.bluetooth.ACTION_LOG_METRICS";
     /* this should be configurable */
-    public static final int TIME_BETWEEN_REQUESTS = 4000;
+    public static final int TIME_BETWEEN_REQUESTS = 1000;
     /* set this to true if you want one connection per device, or false if you want one connection per worker */
     public static final boolean SHARED_CONNECTIONS = true;
     /* set this to true if you want only one server worker at a time, or false if you want multiple server workers in parallel */
     public static final boolean SYNC_RECEIVERS = true;
     /* set this to true if you want to prevent 2 devices connecting to each other at the same time */
-    public static final boolean SYNC_DEVICES = true;
+    public static final boolean SYNC_DEVICES = false;
     /* set SYNC_RECEIVERS to false if you set this to true */
     public static final boolean USE_WIFI = false;
-    private final int BLOCKED_WORKERS_CHECKING_INTERVAL = 10000;
-    private final int PEER_DISCOVERY_INTERVAL = 60000;
-    private final int MAX_CONNECTIONS = 0;
-    private final boolean LOG_ONLY_CRITICAL = false;
 
-    private Context context;
+    protected final int PEER_DISCOVERY_INTERVAL = 100;
+    private final int BLOCKED_WORKERS_CHECKING_INTERVAL = 10000;
+    private final int MAX_CONNECTIONS = 6;
+
+    private final boolean LOG_ONLY_CRITICAL = false;
+    private final boolean WRITE_LOGS_TO_FILE = false;
+
+    protected BluetoothAdapter btAdapter;
+    protected ConcurrentLinkedQueue<Object> evalQueue;
+    protected Handler handler;
+    protected Context context;
+
     private WifiReceiver wifiReceiver;
     private List<BTReceiver> btReceivers = new ArrayList<>();
-    private BluetoothAdapter btAdapter;
-    private ConcurrentLinkedQueue<Object> evalQueue;
-    private Handler handler;
     private boolean discovering = false;
-
     private boolean restarting = false;
-    private long startTime = System.currentTimeMillis();
+    protected long startTime = System.currentTimeMillis();
 
+    protected List<BTSwanDevice> nearbyDevices = new ArrayList<>();
     private List<BTClientWorker> clientWorkers = new ArrayList<>();
     private List<BTServerWorker> serverWorkers = new ArrayList<>();
     private List<BTWorker> waitingWorkers = new ArrayList<>();
-    private List<BTSwanDevice> nearbyDevices = new ArrayList<>();
     private List<BTLogRecord> logRecords = new ArrayList<>();
     /**
      * IMPORTANT the order of items in this list matters! (see SwanLakePlus)
      */
-    private Map<String, String> registeredExpressions = new HashMap<String, String>();
+    protected Map<String, String> registeredExpressions = new HashMap<String, String>();
 
     /* we schedule peer discovery to take place at regular intervals */
     Runnable nearbyPeersChecker = new Runnable() {
@@ -104,7 +112,7 @@ public class BTManager implements ProximityManagerI {
         }
     };
 
-    Runnable bluetoothRestart = new Runnable() {
+    protected Runnable bluetoothRestart = new Runnable() {
         public void run() {
             log(TAG, "stopping bluetooth...", Log.INFO, true);
             bcastLogMessage("stopping bluetooth...");
@@ -150,7 +158,7 @@ public class BTManager implements ProximityManagerI {
         }
     };
 
-    private final Thread evalThread = new Thread() {
+    protected final Thread evalThread = new Thread() {
         @Override
         public void run() {
             try {
@@ -191,7 +199,7 @@ public class BTManager implements ProximityManagerI {
     }
 
     //TODO move this to a separate file
-    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+    protected final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
 
@@ -236,11 +244,16 @@ public class BTManager implements ProximityManagerI {
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
                 log(TAG, "discovery finished", Log.INFO, true);
                 bcastLogMessage("discovery finished");
-                scheduleQueueItem(nearbyPeersChecker, PEER_DISCOVERY_INTERVAL);
-                setDiscovering(false);
 
-                synchronized (evalThread) {
-                    evalThread.notify();
+                // sometimes we get this event at the beginning of execution without starting
+                // discovery first
+                if(isDiscovering()) {
+//                    scheduleQueueItem(nearbyPeersChecker, PEER_DISCOVERY_INTERVAL);
+                    setDiscovering(false);
+
+                    synchronized (evalThread) {
+                        evalThread.notify();
+                    }
                 }
             }
         }
@@ -258,26 +271,19 @@ public class BTManager implements ProximityManagerI {
         evalQueue = new ConcurrentLinkedQueue<Object>();
         handler = new Handler();
         wifiReceiver = new WifiReceiver(this);
+    }
+
+    public void init() {
+        if (btAdapter == null) {
+            log(TAG, "Bluetooth not supported", Log.ERROR, true);
+            return;
+        }
 
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         this.context.registerReceiver(mReceiver, filter); // Don't forget to unregister during onDestroy
-    }
 
-    // TODO this is not quite OK
-    public void registerService() {
-        String userFriendlyName = PreferenceManager.getDefaultSharedPreferences(context).getString("name", null);
-
-        if (userFriendlyName == null) {
-            log(TAG, "Name not set for device", Log.ERROR, true);
-            return;
-        }
-
-        btAdapter.setName(userFriendlyName);
-    }
-
-    public void init() {
         registerService();
 
         evalThread.start();
@@ -293,6 +299,13 @@ public class BTManager implements ProximityManagerI {
         }
 
         blockedWorkersChecker.run();
+    }
+
+    // TODO this is not quite OK
+    public void registerService() {
+        if(!btAdapter.getName().toUpperCase().contains("SWAN")) {
+            btAdapter.setName(btAdapter.getName() + "_SWAN");
+        }
     }
 
     private void startReceivers() {
@@ -312,7 +325,8 @@ public class BTManager implements ProximityManagerI {
 
     @Override
     public void clean() {
-        for(Map.Entry<String, String> entry : registeredExpressions.entrySet()) {
+        // we make a copy of the set to avoid ConcurrentModificationException
+        for(Map.Entry<String, String> entry : new HashSet<>(registeredExpressions.entrySet())) {
             unregisterExpression(entry.getKey(), entry.getValue(), null);
         }
 
@@ -320,7 +334,6 @@ public class BTManager implements ProximityManagerI {
         context.unregisterReceiver(mReceiver);
     }
 
-    @Override
     public void disconnect() {
         for(BTSwanDevice swanDevice : nearbyDevices) {
             if (swanDevice.isConnectedToRemote()) {
@@ -360,10 +373,9 @@ public class BTManager implements ProximityManagerI {
     public synchronized void registerExpression(String id, String expression, String resolvedLocation) {
         log(TAG, "registering expression " + id + ": " + expression, Log.DEBUG);
         boolean newTask = false;
+        registeredExpressions.put(resolvedLocation + ":" + id, expression);
 
         if (resolvedLocation.equals(Expression.LOCATION_NEARBY)) {
-            registeredExpressions.put(id, expression);
-
             for (BTSwanDevice swanDevice : nearbyDevices) {
                 swanDevice.registerExpression(id, expression);
                 // if this is the first registered expression, then start a new task
@@ -401,20 +413,25 @@ public class BTManager implements ProximityManagerI {
     @Override
     public synchronized void unregisterExpression(String id, String expression, String resolvedLocation) {
         log(TAG, "unregistering expression " + id + ": " + expression, Log.DEBUG);
-        registeredExpressions.remove(id);
+
+        // we create a copy set to avoid ConcurrentModificationExceptions
+        for(String exprId : new HashSet<>(registeredExpressions.keySet())) {
+            if(exprId.endsWith(id)) {
+                registeredExpressions.remove(exprId);
+            }
+        }
 
         for(BTSwanDevice swanDevice : nearbyDevices) {
             swanDevice.unregisterExpression(id);
         }
 
         if(registeredExpressions.isEmpty()) {
-            printLogs();
             disconnect();
         }
     }
 
     // we synchronize this to make sure that a client worker is not added while a connection is killed in cleanupConnections()
-    private synchronized void processQueueItem(Object item) {
+    protected synchronized void processQueueItem(Object item) {
         log(TAG, "processing " + item, Log.DEBUG, true);
 
         if(item instanceof BTRemoteEvaluationTask) {
@@ -434,11 +451,12 @@ public class BTManager implements ProximityManagerI {
         }
     }
 
-    private void updateEvaluationTask(BTRemoteEvaluationTask remoteEvalTask) {
+    protected void updateEvaluationTask(BTRemoteEvaluationTask remoteEvalTask) {
         List<BTRemoteExpression> toRemove = new ArrayList<BTRemoteExpression>();
 
         for(BTRemoteExpression expression : remoteEvalTask.getExpressions()) {
-            if(!registeredExpressions.containsKey(expression.getBaseId())) {
+            if(!registeredExpressions.containsKey(Expression.LOCATION_NEARBY + ":" + expression.getBaseId())
+                    && !registeredExpressions.containsKey(remoteEvalTask.getSwanDevice().getName() + ":" + expression.getBaseId())) {
                 toRemove.add(expression);
             }
         }
@@ -483,7 +501,7 @@ public class BTManager implements ProximityManagerI {
     /**
      * send expression to the evaluation engine
      */
-    protected void sendExprForEvaluation(String exprId, String exprAction, String exprSource, String exprData) {
+    public void sendExprForEvaluation(String exprId, String exprAction, String exprSource, String exprData) {
         Intent intent = new Intent(exprAction);
         intent.setClass(getContext(), EvaluationEngineService.class);
         intent.putExtra("id", exprId);
@@ -492,7 +510,7 @@ public class BTManager implements ProximityManagerI {
         getContext().startService(intent);
     }
 
-    private void addToQueue(Object item) {
+    protected void addToQueue(Object item) {
         evalQueue.add(item);
         log(TAG, "item added to queue: " + item, Log.DEBUG);
         log(TAG, "[Queue] " + evalQueue, Log.DEBUG);
@@ -533,7 +551,7 @@ public class BTManager implements ProximityManagerI {
             nearbyDevices.add(swanDevice);
             registerRemoteDevice(swanDevice);
         } else {
-            log(TAG, "device " + btDevice.getName() + " already present, won't add", Log.DEBUG);
+//            log(TAG, "device " + btDevice.getName() + " already present, won't add", Log.DEBUG);
             if(btConnection != null && btConnection.isConnected()) {
                 log(TAG, "updated connection for " + btDevice.getName(), Log.DEBUG);
                 swanDevice.setConnection(btConnection);
@@ -543,20 +561,27 @@ public class BTManager implements ProximityManagerI {
     }
 
     private void registerRemoteDevice(BTSwanDevice swanDevice) {
+        boolean registered = false;
+
         if (registeredExpressions.isEmpty()) {
             return;
         }
 
         for (Map.Entry<String, String> entry : registeredExpressions.entrySet()) {
-            swanDevice.registerExpression(entry.getKey(), entry.getValue());
+            if(entry.getKey().startsWith(swanDevice.getName()) || entry.getKey().startsWith(Expression.LOCATION_NEARBY)) {
+                swanDevice.registerExpression(entry.getKey().split(":")[1], entry.getValue());
+                registered = true;
+            }
         }
 
-        BTRemoteEvaluationTask evalTask = new BTRemoteEvaluationTask(swanDevice);
+        if(registered) {
+            BTRemoteEvaluationTask evalTask = new BTRemoteEvaluationTask(swanDevice);
 //        addToQueue(evalTask);
-        scheduleEvaluationTask(evalTask, TIME_BETWEEN_REQUESTS);
+            scheduleEvaluationTask(evalTask, TIME_BETWEEN_REQUESTS);
 
-        synchronized (evalThread) {
-            evalThread.notify();
+            synchronized (evalThread) {
+                evalThread.notify();
+            }
         }
     }
 
@@ -735,14 +760,14 @@ public class BTManager implements ProximityManagerI {
     /**
      * temporary method used for debug
      */
-    protected void bcastLogMessage(String message) {
+    public void bcastLogMessage(String message) {
         Intent logMsgIntent = new Intent();
         logMsgIntent.setAction(ACTION_LOG_MESSAGE);
         logMsgIntent.putExtra("log", message);
         context.sendBroadcast(logMsgIntent);
     }
 
-    private void printLogs() {
+    protected void processLogs() {
         StringBuffer sb = new StringBuffer();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd-HHmm");
         String logSuffix = sdf.format(new Date());
@@ -757,12 +782,15 @@ public class BTManager implements ProximityManagerI {
         double avgConnTime = 0;
         double avgCommTime = 0;
         double avgSwanTime = 0;
+        double avgDataTransferred = 0;
         double successCount = 0;
+        String remoteMacAddress = "";
 
         for(BTLogRecord logRec : logRecords) {
             // we log only logs by client workers
             if(logRec.client) {
                 reqCount++;
+                remoteMacAddress = logRec.remoteMacAddress;
 
                 if(logRec.failed) {
                     failedReq++;
@@ -772,6 +800,7 @@ public class BTManager implements ProximityManagerI {
                     avgConnTime += logRec.connDuration;
                     avgCommTime += logRec.totalDuration - logRec.swanDuration;
                     avgSwanTime += logRec.swanDuration;
+                    avgDataTransferred += logRec.dataTransferred;
 
                     sb.append((int)successCount + "\t" + logRec.toString() + "\n");
                 }
@@ -784,33 +813,53 @@ public class BTManager implements ProximityManagerI {
             avgConnTime = avgConnTime / successCount;
             avgCommTime = avgCommTime / successCount;
             avgSwanTime = avgSwanTime / successCount;
+            avgDataTransferred = avgDataTransferred / successCount;
         }
 
-        try {
-            FileWriter fw = new FileWriter(logFile);
-            fw.append("\n# phones = " + (nearbyDevices.size() + 1));
-            fw.append("\n# shared connections = " + SHARED_CONNECTIONS);
-            fw.append("\n# max connections = " + MAX_CONNECTIONS);
-            fw.append("\n# sample interval = " + TIME_BETWEEN_REQUESTS);
-            fw.append("\n# sync receivers = " + SYNC_RECEIVERS);
-            fw.append("\n# receivers = " + btReceivers.size());
-            fw.append("\n# wifi enabled = " + USE_WIFI);
-            fw.append("\n\n# failedRate = " + failedRate);
-            fw.append("\n# avgReqTime = " + avgReqTime);
-            fw.append("\n# avgConnTime = " + avgConnTime);
-            fw.append("\n# avgCommTime = " + avgCommTime);
-            fw.append("\n# avgSwanTime = " + avgSwanTime);
-            fw.append("\n\n# Idx\t" + BTLogRecord.printHeader());
-            fw.append("\n\n" + sb.toString());
-            fw.close();
+        Intent logIntent = new Intent();
+        logIntent.setAction(ACTION_LOG_METRICS);
+        logIntent.putExtra("time", System.currentTimeMillis());
+        logIntent.putExtra("sourceMac", getMacAddress());
+        logIntent.putExtra("destinationMac", remoteMacAddress);
+        logIntent.putExtra("reqCount", reqCount);
+        logIntent.putExtra("failedReqCount", failedReq);
+        logIntent.putExtra("avgReqTime", avgReqTime);
+        logIntent.putExtra("avgConnTime", avgConnTime);
+        logIntent.putExtra("avgCommTime", avgCommTime);
+        logIntent.putExtra("avgSwanTime", avgSwanTime);
+        logIntent.putExtra("avgDataTransferred", avgDataTransferred);
+        logIntent.putExtra("extra1", "");
+        logIntent.putExtra("extra2", "");
+        logIntent.putExtra("extra3", "");
+        context.sendBroadcast(logIntent);
 
-            logRecords.clear();
-            startTime = 0;
+        if(WRITE_LOGS_TO_FILE) {
+            try {
+                FileWriter fw = new FileWriter(logFile);
+                fw.append("\n# phones = " + (nearbyDevices.size() + 1));
+                fw.append("\n# shared connections = " + SHARED_CONNECTIONS);
+                fw.append("\n# max connections = " + MAX_CONNECTIONS);
+                fw.append("\n# sample interval = " + TIME_BETWEEN_REQUESTS);
+                fw.append("\n# sync receivers = " + SYNC_RECEIVERS);
+                fw.append("\n# receivers = " + btReceivers.size());
+                fw.append("\n# wifi enabled = " + USE_WIFI);
+                fw.append("\n\n# failedRate = " + failedRate);
+                fw.append("\n# avgReqTime = " + avgReqTime);
+                fw.append("\n# avgConnTime = " + avgConnTime);
+                fw.append("\n# avgCommTime = " + avgCommTime);
+                fw.append("\n# avgSwanTime = " + avgSwanTime);
+                fw.append("\n\n# Idx\t" + BTLogRecord.printHeader());
+                fw.append("\n\n" + sb.toString());
+                fw.close();
 
-            MediaScannerConnection.scanFile(context, new String[]{ logFile.getAbsolutePath() }, null, null);
-            log(TAG, "log printed", Log.INFO, true);
-        } catch (IOException e) {
-            log(TAG, "couldn't write log", Log.ERROR, true, e);
+                logRecords.clear();
+                startTime = 0;
+
+                MediaScannerConnection.scanFile(context, new String[]{logFile.getAbsolutePath()}, null, null);
+                log(TAG, "log printed", Log.INFO, true);
+            } catch (IOException e) {
+                log(TAG, "couldn't write log", Log.ERROR, true, e);
+            }
         }
     }
 

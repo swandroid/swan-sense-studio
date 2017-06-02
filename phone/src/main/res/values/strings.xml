@@ -63,5 +63,6 @@
     <string name="packet_title">Packet:</string>
 
     <string name="test_value">Test Value</string>
+    <string name="title_activity_queuy">Queuy</string>
 
 </resources>

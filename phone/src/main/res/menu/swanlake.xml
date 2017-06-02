@@ -58,4 +58,10 @@
         android:id="@+id/action_cuckoo_resources"
         android:orderInCategory="100"
         android:title="@string/action_cuckoo_resources"/>
+
+    <!-- Sharing settings -->
+    <item
+        android:id="@+id/action_sharing_settings"
+        android:orderInCategory="100"
+        android:title="Sharing Settings"/>
 </menu>

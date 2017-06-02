@@ -1,8 +1,11 @@
 package interdroid.swan.sensors.impl;
 
 
+import android.util.Log;
+
 import org.altbeacon.beacon.Beacon;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,6 +18,8 @@ import interdroid.swancore.sensors.AbstractConfigurationActivity;
  * Created by slavik on 4/13/16.
  */
 public class BeaconDiscoverySensor extends AbstractBeaconSensor {
+
+    private static final String TAG = "BeaconDiscoverySensor";
 
     /**
      * The configuration activity for this sensor.
@@ -39,10 +44,12 @@ public class BeaconDiscoverySensor extends AbstractBeaconSensor {
 
     @Override
     public void setData(HashMap<String, Beacon> beacons, long time) {
+        ArrayList<String> discoveredIds = new ArrayList<>();
 
         for (Beacon beacon : beacons.values()) {
 
             String beaconId = getBeaconId(beacon);
+            discoveredIds.add(beaconId);
 
             for (Map.Entry<String, String> id : ids.entrySet()) {
                 if (id.getValue().compareTo(IBEACON) == 0
@@ -72,6 +79,8 @@ public class BeaconDiscoverySensor extends AbstractBeaconSensor {
                 }
             }
         }
+
+//        Log.d(TAG, "discovered beacons: " + discoveredIds);
     }
 
     @Override

@@ -5,6 +5,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -13,6 +16,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
 import interdroid.swancore.swanmain.ExpressionManager;
 import interdroid.swan.R;
@@ -38,6 +43,7 @@ public class TestActivity extends Activity {
     final String SENSOR_NAME = "light";
 
     /* random id */
+    public final int REQUEST_CODE_0 = 012;
     public final int REQUEST_CODE_1 = 123;
     public final int REQUEST_CODE_2 = 234;
     public final int REQUEST_CODE_3 = 345;
@@ -45,11 +51,15 @@ public class TestActivity extends Activity {
     public final int REQUEST_CODE_5 = 567;
     public final int REQUEST_CODE_6 = 678;
     public final int REQUEST_CODE_7 = 789;
+    public final int REQUEST_CODE_8 = 890;
+    public final int REQUEST_CODE_9 = 901;
+    public final int REQUEST_CODE_BEACON = 888;
 
     TextView tv = null;
     String mExpression;
     private boolean mRegistered = false;
     private Handler handler;
+    ArrayList<String> registeredExpr = new ArrayList<>();
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
@@ -57,6 +67,19 @@ public class TestActivity extends Activity {
 
             if (BTManager.ACTION_LOG_MESSAGE.equals(action)) {
                 String message = intent.getStringExtra("log");
+                TextView tv = (TextView) findViewById(R.id.result);
+                tv.setText(message + "\n" + tv.getText());
+            } else if(BTManager.ACTION_LOG_METRICS.equals(action)) {
+                String message = intent.getLongExtra("time", 0) + "\n" +
+                        intent.getStringExtra("sourceMac") + "\n" +
+                        intent.getStringExtra("destinationMac") + "\n" +
+                        intent.getDoubleExtra("reqCount", 0) + "\n" +
+                        intent.getDoubleExtra("failedReqCount", 0) + "\n" +
+                        intent.getDoubleExtra("avgReqTime", 0) + "\n" +
+                        intent.getDoubleExtra("avgConnTime", 0) + "\n" +
+                        intent.getDoubleExtra("avgCommTime", 0) + "\n" +
+                        intent.getDoubleExtra("avgSwanTime", 0) + "\n" +
+                        intent.getDoubleExtra("avgDataTransferred", 0);
                 TextView tv = (TextView) findViewById(R.id.result);
                 tv.setText(message + "\n" + tv.getText());
             }
@@ -71,6 +94,7 @@ public class TestActivity extends Activity {
         handler = new Handler();
 
         IntentFilter intentFilter = new IntentFilter(BTManager.ACTION_LOG_MESSAGE);
+        intentFilter.addAction(BTManager.ACTION_LOG_METRICS);
         registerReceiver(mReceiver, intentFilter);
 
 //        initialize();
@@ -97,6 +121,36 @@ public class TestActivity extends Activity {
 
     }
 
+    public void registerExpressionSelf(View view) {
+        EditText usernameEdit = (EditText) findViewById(R.id.username);
+        usernameEdit.setText("self");
+        registerExpression(view);
+//        testLocation();
+    }
+
+    private void testLocation() {
+        // Acquire a reference to the system Location Manager
+        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+
+        // Define a listener that responds to location updates
+        LocationListener locationListener = new LocationListener() {
+            public void onLocationChanged(Location location) {
+                // Called when a new location is found by the network location provider.
+                Log.d(TAG, "got new location: " + location.getLatitude() + ", " + location.getLongitude());
+            }
+
+            public void onStatusChanged(String provider, int status, Bundle extras) {}
+
+            public void onProviderEnabled(String provider) {}
+
+            public void onProviderDisabled(String provider) {}
+        };
+
+        // Register the listener with the Location Manager to receive location updates
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+    }
+
+    /* button handler */
     public void registerExpression(View view) {
         EditText usernameEdit = (EditText) findViewById(R.id.username);
         String connectTo = usernameEdit.getText().toString();
@@ -105,24 +159,32 @@ public class TestActivity extends Activity {
             connectTo = "NEARBY";
         }
 
+        final String expression0 = connectTo + "@cloudtest:value?delay='1000'{MIN,1000}";
         final String expression1 = connectTo + "@light:lux";
         final String expression2 = connectTo + "@movement:x";
         final String expression3 = connectTo + "@gyroscope:x";
         final String expression4 = connectTo + "@magnetometer:x";
         final String expression5 = connectTo + "@battery:level";
         final String expression6 = connectTo + "@proximity:distance";
-        final String expression7 = connectTo + "@sound:rms?audio_format=2#sample_interval=2000$server_storage=false{ANY,0}";
+        final String expression7 = connectTo + "@pressure:pressure";
+        final String expression8 = connectTo + "@sound:rms?audio_format=2#sample_interval=100$server_storage=false{ANY,0}";
+        final String expression9 = connectTo + "@location:latitude?provider='gps'";
+//        final String beaconExpression = connectTo + "@beacon_discovery:estimotenearable{ANY,0}";
 //        String expression3 = connectTo + "@light:lux > 10.0";
 //        mExpression = connectTo + "@fitness:avg_speed$server_storage=false{ANY,0}";
 
         if (!mRegistered) {
+//            registerSWANSensor(expression0, REQUEST_CODE_0);
             registerSWANSensor(expression1, REQUEST_CODE_1);
-            registerSWANSensor(expression2, REQUEST_CODE_2);
-            registerSWANSensor(expression3, REQUEST_CODE_3);
-            registerSWANSensor(expression4, REQUEST_CODE_4);
-            registerSWANSensor(expression5, REQUEST_CODE_5);
-            registerSWANSensor(expression6, REQUEST_CODE_6);
+//            registerSWANSensor(expression2, REQUEST_CODE_2);
+//            registerSWANSensor(expression3, REQUEST_CODE_3);
+//            registerSWANSensor(expression4, REQUEST_CODE_4);
+//            registerSWANSensor(expression5, REQUEST_CODE_5);
+//            registerSWANSensor(expression6, REQUEST_CODE_6);
 //            registerSWANSensor(expression7, REQUEST_CODE_7);
+//            registerSWANSensor(expression8, REQUEST_CODE_8);
+//            registerSWANSensor(expression9, REQUEST_CODE_9);
+//            registerSWANSensor(beaconExpression, REQUEST_CODE_BEACON);
 //            handler.postDelayed(new Runnable() {
 //                @Override
 //                public void run() {
@@ -162,16 +224,18 @@ public class TestActivity extends Activity {
     /* Register expression to SWAN */
     private void registerSWANSensor(String myExpression, int requestCode) {
         try {
+            registeredExpr.add(String.valueOf(requestCode));
+
             ExpressionManager.registerValueExpression(this, String.valueOf(requestCode),
                     (ValueExpression) ExpressionFactory.parse(myExpression),
                     new ValueExpressionListener() {
-
                         /* Registering a listener to process new values from the registered sensor*/
                         @Override
                         public void onNewValues(String id, TimestampedValue[] arg1) {
                             if (arg1 != null && arg1.length > 0) {
                                 String value = arg1[0].getValue().toString();
                                 tv.setText("Value = " + value);
+                                Log.d(TAG, "got new value = " + value);
                             } else {
                                 tv.setText("Value = null");
                             }
@@ -201,13 +265,10 @@ public class TestActivity extends Activity {
 
     /* Unregister expression from SWAN */
     private void unregisterSWANSensor() {
-        ExpressionManager.unregisterExpression(this, String.valueOf(REQUEST_CODE_1));
-        ExpressionManager.unregisterExpression(this, String.valueOf(REQUEST_CODE_2));
-        ExpressionManager.unregisterExpression(this, String.valueOf(REQUEST_CODE_3));
-        ExpressionManager.unregisterExpression(this, String.valueOf(REQUEST_CODE_4));
-        ExpressionManager.unregisterExpression(this, String.valueOf(REQUEST_CODE_5));
-        ExpressionManager.unregisterExpression(this, String.valueOf(REQUEST_CODE_6));
-        ExpressionManager.unregisterExpression(this, String.valueOf(REQUEST_CODE_7));
+        for(String regExprId : registeredExpr) {
+            ExpressionManager.unregisterExpression(this, regExprId);
+        }
+
         mRegistered = false;
     }
 

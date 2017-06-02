@@ -2,6 +2,10 @@ package interdroid.swan.crossdevice.bluetooth;
 
 import android.util.Log;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.Collections;
@@ -56,6 +60,7 @@ public class BTWorker extends Thread {
             connection.send(dataMap);
         }
 
+        logRecord.dataTransferred += getObjectSize(dataMap);
         btManager.log(getTag(), this + " successfully sent " + expressionAction + ": "
                 + toPrintableData(expressionData, expressionAction), Log.WARN);
     }
@@ -136,6 +141,20 @@ public class BTWorker extends Thread {
             }
         } catch (Exception ex) { } // for now eat exceptions
         return "";
+    }
+
+    public int getObjectSize(Serializable object) {
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(baos);
+            oos.writeObject(object);
+            oos.close();
+            return baos.size();
+        } catch (IOException e) {
+            Log.e(TAG, "cannot compute object size", e);
+        }
+
+        return 0;
     }
 
     public String getRemoteDeviceName() {

@@ -13,7 +13,7 @@ ext {
     siteUrl = 'https://github.com/swandroid/swan-sense-studio'
     gitUrl = 'https://github.com/swandroid/swan-sense-studio.git'
 
-    libraryVersion = '1.0.3'
+    libraryVersion = '1.0.4'
 
     developerId = 'swan'
     developerName = 'Swan Project'
@@ -26,7 +26,7 @@ ext {
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    buildToolsVersion "25.0.0"
 
     defaultConfig {
         minSdkVersion 15
@@ -46,6 +46,7 @@ dependencies {
     // NOTE: for jcenter export option, we set the swansong as dependecy here
     // If you made local changes to the swansong, use:
     // compile project(':swansong')
+//     compile project(':swansong')
     compile 'interdroid.swancore.swansong:swansong:1.0.3'
 }
 

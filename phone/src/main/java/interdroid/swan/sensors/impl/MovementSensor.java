@@ -12,6 +12,7 @@ import android.widget.Toast;
 import java.util.List;
 
 import interdroid.swan.R;
+import interdroid.swancore.models.MovementCoordinates;
 import interdroid.swancore.sensors.AbstractConfigurationActivity;
 import interdroid.swan.sensors.AbstractSwanSensor;
 
@@ -115,7 +116,15 @@ public class MovementSensor extends AbstractSwanSensor {
         }
 
     }
+    @Override
+    public String getModelClassName() {
+        return MovementCoordinates.class.getName();
+    }
 
+    @Override
+    public Class<?>[] getParameterTypes() {
+        return MovementCoordinates.class.getConstructors()[0].getParameterTypes();
+    }
     @Override
     public final void unregister(String id) {
         updateDelay();

@@ -4,6 +4,7 @@ package interdroid.swan.engine;
 import android.util.Log;
 import java.io.IOException;
 
+import interdroid.swan.crossdevice.ble.BLEManager;
 import interdroid.swancore.engine.EvaluationEngineServiceBase;
 import interdroid.swancore.crossdevice.Converter;
 import interdroid.swan.crossdevice.Pusher;
@@ -21,6 +22,7 @@ public class EvaluationEngineService extends EvaluationEngineServiceBase{
     public void onCreate() {
         super.onCreate();
 
+//        mProximityManager = new BLEManager(this);
         mProximityManager = new BTManager(this);
         mProximityManager.init();
         BeaconInitializer.getInstance(getApplicationContext());
