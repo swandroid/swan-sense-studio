@@ -167,7 +167,7 @@ public class WifiSensor extends AbstractSwanSensor {
     @Override
     public final void onConnected() {
         SENSOR_NAME = "WiFi Sensor";
-        wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+        wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
     }
 
     @Override
