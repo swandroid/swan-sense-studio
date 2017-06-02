@@ -400,6 +400,9 @@ public class BTManager implements ProximityManagerI {
                 }
             } else {
                 log(TAG, "can't find device " + resolvedLocation + "; won't register expression", Log.ERROR);
+                // perform device discovery
+                addToQueue(nearbyPeersChecker);
+                newTask = true;
             }
         }
 
