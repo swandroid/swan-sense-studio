@@ -335,11 +335,15 @@ public class BTManager implements ProximityManagerI {
     }
 
     public void disconnect() {
+        // disconnect devices
         for(BTSwanDevice swanDevice : nearbyDevices) {
             if (swanDevice.isConnectedToRemote()) {
                 swanDevice.getConnection().disconnect();
             }
         }
+        nearbyDevices.clear();
+
+        // stop receivers
         for(BTReceiver receiver : btReceivers) {
             receiver.abort();
         }
