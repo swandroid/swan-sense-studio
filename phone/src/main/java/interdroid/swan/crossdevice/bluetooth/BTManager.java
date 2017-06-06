@@ -163,7 +163,7 @@ public class BTManager implements ProximityManagerI {
         public void run() {
             try {
                 while (true) {
-                    while (evalQueue.isEmpty()) {
+                    while (evalQueue.isEmpty() || !clientWorkers.isEmpty() || isDiscovering() || isRestarting()) {
                         synchronized (this) {
                             wait();
                         }
@@ -171,12 +171,6 @@ public class BTManager implements ProximityManagerI {
 
                     Object item = removeFromQueue();
                     processQueueItem(item);
-
-                    while (!clientWorkers.isEmpty() || isDiscovering() || isRestarting()) {
-                        synchronized (this) {
-                            wait();
-                        }
-                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -239,6 +233,8 @@ public class BTManager implements ProximityManagerI {
                         btAdapter.enable();
                         log(TAG, "starting bluetooth...", Log.INFO, true);
                         bcastLogMessage("starting bluetooth...");
+                    } else {
+                        setRestarting(true);
                     }
                 }
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
@@ -289,14 +285,17 @@ public class BTManager implements ProximityManagerI {
         evalThread.start();
         wifiReceiver.start();
 
+        if(!btAdapter.isEnabled()) {
+            setRestarting(true);
+        }
+
         // we restart bluetooth before each run
-        addToQueue(bluetoothRestart);
-        addToQueue(nearbyPeersChecker);
+//        addToQueue(bluetoothRestart);
 //        addToQueue(nearbyPeersChecker);
 
-        synchronized (evalThread) {
-            evalThread.notify();
-        }
+//        synchronized (evalThread) {
+//            evalThread.notify();
+//        }
 
         blockedWorkersChecker.run();
     }
