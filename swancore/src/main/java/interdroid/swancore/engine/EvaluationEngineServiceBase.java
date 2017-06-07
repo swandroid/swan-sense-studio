@@ -145,7 +145,7 @@ public class EvaluationEngineServiceBase extends Service {
                                 // we re add the expression only if it wasn't unregistered in the meantime
                                 if(mEvaluationQueue.contains(head)) {
                                     mEvaluationQueue.remove(head);
-                                    mEvaluationQueue.add(head);
+//                                    mEvaluationQueue.add(head);
                                 }
                             }
                         } catch (SwanException e) {

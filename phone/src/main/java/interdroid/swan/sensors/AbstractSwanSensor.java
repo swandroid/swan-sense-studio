@@ -269,7 +269,7 @@ public abstract class AbstractSwanSensor extends AbstractSensorBase {
 
                 SharedPreferences mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
                 String storageOption = mainPrefs.getString(SensePrefs.Main.Advanced.STORAGE, "Remote Storage");
-                Log.d(TAG, "storage option: " + storageOption);
+//                Log.d(TAG, "storage option: " + storageOption);
                 if (0 == storageOption.compareTo("None"))
                     clearData();
                 else
@@ -469,7 +469,7 @@ public abstract class AbstractSwanSensor extends AbstractSensorBase {
 
             SharedPreferences mainPrefs = getSharedPreferences(SensePrefs.MAIN_PREFS, Context.MODE_PRIVATE);
             String storageOption = mainPrefs.getString(SensePrefs.Main.Advanced.STORAGE, "Remote Storage");
-            Log.d(TAG, "storage option: " + storageOption);
+//            Log.d(TAG, "storage option: " + storageOption);
             if (0 == storageOption.compareToIgnoreCase("Remote storage"))
                 val.put(DataPoint.TRANSMIT_STATE, 0);
             else

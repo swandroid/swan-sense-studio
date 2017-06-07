@@ -116,30 +116,40 @@ public class RainSensor extends AbstractSwanSensor {
 
         public void run() {
             while (!isInterrupted()) {
-
-
                 RainPrediction rainPrediction = new RainPrediction(Double.valueOf((String) configuration.get(LATITUDE)),
                         Double.valueOf((String) configuration.get(LONGITUDE)));
 
                 String line;
                 long startTime = System.currentTimeMillis();
+                long elapsedTime = 0;
                 BufferedReader bufferedReader = null;
 
-                try {
-                    Log.e(TAG, "URL: " + url);
-                    URLConnection conn = new URL(url).openConnection();
-                    conn.setConnectTimeout(2000);
-                    conn.setReadTimeout(2000);
-                    bufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                    long elapsedTime = System.currentTimeMillis() - startTime;
-                    Log.d(getClass().getSimpleName(), "Total elapsed http request/response time in milliseconds: " + elapsedTime);
-                    Log.d(getClass().getSimpleName(), "Sensed = " + (++sensed));
+                Log.d(TAG, "URL: " + url);
+                while(true) {
+                    try {
+                        Log.d(TAG, "Retry... ");
+                        URLConnection conn = new URL(url).openConnection();
+                        conn.setConnectTimeout(3000);
+                        conn.setReadTimeout(3000);
+                        bufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
-                } catch (Exception e) {
-                    bufferedReader = retry(url);
+                        elapsedTime = System.currentTimeMillis() - startTime;
+                        Log.d(getClass().getSimpleName(), "Total elapsed http request/response time in milliseconds: " + elapsedTime);
+                        Log.d(getClass().getSimpleName(), "Sensed = " + (++sensed));
+
+                        break;
+                    } catch (Exception e) {
+//                        e.printStackTrace();
+
+                        if (elapsedTime > 60000) {
+                            Log.e(getClass().getSimpleName(), "More than 1 minute has passed, Buienradar is not responding...");
+                            break;
+                        }
+                    }
                 }
 
                 if (bufferedReader == null) {
+//                    Log.d(TAG, "Empty!!!");
                     putValueTrimSize(configuration, id, System.currentTimeMillis(), rainPrediction);
                     return;
                 }
@@ -163,31 +173,6 @@ public class RainSensor extends AbstractSwanSensor {
                     return;
                 }
             }
-        }
-
-        private BufferedReader retry(String url) {
-            Log.d(getClass().getSimpleName(), "Retry for url = " + url);
-
-            long startTime = System.currentTimeMillis();
-            BufferedReader bufferedReader = null;
-
-            try {
-                URLConnection conn = new URL(url).openConnection();
-                conn.setConnectTimeout(2000);
-                conn.setReadTimeout(2000);
-                bufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                long elapsedTime = System.currentTimeMillis() - startTime;
-                Log.d(getClass().getSimpleName(), "Total elapsed http request/response time in milliseconds: " + elapsedTime);
-
-            } catch (Exception e) {
-                Log.e(TAG, e.toString());
-                Log.d(getClass().getSimpleName(), url);
-                long elapsedTime = System.currentTimeMillis() - startTime;
-                Log.d(getClass().getSimpleName(), "Total elapsed http request/response time in milliseconds: " + elapsedTime);
-            } finally {
-                Log.d(getClass().getSimpleName(), "Sensed = " + (++sensed));
-            }
-            return bufferedReader;
         }
 
         /*
