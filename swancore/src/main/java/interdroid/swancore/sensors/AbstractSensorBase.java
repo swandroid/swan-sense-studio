@@ -267,7 +267,7 @@ public abstract class AbstractSensorBase extends Service implements
             // can be null if multiple valuepaths are updated together and not
             // for all of them, there's an id registered.
             for (Bundle conf: expressionIdsPerConfig.keySet()) {
-                if (equalBundles(conf, configuration) || conf.getString(VALUE_PATH).equals(ALL_VALUES)) {
+                if (equalBundles(conf, configuration)) {
                     for (String id : expressionIdsPerConfig.get(conf)) {
                         notify.add(id);
                     }
