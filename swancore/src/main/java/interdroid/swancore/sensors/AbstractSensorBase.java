@@ -31,6 +31,7 @@ public abstract class AbstractSensorBase extends Service implements
 
     private static final String TAG = "AbstractSensorBase";
     public static final String VALUE_PATH = "value_path";
+    public static final String ALL_VALUES = "all_values";
 
     /**
      * The sensor interface.
@@ -266,7 +267,7 @@ public abstract class AbstractSensorBase extends Service implements
             // can be null if multiple valuepaths are updated together and not
             // for all of them, there's an id registered.
             for (Bundle conf: expressionIdsPerConfig.keySet()) {
-                if (equalBundles(conf, configuration)) {
+                if (equalBundles(conf, configuration) || conf.getString(VALUE_PATH).equals(ALL_VALUES)) {
                     for (String id : expressionIdsPerConfig.get(conf)) {
                         notify.add(id);
                     }

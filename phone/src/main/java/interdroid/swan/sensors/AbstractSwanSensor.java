@@ -36,7 +36,6 @@ import retrofit.client.Response;
 public abstract class AbstractSwanSensor extends AbstractSensorBase {
     public static final String TAG = "Abstract Sensor";
     public static final String DELAY = "delay";
-    public static final String ALL_VALUES = "all_values";
 
     /**
      * State for sensor update rate
