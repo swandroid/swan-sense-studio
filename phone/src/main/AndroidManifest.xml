@@ -675,7 +675,8 @@
                 android:value="location"/>
             <meta-data
                 android:name="valuePaths"
-                android:value="all_values,latitude,longitude,altitude,speed,bearing,accuracy"/>
+                android:value="location"/>
+                <!--android:value="all_values,latitude,longitude,altitude,speed,bearing,accuracy"/>-->
             <meta-data
                 android:name="min_distance"
                 android:value="0L"/>

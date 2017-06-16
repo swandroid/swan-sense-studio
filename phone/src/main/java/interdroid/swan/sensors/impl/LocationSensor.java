@@ -27,6 +27,8 @@ import interdroid.swan.sensors.AbstractSwanSensor;
 public class LocationSensor extends AbstractSwanSensor {
     private static final String TAG = "Location Sensor";
 
+    private Location lastLocation;
+
     /**
      * The configuration activity for this sensor.
      *
@@ -107,12 +109,26 @@ public class LocationSensor extends AbstractSwanSensor {
             Log.d(TAG, "Location: " + location.getLatitude() + ", "
                     + location.getLongitude());
 
-            putValueTrimSize(LATITUDE_FIELD, null, now, location.getLatitude());
-            putValueTrimSize(LONGITUDE_FIELD, null, now, location.getLongitude());
-            putValueTrimSize(ALTITUDE_FIELD, null, now, location.getAltitude());
-            putValueTrimSize(SPEED_FIELD, null, now, location.getSpeed());
-            putValueTrimSize(BEARING_FIELD, null, now, location.getBearing());
-            putValueTrimSize(ACCURACY_FIELD, null, now, location.getAccuracy());
+//            putValueTrimSize(LATITUDE_FIELD, null, now, location.getLatitude());
+//            putValueTrimSize(LONGITUDE_FIELD, null, now, location.getLongitude());
+//            putValueTrimSize(ALTITUDE_FIELD, null, now, location.getAltitude());
+//            putValueTrimSize(SPEED_FIELD, null, now, location.getSpeed());
+//            putValueTrimSize(BEARING_FIELD, null, now, location.getBearing());
+//            putValueTrimSize(ACCURACY_FIELD, null, now, location.getAccuracy());
+
+            if (lastLocation == null) {
+
+            } else {
+                double speed = Math.sqrt(
+                        Math.pow(location.getLongitude() - lastLocation.getLongitude(), 2)
+                                + Math.pow(location.getLatitude() - lastLocation.getLatitude(), 2)
+                ) / (location.getTime() - lastLocation.getTime());
+                location.setSpeed((float) speed);
+            }
+
+            lastLocation = location;
+
+            putValueTrimSize(LOCATION_FIELD, null, now, location);
         }
 
         public void onProviderDisabled(final String provider) {
