@@ -15,7 +15,6 @@ import android.util.Log;
 import java.lang.reflect.Field;
 
 import interdroid.swan.R;
-import interdroid.swancore.models.LocationCoordinates;
 import interdroid.swancore.sensors.AbstractConfigurationActivity;
 import interdroid.swan.sensors.AbstractSwanSensor;
 
@@ -181,16 +180,6 @@ public class LocationSensor extends AbstractSwanSensor {
         if (registeredConfigurations.size() == 1) {
             updateListener();
         }
-    }
-
-    @Override
-    public String getModelClassName() {
-        return LocationCoordinates.class.getName();
-    }
-
-    @Override
-    public Class<?>[] getParameterTypes() {
-        return LocationCoordinates.class.getConstructors()[1].getParameterTypes();
     }
 
     /**
