@@ -178,7 +178,7 @@ public class EvaluationManager extends EvaluationManagerBase{
             CloudManager.getInstance(mContext).unregisterExpression(id,resolvedLocation);
 
 
-        }else if (resolvedLocation.equals(Expression.LOCATION_NEARBY) || mProximityManager.hasPeer(resolvedLocation)) {
+        }else if (resolvedLocation.equals(Expression.LOCATION_NEARBY) || mProximityManager.hasPeer(resolvedLocation) || resolvedLocation.length() <= 20) {
             // get sensor info from nearby devices
             mProximityManager.unregisterExpression(id, toCrossDeviceString(expression, resolvedLocation), resolvedLocation);
         } else {

@@ -18,3 +18,10 @@
 
 !!! When creating a service, don't forget to add it to Manifest !!!
 
+* Steps for uploading a new release to Google Play
+    1. switch to release branch
+    2. merge changes from master and fix conflicts in Manifest
+    3. switch from "debug" to "release" in the Build Variants
+    4. Build -> Generate Signed APK
+    5. Upload the APK to Google Play
+
