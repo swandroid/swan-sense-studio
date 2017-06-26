@@ -21,7 +21,8 @@
 * Steps for uploading a new release to Google Play
     1. switch to release branch
     2. merge changes from master and fix conflicts in Manifest
-    3. switch from "debug" to "release" in the Build Variants
-    4. Build -> Generate Signed APK
-    5. Upload the APK to Google Play
+    3. increment android:versionCode in Manifest
+    4. switch from "debug" to "release" in the Build Variants
+    5. Build -> Generate Signed APK
+    6. Upload the APK to Google Play
 
