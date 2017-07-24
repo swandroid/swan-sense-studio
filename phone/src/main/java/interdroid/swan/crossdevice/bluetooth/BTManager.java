@@ -305,6 +305,9 @@ public class BTManager implements ProximityManagerI {
         if(!btAdapter.getName().toUpperCase().contains("SWAN")) {
             btAdapter.setName(btAdapter.getName() + "_SWAN");
         }
+        if(btAdapter.getName().split("\\s+").length > 1) {
+            btAdapter.setName(btAdapter.getName().replaceAll("\\s+", ""));
+        }
     }
 
     private void startReceivers() {
