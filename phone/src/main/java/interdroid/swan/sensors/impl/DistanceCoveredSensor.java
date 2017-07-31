@@ -88,11 +88,6 @@ public class DistanceCoveredSensor  extends AbstractSwanSensor {
                 double vSum = 0;
                 long now = acceptSensorReading();
 
-
-
-
-
-
                 if (now >= 0) {
                     Log.d(TAG, "onSensorChanged: " + now + " val " +
                             event.values[0] + " " + event.values[1] + " " +
