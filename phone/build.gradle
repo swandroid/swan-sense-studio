@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId "interdroid.swan"
-        minSdkVersion 21
+        minSdkVersion 19
         targetSdkVersion 22 // please leave this to '22' as bluetooth discovery is not working properly in higher versions
         multiDexEnabled true
     }
@@ -77,7 +77,7 @@ dependencies {
     //For firebase connection
     compile 'com.google.firebase:firebase-core:10.2.1'
     compile 'com.google.firebase:firebase-messaging:10.2.1'
-    compile 'com.android.support:multidex:1.0.0'
+    compile 'com.android.support:multidex:1.0.1'
 
     compile project(path: ':swaninterface')
 }
