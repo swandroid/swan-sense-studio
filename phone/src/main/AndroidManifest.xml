@@ -45,6 +45,7 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher_swan"
         android:label="@string/swan_app_name"
+        android:name="android.support.multidex.MultiDexApplication"
         android:largeHeap="true"
         tools:replace="label">
         <meta-data
