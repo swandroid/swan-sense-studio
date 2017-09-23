@@ -1,5 +1,11 @@
 package interdroid.swan.jsonsensor.cache;
 
+import android.content.Context;
+import android.os.AsyncTask;
+import android.os.Environment;
+import android.util.Log;
+
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -11,9 +17,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.content.Context;
-import android.util.Log;
-
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -27,17 +34,19 @@ import interdroid.swan.jsonsensor.pojos.JsonRequestInfo;
 import interdroid.swan.jsonsensor.pojos.JsonResponse;
 import interdroid.swan.jsonsensor.pojos.JsonSensorRequest;
 import interdroid.swan.jsonsensor.pojos.Parameter;
+import interdroid.swan.jsonsensor.volley.VolleySingleton;
 
 /**
  * Created by steven on 31/01/16.
  */
 public class JsonSensorCache {
-    //TODO: remove a sensor from response cache if no other sensor uses this
+    //TODO: remove a sensor from response cache if no other sensor uses this, started implementing, see TODO further below
     //TODO: save results to the cache
 
     private static final String TAG = JsonSensorCache.class.getSimpleName();
 
-    private static final int CACHE_TIME_DIVIDER = 10; //1/CACHE_TIME_DIVIDER = is caching time allowed as new response;
+    private static final float CACHE_TIME_DIVIDER = 1.9f; //1/CACHE_TIME_DIVIDER = is caching time allowed as new response;
+    private static final int TEST = 92;
 
     private static JsonSensorCache sInstance;
 
@@ -45,6 +54,17 @@ public class JsonSensorCache {
 
     private Queue<JsonSensorRequest> mRequestQueue;
     private List<JsonResponse> mResponseCache;
+
+    private long mTotalResponseSize = 0;
+    private long mTotalResponseSizeWithoutCache = 0;
+    private long mLastResponseSize = 0;
+    private int mNumberOfResponses = 0;
+    private int mNumberOfResponsesFromCache = 0;
+    private int mNumberOfVolleyErrors = 0;
+    private int mNumberOfEncodingErrors = 0;
+    private String mLastVolleyError = "";
+    private int mNumberOfRequests = 0;
+
 
     public static JsonSensorCache getInstance(Context context) {
         if (sInstance == null) {
@@ -62,6 +82,8 @@ public class JsonSensorCache {
      * @param jsonSensorRequest the request information to add to the queue
      */
     public synchronized void addRequestToQueue(JsonSensorRequest jsonSensorRequest) {
+        mNumberOfRequests += 1;
+
         if (mRequestQueue == null) {
             mRequestQueue = new LinkedList<>();
         }
@@ -74,6 +96,7 @@ public class JsonSensorCache {
      * Check if there are requests left in the queue
      */
     private synchronized void removeFromQueueAndCheckForNextRequest() {
+        mTotalResponseSizeWithoutCache += mLastResponseSize;
         mRequestQueue.poll();
         JsonSensorRequest jsonSensorRequest = mRequestQueue.peek();
         if (jsonSensorRequest != null) {
@@ -95,7 +118,7 @@ public class JsonSensorCache {
             if (mResponseCache.get(i).jsonRequestInfo.id == jsonSensorRequest.jsonRequestInfo.id) { //There is already an (old) response for this request
                 //Update request if necessary
                 JsonResponse jsonResponse = mResponseCache.get(i);
-                if (jsonResponse.lastRequestUpdate < jsonSensorRequest.jsonRequestInfo.lastUpdate) {
+                if (jsonResponse.lastRequestUpdate < jsonSensorRequest.jsonRequestInfo.lastUpdate) { //Check if the request was updated (new url)
                     JsonRequestInfo jsonRequestInfo = jsonSensorRequest.jsonRequestInfo;
                     jsonResponse.jsonRequestInfo = jsonRequestInfo.cloneForCache();
                     jsonResponse.lastRequestUpdate = jsonRequestInfo.lastUpdate;
@@ -107,6 +130,7 @@ public class JsonSensorCache {
                         if (jsonSensorRequest.listener != null) {
                             jsonSensorRequest.listener.onResult(jsonItem);
                         }
+                        mNumberOfResponsesFromCache += 1;
                         removeFromQueueAndCheckForNextRequest();
                     } else {
                         if (jsonSensorRequest.jsonRequestInfo.lastUpdate < jsonResponse.lastRequestUpdate) {
@@ -133,7 +157,9 @@ public class JsonSensorCache {
     }
 
     private void doGetRequest(final JsonSensorRequest jsonSensorRequest) {
-        RequestQueue queue = Volley.newRequestQueue(mContext);
+        VolleySingleton volleySingleton = VolleySingleton.getInstance(mContext.getApplicationContext());
+        RequestQueue queue = volleySingleton.getRequestQueue();
+//        RequestQueue queue = Volley.newRequestQueue(mContext);
 
         String url = jsonSensorRequest.jsonRequestInfo.url;
         ArrayList<Parameter> parameters = jsonSensorRequest.jsonRequestInfo.parameterList;
@@ -149,26 +175,86 @@ public class JsonSensorCache {
             }
         }
 
+        url += "&call=" + mNumberOfRequests
+                + "&test=" + TEST + "&requestTime=" + System.currentTimeMillis();
+        Log.w(TAG, "url: " + url);
+
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        int responseSize = 0;
+                        try {
+                            responseSize = response.getBytes("UTF-8").length;
+                        } catch (UnsupportedEncodingException e) {
+                            mNumberOfEncodingErrors += 1;
+                            e.printStackTrace();
+                        }
+
                         JsonItem jsonItem = parseJson(response);
+                        JsonResponse jsonResponse =
+                                new JsonResponse(jsonSensorRequest.jsonRequestInfo.cloneForCache(),
+                                        System.currentTimeMillis(), jsonItem);
+                        updateResponseCache(jsonResponse);
                         Log.i(TAG, response);
                         if (jsonSensorRequest.listener != null) {
                             jsonSensorRequest.listener.onResult(jsonItem);
                         }
+
                         removeFromQueueAndCheckForNextRequest();
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                Log.w(TAG, "error response:" + error.getMessage());
+                mNumberOfVolleyErrors += 1;
+                mLastVolleyError = error.getMessage();
+//                new ExportStringToFile().execute(mLastVolleyError);
+//                new ExportSizeToFile().execute("response error");
                 removeFromQueueAndCheckForNextRequest();
             }
-        });
+        }) {
+            @Override
+            protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                mTotalResponseSize += response.data.length;
+                mLastResponseSize = response.data.length;
+                if (!response.notModified) {
+                    mTotalResponseSizeWithoutCache += response.data.length;
+                } else {
+                    mTotalResponseSizeWithoutCache += new PrettyPrintingMap<String, String>(response.headers).toString().getBytes().length;
+                }
+                mNumberOfResponses += 1;
+                return super.parseNetworkResponse(response);
+            }
+        };
         // Add the request to the RequestQueue.
         queue.add(stringRequest);
+    }
+
+    public class PrettyPrintingMap<K, V> {
+        private Map<K, V> map;
+
+        public PrettyPrintingMap(Map<K, V> map) {
+            this.map = map;
+        }
+
+        public String toString() {
+            StringBuilder sb = new StringBuilder();
+            Iterator<Map.Entry<K, V>> iter = map.entrySet().iterator();
+            while (iter.hasNext()) {
+                Map.Entry<K, V> entry = iter.next();
+                sb.append(entry.getKey());
+                sb.append('=').append('"');
+                sb.append(entry.getValue());
+                sb.append('"');
+                if (iter.hasNext()) {
+                    sb.append(',').append(' ');
+                }
+            }
+            return sb.toString();
+
+        }
     }
 
     private void doPostRequest(final JsonSensorRequest jsonSensorRequest) {
@@ -212,6 +298,26 @@ public class JsonSensorCache {
         };
         // Add the request to the RequestQueue.
         queue.add(stringRequest);
+    }
+
+    private synchronized void updateResponseCache(JsonResponse jsonResponse) {
+        if (mResponseCache == null) {
+            mResponseCache = new ArrayList<>();
+        }
+
+        //TODO: Check if url changed etc.
+        boolean foundInCache = false;
+        for (int i = 0; i < mResponseCache.size(); i++) {
+            if (mResponseCache.get(i).jsonRequestInfo.id == jsonResponse.jsonRequestInfo.id) {
+                mResponseCache.remove(i);
+                mResponseCache.add(i, jsonResponse);
+                foundInCache = true;
+            }
+        }
+
+        if (!foundInCache) {
+            mResponseCache.add(jsonResponse);
+        }
     }
 
     private JsonItem parseJson(String response) {
@@ -353,6 +459,62 @@ public class JsonSensorCache {
             }
         }
         jsonItem.jsonItems = jsonItems;
+    }
+
+    private class ExportDataToCsv extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+                File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS),
+                        "SwanRssLogs");
+                Log.w(TAG, "Create directory");
+                if (!file.exists()) {
+                    if (!file.mkdirs()) {
+                        Log.e(TAG, "Directory not created");
+                    }
+                }
+
+                Log.w(TAG, "storagelocation: " + Environment
+                        .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString());
+                FileWriter f = new FileWriter(
+                        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString()
+                                + "/SwanRssLogs/" + System.currentTimeMillis() + "_" + TEST + ".csv", true);
+                f.write("timestamp;numberOfResponses;numberOfResponsesFromCache;totalResponseSize;totalResponseSizeWithoutCache\n");
+                f.write(System.currentTimeMillis() + ";" + mNumberOfResponses + ";" + mNumberOfResponsesFromCache + ";" + mTotalResponseSize + ";" + mTotalResponseSizeWithoutCache + "\n");
+//                f.write("requests1;requests2\n");
+//                f.write(mNumberOfRequests1 + ";" + mNumberOfRequests2 + "\n");
+                f.write("numberOfVolleyErrors;numberOfEncodingErrors\n");
+                f.write(mNumberOfVolleyErrors + ";" + mNumberOfEncodingErrors + "\n");
+                if (mLastVolleyError != null) {
+                    f.write(mLastVolleyError);
+                }
+                f.close();
+            } catch (IOException e) {
+                System.out.println(
+                        "Failed to create file: " + System.currentTimeMillis() + "_" + TEST + ".csv");
+                e.printStackTrace();
+                return null;
+            }
+
+            return null;
+        }
+    }
+
+    public synchronized void removeSensorFromCacheSynchronized(JsonSensorRequest jsonSensorRequest) {
+        Log.w(TAG, "removeSensorFromCache");
+
+        new ExportDataToCsv().execute();
+
+        //TODO find a way to check if there are others using this cache.
+        for (int i = 0; i < mResponseCache.size(); i++) {
+            if (mResponseCache.get(i).jsonRequestInfo.id == jsonSensorRequest.jsonRequestInfo.id) {
+                mResponseCache.remove(i);
+            }
+        }
+
+
+
     }
 
 //    private synchronized List<RssItem> addNewSensorResponseToCache(RssSensorRequest rssSensorRequest, List<RssItem> rssItemList) {

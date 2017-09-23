@@ -164,12 +164,12 @@ public class RssSensorCache {
 //            public void run() {
         mNumberOfResponsesFromCache += 1;
         mTotalResponseSizeWithoutCache += mLastResponseSize;
-                Log.w(TAG, "checkForNextRequest: " + mRequestQueue.size());
-                mRequestQueue.poll();
-                RssSensorRequest rssSensorRequest = mRequestQueue.peek();
-                if (rssSensorRequest != null) {
-                    doRequest(rssSensorRequest);
-                }
+        Log.w(TAG, "checkForNextRequest: " + mRequestQueue.size());
+        mRequestQueue.poll();
+        RssSensorRequest rssSensorRequest = mRequestQueue.peek();
+        if (rssSensorRequest != null) {
+            doRequest(rssSensorRequest);
+        }
 //            }
 //        });
     }

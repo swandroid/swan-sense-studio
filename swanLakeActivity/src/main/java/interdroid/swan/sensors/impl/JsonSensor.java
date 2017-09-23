@@ -81,7 +81,7 @@ public class JsonSensor extends AbstractSwanSensor {
 	
 	/*Configuration */
 	public static final String SAMPLE_INTERVAL = "sample_interval";
-	public static final int DEFAULT_SAMPLE_INTERVAL = 5 * 60 * 1000;
+	public static final int DEFAULT_SAMPLE_INTERVAL = 5 * 60;
     //public static final String JSON_CONFIGURATION = "json_configuration";
     //public static final String DEFAULT_JSON_CONFIGURATION = "";
     public static final String JSON_CONFIGURATION_FULL = "json_configuration_full";
@@ -122,7 +122,10 @@ public class JsonSensor extends AbstractSwanSensor {
 
 	@Override
 	public final void unregister(String id) {
-		activeThreads.remove(id).interrupt();
+        JsonPoller jsonPoller = activeThreads.remove(id);
+        jsonPoller.destroyPoller();
+        jsonPoller.interrupt();
+//		activeThreads.remove(id).interrupt();
 	}
 
 	class JsonPoller extends Thread implements JsonSensorRequest.JsonRequestListener {
@@ -136,6 +139,8 @@ public class JsonSensor extends AbstractSwanSensor {
         private long mStart;
         private JsonSensorRequest mJsonSensorRequest;
 
+        private boolean interrupted;
+
 		JsonPoller(String id, String valuePath, Bundle configuration) {
 			this.id = id;
 			this.configuration = configuration;
@@ -143,7 +148,7 @@ public class JsonSensor extends AbstractSwanSensor {
         }
 
         public void run() {
-			while (!isInterrupted()) {
+			while (!interrupted) {
                 mStart = System.currentTimeMillis();
                 Log.d("JsonSensor", "testtimer start: " + mStart);
 
@@ -190,7 +195,7 @@ public class JsonSensor extends AbstractSwanSensor {
                 Log.d("JsonSensor", "testtimer end: " + end);
 
                 int sampleRate = configuration.getInt(SAMPLE_INTERVAL,
-                        mDefaultConfiguration.getInt(SAMPLE_INTERVAL));
+                        mDefaultConfiguration.getInt(SAMPLE_INTERVAL)) * 1000;
                 if (mJsonSensorRequest == null) {
                     mJsonSensorRequest = new JsonSensorRequest(id, mJsonRequestInfo, sampleRate, this);
                 }
@@ -210,11 +215,10 @@ public class JsonSensor extends AbstractSwanSensor {
 				try {
 					Thread.sleep(Math.max(
 							0,
-							configuration.getInt(SAMPLE_INTERVAL,
-									mDefaultConfiguration
-											.getInt(SAMPLE_INTERVAL))
-									+ mStart - System.currentTimeMillis()));
+							sampleRate)
+									+ mStart - System.currentTimeMillis());
 				} catch (InterruptedException e) {
+                    interrupted = true;
                     break;
 				}
 			}
@@ -381,11 +385,18 @@ public class JsonSensor extends AbstractSwanSensor {
             }
             return jsonItem;
         }
+
+        public void destroyPoller() {
+            interrupted = true;
+//            rssSensorRequest.listener = null;
+            JsonSensorCache.getInstance(getApplicationContext()).removeSensorFromCacheSynchronized(mJsonSensorRequest);
+        }
     }
 
 	@Override
 	public void onDestroySensor() {
 		for (JsonPoller jsonPoller : activeThreads.values()) {
+            jsonPoller.destroyPoller();
 			jsonPoller.interrupt();
 		}
 		super.onDestroySensor();

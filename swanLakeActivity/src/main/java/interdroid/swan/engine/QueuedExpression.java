@@ -1,12 +1,13 @@
 package interdroid.swan.engine;
 
+import android.content.Intent;
+import android.os.Bundle;
+
 import interdroid.swan.swansong.Expression;
 import interdroid.swan.swansong.Result;
 import interdroid.swan.swansong.TimestampedValue;
 import interdroid.swan.swansong.TriStateExpression;
 import interdroid.swan.swansong.ValueExpression;
-import android.content.Intent;
-import android.os.Bundle;
 
 public class QueuedExpression implements Comparable<QueuedExpression> {
 
@@ -38,8 +39,11 @@ public class QueuedExpression implements Comparable<QueuedExpression> {
 	}
 
 	public int compareTo(QueuedExpression another) {
+		if (mCurrentResult == null) {
+			return -1;
+		}
 		return mCurrentResult.compareTo(another.mCurrentResult);
-	};
+	}
 
 	public Expression getExpression() {
 		return mExpression;

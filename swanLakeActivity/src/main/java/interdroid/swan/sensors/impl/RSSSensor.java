@@ -87,7 +87,7 @@ public class RssSensor extends AbstractSwanSensor {
 
 	/*Configuration */
 	public static final String SAMPLE_INTERVAL = "sample_interval";
-	public static final int DEFAULT_SAMPLE_INTERVAL = 5 * 60 * 1000;
+	public static final int DEFAULT_SAMPLE_INTERVAL = 5 * 60;
 //	public static final String URL_CONFIGURATION = "url";
 //	public static final String DEFAULT_URL = "";
     public static final String RSS_CONFIGURATION_FULL = "rss_configuration_full";

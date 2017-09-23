@@ -7,9 +7,8 @@
 	</PreferenceCategory>
 	<PreferenceCategory android:title="Configuration">
 		<interdroid.swan.util.SeekBarPreference
-			android:text=" seconds" android:max="3600" android:defaultValue="300"
-			android:title="Sample Interval" android:key="sample_interval"
-			android:persistent="false" />
+			android:text="seconds" android:max="100" android:defaultValue="1"
+			android:title="Sample Interval" android:key="sample_interval"/>
 		<!--<Preference
             android:key="json_configuration"
 			android:title="Json configuration"
