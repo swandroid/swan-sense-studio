@@ -13,8 +13,8 @@ import java.util.List;
 
 import interdroid.swan.R;
 import interdroid.swan.sensors.AbstractSwanSensor;
-import interdroid.swancore.models.MovementCoordinates;
 import interdroid.swancore.sensors.AbstractConfigurationActivity;
+import uk.ac.ox.eng.stepcounter.StepCounter;
 
 /**
  * Created by bojansimoski on 20/03/2017.
@@ -26,7 +26,7 @@ public class DistanceCoveredSensor  extends AbstractSwanSensor {
     /**
      * The configuration activity for this sensor.
      *
-     * @author nick &lt;palmer@cs.vu.nl&gt;
+     * @author Bojan Simoski
      */
     public static class ConfigurationActivity extends
             AbstractConfigurationActivity {
@@ -53,6 +53,12 @@ public class DistanceCoveredSensor  extends AbstractSwanSensor {
     double step_coeficient=0.0;
     double sensitivity=0.0;
 
+    private final int SAMPLING_FREQUENCY = 100;
+    private StepCounter stepCounterManager;
+
+    private int currentSteps = 0;
+    private int currentMeters = 0;
+
     private SensorEventListener sensorEventListener = new SensorEventListener() {
 
         public void onAccuracyChanged(Sensor sensor, int accuracy) {
@@ -61,79 +67,9 @@ public class DistanceCoveredSensor  extends AbstractSwanSensor {
             }
         }
 
-
-
-
-
-        final double   mLastValues[] = new double[3*2];
-        final double   mScale[] = new double[2];
-        int h = 480; // TODO: remove this constant
-        final double   mYOffset= h * 0.5f;
-
-        final double   mLastDirections[] = new double[3*2];
-        final double   mLastExtremes[][] = { new double[3*2], new double[3*2] };
-        final double   mLastDiff[] = new double[3*2];
-
-        int     mLastMatch = -1;
-        int     stepCounter=0;
-
-        int meters=0;
-
-        double t = - (h * 0.5f * (1.0f / (SensorManager.MAGNETIC_FIELD_EARTH_MAX)));
-
-
         public void onSensorChanged(SensorEvent event) {
             if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-                mScale[1]=t;
-                double vSum = 0;
-                long now = acceptSensorReading();
-
-               // if (now >= 0) {
-                    Log.d(TAG, "onSensorChanged: " + now + " val " +
-                            event.values[0] + " " + event.values[1] + " " +
-                            event.values[2]);
-                    //the event.values contains the x,y,z movement values
-                    vSum = mYOffset*3 + event.values[0] * mScale[1]+event.values[1]* mScale[1]+event.values[2]*mScale[1];
-
-                    int k = 0;
-                    double v = vSum / 3;
-
-                    float direction = (v > mLastValues[k] ? 1 : (v < mLastValues[k] ? -1 : 0));
-                    if (direction == - mLastDirections[k]) {
-                        // Direction changed
-                        int extType = (direction > 0 ? 0 : 1); // minumum or maximum?
-                        mLastExtremes[extType][k] = mLastValues[k];
-                        double diff = Math.abs(mLastExtremes[extType][k] - mLastExtremes[1 - extType][k]);
-
-                        Log.d(TAG, " sensitivity: " + sensitivity + " step_coeficient: " + step_coeficient);
-
-                        if (diff > sensitivity) {
-
-                            boolean isAlmostAsLargeAsPrevious = diff > (mLastDiff[k]*2/3);
-                            boolean isPreviousLargeEnough = mLastDiff[k] > (diff/3);
-                            boolean isNotContra = (mLastMatch != 1 - extType);
-
-                            if (isAlmostAsLargeAsPrevious && isPreviousLargeEnough && isNotContra) {
-                                Log.i(TAG, "step");
-                                stepCounter++;
-                                meters= getDistanceRun(stepCounter);
-                                //insert new values only if new step is detected
-                                putValueTrimSize(METERS, null, now, meters);
-                                putValueTrimSize(STEPS, null, now, stepCounter);
-                                mLastMatch = extType;
-                            }
-                            else {
-                                mLastMatch = -1;
-                            }
-                        }
-                        mLastDiff[k] = diff;
-                    }
-                    mLastDirections[k] = direction;
-                    mLastValues[k] = v;
-
-
-
-             //   }
+                stepCounterManager.processSample(event.timestamp, event.values);
             }
         }
     };
@@ -150,11 +86,28 @@ public class DistanceCoveredSensor  extends AbstractSwanSensor {
         DEFAULT_CONFIGURATION.putDouble(STEP_COEFFICIENT, DEFAULT_STEP_COEFFICIENT);
     }
 
+
     @Override
     public void onConnected() {
         SENSOR_NAME = "Distance Covered Sensor";
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         List<Sensor> sensorList = sensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER);
+
+        stepCounterManager= new StepCounter(SAMPLING_FREQUENCY);
+
+            stepCounterManager.start();
+            stepCounterManager.addOnStepUpdateListener(new StepCounter.OnStepUpdateListener() {
+                @Override
+                public void onStepUpdate(final int steps) {
+                    long now = acceptSensorReading();
+                    currentSteps = steps;
+                    currentMeters = getDistance(currentSteps);
+                    putValueTrimSize(METERS, null, now, currentMeters);
+                }
+            });
+
+
+
         if (sensorList.size() > 0) {
             accelerometer = sensorList.get(0);
         } else {
@@ -165,7 +118,6 @@ public class DistanceCoveredSensor  extends AbstractSwanSensor {
 
     @Override
     public final void register(String id, String valuePath, Bundle configuration, final Bundle httpConfiguration, Bundle extraConfiguration) {
-
         //todo modify the way you get these values so no overwrites will happen
         step_coeficient= Double.valueOf((String)configuration.get("step_coeficient"));
         sensitivity=Double.valueOf((String)configuration.get("sensitivity"));
@@ -173,6 +125,7 @@ public class DistanceCoveredSensor  extends AbstractSwanSensor {
         super.register(id, valuePath, configuration, httpConfiguration, extraConfiguration);
         updateDelay();
     }
+
 
     private void updateDelay() {
         sensorManager.unregisterListener(sensorEventListener);
@@ -184,22 +137,10 @@ public class DistanceCoveredSensor  extends AbstractSwanSensor {
 
     }
 
-    public int getDistanceRun(long steps){
-        // 0.415 for men and 0.413 for women * height in cm
-     //   configuration.get(STEP_COEFFICIENT)''
+    public int getDistance(long steps){
         return (int)(steps*step_coeficient)/100;
     }
 
-//TODO check if you need this
-//    @Override
-//    public String getModelClassName() {
-//        return MovementCoordinates.class.getName();
-//    }
-//
-//    @Override
-//    public Class<?>[] getParameterTypes() {
-//        return MovementCoordinates.class.getConstructors()[0].getParameterTypes();
-//    }
     @Override
     public final void unregister(String id) {
         updateDelay();
@@ -207,6 +148,7 @@ public class DistanceCoveredSensor  extends AbstractSwanSensor {
 
     @Override
     public final void onDestroySensor() {
+        stepCounterManager.stop();
         sensorManager.unregisterListener(sensorEventListener);
         super.onDestroySensor();
     }

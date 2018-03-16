@@ -733,6 +733,7 @@
                 android:value="m,steps" />
         </activity>
 
+
         <activity
             android:name=".sensors.impl.RainSensor$ConfigurationActivity"
             android:exported="true"

@@ -36,7 +36,6 @@ dependencies {
     //ant.importBuild 'src/main/buildgrammar.ant'
     compile project(':senseandroidlibrary')
     compile project(':swancore')
-
     compile files('libs/cuckoo-client.jar')
     compile files('libs/gcm-server.jar')
     compile files('libs/scribe-1.2.0.jar')
@@ -51,35 +50,29 @@ dependencies {
     compile 'com.google.android.gms:play-services-gcm:10.2.1'
     compile 'com.google.android.gms:play-services-wearable:10.2.1'
     compile 'org.altbeacon:android-beacon-library:2.8.1'
-
     compile 'com.android.support:recyclerview-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
-
     compile project(':ttn-android-sdk')
-
     // butterknife for views injection
     compile 'com.jakewharton:butterknife:7.0.1'
-
     // otto event bus
     compile 'com.squareup:otto:1.3.8'
-
     // material progress bar
     // https://github.com/lsjwzh/MaterialLoadingProgressBar
-    compile('com.lsjwzh:materialloadingprogressbar:0.5.8-RELEASE')
-
+    compile 'com.lsjwzh:materialloadingprogressbar:0.5.8-RELEASE'
     //For Flight sensor from google
-    compile ('com.google.apis:google-api-services-qpxExpress:v1-rev20-1.22.0'){
+    compile('com.google.apis:google-api-services-qpxExpress:v1-rev20-1.22.0') {
         exclude module: 'httpclient' //by artifact name
         exclude group: 'org.apache.httpcomponents' //by group
         exclude group: 'org.apache.httpcomponents', module: 'httpclient' //by both name and group
     }
-
     //For firebase connection
     compile 'com.google.firebase:firebase-core:10.2.1'
     compile 'com.google.firebase:firebase-messaging:10.2.1'
     compile 'com.android.support:multidex:1.0.1'
-
     compile project(path: ':swaninterface')
+
+    compile files('libs/StepCounterJava-all-1.0.jar')
 }
 
 
