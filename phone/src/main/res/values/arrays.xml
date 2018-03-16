@@ -154,6 +154,11 @@
         <item>steps</item>
     </string-array>
 
+    <string-array name="accelerometer_step_counter_valuepaths">
+        <item>meters</item>
+        <item>steps</item>
+    </string-array>
+
     <!-- gyroscope sensor -->
     <string-array name="gyroscope_valuepaths">
         <item>x</item>
