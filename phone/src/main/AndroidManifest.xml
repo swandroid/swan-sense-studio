@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="interdroid.swan"
-    android:versionCode="9"
-    android:versionName="9.0"
+    android:versionCode="10"
+    android:versionName="10.0"
     tools:ignore="ExportedService,ExportedReceiver"> <!-- <uses-sdk -->
     <!-- android:minSdkVersion="16" -->
     <!-- android:targetSdkVersion="22" /> -->
