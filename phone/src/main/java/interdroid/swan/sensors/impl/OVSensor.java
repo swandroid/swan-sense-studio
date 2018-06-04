@@ -60,7 +60,7 @@ public class OVSensor extends AbstractSwanSensor {
 
     @Override
     public void register(String id, String valuePath, Bundle configuration, final Bundle httpConfiguration, Bundle extraConfiguration) {// throws IOException {
-
+        super.register(id, valuePath, configuration, httpConfiguration, extraConfiguration);
 
         GVBPoller gvbPoller = new GVBPoller(id, valuePath,
                 configuration);
