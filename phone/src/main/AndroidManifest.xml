@@ -204,6 +204,14 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".actuator.RegisterReceiver"
+            android:exported="true"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="interdroid.swan.actuator.REGISTER" />
+                <action android:name="interdroid.swan.actuator.UNREGISTER" />
+            </intent-filter>
+        </receiver>
 
         <service
             android:name=".engine.EvaluationEngineService"
