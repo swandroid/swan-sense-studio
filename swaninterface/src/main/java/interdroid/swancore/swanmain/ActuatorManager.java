@@ -4,10 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 
-import interdroid.swancore.swansong.ComparisonExpression;
 import interdroid.swancore.swansong.Expression;
 import interdroid.swancore.swansong.ExpressionFactory;
 import interdroid.swancore.swansong.ExpressionParseException;
+import interdroid.swancore.swansong.TriStateExpression;
 
 public class ActuatorManager {
 
@@ -22,7 +22,7 @@ public class ActuatorManager {
     public static final String EXTRA_EXPRESSION = "expression";
     public static final String EXTRA_FORWARD = "forward";
 
-    public static void registerActuator(Context context, String id, ComparisonExpression expression, Expression action, ExpressionListener listener) throws SwanException {
+    public static void registerActuator(Context context, String id, TriStateExpression expression, Expression action, ExpressionListener listener) throws SwanException {
         Intent newTriState = new Intent(ExpressionManager.ACTION_NEW_TRISTATE);
         newTriState.setData(Uri.parse("swan://" + context.getPackageName() + "#" + id));
 
@@ -54,9 +54,9 @@ public class ActuatorManager {
             throw new SwanException("null expression");
         }
 
-        if (!(expression instanceof ComparisonExpression)) {
+        if (!(expression instanceof TriStateExpression)) {
             // TODO: 2018-06-05 check if this is true
-            throw new IllegalArgumentException("Only comparison expressions are supported");
+            throw new IllegalArgumentException("Only tristate expressions are supported");
         }
 
         Expression action;
@@ -66,7 +66,7 @@ public class ActuatorManager {
             throw new SwanException(e);
         }
 
-        registerActuator(context, id, (ComparisonExpression) expression, action, listener);
+        registerActuator(context, id, (TriStateExpression) expression, action, listener);
     }
 
     public static void unregisterActuator(Context context, String id) {

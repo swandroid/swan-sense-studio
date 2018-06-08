@@ -11,9 +11,6 @@ public class RegisterReceiver extends BroadcastReceiver {
 
     private static final String TAG = RegisterReceiver.class.getSimpleName();
 
-    private static final String EXTRA_EXPRESSION_ID = "expressionId";
-    private static final String EXTRA_EXPRESSION = "expression";
-
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
@@ -23,8 +20,8 @@ public class RegisterReceiver extends BroadcastReceiver {
             return;
         }
 
-        String expressionId = intent.getStringExtra(EXTRA_EXPRESSION_ID);
-        String expression = intent.getStringExtra(EXTRA_EXPRESSION);
+        String expressionId = intent.getStringExtra(ActuatorManager.EXTRA_EXPRESSION_ID);
+        String expression = intent.getStringExtra(ActuatorManager.EXTRA_EXPRESSION);
 
         if (expressionId == null || expressionId.isEmpty()) {
             Log.w(TAG, "Received mpty expression id");
