@@ -213,6 +213,12 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".actuator.TriStateInterceptor">
+            <intent-filter>
+                <action android:name="interdroid.swan.actuator.TRISTATE_INTERCEPTOR"/>
+            </intent-filter>
+        </receiver>
+
         <service
             android:name=".engine.EvaluationEngineService"
             android:exported="false" />

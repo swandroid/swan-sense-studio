@@ -2,6 +2,7 @@ package interdroid.swancore.swanmain;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 
 import interdroid.swancore.swansong.ComparisonExpression;
 import interdroid.swancore.swansong.Expression;
@@ -12,12 +13,26 @@ public class ActuatorManager {
 
     private static final String ACTUATOR_SEPARATOR = "THEN";
 
-    private static final String ACTION_REGISTER = "interdroid.swan.actuator.REGISTER";
-    private static final String ACTION_UNREGISTER = "interdroid.swan.actuator.UNREGISTER";
+    public static final String ACTION_REGISTER = "interdroid.swan.actuator.REGISTER";
+    public static final String ACTION_UNREGISTER = "interdroid.swan.actuator.UNREGISTER";
+
+    private static final String ACTION_NEW_TRISTATE = "interdroid.swan.actuator.TRISTATE_INTERCEPTOR";
+
+    public static final String EXTRA_EXPRESSION_ID = "expressionId";
+    public static final String EXTRA_EXPRESSION = "expression";
+    public static final String EXTRA_FORWARD = "forward";
 
     public static void registerActuator(Context context, String id, ComparisonExpression expression, Expression action, ExpressionListener listener) throws SwanException {
-        ExpressionManager.registerExpression(context, id, expression, listener);
-        sendRegister(context, id, expression);
+        Intent newTriState = new Intent(ExpressionManager.ACTION_NEW_TRISTATE);
+        newTriState.setData(Uri.parse("swan://" + context.getPackageName() + "#" + id));
+
+        Intent intercept = new Intent(ACTION_NEW_TRISTATE);
+        intercept.putExtra(EXTRA_FORWARD, newTriState);
+        intercept.putExtra(EXTRA_EXPRESSION_ID, id);
+
+        ExpressionManager.registerTriStateExpression(context, id, expression, intercept, intercept, intercept);
+
+        sendRegister(context, id, action);
     }
 
     public static void registerActuator(Context context, String id, String actuatorExpression, ExpressionListener listener) throws SwanException {
@@ -62,15 +77,15 @@ public class ActuatorManager {
     private static void sendRegister(Context context, String id, Expression expression) {
         Intent intent = new Intent(ACTION_REGISTER);
         intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-        intent.putExtra("expressionId", id);
-        intent.putExtra("expression", expression.toParseString());
+        intent.putExtra(EXTRA_EXPRESSION_ID, id);
+        intent.putExtra(EXTRA_EXPRESSION, expression.toParseString());
         context.sendBroadcast(intent);
     }
 
     private static void sendUnregister(Context context, String id) {
         Intent intent = new Intent(ACTION_UNREGISTER);
         intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-        intent.putExtra("expressionId", id);
+        intent.putExtra(EXTRA_EXPRESSION_ID, id);
         context.sendBroadcast(intent);
     }
 }
