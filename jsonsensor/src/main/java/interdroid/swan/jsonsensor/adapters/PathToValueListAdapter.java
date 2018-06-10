@@ -6,14 +6,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import interdroid.swan.jsonsensor.R;
-import interdroid.swan.jsonsensor.pojos.JsonPathType;
-import interdroid.swan.jsonsensor.pojos.PathToValue;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import interdroid.swan.jsonsensor.R;
+import interdroid.swan.jsonsensor.pojos.JsonPathType;
+import interdroid.swan.jsonsensor.pojos.PathToValue;
 
 /**
  * Created by steven on 21/10/14.
@@ -24,7 +24,7 @@ public class PathToValueListAdapter extends RecyclerView.Adapter<PathToValueList
     private OnPathToValueClickListener mOnPathToValueClickListener;
 
     public PathToValueListAdapter(OnPathToValueClickListener onPathToValueClickListener) {
-        mPathToValues = new ArrayList<PathToValue>();
+        mPathToValues = new ArrayList<>();
         mOnPathToValueClickListener = onPathToValueClickListener;
     }
 
@@ -47,8 +47,6 @@ public class PathToValueListAdapter extends RecyclerView.Adapter<PathToValueList
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_path_to_value, parent, false);
 
-        // set the view's size, margins, paddings and layout parameters
-
         ViewHolder viewHolder = new ViewHolder(view);
         view.setTag(viewHolder);
         view.setOnClickListener(mOnClickListener);
@@ -64,7 +62,6 @@ public class PathToValueListAdapter extends RecyclerView.Adapter<PathToValueList
         viewHolder.mPath.setText(getPathString(pathToValue));
 
         viewHolder.mPosition = position;
-
     }
 
     private String getPathString(PathToValue pathToValue) {
@@ -115,6 +112,6 @@ public class PathToValueListAdapter extends RecyclerView.Adapter<PathToValueList
     };
 
     public interface OnPathToValueClickListener {
-        public void onPathToValueClicked(PathToValue pathToValue);
+        void onPathToValueClicked(PathToValue pathToValue);
     }
 }

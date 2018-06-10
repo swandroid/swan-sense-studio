@@ -45,8 +45,6 @@ public class JsonInputActivity extends BaseActivity {
         setActionBarIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
 
         getViews();
-
-        //startActivity(new Intent(JsonInputActivity.this, JsonActivity.class));
     }
 
     private void getViews() {
@@ -117,14 +115,12 @@ public class JsonInputActivity extends BaseActivity {
     private void showDialog() {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
-        //alert.setTitle("Title");
         alert.setMessage(R.string.input_label_param_title);
 
         // Set an EditText view to get user input
         LinearLayout layout = (LinearLayout) View.inflate(this, R.layout.dialog_parameter, null);
         final EditText nameEditText = (EditText) layout.findViewById(R.id.param_input_param_name);
         final EditText valueEditText = (EditText) layout.findViewById(R.id.param_input_param_value);
-        //nameEditText.setText(jsonValueItem.key);
         alert.setView(layout);
 
         alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -182,17 +178,7 @@ public class JsonInputActivity extends BaseActivity {
             intent.putExtra(SelectionActivity.REQUEST_EXTRA_RESULT, jsonRequestInfo.id);
             setResult(RESULT_OK, intent);
             finish();
-
-            /*Intent intent = new Intent(JsonInputActivity.this, PathToValueListActivity.class);
-            intent.putExtra(JsonActivity.EXTRA_JSON_REQUEST_INFO, jsonRequestInfo);
-            //intent.putExtra(JsonActivity.EXTRA_URL, jsonRequestInfo.url);
-            startActivity(intent);
-            break;*/
         }
-        //noinspection SimplifiableIfStatement
-        /*if (id == R.id.action_settings) {
-            return true;
-        }*/
 
         return super.onOptionsItemSelected(item);
     }

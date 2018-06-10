@@ -6,10 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 import interdroid.swan.jsonsensor.R;
 import interdroid.swan.jsonsensor.pojos.JsonItem;
-
-import java.util.ArrayList;
 
 /**
  * Created by steven on 21/10/14.
@@ -20,7 +20,7 @@ public class JsonHeaderListAdapter extends RecyclerView.Adapter<JsonHeaderListAd
     private OnJsonItemClickListener mOnJsonItemClickListener;
 
     public JsonHeaderListAdapter(OnJsonItemClickListener onJsonItemClickListener) {
-        mJsonItems = new ArrayList<JsonItem>();
+        mJsonItems = new ArrayList<>();
         mOnJsonItemClickListener = onJsonItemClickListener;
     }
 
@@ -40,8 +40,6 @@ public class JsonHeaderListAdapter extends RecyclerView.Adapter<JsonHeaderListAd
         // create a new view
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_json_header, parent, false);
-
-        // set the view's size, margins, paddings and layout parameters
 
         ViewHolder viewHolder = new ViewHolder(view);
         view.setTag(viewHolder);
@@ -65,11 +63,6 @@ public class JsonHeaderListAdapter extends RecyclerView.Adapter<JsonHeaderListAd
 
     public void addJsonItem(JsonItem jsonItem) {
         mJsonItems.add(jsonItem);
-        notifyDataSetChanged();
-    }
-
-    public void setJsonItems(ArrayList<JsonItem> jsonItems) {
-        mJsonItems = jsonItems;
         notifyDataSetChanged();
     }
 
@@ -97,6 +90,6 @@ public class JsonHeaderListAdapter extends RecyclerView.Adapter<JsonHeaderListAd
     };
 
     public interface OnJsonItemClickListener {
-        public void onJsonItemClicked(JsonItem jsonItem);
+        void onJsonItemClicked(JsonItem jsonItem);
     }
 }

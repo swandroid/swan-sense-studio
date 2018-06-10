@@ -1,10 +1,6 @@
 package interdroid.swan.rss_sensor.cache;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.AsyncTask;
-import android.os.Environment;
 import android.util.Log;
 
 import com.android.volley.NetworkResponse;
@@ -18,19 +14,12 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Queue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import interdroid.swan.rss_sensor.pojos.RssItem;
 import interdroid.swan.rss_sensor.pojos.RssSensorRequest;
@@ -46,7 +35,7 @@ public class RssSensorCache {
     private static final String TAG = RssSensorCache.class.getSimpleName();
 
     private static final float CACHE_TIME_DIVIDER = 1.9f; //1/CACHE_TIME_DIVIDER = is caching time allowed as new response;
-    private static final int TEST = 50;
+    private static final int TEST = 219;
 
     private static RssSensorCache sInstance;
 
@@ -55,19 +44,6 @@ public class RssSensorCache {
     private Queue<RssSensorRequest> mRequestQueue;
     private List<RssSensorResponse> mSensorResponseCache;
     private List<RssUrlResponse> mUrlResponseCache;
-
-    private ExecutorService mThreadPool;
-
-    private long mTotalResponseSize = 0;
-    private long mTotalResponseSizeWithoutCache = 0;
-    private long mLastResponseSize = 0;
-    private int mNumberOfResponses = 0;
-    private int mNumberOfResponsesFromCache = 0;
-    private int mNumberOfVolleyErrors = 0;
-    private int mNumberOfEncodingErrors = 0;
-    private String mLastVolleyError = "";
-    private int mNumberOfRequests = 0;
-//    private int mNumberOfRequests2 = 0;
 
     private RssSensorCache(Context context) {
         mContext = context;
@@ -80,98 +56,21 @@ public class RssSensorCache {
         return sInstance;
     }
 
-    /**
-     * Add a request from a RssSensor to the cache Queue
-     * @param rssSensorRequest the request information to add to the queue
-     */
-    public void addRequestToQueue(final RssSensorRequest rssSensorRequest) {
-//        addRequestToQueueSynchronized(rssSensorRequest);
-//        if (mRequestQueue == null) {
-//            mRequestQueue = new LinkedList<>();
-//        }
-//        if (mRequestQueue.offer(rssSensorRequest) && mRequestQueue.size() == 1) {
-//            doRequest(rssSensorRequest);
-//        }
-        if (mThreadPool == null) {
-            mThreadPool = Executors.newCachedThreadPool();
-        }
-        mThreadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                addRequestToQueueSynchronized(rssSensorRequest);
-            }
-        });
-    }
-
     public synchronized void addRequestToQueueSynchronized(final RssSensorRequest rssSensorRequest) {
-//        if (mThreadPool == null) {
-//            mThreadPool = Executors.newCachedThreadPool();
-//        }
-//        mThreadPool.execute(new Runnable() {
-//            @Override
-//            public void run() {
-                mNumberOfRequests += 1;
-//                if (rssSensorRequest.sensorUrlId == 1) {
-//                    mNumberOfRequests1 += 1;
-//                } else if (rssSensorRequest.sensorUrlId == 2) {
-//                    mNumberOfRequests2 += 1;
-//                }
-                Log.w(TAG, "addRequestToQueue: " + rssSensorRequest.sensorId);
-                if (mRequestQueue == null) {
-                    mRequestQueue = new LinkedList<>();
-                }
-                Log.w(TAG, "mRequestQueue.size(): " + mRequestQueue.size());
-//                new ExportStringRequestToFile().execute(hasInternetConnection() + "",
-//                        rssSensorRequest.sensorUrlId + "", mRequestQueue.size() + "", System.currentTimeMillis() + "");
-                if (mRequestQueue.offer(rssSensorRequest) && mRequestQueue.size() == 1) {
-                    Log.w(TAG, "mRequestQueue.size() after adding size == 1: " + mRequestQueue.size());
-                    doRequest(rssSensorRequest);
-                }
-                Log.w(TAG, "mRequestQueue.size() after adding: " + mRequestQueue.size());
-//            }
-//        });
-    }
-
-//    /**
-//     * Remove the oldest request from the queue
-//     */
-//    private synchronized void removeOldestRequestFromQueue() {
-//        Log.d(TAG, "removeOldestRequestFromQueue: " + mRequestQueue.size());
-//
-//    }
-
-    /**
-     * Check if there are requests left in the queue
-     */
-    private void removeFromQueueAndCheckForNextRequest() {
-//        mRequestQueue.poll();
-//        RssSensorRequest rssSensorRequest = mRequestQueue.peek();
-//        if (rssSensorRequest != null) {
-//            doRequest(rssSensorRequest);
-//        }
-
-//        mThreadPool.execute(new Runnable() {
-//            @Override
-//            public void run() {
-                removeFromQueueAndCheckForNextRequestSynchronized();
-//            }
-//        });
+        if (mRequestQueue == null) {
+            mRequestQueue = new LinkedList<>();
+        }
+        if (mRequestQueue.offer(rssSensorRequest) && mRequestQueue.size() == 1) {
+            doRequest(rssSensorRequest);
+        }
     }
 
     private synchronized void removeFromQueueAndCheckForNextRequestSynchronized() {
-//        mThreadPool.execute(new Runnable() {
-//            @Override
-//            public void run() {
-        mNumberOfResponsesFromCache += 1;
-        mTotalResponseSizeWithoutCache += mLastResponseSize;
-        Log.w(TAG, "checkForNextRequest: " + mRequestQueue.size());
         mRequestQueue.poll();
         RssSensorRequest rssSensorRequest = mRequestQueue.peek();
         if (rssSensorRequest != null) {
             doRequest(rssSensorRequest);
         }
-//            }
-//        });
     }
 
     /**
@@ -191,7 +90,7 @@ public class RssSensorCache {
                 if (rssUrlResponse.lastUpdate < rssSensorRequest.lastUpdate) {
                     rssUrlResponse.urlString = rssSensorRequest.sensorUrl;
                     rssUrlResponse.lastUpdate = rssSensorRequest.lastUpdate;
-                    doGetRequest(rssSensorRequest, 187);
+                    doGetRequest(rssSensorRequest);
                 } else {
                     long timePastSinceLastResponse = System.currentTimeMillis() - rssUrlResponse.responseTime;
                     if (timePastSinceLastResponse < (int) (rssSensorRequest.sampleRate / CACHE_TIME_DIVIDER)) {
@@ -199,21 +98,21 @@ public class RssSensorCache {
                         if (rssSensorRequest.listener != null) {
                             rssSensorRequest.listener.onResult(rssItemList);
                         }
-                        Log.w(TAG, "get response from cache: " + timePastSinceLastResponse);
                         removeFromQueueAndCheckForNextRequestSynchronized();
                     } else {
                         if (rssSensorRequest.lastUpdate < rssUrlResponse.lastUpdate) {
                             rssSensorRequest.sensorUrl = rssUrlResponse.urlString;
                             rssSensorRequest.lastUpdate = rssUrlResponse.lastUpdate;
                         }
-                        doGetRequest(rssSensorRequest, 201);
+                        doGetRequest(rssSensorRequest);
                     }
                 }
                 return;
             }
         }
+
         //No (old) response was found, do a request to the url
-        doGetRequest(rssSensorRequest, 208);
+        doGetRequest(rssSensorRequest);
     }
 
     private synchronized List<RssItem> updateResponseWithSensorCache(RssSensorRequest rssSensorRequest, List<RssItem> rssItemList) {
@@ -238,6 +137,7 @@ public class RssSensorCache {
                 }
             }
         }
+
         //There was no old response (or the old response was removed), create a new response
         return addNewSensorResponseToCache(rssSensorRequest, rssItemList);
     }
@@ -265,22 +165,7 @@ public class RssSensorCache {
         }
     }
 
-    public void removeSensorFromCache(final RssSensorRequest rssSensorRequest) {
-        Log.w(TAG, "removeSensorFromCache");
-        //Remove the sensor from the sensor cache
-        mThreadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                removeSensorFromCacheSynchronized(rssSensorRequest);
-            }
-        });
-    }
-
     public synchronized void removeSensorFromCacheSynchronized(RssSensorRequest rssSensorRequest) {
-        Log.w(TAG, "removeSensorFromCache");
-
-        new ExportDataToCsv().execute();
-
         for (int i = 0; i < mSensorResponseCache.size(); i++) {
             if (mSensorResponseCache.get(i).sensorId.equals(rssSensorRequest.sensorId)) {
                 mSensorResponseCache.remove(i);
@@ -299,203 +184,6 @@ public class RssSensorCache {
                 return;
             }
         }
-
-
-    }
-
-    private class ExportStringRequestToFile extends AsyncTask<String, Void, Void> {
-
-        @Override
-        protected Void doInBackground(String... params) {
-            try {
-                File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS),
-                        "SwanRssLogs");
-                Log.w(TAG, "Create directory");
-                if (!file.exists()) {
-                    if (!file.mkdirs()) {
-                        Log.e(TAG, "Directory not created");
-                    }
-                }
-
-                Log.w(TAG, "storagelocation: " + Environment
-                        .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString());
-                FileWriter f = new FileWriter(
-                        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString()
-                                + "/SwanRssLogs/all_responses.txt", true);
-                f.write("Request" + params[3] + "\n");
-                f.write("Has internet connection" + params[0] + "\n");
-                f.write("Request id: " + params[1] + "\n");
-                f.write("Number of requests in queue before adding: " + params[2] + "\n");
-                f.close();
-            } catch (IOException e) {
-                System.out.println(
-                        "Failed to create file: " + System.currentTimeMillis() + ".csv");
-                e.printStackTrace();
-                return null;
-            }
-
-            return null;
-        }
-    }
-
-    private class ExportDoGetRequestToFile extends AsyncTask<String, Void, Void> {
-
-        @Override
-        protected Void doInBackground(String... params) {
-            try {
-                File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS),
-                        "SwanRssLogs");
-                Log.w(TAG, "Create directory");
-                if (!file.exists()) {
-                    if (!file.mkdirs()) {
-                        Log.e(TAG, "Directory not created");
-                    }
-                }
-
-                Log.w(TAG, "storagelocation: " + Environment
-                        .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString());
-                FileWriter f = new FileWriter(
-                        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString()
-                                + "/SwanRssLogs/all_responses.txt", true);
-                f.write("Line where get request is called: " + params[0] + "\n");
-                f.close();
-            } catch (IOException e) {
-                System.out.println(
-                        "Failed to create file: " + System.currentTimeMillis() + ".csv");
-                e.printStackTrace();
-                return null;
-            }
-
-            return null;
-        }
-    }
-
-    private class ExportStringToFile extends AsyncTask<String, Void, Void> {
-
-        @Override
-        protected Void doInBackground(String... params) {
-            try {
-                File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS),
-                        "SwanRssLogs");
-                Log.w(TAG, "Create directory");
-                if (!file.exists()) {
-                    if (!file.mkdirs()) {
-                        Log.e(TAG, "Directory not created");
-                    }
-                }
-
-                Log.w(TAG, "storagelocation: " + Environment
-                        .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString());
-                FileWriter f = new FileWriter(
-                        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString()
-                                + "/SwanRssLogs/all_responses.txt", true);
-                f.write("Response" + System.currentTimeMillis() + "\n");
-                f.write(params[0] + "\n");
-                f.close();
-            } catch (IOException e) {
-                System.out.println(
-                        "Failed to create file: " + System.currentTimeMillis() + ".csv");
-                e.printStackTrace();
-                return null;
-            }
-
-            return null;
-        }
-    }
-
-    private class ExportSizeToFile extends AsyncTask<String, Void, Void> {
-
-        @Override
-        protected Void doInBackground(String... params) {
-            try {
-                File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS),
-                        "SwanRssLogs");
-                Log.w(TAG, "Create directory");
-                if (!file.exists()) {
-                    if (!file.mkdirs()) {
-                        Log.e(TAG, "Directory not created");
-                    }
-                }
-
-                Log.w(TAG, "storagelocation: " + Environment
-                        .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString());
-                FileWriter f = new FileWriter(
-                        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString()
-                                + "/SwanRssLogs/all_response_sizes.txt", true);
-                f.write("Response" + System.currentTimeMillis() + "\n");
-                f.write(params[0] + "\n");
-                f.close();
-            } catch (IOException e) {
-                System.out.println(
-                        "Failed to create file: all_response_sizes.txt");
-                e.printStackTrace();
-                return null;
-            }
-
-            return null;
-        }
-    }
-
-    public boolean hasInternetConnection()
-    {
-        ConnectivityManager cm = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo wifiNetwork = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        if (wifiNetwork != null && wifiNetwork.isConnected())
-        {
-            return true;
-        }
-        NetworkInfo mobileNetwork = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-        if (mobileNetwork != null && mobileNetwork.isConnected())
-        {
-            return true;
-        }
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        if (activeNetwork != null && activeNetwork.isConnected())
-        {
-            return true;
-        }
-        return false;
-    }
-
-
-    private class ExportDataToCsv extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            try {
-                File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS),
-                        "SwanRssLogs");
-                Log.w(TAG, "Create directory");
-                if (!file.exists()) {
-                    if (!file.mkdirs()) {
-                        Log.e(TAG, "Directory not created");
-                    }
-                }
-
-                Log.w(TAG, "storagelocation: " + Environment
-                        .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString());
-                FileWriter f = new FileWriter(
-                        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString()
-                                + "/SwanRssLogs/" + System.currentTimeMillis() + "_" + TEST + ".csv", true);
-                f.write("timestamp;numberOfResponses;numberOfResponsesFromCache;totalResponseSize;totalResponseSizeWithoutCache\n");
-                f.write(System.currentTimeMillis() + ";" + mNumberOfResponses + ";" + mNumberOfResponsesFromCache + ";" + mTotalResponseSize + ";" + mTotalResponseSizeWithoutCache + "\n");
-//                f.write("requests1;requests2\n");
-//                f.write(mNumberOfRequests1 + ";" + mNumberOfRequests2 + "\n");
-                f.write("numberOfVolleyErrors;numberOfEncodingErrors\n");
-                f.write(mNumberOfVolleyErrors + ";" + mNumberOfEncodingErrors + "\n");
-                if (mLastVolleyError != null) {
-                    f.write(mLastVolleyError);
-                }
-                f.close();
-            } catch (IOException e) {
-                System.out.println(
-                        "Failed to create file: " + System.currentTimeMillis() + "_" + TEST + ".csv");
-                e.printStackTrace();
-                return null;
-            }
-
-            return null;
-        }
     }
 
     private synchronized List<RssItem> addNewSensorResponseToCache(RssSensorRequest rssSensorRequest, List<RssItem> rssItemList) {
@@ -508,92 +196,32 @@ public class RssSensorCache {
         return rssItemList;
     }
 
-    private void doGetRequest(final RssSensorRequest rssSensorRequest, int line) {
-//        new ExportDoGetRequestToFile().execute(line + "");
-        //TODO: move rss and json to main project
-        //TODO: use singleton/Application context
+    private void doGetRequest(final RssSensorRequest rssSensorRequest) {
         VolleySingleton volleySingleton = VolleySingleton.getInstance(mContext.getApplicationContext());
         RequestQueue queue = volleySingleton.getRequestQueue();
 
-        Log.w(TAG, "Do get request " + line);
-        String url = rssSensorRequest.sensorUrl + "&call=" + mNumberOfRequests
-                + "&test=" + TEST + "&requestTime=" + System.currentTimeMillis();
-        Log.w(TAG, "url: " + url);
-
         // Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, rssSensorRequest.sensorUrl,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.w(TAG, "response:" + response);
-                        int responseSize = 0;
-                        try {
-                            responseSize = response.getBytes("UTF-8").length;
-                        } catch (UnsupportedEncodingException e) {
-                            mNumberOfEncodingErrors += 1;
-                            e.printStackTrace();
-                        }
-//                        mTotalResponseSize += responseSize;
-//                        mNumberOfResponses += 1;
-                        Log.w(TAG, "response size: " + responseSize);
-                        Log.w(TAG, "Total response size: " + mTotalResponseSize);
-                        Log.w(TAG, "Total with cache repsonse size: " + mTotalResponseSizeWithoutCache);
                         parseRSS(response, rssSensorRequest, System.currentTimeMillis());
-//                        new ExportStringToFile().execute(response);
-//                        new ExportSizeToFile().execute(responseSize + "");
                         removeFromQueueAndCheckForNextRequestSynchronized();
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.w(TAG, "error response:" + error.getMessage());
-                mNumberOfVolleyErrors += 1;
-                mLastVolleyError = error.getMessage();
-//                new ExportStringToFile().execute(mLastVolleyError);
-//                new ExportSizeToFile().execute("response error");
                 removeFromQueueAndCheckForNextRequestSynchronized();
             }
         }) {
             @Override
             protected Response<String> parseNetworkResponse(NetworkResponse response) {
-                mTotalResponseSize += response.data.length;
-                mLastResponseSize = response.data.length;
-                if (!response.notModified) {
-                    mTotalResponseSizeWithoutCache += response.data.length;
-                } else {
-                    mTotalResponseSizeWithoutCache += new PrettyPrintingMap<String, String>(response.headers).toString().getBytes().length;
-                }
-                mNumberOfResponses += 1;
                 return super.parseNetworkResponse(response);
             }
         };
         // Add the request to the RequestQueue.
         queue.add(stringRequest);
-    }
-
-    public class PrettyPrintingMap<K, V> {
-        private Map<K, V> map;
-
-        public PrettyPrintingMap(Map<K, V> map) {
-            this.map = map;
-        }
-
-        public String toString() {
-            StringBuilder sb = new StringBuilder();
-            Iterator<Map.Entry<K, V>> iter = map.entrySet().iterator();
-            while (iter.hasNext()) {
-                Map.Entry<K, V> entry = iter.next();
-                sb.append(entry.getKey());
-                sb.append('=').append('"');
-                sb.append(entry.getValue());
-                sb.append('"');
-                if (iter.hasNext()) {
-                    sb.append(',').append(' ');
-                }
-            }
-            return sb.toString();
-
-        }
     }
 
     private void parseRSS(String rss, RssSensorRequest rssSensorRequest, long currentTime) {

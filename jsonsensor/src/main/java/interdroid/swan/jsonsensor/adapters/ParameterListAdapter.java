@@ -43,8 +43,6 @@ public class ParameterListAdapter extends RecyclerView.Adapter<ParameterListAdap
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_param, parent, false);
 
-        // set the view's size, margins, paddings and layout parameters
-
         ViewHolder viewHolder = new ViewHolder(view);
         view.setTag(viewHolder);
         view.setOnClickListener(mOnClickListener);

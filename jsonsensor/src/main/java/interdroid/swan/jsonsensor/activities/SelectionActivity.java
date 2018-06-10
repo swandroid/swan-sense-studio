@@ -2,7 +2,6 @@ package interdroid.swan.jsonsensor.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -114,11 +113,9 @@ public class SelectionActivity extends BaseActivity {
         @Override
         public void onClick(View v) {
             Intent intent = new Intent();
-            //intent.putExtra(REQUEST_EXTRA_RESULT, mJsonRequestKeyId + "," + mJsonRequestValueId);
             intent.putExtra(REQUEST_EXTRA_RESULT_FULL, new Gson().toJson(new JsonRequestComplete(mJsonRequestInfo, mPathToValue)));
             setResult(RESULT_OK, intent);
             finish();
-            //downloadData();
         }
     };
 
@@ -179,12 +176,6 @@ public class SelectionActivity extends BaseActivity {
         return sb.toString();
     }
 
-    private void downloadData() {
-        doGetRequest(mJsonRequestInfo.url);
-        mResult.setVisibility(View.GONE);
-        mProgress.setVisibility(View.VISIBLE);
-    }
-
     private void doGetRequest(String url) {
         RequestQueue queue = Volley.newRequestQueue(this);
 
@@ -234,17 +225,13 @@ public class SelectionActivity extends BaseActivity {
             jsonItem.jsonItem = jsonChildItem;
             getNextJsonObject(jsonSubObject, jsonChildItem);
         } catch (JSONException e) {
-            //Log.e(TAG, "Not an JSONObject");
-            //e.printStackTrace();
             try {
                 JSONArray jsonSubArray = jsonObject.getJSONArray(key);
                 getNextJsonArray(jsonSubArray, jsonItem);
             } catch (JSONException e1) {
-                //Log.e(TAG, "Not an JSONArray");
                 try {
                     jsonItem.stringItem = jsonObject.getString(key);
                 } catch (JSONException e2) {
-                    //Log.e(TAG, "Not a String");
                 }
             }
         }
@@ -269,12 +256,10 @@ public class SelectionActivity extends BaseActivity {
                 Object object = jsonArray.get(i);
                 JsonItem jsonItemChild = new JsonItem("" + i);
                 if (object instanceof JSONObject) {
-                    Log.d(TAG, "object jsonItem: " + jsonItem.key);
                     JsonItem jsonItemSubChild = new JsonItem("" + i);
                     jsonItemChild.jsonItem = jsonItemSubChild;
                     getNextJsonObject((JSONObject) object, jsonItemSubChild);
-                } else if (object instanceof JSONArray){
-                    Log.d(TAG, "array jsonItem: " + jsonItem.key);
+                } else if (object instanceof JSONArray) {
                     getNextJsonArray((JSONArray) object, jsonItemChild);
                 } else {
                     jsonItemChild.stringItem = object.toString();
@@ -303,9 +288,6 @@ public class SelectionActivity extends BaseActivity {
                     case JsonPathType.JSON_TYPE_OBJECT:
                         jsonItem = getJsonItemObject(jsonItem, jsonPathType);
                         break;
-                    /*case JsonPathType.JSON_TYPE_STRING:
-
-                        break;*/
                 }
             }
         }

@@ -1,16 +1,5 @@
 package interdroid.swan.jsonsensor.activities;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,6 +12,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -56,7 +56,6 @@ public class JsonActivity extends BaseActivity {
     private JsonListAdapter mAdapter;
 
     private JsonRequestInfo mJsonRequestInfo;
-    //private OkHttpClient mClient;
 
 
     @Override
@@ -171,7 +170,6 @@ public class JsonActivity extends BaseActivity {
     private void parseJson(String response) {
         JsonItem jsonItem = new JsonItem("root");
         try {
-            Log.w(TAG, "object");
             JSONObject jsonObject = new JSONObject(response);
             Iterator<String> strings = jsonObject.keys();
             ArrayList<JsonItem> jsonItems = new ArrayList<>();
@@ -184,7 +182,6 @@ public class JsonActivity extends BaseActivity {
             jsonItem.jsonItems = jsonItems;
         } catch (JSONException e) {
             try {
-                Log.w(TAG, "array");
                 JSONArray jsonArray = new JSONArray(response);
                 getNextJsonArray(jsonArray, jsonItem);
             } catch (JSONException e1) {
@@ -198,54 +195,6 @@ public class JsonActivity extends BaseActivity {
         }
     }
 
-    /*private String getWebString(String url) throws IOException {
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
-
-        Response response = mClient.newCall(request).execute();
-        return response.body().string();
-    }
-
-    private class DownloadFilesTask extends AsyncTask<Void, Void, JsonItem> {
-        protected JsonItem doInBackground(Void... urls) {
-            String jsonString;
-            JsonItem jsonItem = new JsonItem("root");
-            try {
-                //jsonString = getWebString("http://www.mylaps.com/api/practicelocations?sport=IceSkating&country=&trackstatus=active");
-                //jsonString = getWebString("http://api.openweathermap.org/data/2.5/weather?q=Amsterdam,nl/");
-                jsonString = getWebString("http://www.trafficlink-online.nl/trafficlinkdata/wegdata/IDPA_ParkingLocation.GeoJSON");
-
-                //jsonString = getWebString("https://www.bitstamp.net/api/ticker/");
-                //jsonString = getWebString("http://jsonip.com");
-                //jsonString = getWebString("http://www.telize.com/geoip");
-                //jsonString = getWebString("https://qrng.anu.edu.au/API/jsonI.php?length=1&type=uint8"); //Documentation: http://qrng.anu.edu.au/API/api-demo.php
-                JSONObject jsonObject = new JSONObject(jsonString);
-                Iterator<String> strings = jsonObject.keys();
-                ArrayList<JsonItem> jsonItems = new ArrayList<>();
-                while(strings.hasNext()) {
-                    String key = strings.next();
-                    JsonItem jsonItemChild = new JsonItem(key);
-                    jsonItems.add(jsonItemChild);
-                    getNextItem(jsonObject, key, jsonItemChild);
-                }
-                jsonItem.jsonItems = jsonItems;
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return jsonItem;
-        }
-
-        protected void onPostExecute(JsonItem jsonItem) {
-            if (jsonItem.jsonItems != null) {
-                mAdapterHeader.addJsonItem(jsonItem);
-                mAdapter.setJsonItems(jsonItem.jsonItems);
-            }
-        }
-    }*/
-
     private void getNextItem(JSONObject jsonObject, String key, JsonItem jsonItem) {
         try {
             JSONObject jsonSubObject = jsonObject.getJSONObject(key);
@@ -253,17 +202,14 @@ public class JsonActivity extends BaseActivity {
             jsonItem.jsonItem = jsonChildItem;
             getNextJsonObject(jsonSubObject, jsonChildItem);
         } catch (JSONException e) {
-            //Log.e(TAG, "Not an JSONObject");
-            //e.printStackTrace();
             try {
                 JSONArray jsonSubArray = jsonObject.getJSONArray(key);
                 getNextJsonArray(jsonSubArray, jsonItem);
             } catch (JSONException e1) {
-                //Log.e(TAG, "Not an JSONArray");
                 try {
                     jsonItem.stringItem = jsonObject.getString(key);
                 } catch (JSONException e2) {
-                    //Log.e(TAG, "Not a String");
+                    //Nothing to do
                 }
             }
         }
@@ -288,12 +234,10 @@ public class JsonActivity extends BaseActivity {
                 Object object = jsonArray.get(i);
                 JsonItem jsonItemChild = new JsonItem("" + i);
                 if (object instanceof JSONObject) {
-                    Log.d(TAG, "object jsonItem: " + jsonItem.key);
                     JsonItem jsonItemSubChild = new JsonItem("" + i);
                     jsonItemChild.jsonItem = jsonItemSubChild;
                     getNextJsonObject((JSONObject) object, jsonItemSubChild);
-                } else if (object instanceof JSONArray){
-                    Log.d(TAG, "array jsonItem: " + jsonItem.key);
+                } else if (object instanceof JSONArray) {
                     getNextJsonArray((JSONArray) object, jsonItemChild);
                 } else {
                     jsonItemChild.stringItem = object.toString();
@@ -324,12 +268,10 @@ public class JsonActivity extends BaseActivity {
                 mAdapterHeader.addJsonItem(jsonItem.jsonItem);
                 mAdapter.setJsonItems(jsonItem.jsonItem.jsonItems);
                 jsonItem.jsonItem.type = JsonItem.JSON_TYPE_OBJECT;
-                Log.d(TAG, "object");
             } else if (jsonItem.jsonItems != null) { //Json array
                 mAdapterHeader.addJsonItem(jsonItem);
                 mAdapter.setJsonItems(jsonItem.jsonItems);
                 jsonItem.type = JsonItem.JSON_TYPE_ARRAY;
-                Log.d(TAG, "array");
             } else if (jsonItem.stringItem != null) {
                 showDialog(jsonItem);
             }
@@ -339,13 +281,11 @@ public class JsonActivity extends BaseActivity {
     private void showDialog(final JsonItem jsonValueItem) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
-        //alert.setTitle("Title");
         alert.setMessage(R.string.label_enter_name);
 
         // Set an EditText view to get user input
         FrameLayout frameLayout = (FrameLayout) View.inflate(this, R.layout.dialog_enter_name, null);
         final EditText input = (EditText) frameLayout.findViewById(R.id.dialog_enter_name_input);
-        //final EditText input = new EditText(this);
         input.setText(jsonValueItem.key);
         alert.setView(frameLayout);
 
@@ -370,7 +310,6 @@ public class JsonActivity extends BaseActivity {
         PathToValue pathToValue = new PathToValue(name);
         boolean isArray = false;
         for (int i = 1; i < jsonItems.size(); i++) {
-            Log.d(TAG, "key: " + i + " " + jsonItems.get(i).key);
             JsonItem jsonItem = jsonItems.get(i);
 
             JsonPathType jsonPathType;
@@ -381,13 +320,10 @@ public class JsonActivity extends BaseActivity {
                 jsonPathType = new JsonPathType(key);
             }
 
-            Log.d(TAG, "jsonItem: " + jsonItem.jsonItem + ", jsonType: " + jsonItem.type);
-            if (jsonItem.type == JsonItem.JSON_TYPE_OBJECT/*jsonItem.jsonItem != null && jsonItem.jsonItem.jsonItems != null*/) {
-                Log.d(TAG, "object");
+            if (jsonItem.type == JsonItem.JSON_TYPE_OBJECT) {
                 jsonPathType.type = jsonItem.type;
                 isArray = false;
-            } else if (jsonItem.type == JsonItem.JSON_TYPE_ARRAY/*jsonItem.jsonItems != null*/) {
-                Log.d(TAG, "array");
+            } else if (jsonItem.type == JsonItem.JSON_TYPE_ARRAY) {
                 jsonPathType.type = jsonItem.type;
                 isArray = true;
             }
@@ -404,8 +340,6 @@ public class JsonActivity extends BaseActivity {
         pathToValue.jsonPathTypes.add(jsonPathType);
 
         savePathToValue(pathToValue);
-
-        //mJsonRequestInfo.pathToValueList.add(pathToValue);
 
     }
 

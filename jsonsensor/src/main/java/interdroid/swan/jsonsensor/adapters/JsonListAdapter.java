@@ -6,12 +6,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import interdroid.swan.jsonsensor.R;
-import interdroid.swan.jsonsensor.pojos.JsonItem;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+
+import interdroid.swan.jsonsensor.R;
+import interdroid.swan.jsonsensor.pojos.JsonItem;
 
 /**
  * Created by steven on 21/10/14.
@@ -21,10 +21,8 @@ public class JsonListAdapter extends RecyclerView.Adapter<JsonListAdapter.ViewHo
     private ArrayList<JsonItem> mJsonItems;
     private OnJsonItemClickListener mOnJsonItemClickListener;
 
-
-
     public JsonListAdapter(OnJsonItemClickListener onJsonItemClickListener) {
-        mJsonItems = new ArrayList<JsonItem>();
+        mJsonItems = new ArrayList<>();
         mOnJsonItemClickListener = onJsonItemClickListener;
     }
 
@@ -48,8 +46,6 @@ public class JsonListAdapter extends RecyclerView.Adapter<JsonListAdapter.ViewHo
         // create a new view
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_json, parent, false);
-
-        // set the view's size, margins, paddings and layout parameters
 
         ViewHolder viewHolder = new ViewHolder(view);
         view.setTag(viewHolder);
@@ -141,6 +137,6 @@ public class JsonListAdapter extends RecyclerView.Adapter<JsonListAdapter.ViewHo
     };
 
     public interface OnJsonItemClickListener {
-        public void onJsonItemClicked(JsonItem jsonItem);
+        void onJsonItemClicked(JsonItem jsonItem);
     }
 }
