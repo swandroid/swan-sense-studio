@@ -34,9 +34,6 @@ import interdroid.swan.jsonsensor.volley.VolleySingleton;
  * Created by steven on 31/01/16.
  */
 public class JsonSensorCache {
-    //TODO: remove a sensor from response cache if no other sensor uses this, started implementing, see TODO further below
-    //TODO: save results to the cache
-
     private static final String TAG = JsonSensorCache.class.getSimpleName();
 
     private static final float CACHE_TIME_DIVIDER = 1.9f; //1/CACHE_TIME_DIVIDER = is caching time allowed as new response;
@@ -233,7 +230,6 @@ public class JsonSensorCache {
             mResponseCache = new ArrayList<>();
         }
 
-        //TODO: Check if url changed etc.
         boolean foundInCache = false;
         for (int i = 0; i < mResponseCache.size(); i++) {
             if (mResponseCache.get(i).jsonRequestInfo.id == jsonResponse.jsonRequestInfo.id) {
@@ -328,7 +324,6 @@ public class JsonSensorCache {
     }
 
     public synchronized void removeSensorFromCacheSynchronized(JsonSensorRequest jsonSensorRequest) {
-        //TODO find a way to check if there are others using this cache.
         for (int i = 0; i < mResponseCache.size(); i++) {
             if (mResponseCache.get(i).jsonRequestInfo.id == jsonSensorRequest.jsonRequestInfo.id) {
                 mResponseCache.remove(i);

@@ -9,16 +9,6 @@
 		<interdroid.swan.util.SeekBarPreference
 			android:text="seconds" android:max="100" android:defaultValue="1"
 			android:title="Sample Interval" android:key="sample_interval"/>
-		<!--<Preference
-            android:key="json_configuration"
-			android:title="Json configuration"
-			android:summary="Select the url and value"
-			android:defaultValue="">
-			<intent
-				android:action="android.intent.action.VIEW"
-				android:targetPackage="interdroid.swan"
-				android:targetClass="interdroid.swan.jsonsensor.activities.SelectionActivity" />
-		</Preference>-->
 		<Preference
 			android:key="json_configuration_full"
 			android:title="Json configuration full"
@@ -30,6 +20,5 @@
 				android:targetClass="interdroid.swan.jsonsensor.activities.SelectionActivity" />
 		</Preference>
 	</PreferenceCategory>
-	<!-- TODO add/change -->
 </PreferenceScreen>
 
