@@ -330,20 +330,9 @@ public class ExpressionManager {
                         + "' is reserved for internal use.");
             }
         }
-        if (sListeners.containsKey(id)) {
-            throw new SwanException("Listener already registered for id '" + id
-                    + "'");
-        } else {
-            if (expressionListener != null) {
-                if (sListeners.size() == 0) {
-                    sReceiverRegistered = true;
-                    registerReceiver(context);
-                    /* we store the context, as we need it later in unregisterExpression */
-                    sContext = context;
-                }
-                sListeners.put(id, expressionListener);
-            }
-        }
+
+        addExpressionListener(context, id, expressionListener);
+
         Intent newTriState = new Intent(ACTION_NEW_TRISTATE);
         newTriState.setData(Uri.parse("swan://" + context.getPackageName()
                 + "#" + id));
@@ -352,6 +341,38 @@ public class ExpressionManager {
                 + id));
         registerExpression(context, id, expression, newTriState, newTriState,
                 newTriState, newValues);
+    }
+
+    /**
+     * Add and expression listener. Exposed for the {@link ActuatorManager} class.
+     *
+     * @param context  the context
+     * @param id       the user provided unique id of the expression. Should not contain
+     *                 {@link Expression#SEPARATOR} or end with any of the
+     *                 {@link Expression#RESERVED_SUFFIXES}.
+     * @param listener a {@link ValueExpressionListener} that receives the evaluation
+     *                 results. If this parameter is null, it is also possible to
+     *                 listen for the results using a {@link BroadcastReceiver}.
+     *                 Filter on datascheme
+     *                 "swan://<your.package.name>#<your.expression.id>" and action
+     *                 {@link #ACTION_NEW_VALUES} or {@link #ACTION_NEW_TRISTATE}.
+     * @throws SwanException SwanException if id is null or invalid
+     */
+    static void addExpressionListener(Context context, String id, ExpressionListener listener)
+            throws SwanException {
+        if (sListeners.containsKey(id)) {
+            throw new SwanException("Listener already registered for id '" + id + "'");
+        } else {
+            if (listener != null) {
+                if (sListeners.size() == 0) {
+                    sReceiverRegistered = true;
+                    registerReceiver(context);
+                    /* we store the context, as we need it later in unregisterExpression */
+                    sContext = context;
+                }
+                sListeners.put(id, listener);
+            }
+        }
     }
 
     /**
@@ -404,7 +425,7 @@ public class ExpressionManager {
                 onNewValues);
     }
 
-    private static void registerExpression(Context context, String id,
+    static void registerExpression(Context context, String id,
                                            Expression expression, Intent onTrue, Intent onFalse,
                                            Intent onUndefined, Intent onNewValues) {
         Intent intent = new Intent(ACTION_REGISTER);

@@ -213,9 +213,9 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".actuator.TriStateInterceptor">
+        <receiver android:name=".actuator.ActuatorInterceptor">
             <intent-filter>
-                <action android:name="interdroid.swan.actuator.TRISTATE_INTERCEPTOR"/>
+                <action android:name="interdroid.swan.actuator.ACTUATOR_INTERCEPTOR"/>
             </intent-filter>
         </receiver>
 
