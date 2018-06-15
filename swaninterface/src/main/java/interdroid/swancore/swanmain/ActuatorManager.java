@@ -232,9 +232,13 @@ public class ActuatorManager {
      * @param id      the user provided unique id of the expression. Should not
      *                contain {@link Expression#SEPARATOR} or end with any of the
      *                {@link Expression#RESERVED_SUFFIXES}.
+     * @param actuatorOnly if true the expression will not be unregistered, only the associated
+     *                     actuators
      */
-    public static void unregisterActuator(Context context, String id) {
-        ExpressionManager.unregisterExpression(context, id);
+    public static void unregisterActuator(Context context, String id, boolean actuatorOnly) {
+        if (!actuatorOnly) {
+            ExpressionManager.unregisterExpression(context, id);
+        }
         sendUnregister(context, id);
     }
 
