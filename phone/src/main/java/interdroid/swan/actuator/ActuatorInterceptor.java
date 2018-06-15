@@ -7,8 +7,14 @@ import android.util.Log;
 
 import interdroid.swancore.swanmain.ActuatorManager;
 import interdroid.swancore.swanmain.ExpressionManager;
+import interdroid.swancore.swansong.Expression;
 import interdroid.swancore.swansong.TriState;
 
+/**
+ * This broadcast receiver function is to intercept new value and state broadcasts and perform
+ * actuations if there are actuators registered for the {@link Expression}. Receives the
+ * {@link ActuatorManager#ACTUATOR_INTERCEPTOR} action.
+ */
 public class ActuatorInterceptor extends BroadcastReceiver {
 
     private static final String TAG = ActuatorInterceptor.class.getSimpleName();
@@ -35,6 +41,14 @@ public class ActuatorInterceptor extends BroadcastReceiver {
         }
     }
 
+    /**
+     * Fires the original intent specified by the application that registered the expression.
+     *
+     * @param context    the context
+     * @param intent     the intercepted intent that contains the original intent to be fired
+     * @param extra      the key for the original intent
+     * @param isTriState copy tri state extras if true, copy new value extras otherwise
+     */
     private void forwardExtraIntent(Context context, Intent intent, String extra, boolean isTriState) {
         Intent forward = intent.getParcelableExtra(extra);
         if (forward != null) {
@@ -52,6 +66,11 @@ public class ActuatorInterceptor extends BroadcastReceiver {
         }
     }
 
+    /**
+     * Perform the actuation for the specified expression id
+     *
+     * @param expressionId the id of the expression
+     */
     private void actuate(String expressionId) {
         if (expressionId == null) {
             Log.w(TAG, "Empty expressionId");

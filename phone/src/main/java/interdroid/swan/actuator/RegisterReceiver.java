@@ -7,6 +7,10 @@ import android.util.Log;
 
 import interdroid.swancore.swanmain.ActuatorManager;
 
+/**
+ * The broadcast receiver that receives the {@link ActuatorManager#ACTION_REGISTER} and
+ * {@link ActuatorManager#ACTION_UNREGISTER} actions to register or unregister an actuator.
+ */
 public class RegisterReceiver extends BroadcastReceiver {
 
     private static final String TAG = RegisterReceiver.class.getSimpleName();
