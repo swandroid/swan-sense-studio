@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Vibrator;
 
 import interdroid.swan.actuator.Actuator;
+import interdroid.swancore.swansong.Expression;
+import interdroid.swancore.swansong.SensorValueExpression;
 
 /**
  * THe actuator that vibrates the phone.
@@ -25,17 +27,25 @@ public class VibratorActuator extends Actuator {
     /**
      * Create a {@link VibratorActuator} object
      *
-     * @param context  the context
+     * @param vibrator the system vibrator service
      * @param duration how long the vibration should last in milliseconds
      */
-    public VibratorActuator(Context context, long duration) {
-        super(context);
+    public VibratorActuator(Vibrator vibrator, long duration) {
         this.duration = duration;
-        vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+        this.vibrator = vibrator;
     }
 
     @Override
     public void performAction() {
         vibrator.vibrate(duration);
+    }
+
+    public static class Factory implements Actuator.Factory {
+        @Override
+        public Actuator create(Context context, Expression expression) {
+            SensorValueExpression sve = (SensorValueExpression) expression;
+            long duration = Long.parseLong(sve.getConfiguration().getString("duration"));
+            return new VibratorActuator((Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE), duration);
+        }
     }
 }

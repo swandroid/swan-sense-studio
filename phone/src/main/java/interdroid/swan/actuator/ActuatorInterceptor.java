@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import java.util.List;
+
 import interdroid.swancore.swanmain.ActuatorManager;
 import interdroid.swancore.swanmain.ExpressionManager;
 import interdroid.swancore.swansong.Expression;
@@ -77,14 +79,16 @@ public class ActuatorInterceptor extends BroadcastReceiver {
             return;
         }
 
-        Actuator actuator = ActuationManager.ACTUATORS.get(expressionId);
+        List<Actuator> actuators = ActuationManager.ACTUATORS.get(expressionId);
 
-        if (actuator == null) {
+        if (actuators == null) {
             Log.w(TAG, "No actuator registered for id " + expressionId);
             return;
         }
 
         Log.d(TAG, "Performing actuator for id " + expressionId);
-        actuator.performAction();
+        for (Actuator actuator : actuators) {
+            actuator.performAction();
+        }
     }
 }

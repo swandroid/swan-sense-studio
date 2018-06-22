@@ -3,10 +3,16 @@ package interdroid.swan.actuator;
 import android.content.Context;
 import android.util.Log;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import interdroid.swan.actuator.impl.LogActuator;
 import interdroid.swan.actuator.impl.VibratorActuator;
+import interdroid.swancore.swanmain.ActuatorManager;
 import interdroid.swancore.swanmain.SwanException;
 import interdroid.swancore.swansong.Expression;
 import interdroid.swancore.swansong.ExpressionFactory;
@@ -20,7 +26,18 @@ public class ActuationManager {
 
     private static final String TAG = ActuationManager.class.getSimpleName();
 
-    static final Map<String, Actuator> ACTUATORS = new ConcurrentHashMap<>();
+    private static final Map<String, Actuator.Factory> FACTORY_MAP;
+
+    static final Map<String, List<Actuator>> ACTUATORS = new ConcurrentHashMap<>();
+
+    static {
+        Map<String, Actuator.Factory> factoryMap = new HashMap<>();
+
+        factoryMap.put(VibratorActuator.ENTITY, new VibratorActuator.Factory());
+        factoryMap.put(LogActuator.ENTITY, new LogActuator.Factory());
+
+        FACTORY_MAP = Collections.unmodifiableMap(factoryMap);
+    }
 
     /**
      * Register an actuator. If another actuator exists with the given id, it will be replaced.
@@ -30,9 +47,9 @@ public class ActuationManager {
      * @param expression   the actuator expression to be registered
      */
     public static void registerActuator(Context context, String expressionId, String expression) {
-        Actuator actuator;
+        List<Actuator> actuators;
         try {
-            actuator = parseActuatorExpression(context, expression);
+            actuators = parseActuatorExpression(context, expression);
         } catch (ExpressionParseException | SwanException e) {
             Log.w(TAG, "Failed to parse expression", e);
             return;
@@ -44,7 +61,7 @@ public class ActuationManager {
                     + ". Replacing...");
         }
 
-        ACTUATORS.put(expressionId, actuator);
+        ACTUATORS.put(expressionId, actuators);
 
         Log.d(TAG, "Registered actuator for " + expressionId);
     }
@@ -55,7 +72,7 @@ public class ActuationManager {
      * @param expressionId the id of the expression
      */
     public static void unregisterActuator(String expressionId) {
-        Actuator removed = ACTUATORS.remove(expressionId);
+        List<Actuator> removed = ACTUATORS.remove(expressionId);
 
         if (removed == null) {
             Log.d(TAG, "No actuator for " + expressionId + " to be removed");
@@ -73,28 +90,33 @@ public class ActuationManager {
      * @throws ExpressionParseException if the parse fails
      * @throws SwanException            parsing returns null or the expresion is not a {@link SensorValueExpression}
      */
-    private static Actuator parseActuatorExpression(Context context, String actExpression)
+    private static List<Actuator> parseActuatorExpression(Context context, String actExpression)
             throws ExpressionParseException, SwanException {
 
-        Expression expression = ExpressionFactory.parse(actExpression);
+        List<Actuator> actuators= new LinkedList<>();
 
-        if (expression == null) {
-            throw new SwanException("null actuator expression");
-        }
+        for (String s : actExpression.split(ActuatorManager.MULTIPLE_ACTUATOR_SEPARATOR)) {
+            Expression expression = ExpressionFactory.parse(s);
 
-        if (!(expression instanceof SensorValueExpression)) {
-            // TODO: 2018-06-06 is this correct?
-            throw new SwanException("bad actuator expression");
-        }
+            if (expression == null) {
+                throw new SwanException("null actuator expression");
+            }
 
-        SensorValueExpression sve = (SensorValueExpression) expression;
+            if (!(expression instanceof SensorValueExpression)) {
+                // TODO: 2018-06-06 is this correct?
+                throw new SwanException("bad actuator expression");
+            }
 
-        if (Expression.LOCATION_SELF.equals(sve.getLocation())) {
-            return expressionToActuator(context, sve);
-        } else {
+            SensorValueExpression sve = (SensorValueExpression) expression;
+
+            if (Expression.LOCATION_SELF.equals(sve.getLocation())) {
+                actuators.add(expressionToActuator(context, sve));
+            }
+
             // TODO: 2018-06-06 other locations
-            return null;
         }
+
+        return actuators;
     }
 
     /**
@@ -105,13 +127,13 @@ public class ActuationManager {
      * @return the created {@link Actuator}
      */
     private static Actuator expressionToActuator(Context context, SensorValueExpression sve) {
-        switch (sve.getEntity()) {
-            case VibratorActuator.ENTITY:
-                long duration = Long.parseLong(sve.getConfiguration().getString("duration"));
-                return new VibratorActuator(context, duration);
-            default:
-                Log.w(TAG, "Unknown actuator entity");
-                return null;
+        Actuator.Factory factory = FACTORY_MAP.get(sve.getEntity());
+
+        if (factory != null) {
+            return factory.create(context, sve);
+        } else {
+            Log.w(TAG, "Unknown actuator entity");
+            return null;
         }
     }
 }

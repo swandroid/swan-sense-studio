@@ -4,6 +4,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.text.TextUtils;
+
+import java.util.LinkedList;
+import java.util.List;
 
 import interdroid.swancore.swansong.Expression;
 import interdroid.swancore.swansong.ExpressionFactory;
@@ -20,6 +24,11 @@ public class ActuatorManager {
      * The string that separates and {@link Expression} from the actuator expression.
      */
     private static final String ACTUATOR_SEPARATOR = "THEN";
+
+    /**
+     * The string that separates multiple actuators.
+     */
+    public static final String MULTIPLE_ACTUATOR_SEPARATOR = "&&";
 
     /**
      * The action to register an actuator.
@@ -74,7 +83,7 @@ public class ActuatorManager {
      *                   contain {@link Expression#SEPARATOR} or end with any of the
      *                   {@link Expression#RESERVED_SUFFIXES}.
      * @param expression the {@link Expression} that should be evaluated
-     * @param action     the actuator expression
+     * @param actions    the actuator expressions
      * @param listener   a {@link ExpressionListener} that receives the evaluation
      *                   results. If this parameter is null, it is also possible to
      *                   listen for the results using a {@link BroadcastReceiver}.
@@ -84,7 +93,7 @@ public class ActuatorManager {
      * @throws SwanException if id is null or invalid
      */
     public static void registerActuator(Context context, String id, Expression expression,
-                                        Expression action, ExpressionListener listener) throws SwanException {
+                                        List<Expression> actions, ExpressionListener listener) throws SwanException {
         ExpressionManager.addExpressionListener(context, id, listener);
 
         Intent newTriState = new Intent(ExpressionManager.ACTION_NEW_TRISTATE);
@@ -92,7 +101,7 @@ public class ActuatorManager {
         Intent newValues = new Intent(ExpressionManager.ACTION_NEW_VALUES);
         newValues.setData(Uri.parse("swan://" + context.getPackageName() + "#" + id));
 
-        registerActuator(context, id, expression, action, newTriState, newTriState, newTriState, newValues);
+        registerActuator(context, id, expression, actions, newTriState, newTriState, newTriState, newValues);
     }
 
     /**
@@ -101,7 +110,7 @@ public class ActuatorManager {
      *                    contain {@link Expression#SEPARATOR} or end with any of the
      *                    {@link Expression#RESERVED_SUFFIXES}.
      * @param expression  the {@link Expression} that should be evaluated
-     * @param action      the actuator expression
+     * @param actions     the actuator expressions
      * @param onTrue      Intent that should be fired when state changes to true. By
      *                    default the Intent is used to send a broadcast. Add
      *                    {@link ExpressionManager#EXTRA_INTENT_TYPE} with any of the values
@@ -123,7 +132,7 @@ public class ActuatorManager {
      *                    have Swan launch an activity or service.
      */
     private static void registerActuator(Context context, String id, Expression expression,
-                                         Expression action, Intent onTrue, Intent onFalse,
+                                         List<Expression> actions, Intent onTrue, Intent onFalse,
                                          Intent onUndefined, Intent onNewValues) {
         Intent intercept = new Intent(ACTUATOR_INTERCEPTOR);
         intercept.putExtra(EXTRA_FORWARD_TRUE, onTrue);
@@ -134,7 +143,7 @@ public class ActuatorManager {
 
         ExpressionManager.registerExpression(context, id, expression, intercept, intercept, intercept, intercept);
 
-        sendRegister(context, id, action);
+        sendRegister(context, id, actions);
     }
 
     /**
@@ -143,7 +152,7 @@ public class ActuatorManager {
      *                    contain {@link Expression#SEPARATOR} or end with any of the
      *                    {@link Expression#RESERVED_SUFFIXES}.
      * @param expression  the {@link TriStateExpression} that should be evaluated
-     * @param action      the actuator expression
+     * @param actions     the actuator expressions
      * @param onTrue      Intent that should be fired when state changes to true. By
      *                    default the Intent is used to send a broadcast. Add
      *                    {@link ExpressionManager#EXTRA_INTENT_TYPE} with any of the values
@@ -161,8 +170,8 @@ public class ActuatorManager {
      *                    have Swan launch an activity or service.
      */
     public void registerTriStateActuator(Context context, String id, TriStateExpression expression,
-                                         Expression action, Intent onTrue, Intent onFalse, Intent onUndefined) {
-        registerActuator(context, id, expression, action, onTrue, onFalse, onUndefined, null);
+                                         List<Expression> actions, Intent onTrue, Intent onFalse, Intent onUndefined) {
+        registerActuator(context, id, expression, actions, onTrue, onFalse, onUndefined, null);
     }
 
     /**
@@ -171,15 +180,15 @@ public class ActuatorManager {
      *                    contain {@link Expression#SEPARATOR} or end with any of the
      *                    {@link Expression#RESERVED_SUFFIXES}.
      * @param expression  the {@link TriStateExpression} that should be evaluated
-     * @param action      the actuator expression
+     * @param actions     the actuator expressions
      * @param onNewValues Intent that should be fired when new values are available. Add
      *                    {@link ExpressionManager#EXTRA_INTENT_TYPE} with any of the values
      *                    {@link ExpressionManager#INTENT_TYPE_ACTIVITY}, {@link ExpressionManager#INTENT_TYPE_SERVICE} to
      *                    have Swan launch an activity or service.
      */
-    public void registerValueActuator(Context context, String id, Expression action,
+    public void registerValueActuator(Context context, String id, List<Expression> actions,
                                       ValueExpression expression, Intent onNewValues) {
-        registerActuator(context, id, expression, action, null, null, null, onNewValues);
+        registerActuator(context, id, expression, actions, null, null, null, onNewValues);
     }
 
     /**
@@ -199,7 +208,7 @@ public class ActuatorManager {
      */
     public static void registerActuator(Context context, String id, String actuatorExpression,
                                         ExpressionListener listener) throws SwanException {
-        String[] split = actuatorExpression.split(ACTUATOR_SEPARATOR);
+        String[] split = actuatorExpression.split(ACTUATOR_SEPARATOR, 2);
 
         if (split.length != 2) {
             throw new SwanException("Actuator expression must contain only one " +
@@ -207,7 +216,7 @@ public class ActuatorManager {
         }
 
         Expression expression;
-        Expression action;
+        List<Expression> actions = new LinkedList<>();
         try {
             // Parse the swan song expressions
             expression = ExpressionFactory.parse(split[0]);
@@ -216,22 +225,26 @@ public class ActuatorManager {
                 throw new SwanException("null expression");
             }
 
-            action = ExpressionFactory.parse(split[1]);
+            String[] actionExpressions = split[1].split(MULTIPLE_ACTUATOR_SEPARATOR);
+
+            for (String actionExpression : actionExpressions) {
+                actions.add(ExpressionFactory.parse(actionExpression));
+            }
         } catch (ExpressionParseException e) {
             throw new SwanException(e);
         }
 
-        registerActuator(context, id, expression, action, listener);
+        registerActuator(context, id, expression, actions, listener);
     }
 
     /**
      * Unregisters a previously registered {@link Expression} for evaluation and the actuator
      * associated with it.
      *
-     * @param context the context
-     * @param id      the user provided unique id of the expression. Should not
-     *                contain {@link Expression#SEPARATOR} or end with any of the
-     *                {@link Expression#RESERVED_SUFFIXES}.
+     * @param context      the context
+     * @param id           the user provided unique id of the expression. Should not
+     *                     contain {@link Expression#SEPARATOR} or end with any of the
+     *                     {@link Expression#RESERVED_SUFFIXES}.
      * @param actuatorOnly if true the expression will not be unregistered, only the associated
      *                     actuators
      */
@@ -245,17 +258,26 @@ public class ActuatorManager {
     /**
      * Sends a broadcast to SWAN to register an actuator.
      *
-     * @param context    the context
-     * @param id         the user provided unique id of the expression. Should not
-     *                   contain {@link Expression#SEPARATOR} or end with any of the
-     *                   {@link Expression#RESERVED_SUFFIXES}.
-     * @param expression the {@link Expression} that should be evaluated
+     * @param context     the context
+     * @param id          the user provided unique id of the expression. Should not
+     *                    contain {@link Expression#SEPARATOR} or end with any of the
+     *                    {@link Expression#RESERVED_SUFFIXES}.
+     * @param expressions the {@link Expression Expressions} that should be evaluated
      */
-    private static void sendRegister(Context context, String id, Expression expression) {
+    private static void sendRegister(Context context, String id, List<Expression> expressions) {
         Intent intent = new Intent(ACTION_REGISTER);
         intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
         intent.putExtra(EXTRA_EXPRESSION_ID, id);
-        intent.putExtra(EXTRA_EXPRESSION, expression.toParseString());
+
+        List<String> actuatorExpressions = new LinkedList<>();
+
+        for (Expression expression : expressions) {
+            actuatorExpressions.add(expression.toParseString());
+        }
+
+        intent.putExtra(EXTRA_EXPRESSION,
+                TextUtils.join(MULTIPLE_ACTUATOR_SEPARATOR, actuatorExpressions));
+
         context.sendBroadcast(intent);
     }
 
