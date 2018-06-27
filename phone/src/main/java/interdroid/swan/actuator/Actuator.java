@@ -2,7 +2,8 @@ package interdroid.swan.actuator;
 
 import android.content.Context;
 
-import interdroid.swancore.swansong.Expression;
+import interdroid.swancore.swansong.SensorValueExpression;
+import interdroid.swancore.swansong.TimestampedValue;
 
 /**
  * Abstract class for actuators.
@@ -11,8 +12,11 @@ public abstract class Actuator {
 
     /**
      * Perform the actuation.
+     *
+     * @param newValues the values of the sensor, null if the actuator is not associated to a
+     *                  {@link SensorValueExpression}
      */
-    public abstract void performAction();
+    public abstract void performAction(TimestampedValue[] newValues);
 
     /**
      * Interface for actuator factories.
@@ -26,6 +30,6 @@ public abstract class Actuator {
          * @param expression the expression to convert into an actuator
          * @return the actuator
          */
-        Actuator create(Context context, Expression expression);
+        Actuator create(Context context, SensorValueExpression expression);
     }
 }

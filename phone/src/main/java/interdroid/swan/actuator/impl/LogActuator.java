@@ -4,8 +4,8 @@ import android.content.Context;
 import android.util.Log;
 
 import interdroid.swan.actuator.Actuator;
-import interdroid.swancore.swansong.Expression;
 import interdroid.swancore.swansong.SensorValueExpression;
+import interdroid.swancore.swansong.TimestampedValue;
 
 /**
  * Simple {@link Actuator} that prints out a log message.
@@ -36,7 +36,7 @@ public class LogActuator extends Actuator {
     }
 
     @Override
-    public void performAction() {
+    public void performAction(TimestampedValue[] newValues) {
         if (tag != null) {
             Log.println(priority, tag, message);
         } else {
@@ -46,11 +46,10 @@ public class LogActuator extends Actuator {
 
     public static class Factory implements Actuator.Factory {
         @Override
-        public Actuator create(Context context, Expression expression) {
-            SensorValueExpression sve = (SensorValueExpression) expression;
-            int priority = Integer.parseInt(sve.getConfiguration().getString("priority"));
-            String tag = sve.getConfiguration().getString("tag");
-            String message = sve.getConfiguration().getString("message");
+        public Actuator create(Context context, SensorValueExpression expression) {
+            int priority = Integer.parseInt(expression.getConfiguration().getString("priority"));
+            String tag = expression.getConfiguration().getString("tag");
+            String message = expression.getConfiguration().getString("message");
             return new LogActuator(priority, tag, message);
         }
     }
