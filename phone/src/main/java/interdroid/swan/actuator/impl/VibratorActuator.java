@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Vibrator;
 
 import interdroid.swan.actuator.Actuator;
+import interdroid.swan.actuator.ui.AbstractActuatorActivity;
 import interdroid.swancore.swansong.SensorValueExpression;
 import interdroid.swancore.swansong.TimestampedValue;
 
@@ -13,6 +14,10 @@ import interdroid.swancore.swansong.TimestampedValue;
 public class VibratorActuator extends Actuator {
 
     public static final String ENTITY = "vibrator";
+
+    private static final String[] KEYS = new String[]{"duration"};
+
+    private static final String[] PATHS = new String[]{"vibrate"};
 
     /**
      * The vibrator object to perform the vibration on.
@@ -36,7 +41,7 @@ public class VibratorActuator extends Actuator {
     }
 
     @Override
-    public void performAction(TimestampedValue[] newValues) {
+    public void performAction(Context context, TimestampedValue[] newValues) {
         vibrator.vibrate(duration);
     }
 
@@ -45,6 +50,29 @@ public class VibratorActuator extends Actuator {
         public Actuator create(Context context, SensorValueExpression expression) {
             long duration = Long.parseLong(expression.getConfiguration().getString("duration"));
             return new VibratorActuator((Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE), duration);
+        }
+    }
+
+    public static class ConfigActivity extends AbstractActuatorActivity {
+
+        @Override
+        protected String[] getParameterKeys() {
+            return KEYS;
+        }
+
+        @Override
+        protected String[] getParameterDefaultValues() {
+            return new String[]{"500"};
+        }
+
+        @Override
+        protected String[] getPaths() {
+            return PATHS;
+        }
+
+        @Override
+        protected String getEntity() {
+            return ENTITY;
         }
     }
 }

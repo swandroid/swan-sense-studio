@@ -1953,6 +1953,17 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="842333319b29b4a2fa4c1a784567e01b374c2125" />
+
+        <!--Actuator config activities-->
+        <activity
+            android:name=".actuator.impl.VibratorActuator$ConfigActivity"
+            android:exported="true" />
+        <activity
+            android:name=".actuator.impl.HttpActuator$ConfigActivity"
+            android:exported="true" />
+        <activity
+            android:name=".actuator.impl.LogActuator$ConfigActivity"
+            android:exported="true" />
     </application>
 
 </manifest>

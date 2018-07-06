@@ -7,6 +7,7 @@ import android.util.Log;
 import java.util.HashMap;
 
 import interdroid.swan.actuator.Actuator;
+import interdroid.swan.actuator.ui.AbstractActuatorActivity;
 import interdroid.swan.remote.Constant;
 import interdroid.swan.remote.ServerConnection;
 import interdroid.swancore.swansong.SensorValueExpression;
@@ -28,6 +29,16 @@ public class HttpActuator extends Actuator {
     // TODO: 2018-06-26 for some reason the SWAN song parser drops the h from http
     public static final String ENTITY = "ttp";
 
+    private static final String[] KEYS = new String[]{
+            Constant.SERVER_URL,
+            Constant.SERVER_HTTP_AUTHORIZATION,
+            Constant.SERVER_HTTP_BODY,
+            Constant.SERVER_HTTP_BODY_TYPE,
+            Constant.SERVER_HTTP_HEADER
+    };
+
+    private static final String[] PATHS = new String[]{"post", "put"};
+
     private final ServerConnection connection;
 
     /**
@@ -40,7 +51,7 @@ public class HttpActuator extends Actuator {
     }
 
     @Override
-    public void performAction(TimestampedValue[] newValues) {
+    public void performAction(Context context, TimestampedValue[] newValues) {
         // TODO: 2018-06-26 Send only the latest value for now
         TimestampedValue latest = (newValues != null && newValues.length > 0) ? newValues[0] : null;
 
@@ -75,6 +86,37 @@ public class HttpActuator extends Actuator {
             config.putString(Constant.SERVER_HTTP_METHOD, method.toUpperCase());
 
             return new HttpActuator(config);
+        }
+    }
+
+    public static class ConfigActivity extends AbstractActuatorActivity {
+
+        @Override
+        protected String[] getParameterKeys() {
+            return KEYS;
+        }
+
+        @Override
+        protected String[] getParameterDefaultValues() {
+            return new String[]{
+                    "https://example.com",
+                    "NoAuth",
+                    "key:value",
+                    "application/json",
+                    "key:value"
+            };
+        }
+
+        @Override
+        protected String[] getPaths() {
+            return PATHS;
+        }
+
+        @Override
+        protected String getEntity() {
+            // return ENTITY;
+            // TODO: 2018-07-06 see TODO on top of the class
+            return "http";
         }
     }
 }

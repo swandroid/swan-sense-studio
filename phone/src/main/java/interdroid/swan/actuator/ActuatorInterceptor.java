@@ -30,7 +30,7 @@ public class ActuatorInterceptor extends BroadcastReceiver {
                 case TRUE:
                     forwardExtraIntent(context, intent, ActuatorManager.EXTRA_FORWARD_TRUE, true);
 
-                    actuate(intent.getStringExtra(ActuatorManager.EXTRA_EXPRESSION_ID), null);
+                    actuate(context, intent.getStringExtra(ActuatorManager.EXTRA_EXPRESSION_ID), null);
                     break;
                 case FALSE:
                     forwardExtraIntent(context, intent, ActuatorManager.EXTRA_FORWARD_FALSE, true);
@@ -49,7 +49,7 @@ public class ActuatorInterceptor extends BroadcastReceiver {
             TimestampedValue[] timestampedValues = new TimestampedValue[parcelables.length];
             System.arraycopy(parcelables, 0, timestampedValues, 0, parcelables.length);
 
-            actuate(intent.getStringExtra(ActuatorManager.EXTRA_EXPRESSION_ID), timestampedValues);
+            actuate(context, intent.getStringExtra(ActuatorManager.EXTRA_EXPRESSION_ID), timestampedValues);
         }
     }
 
@@ -84,7 +84,7 @@ public class ActuatorInterceptor extends BroadcastReceiver {
      * @param expressionId the id of the expression
      * @param newValues    the new values given by the expression
      */
-    private void actuate(String expressionId, TimestampedValue[] newValues) {
+    private void actuate(Context context, String expressionId, TimestampedValue[] newValues) {
         if (expressionId == null) {
             Log.w(TAG, "Empty expressionId");
             return;
@@ -100,7 +100,7 @@ public class ActuatorInterceptor extends BroadcastReceiver {
         Log.d(TAG, "Performing actuator for id " + expressionId);
         for (Actuator actuator : actuators) {
             try {
-                actuator.performAction(newValues);
+                actuator.performAction(context, newValues);
             } catch (Exception e) {
                 Log.e(TAG, "Exception while performing actuator action", e);
             }

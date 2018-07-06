@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import interdroid.swan.actuator.Actuator;
+import interdroid.swan.actuator.ui.AbstractActuatorActivity;
 import interdroid.swancore.swansong.SensorValueExpression;
 import interdroid.swancore.swansong.TimestampedValue;
 
@@ -15,6 +16,12 @@ public class LogActuator extends Actuator {
     private static final String TAG = LogActuator.class.getSimpleName();
 
     public static final String ENTITY = "logger";
+
+    private static final String[] KEYS = new String[]{
+            "tag", "message", "priority"
+    };
+
+    private static final String[] PATHS = new String[]{"log"};
 
     private int priority;
 
@@ -36,7 +43,7 @@ public class LogActuator extends Actuator {
     }
 
     @Override
-    public void performAction(TimestampedValue[] newValues) {
+    public void performAction(Context context, TimestampedValue[] newValues) {
         if (tag != null) {
             Log.println(priority, tag, message);
         } else {
@@ -51,6 +58,33 @@ public class LogActuator extends Actuator {
             String tag = expression.getConfiguration().getString("tag");
             String message = expression.getConfiguration().getString("message");
             return new LogActuator(priority, tag, message);
+        }
+    }
+
+    public static class ConfigActivity extends AbstractActuatorActivity {
+
+        @Override
+        protected String[] getParameterKeys() {
+            return KEYS;
+        }
+
+        @Override
+        protected String[] getParameterDefaultValues() {
+            return new String[]{
+                    "MainActivity",
+                    "log message",
+                    "3"
+            };
+        }
+
+        @Override
+        protected String[] getPaths() {
+            return PATHS;
+        }
+
+        @Override
+        protected String getEntity() {
+            return ENTITY;
         }
     }
 }
