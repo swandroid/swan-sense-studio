@@ -1957,13 +1957,37 @@
         <!--Actuator config activities-->
         <activity
             android:name=".actuator.impl.VibratorActuator$ConfigActivity"
-            android:exported="true" />
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="interdroid.swan.actuator.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="vibrator" />
+        </activity>
         <activity
             android:name=".actuator.impl.HttpActuator$ConfigActivity"
-            android:exported="true" />
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="interdroid.swan.actuator.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="http" />
+        </activity>
         <activity
             android:name=".actuator.impl.LogActuator$ConfigActivity"
-            android:exported="true" />
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="interdroid.swan.actuator.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="log" />
+        </activity>
     </application>
 
 </manifest>

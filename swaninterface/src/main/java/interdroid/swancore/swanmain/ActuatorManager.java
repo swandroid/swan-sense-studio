@@ -1,8 +1,11 @@
 package interdroid.swancore.swanmain;
 
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.text.TextUtils;
 
@@ -292,5 +295,32 @@ public class ActuatorManager {
         intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
         intent.putExtra(EXTRA_EXPRESSION_ID, id);
         context.sendBroadcast(intent);
+    }
+
+    /**
+     * Get a list of available actuators
+     *
+     * @param context the context
+     * @return a list of available actuators
+     */
+    public static List<ActuatorInfo> getActuators(Context context) {
+        PackageManager pm = context.getPackageManager();
+        Intent queryIntent = new Intent("interdroid.swan.actuator.DISCOVER");
+        List<ResolveInfo> discoveredActuators = pm.queryIntentActivities(queryIntent,
+                PackageManager.GET_META_DATA);
+
+        List<ActuatorInfo> actuators = new LinkedList<>();
+
+        for (ResolveInfo discoveredActuator : discoveredActuators) {
+            actuators.add(new ActuatorInfo(
+                    discoveredActuator.activityInfo.metaData.getString("entityId"),
+                    new ComponentName(
+                            discoveredActuator.activityInfo.packageName,
+                            discoveredActuator.activityInfo.name
+                    )
+            ));
+        }
+
+        return actuators;
     }
 }
