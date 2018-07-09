@@ -41,6 +41,9 @@
     <uses-feature android:name="android.hardware.location.network" />
     <uses-feature android:name="android.hardware.location.gps" />
 
+    <!--Used by BrightnessActuator-->
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher_swan"
@@ -1987,6 +1990,16 @@
             <meta-data
                 android:name="entityId"
                 android:value="log" />
+        </activity>
+        <activity android:name=".actuator.impl.BrightnessActuator$ConfigActivity"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="interdroid.swan.actuator.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="brightness" />
         </activity>
     </application>
 

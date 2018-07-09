@@ -46,7 +46,7 @@ public class HttpActuator extends Actuator {
      *
      * @param httpConfig the HTTP config used with the {@link ServerConnection} object
      */
-    public HttpActuator(Bundle httpConfig) {
+    private HttpActuator(Bundle httpConfig) {
         connection = new ServerConnection(httpConfig);
     }
 

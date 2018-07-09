@@ -23,11 +23,11 @@ public class LogActuator extends Actuator {
 
     private static final String[] PATHS = new String[]{"log"};
 
-    private int priority;
+    private final int priority;
 
-    private String tag;
+    private final String tag;
 
-    private String message;
+    private final String message;
 
     /**
      * Create a {@link LogActuator} object.
@@ -36,7 +36,7 @@ public class LogActuator extends Actuator {
      * @param tag      the log tag to use
      * @param message  the log message
      */
-    public LogActuator(int priority, String tag, String message) {
+    private LogActuator(int priority, String tag, String message) {
         this.priority = priority;
         this.tag = tag;
         this.message = message;

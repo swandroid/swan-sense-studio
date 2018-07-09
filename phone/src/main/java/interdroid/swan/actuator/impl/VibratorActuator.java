@@ -9,7 +9,7 @@ import interdroid.swancore.swansong.SensorValueExpression;
 import interdroid.swancore.swansong.TimestampedValue;
 
 /**
- * THe actuator that vibrates the phone.
+ * The actuator that vibrates the phone.
  */
 public class VibratorActuator extends Actuator {
 
@@ -22,12 +22,12 @@ public class VibratorActuator extends Actuator {
     /**
      * The vibrator object to perform the vibration on.
      */
-    private Vibrator vibrator;
+    private final Vibrator vibrator;
 
     /**
      * How long the vibration should last in milliseconds.
      */
-    private long duration;
+    private final long duration;
 
     /**
      * Create a {@link VibratorActuator} object
@@ -35,7 +35,7 @@ public class VibratorActuator extends Actuator {
      * @param vibrator the system vibrator service
      * @param duration how long the vibration should last in milliseconds
      */
-    public VibratorActuator(Vibrator vibrator, long duration) {
+    private VibratorActuator(Vibrator vibrator, long duration) {
         this.duration = duration;
         this.vibrator = vibrator;
     }

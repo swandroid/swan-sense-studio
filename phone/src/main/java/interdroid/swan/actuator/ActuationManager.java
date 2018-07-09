@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import interdroid.swan.actuator.impl.BrightnessActuator;
 import interdroid.swan.actuator.impl.HttpActuator;
 import interdroid.swan.actuator.impl.LogActuator;
 import interdroid.swan.actuator.impl.VibratorActuator;
@@ -37,6 +38,7 @@ public class ActuationManager {
         factoryMap.put(VibratorActuator.ENTITY, new VibratorActuator.Factory());
         factoryMap.put(LogActuator.ENTITY, new LogActuator.Factory());
         factoryMap.put(HttpActuator.ENTITY, new HttpActuator.Factory());
+        factoryMap.put(BrightnessActuator.ENTITY, new BrightnessActuator.Factory());
 
         FACTORY_MAP = Collections.unmodifiableMap(factoryMap);
     }
@@ -52,7 +54,7 @@ public class ActuationManager {
         List<Actuator> actuators;
         try {
             actuators = parseActuatorExpression(context, expression);
-        } catch (ExpressionParseException | SwanException e) {
+        } catch (Exception e) {
             Log.w(TAG, "Failed to parse expression", e);
             return;
         }
