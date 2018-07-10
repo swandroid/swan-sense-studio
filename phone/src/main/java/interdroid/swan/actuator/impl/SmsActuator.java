@@ -29,7 +29,7 @@ public class SmsActuator extends Actuator {
      * @param phoneNumber the number to send the text to.
      * @param text        the message to send
      */
-    public SmsActuator(String phoneNumber, String text) {
+    private SmsActuator(String phoneNumber, String text) {
         this.phoneNumber = phoneNumber;
         this.text = text;
     }

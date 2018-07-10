@@ -2038,6 +2038,16 @@
                 android:name="entityId"
                 android:value="flashlight" />
         </activity>
+        <activity android:name=".actuator.impl.VolumeActuator$ConfigActivity"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="interdroid.swan.actuator.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="volume" />
+        </activity>
     </application>
 
 </manifest>

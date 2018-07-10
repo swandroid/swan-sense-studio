@@ -38,7 +38,7 @@ public class FlashlightActuator extends Actuator {
      * @param context the context
      * @param on      whether to turn the flashlight on or off
      */
-    public FlashlightActuator(Context context, boolean on) {
+    private FlashlightActuator(Context context, boolean on) {
         this.on = on;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             camManager = (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);

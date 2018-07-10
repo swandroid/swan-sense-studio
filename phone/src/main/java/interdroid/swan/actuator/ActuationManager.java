@@ -17,6 +17,7 @@ import interdroid.swan.actuator.impl.LogActuator;
 import interdroid.swan.actuator.impl.NotificationActuator;
 import interdroid.swan.actuator.impl.SmsActuator;
 import interdroid.swan.actuator.impl.VibratorActuator;
+import interdroid.swan.actuator.impl.VolumeActuator;
 import interdroid.swancore.swanmain.ActuatorManager;
 import interdroid.swancore.swanmain.SwanException;
 import interdroid.swancore.swansong.Expression;
@@ -45,6 +46,7 @@ public class ActuationManager {
         factoryMap.put(NotificationActuator.ENTITY, new NotificationActuator.Factory());
         factoryMap.put(SmsActuator.ENTITY, new SmsActuator.Factory());
         factoryMap.put(FlashlightActuator.ENTITY, new FlashlightActuator.Factory());
+        factoryMap.put(VolumeActuator.ENTITY, new VolumeActuator.Factory());
 
         FACTORY_MAP = Collections.unmodifiableMap(factoryMap);
     }
