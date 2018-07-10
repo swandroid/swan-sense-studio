@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import interdroid.swan.R;
@@ -45,6 +46,14 @@ public class ConfigurationAdapter extends RecyclerView.Adapter<ConfigurationAdap
                 }
             }
         });
+
+        holder.clear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                values[holder.getAdapterPosition()] = "";
+                holder.value.setText("");
+            }
+        });
     }
 
     @Override
@@ -54,6 +63,18 @@ public class ConfigurationAdapter extends RecyclerView.Adapter<ConfigurationAdap
         }
 
         return Math.min(keys.length, values.length);
+    }
+
+    public int getNonNullCount() {
+        int count = 0;
+
+        for (String value : values) {
+            if (value != null && !value.isEmpty()) {
+                count++;
+            }
+        }
+
+        return count;
     }
 
     /**
@@ -122,6 +143,8 @@ public class ConfigurationAdapter extends RecyclerView.Adapter<ConfigurationAdap
         public TextView key;
         public TextView value;
 
+        public Button clear;
+
         public ViewHolder(View v) {
             super(v);
 
@@ -129,6 +152,7 @@ public class ConfigurationAdapter extends RecyclerView.Adapter<ConfigurationAdap
 
             key = (TextView) v.findViewById(R.id.key);
             value = (TextView) v.findViewById(R.id.value);
+            clear = (Button) v.findViewById(R.id.clear);
         }
     }
 }

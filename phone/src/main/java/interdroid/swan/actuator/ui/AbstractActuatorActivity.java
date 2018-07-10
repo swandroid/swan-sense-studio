@@ -180,9 +180,7 @@ public abstract class AbstractActuatorActivity extends Activity implements Confi
 
             String value = config.getString(key);
 
-            if (value != null && !value.isEmpty()) {
-                mAdapter.swap(i, value);
-            }
+            mAdapter.swap(i, value);
         }
     }
 
@@ -215,13 +213,13 @@ public abstract class AbstractActuatorActivity extends Activity implements Confi
                 .append(':')
                 .append(mPath);
 
-        int paramCount = mAdapter.getItemCount();
+        int paramCount = mAdapter.getNonNullCount();
         if (paramCount > 0) {
             builder.append('?');
 
             boolean separator = false;
 
-            for (int i = 0; i < paramCount; i++) {
+            for (int i = 0; i < mAdapter.getItemCount(); i++) {
                 String value = mAdapter.getValue(i);
                 if (value != null && !value.isEmpty()) {
 
