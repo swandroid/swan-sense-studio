@@ -17,7 +17,7 @@ public abstract class Actuator {
      * @param newValues the values of the sensor, null if the actuator is not associated to a
      *                  {@link SensorValueExpression}
      */
-    public abstract void performAction(Context context, TimestampedValue[] newValues);
+    public abstract void performAction(Context context, TimestampedValue[] newValues) throws Exception;
 
     /**
      * Interface for actuator factories.

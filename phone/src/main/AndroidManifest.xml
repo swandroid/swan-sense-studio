@@ -47,6 +47,10 @@
     <!--Used by SmsActuator-->
     <uses-permission android:name="android.permission.SEND_SMS" />
 
+    <!--Used by FlashlightActuator-->
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher_swan"
@@ -2023,6 +2027,16 @@
             <meta-data
                 android:name="entityId"
                 android:value="sms" />
+        </activity>
+        <activity android:name=".actuator.impl.FlashlightActuator$ConfigActivity"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="interdroid.swan.actuator.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="flashlight" />
         </activity>
     </application>
 

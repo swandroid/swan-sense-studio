@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import interdroid.swan.actuator.impl.BrightnessActuator;
+import interdroid.swan.actuator.impl.FlashlightActuator;
 import interdroid.swan.actuator.impl.HttpActuator;
 import interdroid.swan.actuator.impl.LogActuator;
 import interdroid.swan.actuator.impl.NotificationActuator;
@@ -43,6 +44,7 @@ public class ActuationManager {
         factoryMap.put(BrightnessActuator.ENTITY, new BrightnessActuator.Factory());
         factoryMap.put(NotificationActuator.ENTITY, new NotificationActuator.Factory());
         factoryMap.put(SmsActuator.ENTITY, new SmsActuator.Factory());
+        factoryMap.put(FlashlightActuator.ENTITY, new FlashlightActuator.Factory());
 
         FACTORY_MAP = Collections.unmodifiableMap(factoryMap);
     }
