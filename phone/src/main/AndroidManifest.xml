@@ -2001,6 +2001,16 @@
                 android:name="entityId"
                 android:value="brightness" />
         </activity>
+        <activity android:name=".actuator.impl.NotificationActuator$ConfigActivity"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="interdroid.swan.actuator.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="notification" />
+        </activity>
     </application>
 
 </manifest>
