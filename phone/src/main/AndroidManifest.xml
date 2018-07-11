@@ -2048,6 +2048,16 @@
                 android:name="entityId"
                 android:value="volume" />
         </activity>
+        <activity android:name=".actuator.impl.FileActuator$ConfigActivity"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="interdroid.swan.actuator.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="file" />
+        </activity>
     </application>
 
 </manifest>

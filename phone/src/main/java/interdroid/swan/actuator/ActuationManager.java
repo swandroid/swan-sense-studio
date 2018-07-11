@@ -10,14 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import interdroid.swan.actuator.impl.BrightnessActuator;
-import interdroid.swan.actuator.impl.FlashlightActuator;
-import interdroid.swan.actuator.impl.HttpActuator;
-import interdroid.swan.actuator.impl.LogActuator;
-import interdroid.swan.actuator.impl.NotificationActuator;
-import interdroid.swan.actuator.impl.SmsActuator;
-import interdroid.swan.actuator.impl.VibratorActuator;
-import interdroid.swan.actuator.impl.VolumeActuator;
+import interdroid.swan.actuator.impl.*;
 import interdroid.swancore.swanmain.ActuatorManager;
 import interdroid.swancore.swanmain.SwanException;
 import interdroid.swancore.swansong.Expression;
@@ -47,6 +40,7 @@ public class ActuationManager {
         factoryMap.put(SmsActuator.ENTITY, new SmsActuator.Factory());
         factoryMap.put(FlashlightActuator.ENTITY, new FlashlightActuator.Factory());
         factoryMap.put(VolumeActuator.ENTITY, new VolumeActuator.Factory());
+        factoryMap.put(FileActuator.ENTITY, new FileActuator.Factory());
 
         FACTORY_MAP = Collections.unmodifiableMap(factoryMap);
     }
@@ -105,7 +99,7 @@ public class ActuationManager {
     private static List<Actuator> parseActuatorExpression(Context context, String actExpression)
             throws ExpressionParseException, SwanException {
 
-        List<Actuator> actuators= new LinkedList<>();
+        List<Actuator> actuators = new LinkedList<>();
 
         for (String s : actExpression.split(ActuatorManager.MULTIPLE_ACTUATOR_SEPARATOR)) {
             Expression expression = ExpressionFactory.parse(s);
