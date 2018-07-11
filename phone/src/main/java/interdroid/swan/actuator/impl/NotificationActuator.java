@@ -4,6 +4,7 @@ import android.app.Notification;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 
@@ -88,11 +89,11 @@ public class NotificationActuator extends Actuator {
      * @param vibrate        vibration pattern
      * @param when           timestamp to show in the notification
      */
-    private NotificationActuator(Context context, int notificationId, Boolean autoCancel, String category, Integer color,
-                                 String contentText, String contentTitle, Bundle extras,
-                                 String lightStr, Boolean ongoing, Boolean onlyAlertOnce,
-                                 Integer priority, Boolean showWhen, Uri sound, String subText,
-                                 String ticker, long[] vibrate, Long when) {
+    private NotificationActuator(Context context, int notificationId, @Nullable Boolean autoCancel, @Nullable String category, @Nullable Integer color,
+                                 @Nullable String contentText, @Nullable String contentTitle, @Nullable Bundle extras,
+                                 @Nullable String lightStr, @Nullable Boolean ongoing, @Nullable Boolean onlyAlertOnce,
+                                 @Nullable Integer priority, @Nullable Boolean showWhen, @Nullable Uri sound, @Nullable String subText,
+                                 @Nullable String ticker, @Nullable long[] vibrate, @Nullable Long when) {
         this.notificationManager = NotificationManagerCompat.from(context);
         this.notificationId = notificationId;
 
@@ -199,6 +200,7 @@ public class NotificationActuator extends Actuator {
 
             Bundle extras = null;
             if (extraStr != null) {
+                extras = new Bundle();
                 for (String s : extraStr.split(",")) {
                     String[] param = s.split(":", 2);
 

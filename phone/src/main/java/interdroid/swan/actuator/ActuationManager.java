@@ -41,6 +41,7 @@ public class ActuationManager {
         factoryMap.put(FlashlightActuator.ENTITY, new FlashlightActuator.Factory());
         factoryMap.put(VolumeActuator.ENTITY, new VolumeActuator.Factory());
         factoryMap.put(FileActuator.ENTITY, new FileActuator.Factory());
+        factoryMap.put(IntentActuator.ENTITY, new IntentActuator.Factory());
 
         FACTORY_MAP = Collections.unmodifiableMap(factoryMap);
     }
