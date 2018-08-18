@@ -2068,6 +2068,16 @@
                 android:name="entityId"
                 android:value="intent" />
         </activity>
+        <activity android:name=".actuator.impl.MqttActuator$ConfigActivity"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="interdroid.swan.actuator.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="mqtt" />
+        </activity>
     </application>
 
 </manifest>

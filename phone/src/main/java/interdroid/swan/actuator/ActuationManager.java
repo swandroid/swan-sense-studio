@@ -42,6 +42,7 @@ public class ActuationManager {
         factoryMap.put(VolumeActuator.ENTITY, new VolumeActuator.Factory());
         factoryMap.put(FileActuator.ENTITY, new FileActuator.Factory());
         factoryMap.put(IntentActuator.ENTITY, new IntentActuator.Factory());
+        factoryMap.put(MqttActuator.ENTITY, new MqttActuator.Factory());
 
         FACTORY_MAP = Collections.unmodifiableMap(factoryMap);
     }
@@ -84,6 +85,13 @@ public class ActuationManager {
         if (removed == null) {
             Log.d(TAG, "No actuator for " + expressionId + " to be removed");
         } else {
+            for (Actuator actuator : removed) {
+                try {
+                    actuator.onRemoved();
+                } catch (Exception e) {
+                    Log.w(TAG, "exception while clearing actuator for " + expressionId, e);
+                }
+            }
             Log.d(TAG, "Removed actuator for " + expressionId);
         }
     }
@@ -117,10 +125,16 @@ public class ActuationManager {
             SensorValueExpression sve = (SensorValueExpression) expression;
 
             if (Expression.LOCATION_SELF.equals(sve.getLocation())) {
-                actuators.add(expressionToActuator(context, sve));
+                Actuator actuator = expressionToActuator(context, sve);
+                if (actuator != null) {
+                    actuators.add(actuator);
+                } else {
+                    Log.w(TAG, "null actuator");
+                }
+            } else {
+                // TODO: 2018-06-06 other locations
+                Log.w(TAG, "Unsupported location: " + sve.getLocation());
             }
-
-            // TODO: 2018-06-06 other locations
         }
 
         return actuators;
@@ -137,7 +151,12 @@ public class ActuationManager {
         Actuator.Factory factory = FACTORY_MAP.get(sve.getEntity());
 
         if (factory != null) {
-            return factory.create(context, sve);
+            try {
+                return factory.create(context, sve);
+            } catch (Exception e) {
+                Log.e(TAG, "failed to create actuator", e);
+                return null;
+            }
         } else {
             Log.w(TAG, "Unknown actuator entity");
             return null;

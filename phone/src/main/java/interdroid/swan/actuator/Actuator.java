@@ -20,6 +20,11 @@ public abstract class Actuator {
     public abstract void performAction(Context context, TimestampedValue[] newValues) throws Exception;
 
     /**
+     * Called when the actuator is removed. Should be used to free up resources.
+     */
+    public void onRemoved() throws Exception {}
+
+    /**
      * Interface for actuator factories.
      */
     public static interface Factory {
@@ -31,6 +36,6 @@ public abstract class Actuator {
          * @param expression the expression to convert into an actuator
          * @return the actuator
          */
-        Actuator create(Context context, SensorValueExpression expression);
+        Actuator create(Context context, SensorValueExpression expression) throws Exception;
     }
 }
