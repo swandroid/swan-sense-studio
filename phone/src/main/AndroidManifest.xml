@@ -41,6 +41,16 @@
     <uses-feature android:name="android.hardware.location.network" />
     <uses-feature android:name="android.hardware.location.gps" />
 
+    <!--Used by BrightnessActuator-->
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+
+    <!--Used by SmsActuator-->
+    <uses-permission android:name="android.permission.SEND_SMS" />
+
+    <!--Used by FlashlightActuator-->
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher_swan"
@@ -204,6 +214,20 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".actuator.RegisterReceiver"
+            android:exported="true"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="interdroid.swan.actuator.REGISTER" />
+                <action android:name="interdroid.swan.actuator.UNREGISTER" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".actuator.ActuatorInterceptor">
+            <intent-filter>
+                <action android:name="interdroid.swan.actuator.ACTUATOR_INTERCEPTOR"/>
+            </intent-filter>
+        </receiver>
 
         <service
             android:name=".engine.EvaluationEngineService"
@@ -1939,6 +1963,121 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="842333319b29b4a2fa4c1a784567e01b374c2125" />
+
+        <!--Actuator config activities-->
+        <activity
+            android:name=".actuator.impl.VibratorActuator$ConfigActivity"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="interdroid.swan.actuator.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="vibrator" />
+        </activity>
+        <activity
+            android:name=".actuator.impl.HttpActuator$ConfigActivity"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="interdroid.swan.actuator.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="http" />
+        </activity>
+        <activity
+            android:name=".actuator.impl.LogActuator$ConfigActivity"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="interdroid.swan.actuator.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="log" />
+        </activity>
+        <activity android:name=".actuator.impl.BrightnessActuator$ConfigActivity"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="interdroid.swan.actuator.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="brightness" />
+        </activity>
+        <activity android:name=".actuator.impl.NotificationActuator$ConfigActivity"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="interdroid.swan.actuator.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="notification" />
+        </activity>
+        <activity android:name=".actuator.impl.SmsActuator$ConfigActivity"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="interdroid.swan.actuator.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="sms" />
+        </activity>
+        <activity android:name=".actuator.impl.FlashlightActuator$ConfigActivity"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="interdroid.swan.actuator.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="flashlight" />
+        </activity>
+        <activity android:name=".actuator.impl.VolumeActuator$ConfigActivity"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="interdroid.swan.actuator.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="volume" />
+        </activity>
+        <activity android:name=".actuator.impl.FileActuator$ConfigActivity"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="interdroid.swan.actuator.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="file" />
+        </activity>
+        <activity android:name=".actuator.impl.IntentActuator$ConfigActivity"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="interdroid.swan.actuator.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="intent" />
+        </activity>
+        <activity android:name=".actuator.impl.MqttActuator$ConfigActivity"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="interdroid.swan.actuator.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="mqtt" />
+        </activity>
     </application>
 
 </manifest>

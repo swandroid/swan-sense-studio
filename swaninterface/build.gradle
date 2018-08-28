@@ -13,7 +13,7 @@ ext {
     siteUrl = 'https://github.com/swandroid/swan-sense-studio'
     gitUrl = 'https://github.com/swandroid/swan-sense-studio.git'
 
-    libraryVersion = '1.0.4'
+    libraryVersion = '1.0.5-SNAPSHOT'
 
     developerId = 'swan'
     developerName = 'Swan Project'
