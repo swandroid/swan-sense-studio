@@ -32,8 +32,8 @@ public class CloudTestActivity extends Activity {
 
   //  final String MY_EXPRESSION = "cloud@profiler:value?case=0{ANY,0} > 1";
 
-   // final String MY_EXPRESSION = "wear@heartrate:heart_rate{ANY,1000}";
-  //  final String MY_EXPRESSION = "self@wear_heartrate:heart_rate{ANY,0}";
+     final String MY_EXPRESSION = "wear@heartrate:heart_rate{MEAN,10000} > 75.0";
+   // final String MY_EXPRESSION = "self@wear_heartrate:heart_rate{ANY,0}";
 
 
   //  final String MY_EXPRESSION = "self@wear_movement:x{ANY,0}";
@@ -41,7 +41,7 @@ public class CloudTestActivity extends Activity {
 
 //    final String MY_EXPRESSION = "cloud@profiler:value?case=1{ANY,0}";
 
-    final String MY_EXPRESSION = "self@cloudtest:value?delay='1000'{MEAN,1000}";
+ //   final String MY_EXPRESSION = "self@cloudtest:value?delay='1000'{MEAN,1000}";
 
 
     //   final String MY_EXPRESSION = "cloud@tree:branch{ANY,1000}";
@@ -141,8 +141,10 @@ public class CloudTestActivity extends Activity {
                                 if (arg1 != null && arg1.length > 0) {
                                     long result = System.currentTimeMillis()- startValue[0];
 
+                                    String value = arg1[0].getValue().toString();
+                                    tv.setText("Value = " + value+"\nTimestamp = "+arg1[0].getTimestamp());
                                     // we skip the first req as it usually takes much longer
-                                    if(firstReq) {
+                                  /*  if(firstReq) {
                                         validValue = true;
                                     }
 
@@ -169,7 +171,7 @@ public class CloudTestActivity extends Activity {
                                         }
                                     } else {
                                         validValue = true;
-                                    }
+                                    }*/
                                 } else {
                                     tv.setText("Value = null");
                                 }
