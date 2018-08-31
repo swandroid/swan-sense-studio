@@ -157,7 +157,7 @@ public class SensorService extends Service implements SensorEventListener {
 
     private void registerSwanExpression(String id, String expression){
         expressionContainer.put(id, expression);
-        exp.registerValueExpression( id, expression);
+        exp.registerExpression( id, expression);
     }
 
     private void unregisterSwanExpression(String id) {
