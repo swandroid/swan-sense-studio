@@ -49,8 +49,9 @@ public class CloudTestActivity extends Activity {
  // final String MY_ACTUATOR_EXPRESSION = "wear@heartrate:heart_rate{ANY,0}<75.0||self@light:lux{ANY,0}<10.0THENwear@vibrator:vibrate?duration='500'";
  // final String MY_ACTUATOR_EXPRESSION = "wear@heartrate:heart_rate{ANY,0}<75.0||wear@light:lux{ANY,0}<10.0THENwear@vibrator:vibrate?duration='500'";
 
-    final String MY_ACTUATOR_EXPRESSION = "wear@heartrate:heart_rate{ANY,0}<75.0THENwear@vibrator:vibrate?duration='500'";
+   // final String MY_ACTUATOR_EXPRESSION = "wear@heartrate:heart_rate{ANY,0}<75.0THENwear@vibrator:vibrate?duration='500'&&self@vibrator:vibrate?duration='500'";
 
+    final String MY_ACTUATOR_EXPRESSION = "wear@heartrate:heart_rate{ANY,0}<75.0THENwear@phone:send";
   //  final String MY_EXPRESSION = "self@wear_movement:x{ANY,0}";
   //  final String MY_EXPRESSION = "wear@movement:x{ANY,0}";
 

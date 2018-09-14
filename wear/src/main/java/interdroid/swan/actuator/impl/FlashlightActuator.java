@@ -48,7 +48,7 @@ public class FlashlightActuator extends Actuator {
     }
 
     @Override
-    public void performAction(Context context, TimestampedValue[] newValues) throws CameraAccessException {
+    public void performAction(Context context, String expressionId, TimestampedValue[] newValues) throws CameraAccessException {
         if (!context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) {
             Log.w(TAG, "Device has no flash!");
             return;

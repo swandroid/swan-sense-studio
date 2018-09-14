@@ -45,7 +45,7 @@ public class FileActuator extends Actuator {
     }
 
     @Override
-    public void performAction(Context context, TimestampedValue[] newValues) throws IOException {
+    public void performAction(Context context, String expressionId, TimestampedValue[] newValues) throws IOException {
         TimestampedValue latest = (newValues != null && newValues.length > 0) ? newValues[0] : null;
 
         if (latest != null) {

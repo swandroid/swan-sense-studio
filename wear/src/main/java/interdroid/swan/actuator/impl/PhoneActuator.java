@@ -2,54 +2,51 @@ package interdroid.swan.actuator.impl;
 
 import android.content.Context;
 import android.os.Vibrator;
+import android.util.Log;
 
+import interdroid.swan.DeviceClient;
 import interdroid.swan.actuator.Actuator;
-//import interdroid.swan.actuator.ui.AbstractActuatorActivity;
+import interdroid.swancore.swansong.Result;
 import interdroid.swancore.swansong.SensorValueExpression;
 import interdroid.swancore.swansong.TimestampedValue;
+import interdroid.swancore.swansong.TriState;
+
+//import interdroid.swan.actuator.ui.AbstractActuatorActivity;
 
 /**
  * The actuator that vibrates the phone.
  */
-public class VibratorActuator extends Actuator {
+public class PhoneActuator extends Actuator {
 
-    public static final String ENTITY = "vibrator";
+    public static final String ENTITY = "phone";
 
-    private static final String[] KEYS = new String[]{"duration"};
+    private static final String[] KEYS = new String[]{"bluetooth"};
 
-    private static final String[] PATHS = new String[]{"vibrate"};
+    private static final String[] PATHS = new String[]{"send"};
 
-    /**
-     * The vibrator object to perform the vibration on.
-     */
-    private final Vibrator vibrator;
 
-    /**
-     * How long the vibration should last in milliseconds.
-     */
-    private final long duration;
-
-    /**
-     * Create a {@link VibratorActuator} object
-     *
-     * @param vibrator the system vibrator service
-     * @param duration how long the vibration should last in milliseconds
-     */
-    private VibratorActuator(Vibrator vibrator, long duration) {
-        this.duration = duration;
-        this.vibrator = vibrator;
-    }
 
     @Override
     public void performAction(Context context, String expressionId, TimestampedValue[] newValues) {
-        vibrator.vibrate(duration);
+
+        if(newValues!=null) {
+            Log.d("RoshanPhone","Sending new values to phone");
+            DeviceClient.getInstance(context).sendExpressionData(expressionId, new Result(newValues,
+                    newValues[newValues.length - 1].getTimestamp()));
+        }else{
+            Log.d("RoshanPhone","Sending new state to phone");
+            TriState state = TriState.TRUE;
+            Result result = new Result(System.currentTimeMillis(), state);
+            result.setDeferUntilGuaranteed(false);
+            DeviceClient.getInstance(context).sendExpressionData(expressionId, result);
+        }
+
     }
 
     public static class Factory implements Actuator.Factory {
         @Override
         public Actuator create(Context context, SensorValueExpression expression) {
-            long duration = Long.parseLong(expression.getConfiguration().getString("duration"));
-            return new VibratorActuator((Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE), duration);
+            return new PhoneActuator();
         }
     }
 

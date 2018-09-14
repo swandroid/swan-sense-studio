@@ -43,7 +43,7 @@ public class LogActuator extends Actuator {
     }
 
     @Override
-    public void performAction(Context context, TimestampedValue[] newValues) {
+    public void performAction(Context context, String expressionId, TimestampedValue[] newValues) {
         if (tag != null) {
             Log.println(priority, tag, message);
         } else {

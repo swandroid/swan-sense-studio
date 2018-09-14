@@ -17,7 +17,7 @@ public abstract class Actuator {
      * @param newValues the values of the sensor, null if the actuator is not associated to a
      *                  {@link SensorValueExpression}
      */
-    public abstract void performAction(Context context, TimestampedValue[] newValues) throws Exception;
+    public abstract void performAction(Context context, String expressionId, TimestampedValue[] newValues) throws Exception;
 
     /**
      * Called when the actuator is removed. Should be used to free up resources.

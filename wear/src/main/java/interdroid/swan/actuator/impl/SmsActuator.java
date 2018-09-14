@@ -35,7 +35,7 @@ public class SmsActuator extends Actuator {
     }
 
     @Override
-    public void performAction(Context context, TimestampedValue[] newValues) {
+    public void performAction(Context context, String expressionId, TimestampedValue[] newValues) {
         SmsManager smsManager = SmsManager.getDefault();
         smsManager.sendTextMessage(phoneNumber, null, text, null, null);
     }

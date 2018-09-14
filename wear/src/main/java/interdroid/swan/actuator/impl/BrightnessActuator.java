@@ -40,7 +40,7 @@ public class BrightnessActuator extends Actuator {
     }
 
     @Override
-    public void performAction(Context context, TimestampedValue[] newValues) {
+    public void performAction(Context context, String expressionId, TimestampedValue[] newValues) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Settings.System.canWrite(context)) {
             Settings.System.putInt(cr, Settings.System.SCREEN_BRIGHTNESS, brightness);
         } else {

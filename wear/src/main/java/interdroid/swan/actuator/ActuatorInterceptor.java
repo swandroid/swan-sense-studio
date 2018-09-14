@@ -106,7 +106,7 @@ public class ActuatorInterceptor extends BroadcastReceiver {
         Log.d(TAG, "Performing actuator for id " + expressionId);
         for (Actuator actuator : actuators) {
             try {
-                actuator.performAction(context, newValues);
+                actuator.performAction(context, expressionId, newValues);
             } catch (Exception e) {
                 Log.e(TAG, "Exception while performing actuator action", e);
             }

@@ -54,8 +54,9 @@ public class ManageExpressions {
                     null, new ExpressionListener() {
                         @Override
                         public void onNewState(String id, long timestamp, TriState newState) {
-
+                            Log.d(TAG, "new State");
                             if(phoneActuation){
+                                Log.d(TAG, "phone actuation true");
                                 Result result = new Result(timestamp, newState);
                                 result.setDeferUntilGuaranteed(false);
                                 DeviceClient.getInstance(context).sendExpressionData(checkAndAddSuffixes(id), result);
@@ -67,6 +68,7 @@ public class ManageExpressions {
                         @Override
                         public void onNewValues(String id, TimestampedValue[] newValues) {
 
+                            Log.d(TAG, "new values");
                             if(phoneActuation){
 
                                 DeviceClient.getInstance(context).sendExpressionData(checkAndAddSuffixes(id), new Result(newValues,

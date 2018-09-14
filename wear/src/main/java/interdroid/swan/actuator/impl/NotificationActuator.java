@@ -172,7 +172,7 @@ public class NotificationActuator extends Actuator {
 
 
     @Override
-    public void performAction(Context context, TimestampedValue[] newValues) {
+    public void performAction(Context context, String expressionId, TimestampedValue[] newValues) {
         notificationManager.notify(notificationId, notification);
     }
 

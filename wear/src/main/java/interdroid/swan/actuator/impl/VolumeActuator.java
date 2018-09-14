@@ -48,7 +48,7 @@ public class VolumeActuator extends Actuator {
     }
 
     @Override
-    public void performAction(Context context, TimestampedValue[] newValues) {
+    public void performAction(Context context, String expressionId, TimestampedValue[] newValues) {
         switch (path) {
             case PATH_SET:
                 audioManager.setStreamVolume(stream, volume, 0);

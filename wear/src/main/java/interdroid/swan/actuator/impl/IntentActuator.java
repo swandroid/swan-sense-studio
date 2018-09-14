@@ -79,7 +79,7 @@ public class IntentActuator extends Actuator {
     }
 
     @Override
-    public void performAction(Context context, TimestampedValue[] newValues) {
+    public void performAction(Context context, String expressionId, TimestampedValue[] newValues) {
         Intent intent = new Intent(baseIntent);
         if (newValues != null) {
             intent.putExtra(ExpressionManager.EXTRA_NEW_VALUES, newValues);
