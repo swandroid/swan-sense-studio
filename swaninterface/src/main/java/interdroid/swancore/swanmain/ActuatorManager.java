@@ -271,17 +271,19 @@ public class ActuatorManager {
         Intent intent = new Intent(ACTION_REGISTER);
         intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
         intent.putExtra(EXTRA_EXPRESSION_ID, id);
+        //This check is for remote actuators that are already added for the id but listeners are not registered
+        if(expressions!=null) {
+             List<String> actuatorExpressions = new LinkedList<>();
 
-        List<String> actuatorExpressions = new LinkedList<>();
+             for (Expression expression : expressions) {
+                 actuatorExpressions.add(expression.toParseString());
+             }
 
-        for (Expression expression : expressions) {
-            actuatorExpressions.add(expression.toParseString());
+             intent.putExtra(EXTRA_EXPRESSION,
+                     TextUtils.join(MULTIPLE_ACTUATOR_SEPARATOR, actuatorExpressions));
+
+             context.sendBroadcast(intent);
         }
-
-        intent.putExtra(EXTRA_EXPRESSION,
-                TextUtils.join(MULTIPLE_ACTUATOR_SEPARATOR, actuatorExpressions));
-
-        context.sendBroadcast(intent);
     }
 
     /**

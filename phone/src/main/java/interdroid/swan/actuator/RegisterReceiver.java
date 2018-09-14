@@ -37,7 +37,7 @@ public class RegisterReceiver extends BroadcastReceiver {
                 ActuationManager.registerActuator(context, expressionId, expression);
                 break;
             case ActuatorManager.ACTION_UNREGISTER:
-                ActuationManager.unregisterActuator(expressionId);
+                ActuationManager.unregisterActuator(context, expressionId);
                 break;
             default:
                 Log.w(TAG, "Unknown intent action " + intent.getAction());

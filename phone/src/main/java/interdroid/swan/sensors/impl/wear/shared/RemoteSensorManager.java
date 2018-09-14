@@ -24,6 +24,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import interdroid.swan.actuator.ActuationManager;
 import interdroid.swan.engine.EvaluationEngineService;
 import interdroid.swancore.shared.ClientPaths;
 import interdroid.swancore.shared.DataMapKeys;
@@ -219,14 +220,71 @@ public class RemoteSensorManager {
         });
     }
 
+    public void registerActuationExpression(final String expression, final String id){
+
+        executorService.submit(new Runnable() {
+            @Override
+            public void run() {
+
+                handleExpressions(ClientPaths.REGISTER_ACTUATION_EXPRESSION, expression, id);
+            }
+        });
+    }
+
+    public void unregisterActuationExpression(final String id){
+
+        executorService.submit(new Runnable() {
+            @Override
+            public void run() {
+
+                handleExpressions(ClientPaths.UNREGISTER_ACTUATION_EXPRESSION, null, id);
+            }
+        });
+    }
+
+    public void Actuate(final String id){
+
+        executorService.submit(new Runnable() {
+            @Override
+            public void run() {
+
+                handleExpressions(ClientPaths.ACTUATE, null, id);
+            }
+        });
+    }
+
+
     private void handleExpressions(final String path, final String expression, final String id) {
         if(validateConnection()) {
             PutDataMapRequest dataMap = PutDataMapRequest.create(path);
 
             dataMap.getDataMap().putString(DataMapKeys.EXPRESSION_ID, id);
             dataMap.getDataMap().putString(DataMapKeys.EXPRESSION, expression);
-            dataMap.getDataMap().putLong("Time",System.currentTimeMillis());
 
+            dataMap.getDataMap().putLong("Time",System.currentTimeMillis());
+            Log.d(TAG, "Expression to send remote:"+expression+" id:"+id);
+            PutDataRequest putDataRequest = dataMap.asPutDataRequest();
+            putDataRequest = putDataRequest.setUrgent();
+            Wearable.DataApi.putDataItem(googleApiClient, putDataRequest).setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
+                @Override
+                public void onResult(DataApi.DataItemResult dataItemResult) {
+                    Log.d(TAG, "Sending new expession ++++++++" + path +" " + id + ": " + dataItemResult.getStatus().isSuccess());
+                }
+            });
+        }
+    }
+
+    private void handleRegisteringSensorActuatorExpressions(final String path, final String expression, final String id) {
+        if(validateConnection()) {
+            PutDataMapRequest dataMap = PutDataMapRequest.create(path);
+
+            dataMap.getDataMap().putString(DataMapKeys.EXPRESSION_ID, id);
+            dataMap.getDataMap().putString(DataMapKeys.EXPRESSION, expression);
+
+            dataMap.getDataMap().putLong("Time",System.currentTimeMillis());
+            dataMap.getDataMap().putBoolean (DataMapKeys.WEAR_ACTUATION, ActuationManager.REMOTE_ACTUATORS.contains(id));
+            dataMap.getDataMap().putBoolean (DataMapKeys.PHONE_ACTUATION, ActuationManager.ACTUATORS.containsKey(id));
+            Log.d(TAG, "Expression to send remote:"+expression+" id:"+id);
             PutDataRequest putDataRequest = dataMap.asPutDataRequest();
             putDataRequest = putDataRequest.setUrgent();
             Wearable.DataApi.putDataItem(googleApiClient, putDataRequest).setResultCallback(new ResultCallback<DataApi.DataItemResult>() {

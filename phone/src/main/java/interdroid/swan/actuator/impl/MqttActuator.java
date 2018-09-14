@@ -113,7 +113,7 @@ public class MqttActuator extends Actuator {
             buffer.put(latest.getValue().toString().getBytes());
 
             MqttMessage message = new MqttMessage(buffer.array());
-
+            Log.e(TAG, "Message:"+message.toString()+" publish for Topic:"+topic);
             client.publish(topic, message);
         } catch (MqttException e) {
             Log.e(TAG, "Exception while sending mqtt message", e);

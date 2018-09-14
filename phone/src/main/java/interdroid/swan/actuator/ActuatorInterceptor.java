@@ -8,6 +8,8 @@ import android.util.Log;
 
 import java.util.List;
 
+import interdroid.swan.engine.EvaluationManager;
+import interdroid.swan.sensors.impl.wear.shared.RemoteSensorManager;
 import interdroid.swancore.swanmain.ActuatorManager;
 import interdroid.swancore.swanmain.ExpressionManager;
 import interdroid.swancore.swansong.Expression;
@@ -92,6 +94,7 @@ public class ActuatorInterceptor extends BroadcastReceiver {
 
         List<Actuator> actuators = ActuationManager.ACTUATORS.get(expressionId);
 
+
         if (actuators == null) {
             Log.w(TAG, "No actuator registered for id " + expressionId);
             return;
@@ -104,6 +107,11 @@ public class ActuatorInterceptor extends BroadcastReceiver {
             } catch (Exception e) {
                 Log.e(TAG, "Exception while performing actuator action", e);
             }
+        }
+
+        if (ActuationManager.REMOTE_ACTUATORS.contains(expressionId)) {
+            //TODO: Add TimestampedValue[] if needed
+            RemoteSensorManager.getInstance(context).Actuate(expressionId);
         }
     }
 }

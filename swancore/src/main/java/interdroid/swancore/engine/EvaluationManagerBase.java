@@ -122,7 +122,7 @@ public class EvaluationManagerBase {
         String location = expression.getLocation();
         if (!location.equals(Expression.LOCATION_SELF)
                 && !location.equals(Expression.LOCATION_INDEPENDENT)) {
-            initializeRemote(id, expression, location);
+                initializeRemote(id, expression, location);
         } else if (expression instanceof LogicExpression) {
             initialize(id + Expression.LEFT_SUFFIX,
                     ((LogicExpression) expression).getLeft());
@@ -246,6 +246,29 @@ public class EvaluationManagerBase {
         }
         return result;
     }
+
+    /**
+     * Override this method in Swan Phone App
+     * @param id
+     * @param expression
+     * @param resolvedLocation
+     * @throws SensorSetupFailedException
+     */
+    protected void remoteRegisterActuation(String id, Expression expression,
+                                    String resolvedLocation) throws SensorSetupFailedException {
+        throw new RuntimeException("initializeRemote is not implemented, you should not call this");
+    }
+
+
+    /**
+     * Override this method in Swan Phone App
+     * @param id
+     * @throws SensorSetupFailedException
+     */
+    protected void remoteUnregisterActuation(String id) throws SensorSetupFailedException {
+        throw new RuntimeException("initializeRemote is not implemented, you should not call this");
+    }
+
 
     /**
      * Override this method in Swan Phone App

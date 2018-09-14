@@ -39,11 +39,13 @@ public class MessageReceiverService extends WearableListenerService {
     public void onDataChanged(DataEventBuffer dataEvents) {
         //super.onDataChanged(dataEvents);
 
+
         final List<DataEvent> events = FreezableUtils
                 .freezeIterable(dataEvents);
 
 
         for (DataEvent dataEvent : events) {
+
             if (dataEvent.getType() == DataEvent.TYPE_CHANGED) {
                 DataItem dataItem = dataEvent.getDataItem();
                 Uri uri = dataItem.getUri();
@@ -61,7 +63,26 @@ public class MessageReceiverService extends WearableListenerService {
                     DataMap dataMap = DataMapItem.fromDataItem(dataItem).getDataMap();
                     String id = dataMap.getString(DataMapKeys.EXPRESSION_ID);
                     String expression = dataMap.getString(DataMapKeys.EXPRESSION);
-                    handleExpressions(id, expression,path);
+                    boolean wearActuation = dataMap.getBoolean(DataMapKeys.WEAR_ACTUATION);
+                    boolean phoneActuation = dataMap.getBoolean(DataMapKeys.PHONE_ACTUATION);
+                    handleExpressions(id, expression,path, wearActuation, phoneActuation);
+                }
+
+                if(path.startsWith(ClientPaths.REGISTER_ACTUATION_EXPRESSION)
+                        || path.startsWith(ClientPaths.UNREGISTER_ACTUATION_EXPRESSION)
+                        || path.startsWith(ClientPaths.ACTUATE) ){
+                    //TODO: remove starting of sensor service for only actuation
+                    Intent intent = new Intent(this, SensorService.class);
+                    startService(intent);
+
+                    do {
+                        SystemClock.sleep(200);
+                    } while (!isMyServiceRunning(SensorService.class));
+                    Log.d(TAG, "onDataChanged called "+ path);
+                    DataMap dataMap = DataMapItem.fromDataItem(dataItem).getDataMap();
+                    String id = dataMap.getString(DataMapKeys.EXPRESSION_ID);
+                    String expression = dataMap.getString(DataMapKeys.EXPRESSION);
+                    handleExpressions(id, expression,path, true,false);
                 }
 
                 if(path.startsWith(ClientPaths.START_MEASUREMENT)){
@@ -146,7 +167,7 @@ public class MessageReceiverService extends WearableListenerService {
             bb.get(expressionBytes);
             bb.get(idBytes);
 
-            handleExpressions(new String(idBytes), new String(expressionBytes), messageEvent.getPath());
+            handleExpressions(new String(idBytes), new String(expressionBytes), messageEvent.getPath(),  false, false);
 
             Log.d(TAG, "Got expression ++++++++++" + new String(expressionBytes) + " " +new String(idBytes));
         }
@@ -175,15 +196,23 @@ public class MessageReceiverService extends WearableListenerService {
         getApplicationContext().sendBroadcast(i);
     }
 
-    private void handleExpressions(String id, String expression, String broadcastType){
-        Intent i;
+    private void handleExpressions(String id, String expression, String broadcastType, boolean wearActuation, boolean phoneActuation){
+        Intent i =null;
 
         if(broadcastType.equals(ClientPaths.REGISTER_EXPRESSION))
             i = new Intent(WearConstants.BROADCAST_REGISTER_EXPR);
-        else
+        else if (broadcastType.equals(ClientPaths.UNREGISTER_EXPRESSION))
             i = new Intent(WearConstants.BROADCAST_UNREGISTER_EXPR);
+        else if (broadcastType.equals(ClientPaths.REGISTER_ACTUATION_EXPRESSION))
+            i = new Intent(WearConstants.BROADCAST_REGISTER_ACTUATION_EXPR);
+        else if (broadcastType.equals(ClientPaths.UNREGISTER_ACTUATION_EXPRESSION))
+            i = new Intent(WearConstants.BROADCAST_UNREGISTER_ACTUATION_EXPR);
+        else if (broadcastType.equals(ClientPaths.ACTUATE))
+            i = new Intent(WearConstants.BROADCAST_ACTUATE);
         i.putExtra(DataMapKeys.EXPRESSION_ID, id);
         i.putExtra(DataMapKeys.EXPRESSION, expression);
+        i.putExtra(DataMapKeys.WEAR_ACTUATION, wearActuation);
+        i.putExtra(DataMapKeys.PHONE_ACTUATION, phoneActuation);
         getApplicationContext().sendBroadcast(i);
     }
 }

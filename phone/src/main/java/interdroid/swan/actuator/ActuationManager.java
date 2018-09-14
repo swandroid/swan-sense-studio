@@ -5,6 +5,7 @@ import android.util.Log;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import interdroid.swan.actuator.impl.*;
 import interdroid.swancore.swanmain.ActuatorManager;
+import interdroid.swancore.swanmain.ExpressionManager;
 import interdroid.swancore.swanmain.SwanException;
 import interdroid.swancore.swansong.Expression;
 import interdroid.swancore.swansong.ExpressionFactory;
@@ -27,7 +29,8 @@ public class ActuationManager {
 
     private static final Map<String, Actuator.Factory> FACTORY_MAP;
 
-    static final Map<String, List<Actuator>> ACTUATORS = new ConcurrentHashMap<>();
+    public static final Map<String, List<Actuator>> ACTUATORS = new ConcurrentHashMap<>();
+    public static final HashSet<String> REMOTE_ACTUATORS = new HashSet<String>();
 
     static {
         Map<String, Actuator.Factory> factoryMap = new HashMap<>();
@@ -57,7 +60,7 @@ public class ActuationManager {
     public static void registerActuator(Context context, String expressionId, String expression) {
         List<Actuator> actuators;
         try {
-            actuators = parseActuatorExpression(context, expression);
+            actuators = parseActuatorExpression(context, expression, expressionId);
         } catch (Exception e) {
             Log.w(TAG, "Failed to parse expression", e);
             return;
@@ -79,8 +82,12 @@ public class ActuationManager {
      *
      * @param expressionId the id of the expression
      */
-    public static void unregisterActuator(String expressionId) {
+    public static void unregisterActuator(Context context, String expressionId) {
         List<Actuator> removed = ACTUATORS.remove(expressionId);
+        if(REMOTE_ACTUATORS.contains(expressionId)) {
+            ExpressionManager.unregisterRemoteActuationExpression(context, expressionId);
+            boolean removedRemote = REMOTE_ACTUATORS.remove(expressionId);
+        }
 
         if (removed == null) {
             Log.d(TAG, "No actuator for " + expressionId + " to be removed");
@@ -105,7 +112,7 @@ public class ActuationManager {
      * @throws ExpressionParseException if the parse fails
      * @throws SwanException            parsing returns null or the expresion is not a {@link SensorValueExpression}
      */
-    private static List<Actuator> parseActuatorExpression(Context context, String actExpression)
+    private static List<Actuator> parseActuatorExpression(Context context, String actExpression, String id)
             throws ExpressionParseException, SwanException {
 
         List<Actuator> actuators = new LinkedList<>();
@@ -131,10 +138,15 @@ public class ActuationManager {
                 } else {
                     Log.w(TAG, "null actuator");
                 }
-            } else {
-                // TODO: 2018-06-06 other locations
-                Log.w(TAG, "Unsupported location: " + sve.getLocation());
             }
+            else if(Expression.LOCATION_WEAR.equals(sve.getLocation())){
+                REMOTE_ACTUATORS.add(id);
+                ExpressionManager.registerRemoteActuationExpression(context, id, expression);
+            }
+            //else {
+                // TODO: 2018-06-06 other locations
+            //    Log.w(TAG, "Unsupported location: " + sve.getLocation());
+            //}
         }
 
         return actuators;

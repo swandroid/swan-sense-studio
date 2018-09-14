@@ -29,6 +29,7 @@ import interdroid.swancore.swanmain.SensorConfigurationException;
 import interdroid.swancore.swanmain.SwanException;
 import interdroid.swancore.swansong.Expression;
 import interdroid.swancore.swansong.ExpressionFactory;
+import interdroid.swancore.swansong.ExpressionParseException;
 import interdroid.swancore.swansong.Result;
 import interdroid.swancore.swansong.ValueExpression;
 import io.fabric.sdk.android.Fabric;
@@ -121,19 +122,19 @@ public class EvaluationEngineServiceBase extends Service {
                                 evaluationDelay = 0;
                             }
 
-                            long start = System.currentTimeMillis();
+                            //long start = System.currentTimeMillis();
 
                             Result result = mEvaluationManager.evaluate(
                                     head.getId(), head.getExpression(),
                                     System.currentTimeMillis());
 
-                            long end = System.currentTimeMillis();
+                            //long end = System.currentTimeMillis();
 
-                            long evaluationTime =(end-start);
-                            Log.e("Roshan", "Evalutation time in Phone (milliseconds) "+ evaluationTime);
+                            //long evaluationTime =(end-start);
+                            //Log.e("Roshan", "Evalutation time in Phone (milliseconds) "+ evaluationTime);
 
                             // update with statistics: evaluationTime and evaluationDelay
-                            head.evaluated((end - start), evaluationDelay);
+                            //head.evaluated((end - start), evaluationDelay);
 
 
                             if (head.update(result)) {
@@ -385,7 +386,21 @@ public class EvaluationEngineServiceBase extends Service {
             String[] ids = intent.getStringArrayExtra("expressionIds");
             doNotify(ids);
             return START_STICKY;
-        } else if (Intent.ACTION_BOOT_COMPLETED.equals(action)) {
+        } else if (ExpressionManager.ACTION_REGISTER_ACTUATE_REMOTE.equals(action)) {
+            String id = intent.getStringExtra("expressionId");
+            try {
+                Expression expression = ExpressionFactory.parse(intent
+                        .getStringExtra("expression"));
+                doRemoteAcuation(id, expression);
+            } catch (ExpressionParseException e) {
+                e.printStackTrace();
+            }
+
+        } else if (ExpressionManager.ACTION_UNREGISTER_ACTUATE_REMOTE.equals(action)) {
+            String id = intent.getStringExtra("expressionId");
+            stopRemoteAcuation(id);
+        }
+        else if (Intent.ACTION_BOOT_COMPLETED.equals(action)) {
             restoreAfterBoot();
         } else if (UPDATE_EXPRESSIONS.equals(action)) {
             // Use local broadcast manager because broadcast
@@ -414,6 +429,23 @@ public class EvaluationEngineServiceBase extends Service {
         Intent intent = new Intent(UPDATE_SENSORS);
         intent.putExtra("interdroid/swancore/sensors", mEvaluationManager.activeSensorsAsBundle());
         return intent;
+    }
+
+    protected void doRemoteAcuation(final String id, final Expression expression){
+        Log.d(TAG, "Remote actuation registring id: " + id + ", expression: " + expression);
+        try {
+            mEvaluationManager.remoteRegisterActuation(id,expression,expression.getLocation());
+        } catch (SensorSetupFailedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected void stopRemoteAcuation(final String id){
+        try {
+            mEvaluationManager.remoteUnregisterActuation(id);
+        } catch (SensorSetupFailedException e) {
+            e.printStackTrace();
+        }
     }
 
     protected void doRegister(final String id, final Expression expression,

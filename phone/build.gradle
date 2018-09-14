@@ -36,6 +36,7 @@ dependencies {
     //ant.importBuild 'src/main/buildgrammar.ant'
     compile project(':senseandroidlibrary')
     compile project(':swancore')
+    compile project(':swaninterface')
 
     compile files('libs/cuckoo-client.jar')
     compile files('libs/gcm-server.jar')
@@ -83,7 +84,7 @@ dependencies {
     // MQTT
     compile 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.0'
 
-    compile project(path: ':swaninterface')
+
 }
 
 

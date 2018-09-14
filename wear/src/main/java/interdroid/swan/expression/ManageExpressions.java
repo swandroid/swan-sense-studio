@@ -1,8 +1,13 @@
 package interdroid.swan.expression;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
+import java.util.HashMap;
+
+import interdroid.swancore.swanmain.ActuatorManager;
+import interdroid.swancore.swanmain.ExpressionListener;
 import interdroid.swancore.swanmain.ExpressionManager;
 import interdroid.swancore.swanmain.SwanException;
 import interdroid.swancore.swanmain.TriStateExpressionListener;
@@ -17,6 +22,12 @@ import interdroid.swancore.swansong.TriStateExpression;
 import interdroid.swancore.swansong.ValueExpression;
 import interdroid.swan.DeviceClient;
 
+import static interdroid.swancore.swanmain.ActuatorManager.EXTRA_EXPRESSION_ID;
+import static interdroid.swancore.swanmain.ActuatorManager.EXTRA_FORWARD_FALSE;
+import static interdroid.swancore.swanmain.ActuatorManager.EXTRA_FORWARD_NEW_VALUES;
+import static interdroid.swancore.swanmain.ActuatorManager.EXTRA_FORWARD_TRUE;
+import static interdroid.swancore.swanmain.ActuatorManager.EXTRA_FORWARD_UNDEFINED;
+
 /**
  * Created by Veaceslav Munteanu on 5/24/16.
  *
@@ -24,15 +35,66 @@ import interdroid.swan.DeviceClient;
  */
 public class ManageExpressions {
 
+    private static final String TAG = "ManageExpressions";
     Context context;
+    private static final String ACTUATOR_SEPARATOR = "THEN";
+
+    HashMap<String,String> expressionSuffix = new HashMap<>();
 
     public ManageExpressions(Context context){
         this.context = context;
     }
 
-    public void registerExpression(String id, String expression){
 
-        Log.d("fsfd", "registering Expression" + expression);
+    public void registerExpression(String id, String expression, boolean wearActuation, final boolean phoneActuation) {
+
+        try {
+            Expression checkExpression =  ExpressionFactory.parse(expression);
+            ActuatorManager.registerActuator(context, checkAndRemoveSuffixes(id), checkExpression,
+                    null, new ExpressionListener() {
+                        @Override
+                        public void onNewState(String id, long timestamp, TriState newState) {
+
+                            if(phoneActuation){
+                                Result result = new Result(timestamp, newState);
+                                result.setDeferUntilGuaranteed(false);
+                                DeviceClient.getInstance(context).sendExpressionData(checkAndAddSuffixes(id), result);
+
+                            }
+
+                        }
+
+                        @Override
+                        public void onNewValues(String id, TimestampedValue[] newValues) {
+
+                            if(phoneActuation){
+
+                                DeviceClient.getInstance(context).sendExpressionData(checkAndAddSuffixes(id), new Result(newValues,
+                                        newValues[newValues.length - 1].getTimestamp()));
+                                String value = newValues[0].getValue().toString();
+
+                            }
+
+
+                        }
+                    });
+        } catch (SwanException e) {
+            e.printStackTrace();
+        } catch (ExpressionParseException e) {
+            e.printStackTrace();
+        }
+
+            //registerSensorExpression(id,expression);
+
+
+
+    }
+
+
+
+    public void registerSensorExpression(String id, String expression){
+
+        Log.d(TAG, "registering Expression" + expression);
         try {
             Expression checkExpression =  ExpressionFactory.parse(expression);
 
@@ -40,7 +102,7 @@ public class ManageExpressions {
 
             if(checkExpression instanceof ValueExpression) {
 
-                ExpressionManager.registerValueExpression(context, id,
+                ExpressionManager.registerValueExpression(context, checkAndRemoveSuffixes(id),
                         (ValueExpression) ExpressionFactory.parse(expression),
                         new ValueExpressionListener() {
 
@@ -50,7 +112,7 @@ public class ManageExpressions {
                                                     TimestampedValue[] arg1) {
                                 if (arg1 != null && arg1.length > 0) {
 
-                                    DeviceClient.getInstance(context).sendExpressionData(id, new Result(arg1,
+                                    DeviceClient.getInstance(context).sendExpressionData(checkAndAddSuffixes(id), new Result(arg1,
                                             arg1[arg1.length - 1].getTimestamp()));
                                     String value = arg1[0].getValue().toString();
                                 }
@@ -58,15 +120,14 @@ public class ManageExpressions {
                         });
             }
             else if (checkExpression instanceof TriStateExpression){
-                ExpressionManager.registerTriStateExpression(context, id,
+                ExpressionManager.registerTriStateExpression(context, checkAndRemoveSuffixes(id),
                         (TriStateExpression) ExpressionFactory.parse(expression), new TriStateExpressionListener() {
                             @Override
                             public void onNewState(String id, long timestamp, TriState newState) {
 
                                 Result result = new Result(timestamp, newState);
                                 result.setDeferUntilGuaranteed(false);
-                                DeviceClient.getInstance(context).sendExpressionData(id, result);
-
+                                DeviceClient.getInstance(context).sendExpressionData(checkAndAddSuffixes(id), result);
 
                             }
                         });
@@ -88,7 +149,47 @@ public class ManageExpressions {
 
     }
 
+
     public void unregisterSWANExpression(String id){
-        ExpressionManager.unregisterExpression(context, id);
+
+        String newId = checkAndRemoveSuffixes(id);
+        ExpressionManager.unregisterExpression(context, newId);
+
+        if(expressionSuffix.containsKey(newId)){
+            expressionSuffix.remove(newId);
+        }
+
     }
+
+
+    private String checkAndRemoveSuffixes(String id){
+
+        for (String suffix : Expression.RESERVED_SUFFIXES) {
+            if (id.endsWith(suffix)) {
+                id = id.replace(suffix,"");
+                if(!expressionSuffix.containsKey(id)) {
+                    expressionSuffix.put(id, suffix);
+                }
+            }
+        }
+
+        return id;
+    }
+
+    private String checkAndAddSuffixes(String id){
+
+        String idWithSuffix;
+        if(expressionSuffix.containsKey(id)){
+
+            idWithSuffix = id + expressionSuffix.get(id);
+        }
+        else{
+            idWithSuffix = id;
+        }
+
+        return idWithSuffix;
+    }
+
+
+
 }

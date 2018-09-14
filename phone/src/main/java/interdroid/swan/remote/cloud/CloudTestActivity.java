@@ -11,6 +11,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import interdroid.swan.R;
+import interdroid.swan.actuator.ActuationManager;
+import interdroid.swancore.swanmain.ActuatorManager;
+import interdroid.swancore.swanmain.ExpressionListener;
 import interdroid.swancore.swanmain.ExpressionManager;
 import interdroid.swancore.swanmain.SwanException;
 import interdroid.swancore.swanmain.TriStateExpressionListener;
@@ -32,9 +35,21 @@ public class CloudTestActivity extends Activity {
 
   //  final String MY_EXPRESSION = "cloud@profiler:value?case=0{ANY,0} > 1";
 
-     final String MY_EXPRESSION = "wear@heartrate:heart_rate{MEAN,10000} > 75.0";
-   // final String MY_EXPRESSION = "self@wear_heartrate:heart_rate{ANY,0}";
+ //    final String MY_EXPRESSION = "wear@heartrate:heart_rate{MEAN,10000} > 75.0";
+ //    final String MY_EXPRESSION = "self@wear_heartrate:heart_rate{ANY,0}";
+ //     final String MY_ACTUATOR_EXPRESSION = "self@light:lux{ANY,0}<10.0THENself@vibrator:vibrate?duration='500'";
 
+  //  final String MY_ACTUATOR_EXPRESSION = "wear@heartrate:heart_rate{ANY,0}<75.0THENself@vibrator:vibrate?duration='500'";
+
+  //  final String MY_ACTUATOR_EXPRESSION = "self@wear_heartrate:heart_rate{ANY,0}<75.0THENself@vibrator:vibrate?duration='500'";
+
+ //    final String MY_ACTUATOR_EXPRESSION = "self@light:lux{ANY,0}<10.0THENwear@vibrator:vibrate?duration='500'";
+ // final String MY_ACTUATOR_EXPRESSION = "self@light:lux{ANY,0}<10.0THENwear@logger:log?tag='ROSHANBHARATHDAS'#message='Phew'#priority='3'";
+ // final String MY_ACTUATOR_EXPRESSION = "self@light:lux{ANY,0}<10.0THENself@vibrator:vibrate?duration='500'&&wear@vibrator:vibrate?duration='500'";
+ // final String MY_ACTUATOR_EXPRESSION = "wear@heartrate:heart_rate{ANY,0}<75.0||self@light:lux{ANY,0}<10.0THENwear@vibrator:vibrate?duration='500'";
+ // final String MY_ACTUATOR_EXPRESSION = "wear@heartrate:heart_rate{ANY,0}<75.0||wear@light:lux{ANY,0}<10.0THENwear@vibrator:vibrate?duration='500'";
+
+    final String MY_ACTUATOR_EXPRESSION = "wear@heartrate:heart_rate{ANY,0}<75.0THENwear@vibrator:vibrate?duration='500'";
 
   //  final String MY_EXPRESSION = "self@wear_movement:x{ANY,0}";
   //  final String MY_EXPRESSION = "wear@movement:x{ANY,0}";
@@ -97,7 +112,8 @@ public class CloudTestActivity extends Activity {
 
         tv = (TextView) findViewById(R.id.textView1);
 
-        registerSWANSensor(MY_EXPRESSION);
+       // registerSWANSensor(MY_EXPRESSION);
+        registerSWANActuatorSensor(MY_ACTUATOR_EXPRESSION);
 
     }
 
@@ -110,14 +126,43 @@ public class CloudTestActivity extends Activity {
             @Override
             public void onClick(View v) {
 
-                unregisterSWANSensor();
-
+                //unregisterSWANSensor();
+                unregisterSWANActuatorSensor();
 
             }
         });
 
     }
 
+
+    private void registerSWANActuatorSensor(String myExpression){
+
+        try {
+            ActuatorManager.registerActuator(this, String.valueOf(REQUEST_CODE), myExpression, new ExpressionListener() {
+                @Override
+                public void onNewState(String id, long timestamp, TriState newState) {
+
+                        Log.d("Roshan", id +" "+ timestamp +" "+ newState.toString());
+                }
+
+                @Override
+                public void onNewValues(String id, TimestampedValue[] newValues) {
+
+                    Log.d("Roshan", id +" " + newValues[0].getTimestamp()+" "+ newValues[0].getValue().toString());
+
+                }
+            });
+        } catch (SwanException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void unregisterSWANActuatorSensor() {
+
+        ActuatorManager.unregisterActuator(this, String.valueOf(REQUEST_CODE), false);
+
+    }
 
 
 

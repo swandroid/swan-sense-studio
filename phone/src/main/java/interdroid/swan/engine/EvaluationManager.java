@@ -2,6 +2,7 @@ package interdroid.swan.engine;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 
 import interdroid.swan.remote.cloud.CloudManager;
 import interdroid.swan.sensors.impl.wear.shared.RemoteSensorManager;
@@ -20,7 +21,7 @@ import interdroid.swancore.swansong.SensorValueExpression;
 import interdroid.swancore.engine.SensorSetupFailedException;
 
 
-public class EvaluationManager extends EvaluationManagerBase{
+public class EvaluationManager extends EvaluationManagerBase {
 
     /**
      * proximity manager for connecting to nearby devices
@@ -37,17 +38,28 @@ public class EvaluationManager extends EvaluationManagerBase{
         this.mProximityManager = proximityManager;
     }
 
+    protected void remoteRegisterActuation(String id, Expression expression,
+                                           String resolvedLocation) {
+        RemoteSensorManager.getInstance(mContext).registerActuationExpression(toCrossDeviceStringForActuation(expression, resolvedLocation), id);
+        Log.d(TAG, "Registering remote acuation");
+    }
+
+    protected void remoteUnregisterActuation(String id) {
+        RemoteSensorManager.getInstance(mContext).unregisterActuationExpression(id);
+    }
+
+
     @Override
     protected void initializeRemote(String id, Expression expression,
-                                  String resolvedLocation) throws SensorSetupFailedException {
+                                    String resolvedLocation) throws SensorSetupFailedException {
 
-        if(resolvedLocation.equals(Expression.LOCATION_WEAR)){
+        if (resolvedLocation.equals(Expression.LOCATION_WEAR)) {
             RemoteSensorManager.getInstance(mContext).registerExpression(toCrossDeviceString(expression, resolvedLocation), id);
-        }else if(resolvedLocation.equals(Expression.LOCATION_CLOUD)|| resolvedLocation.contains("http")) {
+        } else if (resolvedLocation.equals(Expression.LOCATION_CLOUD) || resolvedLocation.contains("http")) {
 
-            CloudManager.getInstance(mContext).registerExpression(id,expression.toParseString(),resolvedLocation);
+            CloudManager.getInstance(mContext).registerExpression(id, expression.toParseString(), resolvedLocation);
 
-        }else if (resolvedLocation.equals(Expression.LOCATION_NEARBY) || mProximityManager.hasPeer(resolvedLocation) || resolvedLocation.length() <= 20) {
+        } else if (resolvedLocation.equals(Expression.LOCATION_NEARBY) || mProximityManager.hasPeer(resolvedLocation) || resolvedLocation.length() <= 20) {
             // get sensor info from nearby devices
             // IDs got from GCM have more than 20 characters
             mProximityManager.registerExpression(id, toCrossDeviceString(expression, resolvedLocation), resolvedLocation);
@@ -74,6 +86,34 @@ public class EvaluationManager extends EvaluationManagerBase{
             // expression.toCrossDeviceString(mContext,
             // expression.getLocation()));
         }
+    }
+
+    protected String toCrossDeviceStringForActuation(Expression expression,
+                                                     String toRegistrationId){
+
+         String result = (toRegistrationId.equals(Expression.LOCATION_WEAR) ? Expression.LOCATION_SELF
+                    : toRegistrationId)
+                    + "@"
+                    + ((SensorValueExpression) expression).getEntity()
+                    + ":" + ((SensorValueExpression) expression).getValuePath();
+            Bundle config = ((SensorValueExpression) expression)
+                    .getConfiguration();
+            if (config != null && config.size() > 0) {
+                boolean first = true;
+                for (String key : config.keySet()) {
+                    result += (first ? "?" : "#") + key + "="
+                            + config.getString(key);
+                    first = false;
+                }
+            }
+            result += "{"
+                    + ((SensorValueExpression) expression)
+                    .getHistoryReductionMode().toParseString() + ","
+                    + ((SensorValueExpression) expression).getHistoryLength()
+                    + "}";
+            return result;
+
+
     }
 
     protected String toCrossDeviceString(Expression expression,

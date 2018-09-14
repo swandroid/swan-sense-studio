@@ -208,6 +208,8 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="interdroid.swan.REGISTER" />
                 <action android:name="interdroid.swan.UNREGISTER" />
+                <action android:name="interdroid.swan.REGISTER_ACTUATE_REMOTE" />
+                <action android:name="interdroid.swan.UNREGISTER_ACTUATE_REMOTE" />
                 <action android:name="interdroid.swan.NOTIFY" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -226,6 +228,7 @@
         <receiver android:name=".actuator.ActuatorInterceptor">
             <intent-filter>
                 <action android:name="interdroid.swan.actuator.ACTUATOR_INTERCEPTOR"/>
+                <action android:name="Actuate"/>
             </intent-filter>
         </receiver>
 

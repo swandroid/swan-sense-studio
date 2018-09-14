@@ -20,9 +20,12 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.locks.ReentrantLock;
 
 import interdroid.FixedSensor;
+import interdroid.swan.actuator.ActuationManager;
+import interdroid.swan.actuator.ActuatorInterceptor;
 import interdroid.swancore.shared.DataMapKeys;
 import interdroid.swan.expression.ManageExpressions;
 import interdroid.swancore.shared.SensorConstants;
+import interdroid.swancore.swanmain.ActuatorManager;
 
 
 class SensorContainer {
@@ -99,14 +102,14 @@ public class SensorService extends Service implements SensorEventListener {
                 Bundle extra = intent.getExtras();
                 int sensorId = extra.getInt(SensorConstants.SENSOR_ID);
                 int accuracy = extra.getInt(SensorConstants.ACCURACY);
-                Log.d("TAG", "starting sensor+++++++" + sensorId + " " + accuracy);
-                startSingleMeasurement(sensorId, accuracy, Measurement.SENSOR, null , null);
+                Log.d(TAG, "starting sensor+++++++" + sensorId + " " + accuracy);
+                startSingleMeasurement(sensorId, accuracy, Measurement.SENSOR, null , null, false, false);
             }
 
             if (action.equalsIgnoreCase(WearConstants.BROADCAST_REMOVE_SENSOR)) {
 
                 int sensorId = intent.getExtras().getInt(SensorConstants.SENSOR_ID);
-                Log.d("TAG", "stopping sensors+++++" + sensorId);
+                Log.d(TAG, "stopping sensors+++++" + sensorId);
                 stopSingleMeasurement(sensorId, Measurement.SENSOR, null);
             }
 
@@ -114,15 +117,42 @@ public class SensorService extends Service implements SensorEventListener {
 
                 String id = intent.getExtras().getString(DataMapKeys.EXPRESSION_ID);
                 String expr = intent.getExtras().getString(DataMapKeys.EXPRESSION);
-                Log.d("TAG", "starting expression+++++" + id + " Expr:" + expr);
-                startSingleMeasurement(0, 0, Measurement.EXPRESSION, expr, id);
+                boolean wearActuation = intent.getExtras().getBoolean(DataMapKeys.WEAR_ACTUATION);
+                boolean phoneActuation = intent.getExtras().getBoolean(DataMapKeys.PHONE_ACTUATION);
+                Log.d(TAG, "starting expression+++++" + id + " Expr:" + expr);
+                startSingleMeasurement(0, 0, Measurement.EXPRESSION, expr, id, wearActuation, phoneActuation);
             }
 
             if(action.equalsIgnoreCase(WearConstants.BROADCAST_UNREGISTER_EXPR)){
                 String id = intent.getExtras().getString(DataMapKeys.EXPRESSION_ID);
-                Log.d("TAG", "stopping expression+++++" + id);
+                Log.d(TAG, "stopping expression+++++" + id);
                 stopSingleMeasurement(0,Measurement.EXPRESSION, id);
             }
+
+            if(action.equalsIgnoreCase(WearConstants.BROADCAST_REGISTER_ACTUATION_EXPR)){
+
+                String id = intent.getExtras().getString(DataMapKeys.EXPRESSION_ID);
+                String expr = intent.getExtras().getString(DataMapKeys.EXPRESSION);
+                Log.d(TAG, "starting actuation expression+++++" + id + " Expr:" + expr);
+                ActuationManager.registerActuator(context, id, expr);
+                //startSingleMeasurement(0, 0, Measurement.EXPRESSION, expr, id);
+            }
+            if(action.equalsIgnoreCase(WearConstants.BROADCAST_UNREGISTER_ACTUATION_EXPR)){
+
+                String id = intent.getExtras().getString(DataMapKeys.EXPRESSION_ID);
+                //String expr = intent.getExtras().getString(DataMapKeys.EXPRESSION);
+                Log.d(TAG, "stopping actuation expression+++++" + id);
+                ActuationManager.unregisterActuator(id);
+                //startSingleMeasurement(0, 0, Measurement.EXPRESSION, expr, id);
+            }
+            if(action.equalsIgnoreCase(WearConstants.BROADCAST_ACTUATE)){
+
+                String id = intent.getExtras().getString(DataMapKeys.EXPRESSION_ID);
+                Log.d(TAG, "actuate+++++" + id);
+                ActuatorInterceptor.actuate(context, id, null);
+                //startSingleMeasurement(0, 0, Measurement.EXPRESSION, expr, id);
+            }
+
         }
     }
 
@@ -130,6 +160,7 @@ public class SensorService extends Service implements SensorEventListener {
     public void onCreate() {
         super.onCreate();
 
+        Log.d(TAG,"onCreate called");
         client = DeviceClient.getInstance(this);
         client.initExecutor();
 
@@ -147,17 +178,19 @@ public class SensorService extends Service implements SensorEventListener {
         registerReceiver(sensorCommand, new IntentFilter(WearConstants.BROADCAST_REMOVE_SENSOR));
         registerReceiver(sensorCommand, new IntentFilter(WearConstants.BROADCAST_REGISTER_EXPR));
         registerReceiver(sensorCommand, new IntentFilter(WearConstants.BROADCAST_UNREGISTER_EXPR));
-
-
+        registerReceiver(sensorCommand, new IntentFilter(WearConstants.BROADCAST_REGISTER_ACTUATION_EXPR));
+        registerReceiver(sensorCommand, new IntentFilter(WearConstants.BROADCAST_UNREGISTER_ACTUATION_EXPR));
+        registerReceiver(sensorCommand, new IntentFilter(WearConstants.BROADCAST_UNREGISTER_ACTUATION_EXPR));
+        registerReceiver(sensorCommand, new IntentFilter(WearConstants.BROADCAST_ACTUATE));
        // testSwanExpression();
 
         startForeground(1, notificationBuilder.build());
 
     }
 
-    private void registerSwanExpression(String id, String expression){
+    private void registerSwanExpression(String id, String expression, boolean wearActuation, boolean phoneActuation){
         expressionContainer.put(id, expression);
-        exp.registerExpression( id, expression);
+        exp.registerExpression(id, expression, wearActuation, phoneActuation);
     }
 
     private void unregisterSwanExpression(String id) {
@@ -185,12 +218,12 @@ public class SensorService extends Service implements SensorEventListener {
         return super.onStartCommand(intent, flags, startId);
     }
 
-    protected void startSingleMeasurement(int sensorId, int accuracy, Measurement type, String expression, String expressionID) {
+    protected void startSingleMeasurement(int sensorId, int accuracy, Measurement type, String expression, String expressionID, boolean wearActuation, boolean phoneActuation) {
 
         lock.lock();
         try {
             if (type == Measurement.EXPRESSION) {
-                registerSwanExpression(expressionID, expression);
+                registerSwanExpression(expressionID, expression, wearActuation, phoneActuation);
                 return;
             }
 

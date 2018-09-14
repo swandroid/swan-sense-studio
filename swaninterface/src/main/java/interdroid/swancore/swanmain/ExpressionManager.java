@@ -48,6 +48,10 @@ public class ExpressionManager {
      */
     public static final String ACTION_UNREGISTER = "interdroid.swan.UNREGISTER";
 
+
+    public static final String ACTION_REGISTER_ACTUATE_REMOTE = "interdroid.swan.REGISTER_ACTUATE_REMOTE";
+    public static final String ACTION_UNREGISTER_ACTUATE_REMOTE = "interdroid.swan.UNREGISTER_ACTUATE_REMOTE";
+
     /**
      * Action to filter on with a broadcast receiver that indicates the arrival
      * of new values for a {@link ValueExpression}. The
@@ -324,9 +328,10 @@ public class ExpressionManager {
                     + "' contains reserved separator '" + Expression.SEPARATOR
                     + "'");
         }
+
         for (String suffix : Expression.RESERVED_SUFFIXES) {
             if (id.endsWith(suffix)) {
-                throw new SwanException("Invalid id. Suffix '" + suffix
+              throw new SwanException("Invalid id. Suffix '" + suffix
                         + "' is reserved for internal use.");
             }
         }
@@ -461,6 +466,23 @@ public class ExpressionManager {
         context.sendBroadcast(intent);
 
     }
+
+
+    public static void registerRemoteActuationExpression(Context context, String id,
+                                   Expression expression) {
+        Intent intent = new Intent(ACTION_REGISTER_ACTUATE_REMOTE);
+        intent.putExtra("expressionId", id);
+        intent.putExtra("expression", expression.toParseString());
+        context.sendBroadcast(intent);
+    }
+
+
+    public static void unregisterRemoteActuationExpression(Context context, String id) {
+        Intent intent = new Intent(ACTION_UNREGISTER_ACTUATE_REMOTE);
+        intent.putExtra("expressionId", id);
+        context.sendBroadcast(intent);
+    }
+
 
     /**
      * registers the broadcast receiver to receive values on behalve of
