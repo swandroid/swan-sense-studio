@@ -203,7 +203,8 @@ public class RemoteSensorManager {
             @Override
             public void run() {
 
-                handleExpressions(ClientPaths.REGISTER_EXPRESSION, expression, id);
+                //handleExpressions(ClientPaths.REGISTER_EXPRESSION, expression, id);
+                handleRegisteringSensorActuatorExpressions(ClientPaths.REGISTER_EXPRESSION, expression, id);
             }
         });
     }
