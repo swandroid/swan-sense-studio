@@ -51,7 +51,28 @@ public class CloudTestActivity extends Activity {
 
    // final String MY_ACTUATOR_EXPRESSION = "wear@heartrate:heart_rate{ANY,0}<75.0THENwear@vibrator:vibrate?duration='500'&&self@vibrator:vibrate?duration='500'";
 
-    final String MY_ACTUATOR_EXPRESSION = "wear@heartrate:heart_rate{ANY,0}<75.0THENwear@phone:send";
+  //  final String MY_ACTUATOR_EXPRESSION = "wear@heartrate:heart_rate{ANY,0}<75.0THENwear@phone:send";
+
+    /*final String MY_ACTUATOR_EXPRESSION = "wear@heartrate:heart_rate{ANY,0}<75.0THEN" +
+            "wear@http:post?server_url='http://192.168.2.1:9000/swan/test/actuate/'" +
+            "#server_http_authorization='NoAuth'" +
+            "#server_http_body='key:value'" +
+            "#server_http_body_type='application/json'" +
+            "#server_http_header='key:value'";*/
+
+    final String MY_ACTUATOR_EXPRESSION = "wear@heartrate:heart_rate{ANY,0}THEN" +
+  // final String MY_ACTUATOR_EXPRESSION = "self@light:lux{ANY,0}THEN" +
+            "wear@mqtt:publish?url='tcp://192.168.2.1:1883'" +
+            "#client_id='id'" +
+            "#topic='mytopic'" +
+            "#clean_session='true'" +
+            "#auto_reconnect='true'" +
+            "#connection_timeout='30'" +
+            "#keep_alive_interval='60'" +
+            "#max_inflight='10'" +
+            "#mqtt_version='0'";
+
+
   //  final String MY_EXPRESSION = "self@wear_movement:x{ANY,0}";
   //  final String MY_EXPRESSION = "wear@movement:x{ANY,0}";
 
@@ -143,13 +164,13 @@ public class CloudTestActivity extends Activity {
                 @Override
                 public void onNewState(String id, long timestamp, TriState newState) {
 
-                        Log.d("Roshan", id +" "+ timestamp +" "+ newState.toString());
+                        //Log.d("Roshan", id +" "+ timestamp +" "+ newState.toString());
                 }
 
                 @Override
                 public void onNewValues(String id, TimestampedValue[] newValues) {
 
-                    Log.d("Roshan", id +" " + newValues[0].getTimestamp()+" "+ newValues[0].getValue().toString());
+                    //Log.d("Roshan", id +" " + newValues[0].getTimestamp()+" "+ newValues[0].getValue().toString());
 
                 }
             });

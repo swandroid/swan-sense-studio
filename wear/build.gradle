@@ -26,8 +26,17 @@ android {
 }
 
 dependencies {
-    compile 'com.google.android.gms:play-services-wearable:8.3.0'
+    //compile 'com.google.android.gms:play-services-wearable:8.3.0'
+    //noinspection GradleCompatible
+    compile 'com.google.android.gms:play-services-wearable:15.0.1'
     compile 'com.android.support:recyclerview-v7:23.1.1'
     compile project(':swancore')
+    compile 'com.squareup.retrofit:retrofit:1.9.0'
+    //For firebase connection
+    compile 'com.google.firebase:firebase-core:16.0.3'
+    compile 'com.google.firebase:firebase-messaging:17.3.1'
+
+    // MQTT
+    compile 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.0'
 
 }

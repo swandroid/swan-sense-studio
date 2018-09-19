@@ -278,14 +278,21 @@ public class RemoteSensorManager {
     private void handleRegisteringSensorActuatorExpressions(final String path, final String expression, final String id) {
         if(validateConnection()) {
             PutDataMapRequest dataMap = PutDataMapRequest.create(path);
-
+            boolean phoneActuation = false;
             dataMap.getDataMap().putString(DataMapKeys.EXPRESSION_ID, id);
             dataMap.getDataMap().putString(DataMapKeys.EXPRESSION, expression);
 
+            if(ActuationManager.ACTUATORS.containsKey(id) && ActuationManager.ACTUATORS.get(id).size() > 0){
+                phoneActuation = true;
+            }else{
+                phoneActuation = false;
+            }
+
+
             dataMap.getDataMap().putLong("Time",System.currentTimeMillis());
             dataMap.getDataMap().putBoolean (DataMapKeys.WEAR_ACTUATION, ActuationManager.REMOTE_ACTUATORS.contains(id));
-            dataMap.getDataMap().putBoolean (DataMapKeys.PHONE_ACTUATION, ActuationManager.ACTUATORS.containsKey(id));
-            Log.d(TAG, "Expression to send remote:"+expression+" id:"+id);
+            dataMap.getDataMap().putBoolean (DataMapKeys.PHONE_ACTUATION, phoneActuation);
+            Log.d(TAG, "Expression to send remote:"+expression+" id:"+id+" phone actuation:"+phoneActuation);
             PutDataRequest putDataRequest = dataMap.asPutDataRequest();
             putDataRequest = putDataRequest.setUrgent();
             Wearable.DataApi.putDataItem(googleApiClient, putDataRequest).setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
