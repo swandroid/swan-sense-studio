@@ -144,15 +144,12 @@ public abstract class AbstractCuckooSensor extends AbstractSwanSensor {
             public void run() {
                 mRegistering = true;
                 try {
-                    Log.d(TAG, "getting a registration id for sender id: "
-                            + getGCMSenderId());
+                    Log.d(TAG, "getting a registration id for sender id: "+ getGCMSenderId());
                     prefs.edit().putString(REGISTRATION_ID,
                                     GoogleCloudMessaging.getInstance(AbstractCuckooSensor.this)
                                             .register(getGCMSenderId()))
                             .apply();
-                    Log.d(TAG,
-                            "We did get a registration ID: "
-                                    + prefs.getString(REGISTRATION_ID, null));
+                    Log.d(TAG, "We did get a registration ID: " + prefs.getString(REGISTRATION_ID, null));
                 } catch (IOException e) {
                     // TODO: something useful.
                     Log.w(TAG, "failed to get registration id", e);

@@ -86,8 +86,7 @@ public class WifiSensor extends AbstractSwanSensor {
 
             List<ScanResult> results = wifiManager.getScanResults();
             for (ScanResult scanResult : results) {
-                Log.d(TAG, "Got WiFi: " + scanResult.level + ", "
-                        + scanResult.SSID + ", " + scanResult.BSSID);
+                Log.d(TAG, "Got WiFi: " + scanResult.level + ", " + scanResult.SSID + ", " + scanResult.BSSID);
                 if (expressionIdsPerValuePath.containsKey(SSID_FIELD)) {
                     putValueTrimSize(SSID_FIELD, null, now, scanResult.SSID);
                 }

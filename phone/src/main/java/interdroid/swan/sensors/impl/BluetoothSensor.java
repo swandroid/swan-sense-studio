@@ -91,8 +91,7 @@ public class BluetoothSensor extends AbstractSwanSensor {
             long now = System.currentTimeMillis();
             BluetoothDevice device = intent
                     .getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-            Log.d(TAG, "Bluetooth discovered: " + device.getName() + " "
-                    + device.getAddress());
+            Log.d(TAG, "Bluetooth discovered: " + device.getName() + " " + device.getAddress());
 
             putValueTrimSize(DEVICE_NAME_FIELD, null, now, device.getName());
             putValueTrimSize(DEVICE_ADDRESS_FIELD, null, now, device.getAddress());

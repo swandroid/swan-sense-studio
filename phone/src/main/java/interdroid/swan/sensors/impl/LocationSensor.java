@@ -100,8 +100,7 @@ public class LocationSensor extends AbstractSwanSensor {
 
         public void onLocationChanged(final Location location) {
             long now = System.currentTimeMillis();
-            Log.d(TAG, "Location: " + location.getLatitude() + ", "
-                    + location.getLongitude());
+            Log.d(TAG, "Location: " + location.getLatitude() + ", " + location.getLongitude());
 
             putValueTrimSize(LATITUDE_FIELD, null, now, location.getLatitude());
             putValueTrimSize(LONGITUDE_FIELD, null, now, location.getLongitude());
@@ -112,8 +111,7 @@ public class LocationSensor extends AbstractSwanSensor {
         }
 
         public void onProviderDisabled(final String provider) {
-            Log.d(TAG, "provider disabled: " + provider + ". I am using: "
-                    + currentProvider);
+            Log.d(TAG, "provider disabled: " + provider + ". I am using: " + currentProvider);
             if (provider.equals(currentProvider)) {
                 Log.w(TAG, "location sensor disabled due to lack of provider");
             }
@@ -127,8 +125,7 @@ public class LocationSensor extends AbstractSwanSensor {
                                     final Bundle extras) {
             if (provider.equals(currentProvider)
                     && status != LocationProvider.AVAILABLE) {
-                Log.w(TAG,
-                        "location sensor disabled because sensor unavailable");
+                Log.w(TAG, "location sensor disabled because sensor unavailable");
             }
         }
     };

@@ -88,9 +88,7 @@ import interdroid.swancore.sensors.AbstractConfigurationActivity;
                     long now = acceptSensorReading();
                     STEP_THRESHOLD=sensitivity;
                     //  if (now >= 0) {
-                    Log.d(TAG, "onSensorChanged: " + now + " val " +
-                            event.values[0] + " " + event.values[1] + " " +
-                            event.values[2]);
+                    Log.d(TAG, "onSensorChanged: " + now + " val " + event.values[0] + " " + event.values[1] + " " + event.values[2]);
                     //this should be called on sensor event
                     float[] currentAccel = new float[3];
                     currentAccel[0] = event.values[0];

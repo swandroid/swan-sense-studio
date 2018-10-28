@@ -57,8 +57,7 @@ public class MagnetometerSensor extends AbstractSwanSensor {
             if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
                 long now = acceptSensorReading();
                 if (now >= 0) {
-                    Log.d(TAG, "onSensorChanged: " + now + " val x " + event.values[0] +
-                            " y " + event.values[1] + " z " + event.values[2]);
+                    Log.d(TAG, "onSensorChanged: " + now + " val x " + event.values[0] + " y " + event.values[1] + " z " + event.values[2]);
                     for (int i = 0; i < 3; i++) {
                         putValueTrimSize(VALUE_PATHS[i], null, now,
                                 event.values[i]);

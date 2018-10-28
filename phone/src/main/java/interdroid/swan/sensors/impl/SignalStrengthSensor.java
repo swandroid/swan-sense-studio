@@ -82,14 +82,9 @@ public class SignalStrengthSensor extends AbstractSwanSensor {
         public void onSignalStrengthsChanged(SignalStrength signalStrength) {
             long now = System.currentTimeMillis();
             if (signalStrength.isGsm()) {
-                Log.d(TAG,
-                        "GSM Signal Strength: "
-                                + signalStrength.getGsmSignalStrength() + ", "
-                                + signalStrength.getGsmBitErrorRate());
+                Log.d(TAG, "GSM Signal Strength: " + signalStrength.getGsmSignalStrength() + ", " + signalStrength.getGsmBitErrorRate());
             } else {
-                Log.d(TAG,
-                        "CDMA Signal Strength: " + signalStrength.getCdmaDbm()
-                                + ", " + signalStrength.getCdmaEcio());
+                Log.d(TAG, "CDMA Signal Strength: " + signalStrength.getCdmaDbm() + ", " + signalStrength.getCdmaEcio());
             }
 
             putValueTrimSize(IS_GSM_FIELD, null, now, signalStrength.isGsm());
