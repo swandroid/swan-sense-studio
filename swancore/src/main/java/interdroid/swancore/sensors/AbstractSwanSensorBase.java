@@ -184,14 +184,11 @@ public abstract class AbstractSwanSensorBase extends AbstractSensorBase {
          * 1000 to avoid missing an update just at the boundary
 		 */
         if ((now - lastUpdate) >= (currentDelay / 1050)) {
-            Log.d(TAG, "acceptSensorReading: " + (now - lastUpdate) +
-                    " usec since last reading; within " + currentDelay + " msec delay");
+            Log.d(TAG, "acceptSensorReading: " + (now - lastUpdate) + " usec since last reading; within " + currentDelay + " msec delay");
             lastUpdate = now;
             return now;
         } else {
-            Log.d(TAG, "acceptSensorReading: skip; " +
-                    " last reported " + (now - lastUpdate) +
-                    " usec ago, delay is " + currentDelay + " usec");
+            Log.d(TAG, "acceptSensorReading: skip; " + " last reported " + (now - lastUpdate) + " usec ago, delay is " + currentDelay + " usec");
             return -1;
         }
     }

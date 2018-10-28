@@ -100,10 +100,7 @@ public class DataTransmitHandler extends Handler {
 
                 // Show the HTTP response Code
                 if (response != null) {
-                    Log.w(TAG,
-                            "Failed to send '" + name + "' data. Response code:"
-                                    + response.get(SenseApi.RESPONSE_CODE) + ", Response content: '"
-                                    + response.get(SenseApi.RESPONSE_CONTENT) + "'\nData will be retried");
+                    Log.w(TAG, "Failed to send '" + name + "' data. Response code:" + response.get(SenseApi.RESPONSE_CODE) + ", Response content: '" + response.get(SenseApi.RESPONSE_CONTENT) + "'\nData will be retried");
                 } else {
                     Log.w(TAG, "Failed to send '" + name + "' data.\nData will be retried.");
                 }
@@ -119,9 +116,7 @@ public class DataTransmitHandler extends Handler {
 
         } catch (Exception e) {
             if (null != e.getMessage()) {
-                Log.e(TAG,
-                        "Exception sending '" + name + "' data, data will be retried: "
-                                + e.getMessage());
+                Log.e(TAG, "Exception sending '" + name + "' data, data will be retried: " + e.getMessage());
             } else {
                 Log.e(TAG, "Exception sending '" + name + "' data, data will be retried.", e);
             }
@@ -155,8 +150,7 @@ public class DataTransmitHandler extends Handler {
             if (updated == dataPoints.length()) {
                 // Log.v(TAG, "Updated all " + updated + " rows in the local storage");
             } else {
-                Log.w(TAG, "Wrong number of local storage points updated! " + updated + " vs. "
-                        + dataPoints.length());
+                Log.w(TAG, "Wrong number of local storage points updated! " + updated + " vs. " + dataPoints.length());
             }
         } catch (IllegalArgumentException e) {
             Log.e(TAG, "Error updating points in Local Storage!", e);

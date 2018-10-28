@@ -56,9 +56,7 @@ public class GravitySensor extends AbstractSwanSensorBase {
             if (event.sensor.getType() == Sensor.TYPE_GRAVITY) {
                 long now = acceptSensorReading();
                 if (now >= 0) {
-                    Log.d(TAG, "onSensorChanged: " + now + " val " +
-                            event.values[0] + " " + event.values[1] + " " +
-                            event.values[2]);
+                    Log.d(TAG, "onSensorChanged: " + now + " val " + event.values[0] + " " + event.values[1] + " " + event.values[2]);
 
                     for (int i = 0; i < 3; i++) {
                         putValueTrimSize(VALUE_PATHS[i], null, now,

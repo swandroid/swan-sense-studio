@@ -60,8 +60,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVers, int newVers) {
-        Log.w(TAG, "Upgrading '" + DATABASE_NAME + "' database from version " + oldVers
-                + " to " + newVers + ", which will destroy all old data");
+        Log.w(TAG, "Upgrading '" + DATABASE_NAME + "' database from version " + oldVers + " to " + newVers + ", which will destroy all old data");
 
         db.execSQL("DROP TABLE IF EXISTS " + TABLE);
         onCreate(db);

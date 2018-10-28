@@ -343,19 +343,16 @@ public class EvaluationManagerBase {
 
                             }
                         };
-                        Log.d(TAG,
-                                "binding to sensor: " + sensorInfo.getIntent());
+                        Log.d(TAG, "binding to sensor: " + sensorInfo.getIntent());
                         mContext.bindService(sensorInfo.getIntent(), conn,
                                 Context.BIND_AUTO_CREATE);
                         mConnections.put(id, conn);
                         return true;
                     } else {
-                        Log.d(TAG, "Sensor does not accept configuration '"
-                                + expression.getConfiguration() + "'");
+                        Log.d(TAG, "Sensor does not accept configuration '" + expression.getConfiguration() + "'");
                     }
                 } else {
-                    Log.d(TAG, "No valuepath found for valuepath '"
-                            + expression.getValuePath() + "'");
+                    Log.d(TAG, "No valuepath found for valuepath '" + expression.getValuePath() + "'");
                 }
             }
         }
@@ -365,8 +362,7 @@ public class EvaluationManagerBase {
                 return true;
             }
         }
-        Log.d(TAG, "No sensor found for entity '" + expression.getEntity()
-                + "'");
+        Log.d(TAG, "No sensor found for entity '" + expression.getEntity() + "'");
 
         // still not found?
         throw new SensorSetupFailedException("Failed to bind to service for: "
@@ -380,18 +376,15 @@ public class EvaluationManagerBase {
             try {
                 sensor.unregister(id);
             } catch (RemoteException e) {
-                Log.d(TAG, "Failed to unregister for id: " + id
-                        + ", this should not happen!", e);
+                Log.d(TAG, "Failed to unregister for id: " + id + ", this should not happen!", e);
             }
         } else {
-            Log.e(TAG, "Cannot unregister for id: " + id
-                    + ", sensor is null, this should not happen!");
+            Log.e(TAG, "Cannot unregister for id: " + id + ", sensor is null, this should not happen!");
         }
         if (conn != null) {
             mContext.unbindService(conn);
         } else {
-            Log.d(TAG, "Failed to unbind for id: " + id
-                    + ", connection is null, this should not happen!");
+            Log.d(TAG, "Failed to unbind for id: " + id + ", connection is null, this should not happen!");
         }
     }
 
@@ -698,9 +691,7 @@ public class EvaluationManagerBase {
             }
             return result;
         } catch (RemoteException e) {
-            Log.e(TAG,
-                    "Got remote exception while retrieving values for expression "
-                            + expression + " with id " + id, e);
+            Log.e(TAG, "Got remote exception while retrieving values for expression " + expression + " with id " + id, e);
         }
         return null;
     }
@@ -855,9 +846,7 @@ public class EvaluationManagerBase {
                 try {
                     mSensors.get(id).getStartUpTime(id);
                 } catch (RemoteException e) {
-                    Log.d(TAG,
-                            "Got unexpected remote exception while retrieving startup time",
-                            e);
+                    Log.d(TAG, "Got unexpected remote exception while retrieving startup time", e);
                 }
             }
             final long sensorReadyTime = readyTime - sensorStartUpTime;
@@ -882,8 +871,7 @@ public class EvaluationManagerBase {
                     } catch (SensorConfigurationException e) {
                         Log.d(TAG, "This should not happen!", e);
                     } catch (SensorSetupFailedException e) {
-                        Log.d(TAG,
-                                "Failed to re bind after sleep and be ready", e);
+                        Log.d(TAG, "Failed to re bind after sleep and be ready", e);
                     }
                 }
             }.start();

@@ -195,8 +195,7 @@ public class ExpressionManager {
                         discoveredSensor.activityInfo.name),
                         discoveredSensor.activityInfo.metaData, icon));
             } catch (Exception e) {
-                Log.e(TAG, "Error with discovered sensor: " + discoveredSensor,
-                        e);
+                Log.e(TAG, "Error with discovered sensor: " + discoveredSensor, e);
             }
         }
         return result;

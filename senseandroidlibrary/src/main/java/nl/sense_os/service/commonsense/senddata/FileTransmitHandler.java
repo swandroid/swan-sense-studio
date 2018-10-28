@@ -162,8 +162,7 @@ public class FileTransmitHandler extends Handler {
                 dos.close();
 
                 if (conn.getResponseCode() != 200) {
-                    Log.e(TAG, "Failed to send '" + name
-                            + "' value file. Data lost. Response code:" + conn.getResponseCode());
+                    Log.e(TAG, "Failed to send '" + name + "' value file. Data lost. Response code:" + conn.getResponseCode());
                 } else {
                     Log.i(TAG, "Sent '" + name + "' sensor value file OK!");
                     String date = (String) object.get("date");
@@ -202,8 +201,7 @@ public class FileTransmitHandler extends Handler {
                     + DataPoint.CONTENT_URI_PATH);
             int updated = storageRef.get().update(contentUri, values, where, null);
             if (updated != 1) {
-                Log.w(TAG,
-                        "Failed to update the local storage after a file was successfully sent to CommonSense!");
+                Log.w(TAG, "Failed to update the local storage after a file was successfully sent to CommonSense!");
             }
         } catch (IllegalArgumentException e) {
             Log.e(TAG, "Error updating points in Local Storage!", e);

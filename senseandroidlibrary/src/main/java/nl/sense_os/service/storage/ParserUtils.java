@@ -288,8 +288,7 @@ public class ParserUtils {
                     throw new IllegalArgumentException(
                             "LocalStorage cannot handle queries with arguments array, sorry...");
                 }
-                Log.v(TAG, "Query contains: " + DataPoint.SENSOR_DESCRIPTION + " = '" +
-                        description + "'");
+                Log.v(TAG, "Query contains: " + DataPoint.SENSOR_DESCRIPTION + " = '" + description + "'");
 
                 for (String key : allSensors) {
                     if (key.endsWith("(" + description + ")") || key.equals(description)) {

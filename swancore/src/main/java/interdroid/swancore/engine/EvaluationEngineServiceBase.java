@@ -220,8 +220,7 @@ public class EvaluationEngineServiceBase extends Service {
                                 doRegister(expressionId, expression, onTrue,
                                         onFalse, onUndefined, onNewValues);
                             } catch (Exception e) {
-                                Log.e(TAG, "Error while restoring after boot.",
-                                        e);
+                                Log.e(TAG, "Error while restoring after boot.", e);
                             }
                         }
                     }
@@ -322,8 +321,7 @@ public class EvaluationEngineServiceBase extends Service {
         // Sensors as well as from the Boot event
         Fabric.with(this, new Crashlytics());
         if (intent == null) {
-            Log.d(TAG,
-                    "huh? intent is null! This should never happen!! We will try to restore...");
+            Log.d(TAG, "huh? intent is null! This should never happen!! We will try to restore...");
             restoreAfterBoot();
             return START_STICKY;
         }
@@ -341,9 +339,7 @@ public class EvaluationEngineServiceBase extends Service {
                 doRegister(id, expression, onTrue, onFalse, onUndefined,
                         onNewValues);
             } catch (Throwable t) {
-                Log.d(TAG,
-                        "Failed to register expression: "
-                                + intent.getStringExtra("expression"), t);
+                Log.d(TAG, "Failed to register expression: " + intent.getStringExtra("expression"), t);
             }
         } else if (ExpressionManager.ACTION_UNREGISTER.equals(action)) {
             String id = intent.getStringExtra("expressionId");
@@ -360,8 +356,7 @@ public class EvaluationEngineServiceBase extends Service {
                 doRegister(regId + Expression.SEPARATOR + expId, expression,
                         null, null, null, null);
             } catch (Throwable t) {
-                Log.d(TAG, "Failed to register remote expression: "
-                        + expressionString, t);
+                Log.d(TAG, "Failed to register remote expression: " + expressionString, t);
             }
         } else if (ACTION_UNREGISTER_REMOTE.equals(action)) {
             Bundle extras = intent.getExtras();
@@ -453,7 +448,7 @@ public class EvaluationEngineServiceBase extends Service {
                             final Intent onTrue, final Intent onFalse,
                             final Intent onUndefined, Intent onNewValues) {
         // handle registration
-        
+
         Log.d(TAG, "registring id: " + id + ", expression: " + expression);
         if (mRegisteredExpressions.containsKey(id)) {
             // FAIL!
@@ -529,9 +524,7 @@ public class EvaluationEngineServiceBase extends Service {
             if (queued == null) {
                 // TODO: maybe broadcast a message to inform sensors to stop
                 // producing values for the id
-                Log.d(TAG, "Got notify, but no expression registered with id: "
-                        + rootId + " (original id: " + id
-                        + "), should we kill the sensor?");
+                Log.d(TAG, "Got notify, but no expression registered with id: " + rootId + " (original id: " + id + "), should we kill the sensor?");
                 continue;
             }
             // Log.d(TAG, "Got notification for: " + queued);

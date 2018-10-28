@@ -179,8 +179,7 @@ public abstract class AbstractConfigurationActivity extends PreferenceActivity
                 newPref.setChecked(oldPref.isChecked());
             } else {
                 group.removePreference(preference);
-                Log.d(TAG, "not re adding preference: '" + preference.getKey()
-                        + "' not supported");
+                Log.d(TAG, "not re adding preference: '" + preference.getKey() + "' not supported");
             }
         }
         for (Preference oldPref : oldPrefs) {

@@ -124,8 +124,7 @@ public class BufferTransmitHandler extends Handler {
 
             } catch (IllegalArgumentException e) {
                 // something is wrong with this data point, skip it
-                Log.w(TAG, "Exception getting data point details from cursor: '" + e.getMessage()
-                        + "'. Skip data point...");
+                Log.w(TAG, "Exception getting data point details from cursor: '" + e.getMessage() + "'. Skip data point...");
                 cursor.moveToNext();
                 continue;
             }
@@ -227,8 +226,7 @@ public class BufferTransmitHandler extends Handler {
 
         } catch (Exception e) {
             if (null != e.getMessage()) {
-                Log.e(TAG, "Exception sending buffered data: '" + e.getMessage()
-                        + "'. Data will be resent later.");
+                Log.e(TAG, "Exception sending buffered data: '" + e.getMessage() + "'. Data will be resent later.");
             } else {
                 Log.e(TAG, "Exception sending cursor data. Data will be resent later.", e);
             }
@@ -276,12 +274,9 @@ public class BufferTransmitHandler extends Handler {
             try {
                 int updated = storageRef.get().update(contentUri, values, where, null);
                 if (updated == dataPoints.length()) {
-                    Log.v(TAG, "Updated all " + updated + " '" + sensorName
-                            + "' data points in the local storage");
+                    Log.v(TAG, "Updated all " + updated + " '" + sensorName + "' data points in the local storage");
                 } else {
-                    Log.w(TAG, "Wrong number of '" + sensorName
-                            + "' data points updated after transmission! " + updated + " vs. "
-                            + dataPoints.length());
+                    Log.w(TAG, "Wrong number of '" + sensorName + "' data points updated after transmission! " + updated + " vs. " + dataPoints.length());
                 }
             } catch (IllegalArgumentException e) {
                 Log.e(TAG, "Error updating points in Local Storage!", e);
@@ -329,9 +324,7 @@ public class BufferTransmitHandler extends Handler {
             }
 
             // Show the HTTP response Code
-            Log.w(TAG, "Failed to send buffered data points: " + statusCode
-                    + ", Response content: '" + response.get(SenseApi.RESPONSE_CONTENT) + "'\n"
-                    + "Data will be retried later");
+            Log.w(TAG, "Failed to send buffered data points: " + statusCode + ", Response content: '" + response.get(SenseApi.RESPONSE_CONTENT) + "'\n" + "Data will be retried later");
 
             result = false;
 

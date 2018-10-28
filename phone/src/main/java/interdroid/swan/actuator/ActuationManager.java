@@ -69,8 +69,7 @@ public class ActuationManager {
 
         if (ACTUATORS.containsKey(expressionId)) {
             // TODO: 2018-06-06 Add support for multiple actuators
-            Log.w(TAG, "There is already an actuator registered for expression " + expressionId
-                    + ". Replacing...");
+            Log.w(TAG, "There is already an actuator registered for expression " + expressionId + ". Replacing...");
         }
 
         ACTUATORS.put(expressionId, actuators);

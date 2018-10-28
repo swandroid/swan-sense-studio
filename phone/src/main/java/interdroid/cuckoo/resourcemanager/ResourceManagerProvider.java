@@ -74,8 +74,7 @@ public class ResourceManagerProvider extends ContentProvider {
 
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-			Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
-					+ newVersion + ", which will destroy all old data");
+			Log.w(TAG, "Upgrading database from version " + oldVersion + " to " + newVersion + ", which will destroy all old data");
 			db.execSQL("DROP TABLE IF EXISTS " + RESOURCES_TABLE_NAME);
 			db.execSQL("DROP TABLE IF EXISTS " + RESOURCE_BINDINGS_TABLE_NAME);
 			onCreate(db);

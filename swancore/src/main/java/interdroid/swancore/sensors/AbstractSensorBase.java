@@ -114,8 +114,7 @@ public abstract class AbstractSensorBase extends Service implements
             // engine)
             synchronized (mSensorInterface) {
                 try {
-                    Log.d(TAG, "Registering id: " + id + " value path: "
-                            + valuePath);
+                    Log.d(TAG, "Registering id: " + id + " value path: " + valuePath);
                     registeredConfigurations.put(id, configuration);
                     registeredValuePaths.put(id, valuePath);
                     registeredHttpConfigurations.put(id, httpConfiguration);
@@ -183,17 +182,13 @@ public abstract class AbstractSensorBase extends Service implements
      */
     private void printState() {
         for (String key : registeredConfigurations.keySet()) {
-            Log.d(TAG,
-                    "configs: " + key + ": "
-                            + registeredConfigurations.get(key));
+            Log.d(TAG, "configs: " + key + ": " + registeredConfigurations.get(key));
         }
         for (String key : registeredValuePaths.keySet()) {
-            Log.d(TAG,
-                    "valuepaths: " + key + ": " + registeredValuePaths.get(key));
+            Log.d(TAG, "valuepaths: " + key + ": " + registeredValuePaths.get(key));
         }
         for (String key : expressionIdsPerValuePath.keySet()) {
-            Log.d(TAG, "expressionIds: " + key + ": "
-                    + expressionIdsPerValuePath.get(key));
+            Log.d(TAG, "expressionIds: " + key + ": " + expressionIdsPerValuePath.get(key));
         }
     }
 

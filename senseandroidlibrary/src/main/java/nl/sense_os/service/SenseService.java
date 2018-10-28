@@ -418,8 +418,7 @@ public class SenseService extends Service {
                 registered = SenseApi.registerUser(this, username, password, name, surname, email,
                         mobile);
             } catch (Exception e) {
-                Log.w(TAG, "Exception during registration: '" + e.getMessage()
-                        + "'. Connection problems?");
+                Log.w(TAG, "Exception during registration: '" + e.getMessage() + "'. Connection problems?");
                 // handle result below
             }
         } else {

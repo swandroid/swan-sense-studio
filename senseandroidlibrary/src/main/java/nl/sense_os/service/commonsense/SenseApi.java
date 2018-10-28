@@ -596,8 +596,7 @@ public class SenseApi {
         if ("201".equalsIgnoreCase(responseCode)) {
             result = true;
         } else {
-            Log.w(TAG, "Failed to join group! Response code: " + responseCode + "Response: "
-                    + response);
+            Log.w(TAG, "Failed to join group! Response code: " + responseCode + "Response: " + response);
             result = false;
         }
 

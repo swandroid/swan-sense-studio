@@ -523,7 +523,7 @@ public class BLEManager extends BTManager {
             MediaScannerConnection.scanFile(context, new String[]{ logFile.getAbsolutePath() }, null, null);
             log(TAG, "log printed", Log.INFO, true);
         } catch (IOException e) {
-            log(TAG, "couldn't write log", Log.ERROR, true, e);
+            log(TAG, "couldn't write log",  Log.ERROR, true, e);
         }
     }
 
