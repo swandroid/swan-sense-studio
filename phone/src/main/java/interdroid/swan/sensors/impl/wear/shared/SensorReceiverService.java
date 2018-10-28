@@ -11,9 +11,12 @@ import com.google.android.gms.wearable.DataMapItem;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.WearableListenerService;
 
+import java.io.IOException;
 import java.util.Arrays;
 
+import interdroid.swancore.crossdevice.Converter;
 import interdroid.swancore.shared.DataMapKeys;
+import interdroid.swancore.swansong.Result;
 
 //import interdroid.swan.sensordashboard.database.DataEntry;
 
@@ -82,6 +85,15 @@ public class SensorReceiverService extends WearableListenerService {
     private void unpackExpressionData(DataMap dataMap){
         String id = dataMap.getString(DataMapKeys.EXPRESSION_ID);
         String data = dataMap.getString(DataMapKeys.VALUES);
+        try {
+            Result result = (Result) Converter.stringToObject(data);
+            Log.d(TAG, "Received data length = " + result.getValues().length + " String length="+data.length());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
         sensorManager.addExpressionData(id,data);
     }
 }

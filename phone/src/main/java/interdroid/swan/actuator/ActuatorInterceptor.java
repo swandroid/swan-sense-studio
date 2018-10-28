@@ -9,6 +9,7 @@ import android.util.Log;
 import java.util.List;
 
 import interdroid.swan.engine.EvaluationManager;
+import interdroid.swan.remote.cloud.CloudManager;
 import interdroid.swan.sensors.impl.wear.shared.RemoteSensorManager;
 import interdroid.swancore.swanmain.ActuatorManager;
 import interdroid.swancore.swanmain.ExpressionManager;
@@ -109,9 +110,14 @@ public class ActuatorInterceptor extends BroadcastReceiver {
             }
         }
 
-        if (ActuationManager.REMOTE_ACTUATORS.contains(expressionId)) {
+        if (ActuationManager.REMOTE_ACTUATORS.containsKey(expressionId)) {
             //TODO: Add TimestampedValue[] if needed
-            RemoteSensorManager.getInstance(context).Actuate(expressionId);
+            if(ActuationManager.REMOTE_ACTUATORS.get(expressionId).equals(Expression.LOCATION_WEAR)) {
+                RemoteSensorManager.getInstance(context).Actuate(expressionId);
+            }
+            else if(ActuationManager.REMOTE_ACTUATORS.get(expressionId).equals(Expression.LOCATION_CLOUD)){
+                CloudManager.getInstance(context).Actuate(expressionId, ActuationManager.REMOTE_ACTUATORS.get(expressionId));
+            }
         }
     }
 }

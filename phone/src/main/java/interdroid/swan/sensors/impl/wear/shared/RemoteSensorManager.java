@@ -290,7 +290,7 @@ public class RemoteSensorManager {
 
 
             dataMap.getDataMap().putLong("Time",System.currentTimeMillis());
-            dataMap.getDataMap().putBoolean (DataMapKeys.WEAR_ACTUATION, ActuationManager.REMOTE_ACTUATORS.contains(id));
+            dataMap.getDataMap().putBoolean (DataMapKeys.WEAR_ACTUATION, ActuationManager.REMOTE_ACTUATORS.containsKey(id));
             dataMap.getDataMap().putBoolean (DataMapKeys.PHONE_ACTUATION, phoneActuation);
             Log.d(TAG, "Expression to send remote:"+expression+" id:"+id+" phone actuation:"+phoneActuation);
             PutDataRequest putDataRequest = dataMap.asPutDataRequest();

@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 
 import java.util.HashMap;
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -49,6 +50,7 @@ public class FixedSensor{
 
     Context mContext;
 
+    Random r = new Random();
 
     public FixedSensor(Context context){
         this.mContext = context;

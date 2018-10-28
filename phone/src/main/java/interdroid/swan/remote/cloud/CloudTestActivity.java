@@ -33,6 +33,8 @@ public class CloudTestActivity extends Activity {
 
     private static final String TAG = "CloudTestActivity";
 
+    boolean ACTUATION = true;
+
   //  final String MY_EXPRESSION = "cloud@profiler:value?case=0{ANY,0} > 1";
 
  //    final String MY_EXPRESSION = "wear@heartrate:heart_rate{MEAN,10000} > 75.0";
@@ -41,7 +43,33 @@ public class CloudTestActivity extends Activity {
 
   //  final String MY_ACTUATOR_EXPRESSION = "wear@heartrate:heart_rate{ANY,0}<75.0THENself@vibrator:vibrate?duration='500'";
 
-  //  final String MY_ACTUATOR_EXPRESSION = "self@wear_heartrate:heart_rate{ANY,0}<75.0THENself@vibrator:vibrate?duration='500'";
+ //   final String MY_ACTUATOR_EXPRESSION = "self@wear_heartrate:heart_rate{ANY,0}<75.0THENself@vibrator:vibrate?duration='500'";
+
+
+   // final String MY_ACTUATOR_EXPRESSION = "self@wear_test:alternate_test?delay='2000000'{ANY,0}THENself@vibrator:vibrate?duration='500'";
+//TEST: wear send test
+//    final String MY_ACTUATOR_EXPRESSION = "self@wear_test:alternate_test?delay='1000000'{ANY,0}";
+
+//TEST: wear process test
+    //final String MY_ACTUATOR_EXPRESSION = "wear@test:alternate_test?delay='1000000'{ANY,0}THENwear@phone:send";
+//TEST: wear process mean test
+//    final String MY_ACTUATOR_EXPRESSION = "wear@test:alternate_test?delay='1000000'{ANY,0}THENwear@phone:send";
+
+//ONLY PHONE TEST
+  //  final String MY_ACTUATOR_EXPRESSION = "self@testSensor:alternate_test?delay='1000000'{MEAN,100000}THENself@test:value";
+//ONLY WEAR TEST
+//final String MY_ACTUATOR_EXPRESSION = "wear@test:alternate_test?delay='1000000'{MEAN,100000}THENwear@test:value";
+// PHONE AND WEAR TEST
+//final String MY_ACTUATOR_EXPRESSION = "self@testSensor:alternate_test?delay='1000000'{MEAN,100000}THENwear@test:value";
+// WEAR AND PHONE TEST
+//final String MY_ACTUATOR_EXPRESSION = "wear@test:alternate_test?delay='1000000'{MEAN,100000}THENself@test:value";
+// CLOUD AND PHONE TEST
+//final String MY_ACTUATOR_EXPRESSION = "cloud@test:alternate_test?delay='1000000'{MEAN,100000}THENself@test:value";
+// PHONE AND CLOUD TEST
+// final String MY_ACTUATOR_EXPRESSION = "self@testSensor:alternate_test?delay='1000000'{MEAN,100000}THENcloud@test:value";
+//WEAR AND CLOUD TEST
+ final String MY_ACTUATOR_EXPRESSION = "wear@test:alternate_test?delay='1000000'{MEAN,100000}THENcloud@test:value";
+
 
  //    final String MY_ACTUATOR_EXPRESSION = "self@light:lux{ANY,0}<10.0THENwear@vibrator:vibrate?duration='500'";
  // final String MY_ACTUATOR_EXPRESSION = "self@light:lux{ANY,0}<10.0THENwear@logger:log?tag='ROSHANBHARATHDAS'#message='Phew'#priority='3'";
@@ -60,9 +88,9 @@ public class CloudTestActivity extends Activity {
             "#server_http_body_type='application/json'" +
             "#server_http_header='key:value'";*/
 
-    final String MY_ACTUATOR_EXPRESSION = "wear@heartrate:heart_rate{ANY,0}THEN" +
+ //   final String MY_ACTUATOR_EXPRESSION = "wear@heartrate:heart_rate{ANY,0}THEN" +
   // final String MY_ACTUATOR_EXPRESSION = "self@light:lux{ANY,0}THEN" +
-            "wear@mqtt:publish?url='tcp://192.168.2.1:1883'" +
+  /*          "wear@mqtt:publish?url='tcp://192.168.2.1:1883'" +
             "#client_id='id'" +
             "#topic='mytopic'" +
             "#clean_session='true'" +
@@ -70,7 +98,7 @@ public class CloudTestActivity extends Activity {
             "#connection_timeout='30'" +
             "#keep_alive_interval='60'" +
             "#max_inflight='10'" +
-            "#mqtt_version='0'";
+            "#mqtt_version='0'"; */
 
 
   //  final String MY_EXPRESSION = "self@wear_movement:x{ANY,0}";
@@ -135,7 +163,13 @@ public class CloudTestActivity extends Activity {
         tv = (TextView) findViewById(R.id.textView1);
 
        // registerSWANSensor(MY_EXPRESSION);
-        registerSWANActuatorSensor(MY_ACTUATOR_EXPRESSION);
+
+        if(ACTUATION) {
+            registerSWANActuatorSensor(MY_ACTUATOR_EXPRESSION);
+        }
+        else{
+            registerSWANSensor(MY_ACTUATOR_EXPRESSION);
+        }
 
     }
 
@@ -149,7 +183,11 @@ public class CloudTestActivity extends Activity {
             public void onClick(View v) {
 
                 //unregisterSWANSensor();
-                unregisterSWANActuatorSensor();
+                if(ACTUATION) {
+                    unregisterSWANActuatorSensor();
+                }else{
+                    unregisterSWANSensor();
+                }
 
             }
         });

@@ -60,7 +60,7 @@ public class TestSensor extends AbstractSwanSensor {
 
     @Override
     public final String[] getValuePaths() {
-        return new String[]{ ZERO_FIELD, ONE_FIELD, ALTERNATE_FIELD };
+        return new String[]{ALTERNATE_FIELD};//ZERO_FIELD, ONE_FIELD, ALTERNATE_FIELD };
     }
 
     @Override
@@ -83,8 +83,8 @@ public class TestSensor extends AbstractSwanSensor {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 
 
-                            putValueTrimSize(ZERO_FIELD, null, System.currentTimeMillis(),0);
-                            putValueTrimSize(ONE_FIELD, null, System.currentTimeMillis(), 1);
+                            //putValueTrimSize(ZERO_FIELD, null, System.currentTimeMillis(),0);
+                            //putValueTrimSize(ONE_FIELD, null, System.currentTimeMillis(), 1);
                             putValueTrimSize(ALTERNATE_FIELD, null, System.currentTimeMillis(), val);
 
                             val = 1-val;

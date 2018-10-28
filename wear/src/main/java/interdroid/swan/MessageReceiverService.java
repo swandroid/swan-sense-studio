@@ -4,6 +4,7 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.PowerManager;
 import android.os.SystemClock;
 import android.util.Log;
 
@@ -32,6 +33,10 @@ public class MessageReceiverService extends WearableListenerService {
     @Override
     public void onCreate() {
         super.onCreate();
+        PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+        PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
+                TAG);
+        wakeLock.acquire();
         deviceClient = DeviceClient.getInstance(this);
     }
 

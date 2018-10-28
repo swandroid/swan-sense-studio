@@ -477,9 +477,10 @@ public class ExpressionManager {
     }
 
 
-    public static void unregisterRemoteActuationExpression(Context context, String id) {
+    public static void unregisterRemoteActuationExpression(Context context, String id, String location) {
         Intent intent = new Intent(ACTION_UNREGISTER_ACTUATE_REMOTE);
         intent.putExtra("expressionId", id);
+        intent.putExtra("location", location);
         context.sendBroadcast(intent);
     }
 

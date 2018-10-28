@@ -20,6 +20,7 @@ import interdroid.swan.actuator.impl.MqttActuator;
 import interdroid.swan.actuator.impl.NotificationActuator;
 import interdroid.swan.actuator.impl.PhoneActuator;
 import interdroid.swan.actuator.impl.SmsActuator;
+import interdroid.swan.actuator.impl.TestActuator;
 import interdroid.swan.actuator.impl.VibratorActuator;
 import interdroid.swan.actuator.impl.VolumeActuator;
 import interdroid.swancore.swanmain.ActuatorManager;
@@ -55,6 +56,8 @@ public class ActuationManager {
         factoryMap.put(PhoneActuator.ENTITY, new PhoneActuator.Factory());
         factoryMap.put(HttpActuator.ENTITY, new HttpActuator.Factory());
         factoryMap.put(MqttActuator.ENTITY, new MqttActuator.Factory());
+        factoryMap.put(TestActuator.ENTITY, new TestActuator.Factory());
+
         FACTORY_MAP = Collections.unmodifiableMap(factoryMap);
     }
 

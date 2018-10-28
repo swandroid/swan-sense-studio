@@ -398,7 +398,8 @@ public class EvaluationEngineServiceBase extends Service {
 
         } else if (ExpressionManager.ACTION_UNREGISTER_ACTUATE_REMOTE.equals(action)) {
             String id = intent.getStringExtra("expressionId");
-            stopRemoteAcuation(id);
+            String location = intent.getStringExtra("location");
+            stopRemoteAcuation(id, location);
         }
         else if (Intent.ACTION_BOOT_COMPLETED.equals(action)) {
             restoreAfterBoot();
@@ -440,9 +441,9 @@ public class EvaluationEngineServiceBase extends Service {
         }
     }
 
-    protected void stopRemoteAcuation(final String id){
+    protected void stopRemoteAcuation(final String id, String location){
         try {
-            mEvaluationManager.remoteUnregisterActuation(id);
+            mEvaluationManager.remoteUnregisterActuation(id, location);
         } catch (SensorSetupFailedException e) {
             e.printStackTrace();
         }
@@ -452,6 +453,7 @@ public class EvaluationEngineServiceBase extends Service {
                             final Intent onTrue, final Intent onFalse,
                             final Intent onUndefined, Intent onNewValues) {
         // handle registration
+        
         Log.d(TAG, "registring id: " + id + ", expression: " + expression);
         if (mRegisteredExpressions.containsKey(id)) {
             // FAIL!

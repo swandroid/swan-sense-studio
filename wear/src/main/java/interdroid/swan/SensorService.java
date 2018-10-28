@@ -13,6 +13,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.PowerManager;
 import android.util.Log;
 
 import java.util.HashMap;
@@ -94,9 +95,11 @@ public class SensorService extends Service implements SensorEventListener {
 
     FixedSensor fixedSensor;
 
+
     private class SensorCommand extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
+
             String action = intent.getAction();
             if (action.equalsIgnoreCase(WearConstants.BROADCAST_ADD_SENSOR)) {
                 Bundle extra = intent.getExtras();
@@ -107,14 +110,12 @@ public class SensorService extends Service implements SensorEventListener {
             }
 
             if (action.equalsIgnoreCase(WearConstants.BROADCAST_REMOVE_SENSOR)) {
-
                 int sensorId = intent.getExtras().getInt(SensorConstants.SENSOR_ID);
                 Log.d(TAG, "stopping sensors+++++" + sensorId);
                 stopSingleMeasurement(sensorId, Measurement.SENSOR, null);
             }
 
             if(action.equalsIgnoreCase(WearConstants.BROADCAST_REGISTER_EXPR)){
-
                 String id = intent.getExtras().getString(DataMapKeys.EXPRESSION_ID);
                 String expr = intent.getExtras().getString(DataMapKeys.EXPRESSION);
                 boolean wearActuation = intent.getExtras().getBoolean(DataMapKeys.WEAR_ACTUATION);
@@ -130,7 +131,6 @@ public class SensorService extends Service implements SensorEventListener {
             }
 
             if(action.equalsIgnoreCase(WearConstants.BROADCAST_REGISTER_ACTUATION_EXPR)){
-
                 String id = intent.getExtras().getString(DataMapKeys.EXPRESSION_ID);
                 String expr = intent.getExtras().getString(DataMapKeys.EXPRESSION);
                 Log.d(TAG, "starting actuation expression+++++" + id + " Expr:" + expr);
@@ -138,7 +138,6 @@ public class SensorService extends Service implements SensorEventListener {
                 //startSingleMeasurement(0, 0, Measurement.EXPRESSION, expr, id);
             }
             if(action.equalsIgnoreCase(WearConstants.BROADCAST_UNREGISTER_ACTUATION_EXPR)){
-
                 String id = intent.getExtras().getString(DataMapKeys.EXPRESSION_ID);
                 //String expr = intent.getExtras().getString(DataMapKeys.EXPRESSION);
                 Log.d(TAG, "stopping actuation expression+++++" + id);
@@ -146,7 +145,6 @@ public class SensorService extends Service implements SensorEventListener {
                 //startSingleMeasurement(0, 0, Measurement.EXPRESSION, expr, id);
             }
             if(action.equalsIgnoreCase(WearConstants.BROADCAST_ACTUATE)){
-
                 String id = intent.getExtras().getString(DataMapKeys.EXPRESSION_ID);
                 Log.d(TAG, "actuate+++++" + id);
                 ActuatorInterceptor.actuate(context, id, null);

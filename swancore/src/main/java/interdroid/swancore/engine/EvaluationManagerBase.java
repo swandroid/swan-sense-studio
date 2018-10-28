@@ -265,7 +265,7 @@ public class EvaluationManagerBase {
      * @param id
      * @throws SensorSetupFailedException
      */
-    protected void remoteUnregisterActuation(String id) throws SensorSetupFailedException {
+    protected void remoteUnregisterActuation(String id, String location) throws SensorSetupFailedException {
         throw new RuntimeException("initializeRemote is not implemented, you should not call this");
     }
 

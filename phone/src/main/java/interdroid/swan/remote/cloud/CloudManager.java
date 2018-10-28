@@ -16,6 +16,15 @@ public class CloudManager implements IRemoteManager {
     private Context context;
     private static CloudManager instance;
 
+    static String SWAN_REGISTER = "/swan/register/";
+    static String SWAN_UNREGISTER = "/swan/unregister/";
+
+    static String SWAN_ACTUATION_REGISTER = "/swan/actuation/register/";
+    static String SWAN_ACTUATION_UNREGISTER = "/swan/actuation/unregister/";
+    static String SWAN_ACTUATION_ACTUATE = "/swan/actuation/actuate/";
+
+
+
     public static synchronized CloudManager getInstance(Context context) {
         if (instance == null) {
             instance = new CloudManager(context);
@@ -40,7 +49,7 @@ public class CloudManager implements IRemoteManager {
 
 
         CloudCommunication cloudCommunication = new CloudCommunication();
-        cloudCommunication.sendRegisterRequest(id,expression,location);
+        cloudCommunication.sendRegisterRequest(id,expression,location, SWAN_REGISTER);
 
     }
 
@@ -48,7 +57,31 @@ public class CloudManager implements IRemoteManager {
     public void unregisterExpression(String id, String location) {
 
         CloudCommunication cloudCommunication = new CloudCommunication();
-        cloudCommunication.sendUnregisterRequest(id,location);
+        cloudCommunication.sendUnregisterRequest(id,location, SWAN_UNREGISTER);
+
+    }
+
+
+    public void registerActuationExpression(String id, String expression, String location) {
+
+
+        CloudCommunication cloudCommunication = new CloudCommunication();
+        cloudCommunication.sendRegisterRequest(id,expression,location, SWAN_ACTUATION_REGISTER);
+
+    }
+
+    public void unregisterActuationExpression(String id, String location) {
+
+        CloudCommunication cloudCommunication = new CloudCommunication();
+        cloudCommunication.sendUnregisterRequest(id,location, SWAN_ACTUATION_UNREGISTER);
+
+    }
+
+
+    public void Actuate(String id,String location) {
+
+        CloudCommunication cloudCommunication = new CloudCommunication();
+        cloudCommunication.sendUnregisterRequest(id,location, SWAN_ACTUATION_ACTUATE);
 
     }
 

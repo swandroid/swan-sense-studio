@@ -7,7 +7,7 @@ repositories {
 
 android {
     compileSdkVersion 23
-    buildToolsVersion '25.0.0'
+    buildToolsVersion '27.0.3'
 
     defaultConfig {
         applicationId "interdroid.swan"
@@ -16,10 +16,23 @@ android {
         multiDexEnabled true
     }
 
+    buildscript {
+        configurations.all {
+            resolutionStrategy {
+                force 'net.sf.proguard:proguard-gradle:5.3.3'
+            }
+        }
+    }
+
     buildTypes {
+        //debug {
+        //    minifyEnabled true
+            //useProguard false
+        //    proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        //}
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 
@@ -61,6 +74,7 @@ dependencies {
 
     // butterknife for views injection
     compile 'com.jakewharton:butterknife:7.0.1'
+    annotationProcessor 'com.jakewharton:butterknife:7.0.1'
 
     // otto event bus
     compile 'com.squareup:otto:1.3.8'

@@ -22,15 +22,12 @@ public class CloudCommunication {
 
     ServerConnection serverConnection;
 
-    static String DEFAULT_URL = "http://dsa-devel.labs.vu.nl:9000";
-    //static String DEFAULT_URL = "http://192.168.0.104:9000";
-
-    //static String SWAN_REGISTER = "/swan/register/";
-    //static String SWAN_UNREGISTER = "/swan/unregister/";
+    //static String DEFAULT_URL = "http://dsa-devel.labs.vu.nl:9000";
+    static String DEFAULT_URL = "http://192.168.2.1:9000";
 
     //added for vladimir's test
-    static String SWAN_REGISTER = "/swan/test/register/";
-    static String SWAN_UNREGISTER = "/swan/test/unregister/";
+    //static String SWAN_REGISTER = "/swan/test/register/";
+    //static String SWAN_UNREGISTER = "/swan/test/unregister/";
 
 
 
@@ -66,14 +63,14 @@ public class CloudCommunication {
     };
 
 
-    void sendRegisterRequest(String id, String expression, String location) {
+    void sendRegisterRequest(String id, String expression, String location, String command) {
 
                 if(location.contains("http")){
-                    httpConfiguration.putString(Constant.SERVER_URL,location+SWAN_REGISTER);
+                    httpConfiguration.putString(Constant.SERVER_URL,location+command);
                 }
                 else {
 
-                    httpConfiguration.putString(Constant.SERVER_URL, DEFAULT_URL+SWAN_REGISTER);
+                    httpConfiguration.putString(Constant.SERVER_URL, DEFAULT_URL+command);
                 }
 
                 serverConnection = new ServerConnection(httpConfiguration);
@@ -92,14 +89,14 @@ public class CloudCommunication {
     }
 
 
-    void sendUnregisterRequest(String id, String location) {
+    void sendUnregisterRequest(String id, String location, String command) {
 
 
             if(location.contains("http")){
-                httpConfiguration.putString(Constant.SERVER_URL,location+SWAN_UNREGISTER);
+                httpConfiguration.putString(Constant.SERVER_URL,location+command);
             }
             else {
-                httpConfiguration.putString(Constant.SERVER_URL, DEFAULT_URL+SWAN_UNREGISTER);
+                httpConfiguration.putString(Constant.SERVER_URL, DEFAULT_URL+command);
             }
 
             serverConnection = new ServerConnection(httpConfiguration);
@@ -114,6 +111,31 @@ public class CloudCommunication {
 
 
     }
+
+    void sendActuateRequest(String id, String location, String command) {
+
+
+        if(location.contains("http")){
+            httpConfiguration.putString(Constant.SERVER_URL,location+command);
+        }
+        else {
+            httpConfiguration.putString(Constant.SERVER_URL, DEFAULT_URL+command);
+        }
+
+        serverConnection = new ServerConnection(httpConfiguration);
+
+        HashMap<String, Object> serverData = new HashMap<String, Object>();
+
+
+        serverData.clear();
+        serverData.put(Constant.ID, id);
+        serverData.put(Constant.TOKEN, FirebaseInstanceId.getInstance().getToken());
+        serverConnection.useHttpMethod(serverData, cb);
+
+
+    }
+
+
 
 
 

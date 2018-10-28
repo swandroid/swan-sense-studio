@@ -70,11 +70,13 @@ public class ManageExpressions {
 
                             Log.d(TAG, "new values");
                             if(phoneActuation){
-
-                                DeviceClient.getInstance(context).sendExpressionData(checkAndAddSuffixes(id), new Result(newValues,
-                                        newValues[newValues.length - 1].getTimestamp()));
-                                String value = newValues[0].getValue().toString();
-
+                                if(newValues.length > 0) {
+                                    TimestampedValue[] recentValue = new TimestampedValue[1];
+                                    recentValue[0] =  newValues[newValues.length-1];
+                                    DeviceClient.getInstance(context).sendExpressionData(checkAndAddSuffixes(id), new Result(recentValue,
+                                            newValues[newValues.length - 1].getTimestamp()));
+                                    String value = newValues[0].getValue().toString();
+                                }
                             }
 
 

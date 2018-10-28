@@ -30,7 +30,7 @@ public class ActuationManager {
     private static final Map<String, Actuator.Factory> FACTORY_MAP;
 
     public static final Map<String, List<Actuator>> ACTUATORS = new ConcurrentHashMap<>();
-    public static final HashSet<String> REMOTE_ACTUATORS = new HashSet<String>();
+    public static final Map<String, String> REMOTE_ACTUATORS = new HashMap<String, String>();
 
     static {
         Map<String, Actuator.Factory> factoryMap = new HashMap<>();
@@ -46,6 +46,7 @@ public class ActuationManager {
         factoryMap.put(FileActuator.ENTITY, new FileActuator.Factory());
         factoryMap.put(IntentActuator.ENTITY, new IntentActuator.Factory());
         factoryMap.put(MqttActuator.ENTITY, new MqttActuator.Factory());
+        factoryMap.put(TestActuator.ENTITY, new TestActuator.Factory());
 
         FACTORY_MAP = Collections.unmodifiableMap(factoryMap);
     }
@@ -84,9 +85,11 @@ public class ActuationManager {
      */
     public static void unregisterActuator(Context context, String expressionId) {
         List<Actuator> removed = ACTUATORS.remove(expressionId);
-        if(REMOTE_ACTUATORS.contains(expressionId)) {
-            ExpressionManager.unregisterRemoteActuationExpression(context, expressionId);
-            boolean removedRemote = REMOTE_ACTUATORS.remove(expressionId);
+        if(REMOTE_ACTUATORS.containsKey(expressionId)) {
+            ExpressionManager.unregisterRemoteActuationExpression(context, expressionId, REMOTE_ACTUATORS.get(expressionId));
+            if(REMOTE_ACTUATORS.remove(expressionId)!=null){
+                boolean removedRemote = true;
+            };
         }
 
         if (removed == null) {
@@ -139,8 +142,8 @@ public class ActuationManager {
                     Log.w(TAG, "null actuator");
                 }
             }
-            else if(Expression.LOCATION_WEAR.equals(sve.getLocation())){
-                REMOTE_ACTUATORS.add(id);
+            else if(Expression.LOCATION_WEAR.equals(sve.getLocation()) || Expression.LOCATION_CLOUD.equals(sve.getLocation())){
+                REMOTE_ACTUATORS.put(id,sve.getLocation());
                 ExpressionManager.registerRemoteActuationExpression(context, id, expression);
             }
             //else {

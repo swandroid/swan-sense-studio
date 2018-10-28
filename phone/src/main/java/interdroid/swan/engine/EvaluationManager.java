@@ -40,12 +40,21 @@ public class EvaluationManager extends EvaluationManagerBase {
 
     protected void remoteRegisterActuation(String id, Expression expression,
                                            String resolvedLocation) {
-        RemoteSensorManager.getInstance(mContext).registerActuationExpression(toCrossDeviceStringForActuation(expression, resolvedLocation), id);
+        if(Expression.LOCATION_WEAR.equals(expression.getLocation())) {
+            RemoteSensorManager.getInstance(mContext).registerActuationExpression(toCrossDeviceStringForActuation(expression, resolvedLocation), id);
+        }
+        else if (resolvedLocation.equals(Expression.LOCATION_CLOUD) || resolvedLocation.contains("http")) {
+            CloudManager.getInstance(mContext).registerActuationExpression(id, expression.toParseString(), resolvedLocation);
+        }
         Log.d(TAG, "Registering remote acuation");
     }
 
-    protected void remoteUnregisterActuation(String id) {
-        RemoteSensorManager.getInstance(mContext).unregisterActuationExpression(id);
+    protected void remoteUnregisterActuation(String id, String location) {
+        if(Expression.LOCATION_WEAR.equals(location)) {
+            RemoteSensorManager.getInstance(mContext).unregisterActuationExpression(id);
+        }else if(Expression.LOCATION_CLOUD.equals(location)){
+            CloudManager.getInstance(mContext).unregisterActuationExpression(id, location);
+        }
     }
 
 
