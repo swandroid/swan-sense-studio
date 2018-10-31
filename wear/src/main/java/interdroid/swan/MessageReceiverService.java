@@ -28,16 +28,23 @@ public class MessageReceiverService extends WearableListenerService {
     private static final String TAG = "Wear/MessageReceiver";
 
     private DeviceClient deviceClient;
-
+    PowerManager.WakeLock wakeLock;
 
     @Override
     public void onCreate() {
         super.onCreate();
         PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
-        PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
+        wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
                 TAG);
         wakeLock.acquire();
         deviceClient = DeviceClient.getInstance(this);
+    }
+
+    @Override
+    public void onDestroy(){
+        if(wakeLock!=null) {
+            wakeLock.release();
+        }
     }
 
     @Override
@@ -69,8 +76,9 @@ public class MessageReceiverService extends WearableListenerService {
                     String id = dataMap.getString(DataMapKeys.EXPRESSION_ID);
                     String expression = dataMap.getString(DataMapKeys.EXPRESSION);
                     boolean wearActuation = dataMap.getBoolean(DataMapKeys.WEAR_ACTUATION);
+                    boolean cloudActuation = dataMap.getBoolean(DataMapKeys.CLOUD_ACTUATION);
                     boolean phoneActuation = dataMap.getBoolean(DataMapKeys.PHONE_ACTUATION);
-                    handleExpressions(id, expression,path, wearActuation, phoneActuation);
+                    handleExpressions(id, expression,path, wearActuation, cloudActuation, phoneActuation);
                 }
 
                 if(path.startsWith(ClientPaths.REGISTER_ACTUATION_EXPRESSION)
@@ -87,7 +95,7 @@ public class MessageReceiverService extends WearableListenerService {
                     DataMap dataMap = DataMapItem.fromDataItem(dataItem).getDataMap();
                     String id = dataMap.getString(DataMapKeys.EXPRESSION_ID);
                     String expression = dataMap.getString(DataMapKeys.EXPRESSION);
-                    handleExpressions(id, expression,path, true,false);
+                    handleExpressions(id, expression,path, true,false, false);
                 }
 
                 if(path.startsWith(ClientPaths.START_MEASUREMENT)){
@@ -172,7 +180,7 @@ public class MessageReceiverService extends WearableListenerService {
             bb.get(expressionBytes);
             bb.get(idBytes);
 
-            handleExpressions(new String(idBytes), new String(expressionBytes), messageEvent.getPath(),  false, false);
+            handleExpressions(new String(idBytes), new String(expressionBytes), messageEvent.getPath(),  false, false, false);
 
             Log.d(TAG, "Got expression ++++++++++" + new String(expressionBytes) + " " +new String(idBytes));
         }
@@ -201,7 +209,7 @@ public class MessageReceiverService extends WearableListenerService {
         getApplicationContext().sendBroadcast(i);
     }
 
-    private void handleExpressions(String id, String expression, String broadcastType, boolean wearActuation, boolean phoneActuation){
+    private void handleExpressions(String id, String expression, String broadcastType, boolean wearActuation, boolean cloudActuation, boolean phoneActuation){
         Intent i =null;
 
         if(broadcastType.equals(ClientPaths.REGISTER_EXPRESSION))
@@ -217,6 +225,7 @@ public class MessageReceiverService extends WearableListenerService {
         i.putExtra(DataMapKeys.EXPRESSION_ID, id);
         i.putExtra(DataMapKeys.EXPRESSION, expression);
         i.putExtra(DataMapKeys.WEAR_ACTUATION, wearActuation);
+        i.putExtra(DataMapKeys.CLOUD_ACTUATION, cloudActuation);
         i.putExtra(DataMapKeys.PHONE_ACTUATION, phoneActuation);
         getApplicationContext().sendBroadcast(i);
     }

@@ -106,7 +106,7 @@ public class SensorService extends Service implements SensorEventListener {
                 int sensorId = extra.getInt(SensorConstants.SENSOR_ID);
                 int accuracy = extra.getInt(SensorConstants.ACCURACY);
                 Log.d(TAG, "starting sensor+++++++" + sensorId + " " + accuracy);
-                startSingleMeasurement(sensorId, accuracy, Measurement.SENSOR, null , null, false, false);
+                startSingleMeasurement(sensorId, accuracy, Measurement.SENSOR, null , null, false, false, false);
             }
 
             if (action.equalsIgnoreCase(WearConstants.BROADCAST_REMOVE_SENSOR)) {
@@ -119,9 +119,10 @@ public class SensorService extends Service implements SensorEventListener {
                 String id = intent.getExtras().getString(DataMapKeys.EXPRESSION_ID);
                 String expr = intent.getExtras().getString(DataMapKeys.EXPRESSION);
                 boolean wearActuation = intent.getExtras().getBoolean(DataMapKeys.WEAR_ACTUATION);
+                boolean cloudActuation = intent.getExtras().getBoolean(DataMapKeys.CLOUD_ACTUATION);
                 boolean phoneActuation = intent.getExtras().getBoolean(DataMapKeys.PHONE_ACTUATION);
                 Log.d(TAG, "starting expression+++++" + id + " Expr:" + expr);
-                startSingleMeasurement(0, 0, Measurement.EXPRESSION, expr, id, wearActuation, phoneActuation);
+                startSingleMeasurement(0, 0, Measurement.EXPRESSION, expr, id, wearActuation, cloudActuation, phoneActuation);
             }
 
             if(action.equalsIgnoreCase(WearConstants.BROADCAST_UNREGISTER_EXPR)){
@@ -186,9 +187,9 @@ public class SensorService extends Service implements SensorEventListener {
 
     }
 
-    private void registerSwanExpression(String id, String expression, boolean wearActuation, boolean phoneActuation){
+    private void registerSwanExpression(String id, String expression, boolean wearActuation, boolean cloudActuation, boolean phoneActuation){
         expressionContainer.put(id, expression);
-        exp.registerExpression(id, expression, wearActuation, phoneActuation);
+        exp.registerExpression(id, expression, wearActuation, cloudActuation, phoneActuation);
     }
 
     private void unregisterSwanExpression(String id) {
@@ -216,12 +217,12 @@ public class SensorService extends Service implements SensorEventListener {
         return super.onStartCommand(intent, flags, startId);
     }
 
-    protected void startSingleMeasurement(int sensorId, int accuracy, Measurement type, String expression, String expressionID, boolean wearActuation, boolean phoneActuation) {
+    protected void startSingleMeasurement(int sensorId, int accuracy, Measurement type, String expression, String expressionID, boolean wearActuation, boolean cloudActuation, boolean phoneActuation) {
 
         lock.lock();
         try {
             if (type == Measurement.EXPRESSION) {
-                registerSwanExpression(expressionID, expression, wearActuation, phoneActuation);
+                registerSwanExpression(expressionID, expression, wearActuation, cloudActuation, phoneActuation);
                 return;
             }
 

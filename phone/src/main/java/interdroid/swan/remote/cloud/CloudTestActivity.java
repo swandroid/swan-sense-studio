@@ -62,14 +62,15 @@ public class CloudTestActivity extends Activity {
 // PHONE AND WEAR TEST
 //final String MY_ACTUATOR_EXPRESSION = "self@testSensor:alternate_test?delay='1000000'{MEAN,100000}THENwear@test:value";
 // WEAR AND PHONE TEST
-//final String MY_ACTUATOR_EXPRESSION = "wear@test:alternate_test?delay='1000000'{MEAN,100000}THENself@test:value";
+final String MY_ACTUATOR_EXPRESSION = "wear@test:alternate_test?delay='1000000'{MEAN,10000}THENself@test:value";
 // CLOUD AND PHONE TEST
 //final String MY_ACTUATOR_EXPRESSION = "cloud@test:alternate_test?delay='1000000'{MEAN,100000}THENself@test:value";
 // PHONE AND CLOUD TEST
 // final String MY_ACTUATOR_EXPRESSION = "self@testSensor:alternate_test?delay='1000000'{MEAN,100000}THENcloud@test:value";
 //WEAR AND CLOUD TEST
- final String MY_ACTUATOR_EXPRESSION = "wear@test:alternate_test?delay='1000000'{MEAN,100000}THENcloud@test:value";
-
+// final String MY_ACTUATOR_EXPRESSION = "wear@test:alternate_test?delay='1000000'{MEAN,100000}THENcloud@test:value";
+// CLOUD AND wear TEST
+//final String MY_ACTUATOR_EXPRESSION = "cloud@test:alternate_test?delay='1000000'{MEAN,100000}THENwear@test:value";
 
  //    final String MY_ACTUATOR_EXPRESSION = "self@light:lux{ANY,0}<10.0THENwear@vibrator:vibrate?duration='500'";
  // final String MY_ACTUATOR_EXPRESSION = "self@light:lux{ANY,0}<10.0THENwear@logger:log?tag='ROSHANBHARATHDAS'#message='Phew'#priority='3'";

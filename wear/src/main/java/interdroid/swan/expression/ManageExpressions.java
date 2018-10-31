@@ -2,10 +2,15 @@ package interdroid.swan.expression;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.util.Log;
 
 import java.util.HashMap;
+import java.util.HashSet;
 
+import interdroid.swan.actuator.ActuationManager;
+import interdroid.swan.remote.HighBandwidthNetworking;
+import interdroid.swan.remote.cloud.CloudManager;
 import interdroid.swancore.swanmain.ActuatorManager;
 import interdroid.swancore.swanmain.ExpressionListener;
 import interdroid.swancore.swanmain.ExpressionManager;
@@ -40,14 +45,19 @@ public class ManageExpressions {
     private static final String ACTUATOR_SEPARATOR = "THEN";
 
     HashMap<String,String> expressionSuffix = new HashMap<>();
+    HashSet<String> cloudActuationSet = new HashSet<>();
 
     public ManageExpressions(Context context){
         this.context = context;
     }
+    HighBandwidthNetworking highBandwidthNetworking;
 
+    public void registerExpression(String id, final String expression, boolean wearActuation, final boolean cloudActuation, final boolean phoneActuation) {
 
-    public void registerExpression(String id, String expression, boolean wearActuation, final boolean phoneActuation) {
-
+        if(cloudActuation){
+            cloudActuationSet.add(id);
+            initializeAndStartHighBandwidthNetworking();
+        }
         try {
             Expression checkExpression =  ExpressionFactory.parse(expression);
             ActuatorManager.registerActuator(context, checkAndRemoveSuffixes(id), checkExpression,
@@ -61,6 +71,15 @@ public class ManageExpressions {
                                 result.setDeferUntilGuaranteed(false);
                                 DeviceClient.getInstance(context).sendExpressionData(checkAndAddSuffixes(id), result);
 
+                            }
+                            if(cloudActuation){
+                                Log.d(TAG, "cloud actuation true for expression: "+expression);
+                                if(highBandwidthNetworking.NETWORK_AVAILABLE) {
+                                    CloudManager.getInstance(context).Actuate(id, Expression.LOCATION_CLOUD);
+                                }
+                                else{
+                                    Log.d(TAG, "highBandwidthNetworking not available");
+                                }
                             }
 
                         }
@@ -77,6 +96,17 @@ public class ManageExpressions {
                                             newValues[newValues.length - 1].getTimestamp()));
                                     String value = newValues[0].getValue().toString();
                                 }
+                            }
+                            if(cloudActuation){
+                                Log.d(TAG, "cloud actuation true for expression: "+expression);
+                                if(highBandwidthNetworking.NETWORK_AVAILABLE) {
+                                    CloudManager.getInstance(context).Actuate(id, Expression.LOCATION_CLOUD);
+                                }
+                                else{
+                                    Log.d(TAG, "highBandwidthNetworking not available");
+                                }
+
+
                             }
 
 
@@ -158,7 +188,10 @@ public class ManageExpressions {
 
         String newId = checkAndRemoveSuffixes(id);
         ExpressionManager.unregisterExpression(context, newId);
-
+        if(cloudActuationSet.contains(id)){
+            highBandwidthNetworking.releaseHighBandwidthNetwork();
+            cloudActuationSet.remove(id);
+        }
         if(expressionSuffix.containsKey(newId)){
             expressionSuffix.remove(newId);
         }
@@ -194,6 +227,13 @@ public class ManageExpressions {
         return idWithSuffix;
     }
 
+
+    private void initializeAndStartHighBandwidthNetworking(){
+
+        highBandwidthNetworking = HighBandwidthNetworking.getInstance((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
+        //while()
+        highBandwidthNetworking.requestHighBandwidthNetwork();
+    }
 
 
 }

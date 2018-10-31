@@ -11,6 +11,8 @@ public class DataMapKeys {
     public static final String EXPRESSION = "expression";
 
     public static final String WEAR_ACTUATION = "wear_actuation";
+    public static final String CLOUD_ACTUATION = "cloud_actuation";
     public static final String PHONE_ACTUATION = "phone_actuation";
+
 
 }

@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "694645599892",
+    "firebase_url": "https://swandroid-c8355.firebaseio.com",
+    "project_id": "swandroid-c8355",
+    "storage_bucket": "swandroid-c8355.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:694645599892:android:8647184d42aad812",
+        "android_client_info": {
+          "package_name": "interdroid.swan"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "694645599892-nmefi2apqa35u65n96rlr72pa7qh16tq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDpZZNd1ZjQAi9jSJ1tDwb2KHxD4WvnnOg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

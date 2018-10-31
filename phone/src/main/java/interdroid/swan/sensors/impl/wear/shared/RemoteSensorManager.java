@@ -32,6 +32,7 @@ import interdroid.swancore.shared.SensorConstants;
 import interdroid.swan.sensors.impl.wear.shared.data.SensorDataPoint;
 import interdroid.swan.sensors.impl.wear.shared.data.SensorNames;
 import interdroid.swan.sensors.impl.wear.shared.data.WearSensor;
+import interdroid.swancore.swansong.Expression;
 
 public class RemoteSensorManager {
     private static final String TAG = "RemoteSensorManager";
@@ -290,7 +291,19 @@ public class RemoteSensorManager {
 
 
             dataMap.getDataMap().putLong("Time",System.currentTimeMillis());
-            dataMap.getDataMap().putBoolean (DataMapKeys.WEAR_ACTUATION, ActuationManager.REMOTE_ACTUATORS.containsKey(id));
+            if(ActuationManager.REMOTE_ACTUATORS.containsKey(id) && ActuationManager.REMOTE_ACTUATORS.get(id).equals(Expression.LOCATION_WEAR)){
+                dataMap.getDataMap().putBoolean (DataMapKeys.WEAR_ACTUATION, true);
+            }
+            else{
+                dataMap.getDataMap().putBoolean (DataMapKeys.WEAR_ACTUATION, false);
+            }
+            if(ActuationManager.REMOTE_ACTUATORS.containsKey(id) && ActuationManager.REMOTE_ACTUATORS.get(id).equals(Expression.LOCATION_CLOUD)){
+                dataMap.getDataMap().putBoolean (DataMapKeys.CLOUD_ACTUATION, true);
+            }
+            else{
+                dataMap.getDataMap().putBoolean (DataMapKeys.CLOUD_ACTUATION, false);
+            }
+            //dataMap.getDataMap().putBoolean (DataMapKeys.WEAR_ACTUATION, ActuationManager.REMOTE_ACTUATORS.containsKey(id));
             dataMap.getDataMap().putBoolean (DataMapKeys.PHONE_ACTUATION, phoneActuation);
             Log.d(TAG, "Expression to send remote:"+expression+" id:"+id+" phone actuation:"+phoneActuation);
             PutDataRequest putDataRequest = dataMap.asPutDataRequest();

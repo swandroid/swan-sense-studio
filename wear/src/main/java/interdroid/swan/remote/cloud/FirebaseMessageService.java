@@ -20,7 +20,7 @@ import interdroid.swancore.swansong.TriState;
  */
 public class FirebaseMessageService extends FirebaseMessagingService{
 
-    //CloudManager cloudManager = CloudManager.getCreatedInstance();
+    CloudManager cloudManager = CloudManager.getCreatedInstance();
 
     static int noOfTimes = 0;
 
@@ -73,9 +73,9 @@ public class FirebaseMessageService extends FirebaseMessagingService{
                 }
 
 
-              /*  if(result!=null && cloudManager!=null) {
+                if(result!=null && cloudManager!=null) {
                     cloudManager.sendResult(jsonResult.getString("id"), jsonResult.getString("A"), Converter.objectToString(result));
-                }*/
+                }
             }
             else{
                 noOfTimes= noOfTimes+2;
@@ -89,6 +89,8 @@ public class FirebaseMessageService extends FirebaseMessagingService{
 
 
         } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
