@@ -6,6 +6,8 @@ package interdroid.swan.remote;
 public final class Constant {
 
     public static final String ID ="id";
+    public static final String VALUES ="values";
+    public static final String EXPRESSION_ID = "expressionid";
 
     public static final String TOKEN ="token";
     public static final String EXPRESSION ="expression";

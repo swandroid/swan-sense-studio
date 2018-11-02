@@ -6,6 +6,7 @@ package interdroid.swan.sensors.impl;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
 
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
@@ -28,6 +29,8 @@ public class TestSensor extends AbstractSwanSensor {
     ExecutorService executorService = Executors.newCachedThreadPool();
 
     int numberOfPowerSensors = 0;
+
+    PowerManager.WakeLock wakeLock;
 
     HashMap<String, String> idToValuePath = new HashMap<>();
 
@@ -109,6 +112,11 @@ public class TestSensor extends AbstractSwanSensor {
                                final Bundle configuration, final Bundle httpConfiguration, Bundle extraConfiguration) {
         super.register(id, valuePath, configuration, httpConfiguration, extraConfiguration);
 
+        PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+
+        wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
+                TAG);
+        wakeLock.acquire();
 
         numberOfPowerSensors++;
         idToValuePath.put(id,valuePath);
@@ -121,6 +129,10 @@ public class TestSensor extends AbstractSwanSensor {
         numberOfPowerSensors--;
         updateAccuracy();
         idToValuePath.remove(id);
+
+        if(wakeLock!=null) {
+            wakeLock.release();
+        }
 
     }
 

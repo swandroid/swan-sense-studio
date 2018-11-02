@@ -14,6 +14,7 @@ import interdroid.swan.sensors.impl.wear.shared.RemoteSensorManager;
 import interdroid.swancore.swanmain.ActuatorManager;
 import interdroid.swancore.swanmain.ExpressionManager;
 import interdroid.swancore.swansong.Expression;
+import interdroid.swancore.swansong.Result;
 import interdroid.swancore.swansong.TimestampedValue;
 import interdroid.swancore.swansong.TriState;
 
@@ -116,7 +117,12 @@ public class ActuatorInterceptor extends BroadcastReceiver {
                 RemoteSensorManager.getInstance(context).Actuate(expressionId);
             }
             else if(ActuationManager.REMOTE_ACTUATORS.get(expressionId).equals(Expression.LOCATION_CLOUD)){
-                CloudManager.getInstance(context).Actuate(expressionId, ActuationManager.REMOTE_ACTUATORS.get(expressionId));
+                if(newValues.length > 0) {
+                    TimestampedValue[] recentValue = new TimestampedValue[1];
+                    recentValue[0] = newValues[newValues.length - 1];
+                    CloudManager.getInstance(context).Actuate(expressionId, ActuationManager.REMOTE_ACTUATORS.get(expressionId), new Result(recentValue,
+                            newValues[newValues.length - 1].getTimestamp()));
+                }
             }
         }
     }

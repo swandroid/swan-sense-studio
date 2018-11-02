@@ -6,6 +6,8 @@ package interdroid.swan.sensors;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
+import android.util.Log;
 
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
@@ -29,6 +31,8 @@ public class TestSensor extends AbstractSwanSensorBase {
     ExecutorService executorService = Executors.newCachedThreadPool();
 
     int numberOfPowerSensors = 0;
+
+    PowerManager.WakeLock wakeLock;
 
     HashMap<String, String> idToValuePath = new HashMap<>();
 
@@ -87,10 +91,11 @@ public class TestSensor extends AbstractSwanSensorBase {
                             //putValueTrimSize(ZERO_FIELD, null, System.currentTimeMillis(),0);
                             //putValueTrimSize(ONE_FIELD, null, System.currentTimeMillis(), 1);
                             putValueTrimSize(ALTERNATE_FIELD, null, System.currentTimeMillis(), val);
-
+                            Log.d(TAG, "new value:"+val+" Sensordelay:"+getSensorDelay());
                             val = 1-val;
 
                         }
+
                         try {
                             Thread.sleep(getSensorDelay()/1000);
                         } catch (InterruptedException e) {
@@ -110,10 +115,17 @@ public class TestSensor extends AbstractSwanSensorBase {
                                final Bundle configuration, final Bundle httpConfiguration, Bundle extraConfiguration) {
         super.register(id, valuePath, configuration, httpConfiguration, extraConfiguration);
 
+        PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+
+        wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
+                TAG);
+        wakeLock.acquire();
 
         numberOfPowerSensors++;
         idToValuePath.put(id,valuePath);
         updateAccuracy();
+
+
     }
 
     @Override
@@ -122,6 +134,11 @@ public class TestSensor extends AbstractSwanSensorBase {
         numberOfPowerSensors--;
         updateAccuracy();
         idToValuePath.remove(id);
+
+        if(wakeLock!=null) {
+            wakeLock.release();
+        }
+
 
     }
 

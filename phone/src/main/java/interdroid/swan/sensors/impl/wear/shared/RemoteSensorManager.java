@@ -17,6 +17,7 @@ import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,7 @@ import java.util.concurrent.TimeUnit;
 
 import interdroid.swan.actuator.ActuationManager;
 import interdroid.swan.engine.EvaluationEngineService;
+import interdroid.swancore.crossdevice.Converter;
 import interdroid.swancore.shared.ClientPaths;
 import interdroid.swancore.shared.DataMapKeys;
 import interdroid.swancore.shared.SensorConstants;
@@ -33,6 +35,7 @@ import interdroid.swan.sensors.impl.wear.shared.data.SensorDataPoint;
 import interdroid.swan.sensors.impl.wear.shared.data.SensorNames;
 import interdroid.swan.sensors.impl.wear.shared.data.WearSensor;
 import interdroid.swancore.swansong.Expression;
+import interdroid.swancore.swansong.Result;
 
 public class RemoteSensorManager {
     private static final String TAG = "RemoteSensorManager";
@@ -275,6 +278,36 @@ public class RemoteSensorManager {
             });
         }
     }
+
+
+    private void handleActuation(final String path, final String id, final Result result) {
+        if(validateConnection()) {
+            PutDataMapRequest dataMap = PutDataMapRequest.create(path);
+
+            dataMap.getDataMap().putString(DataMapKeys.EXPRESSION_ID, id);
+            //dataMap.getDataMap().putString(DataMapKeys.EXPRESSION, expression);
+
+            //dataMap.getDataMap().putLong("Time",System.currentTimeMillis());
+            try {
+                dataMap.getDataMap().putString(DataMapKeys.VALUES, Converter.objectToString(result));
+            } catch (IOException e) {
+                Log.e(TAG, "Error, unable to put expression Object as a string");
+            }
+
+            PutDataRequest putDataRequest = dataMap.asPutDataRequest();
+            putDataRequest = putDataRequest.setUrgent();
+            Wearable.DataApi.putDataItem(googleApiClient, putDataRequest).setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
+                @Override
+                public void onResult(DataApi.DataItemResult dataItemResult) {
+                    Log.d(TAG, "Sending new expession ++++++++" + path +" " + id + ": " + dataItemResult.getStatus().isSuccess());
+                }
+            });
+        }
+    }
+
+
+
+
 
     private void handleRegisteringSensorActuatorExpressions(final String path, final String expression, final String id) {
         if(validateConnection()) {

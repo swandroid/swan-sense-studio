@@ -6,6 +6,7 @@ import android.util.Log;
 
 import interdroid.swan.engine.EvaluationEngineService;
 import interdroid.swan.remote.IRemoteManager;
+import interdroid.swancore.swansong.Result;
 
 /**
  * Created by Roshan Bharath Das on 27/06/16.
@@ -78,10 +79,10 @@ public class CloudManager implements IRemoteManager {
     }
 
 
-    public void Actuate(String id,String location) {
+    public void Actuate(String id,String location, Result result) {
 
         CloudCommunication cloudCommunication = new CloudCommunication();
-        cloudCommunication.sendUnregisterRequest(id,location, SWAN_ACTUATION_ACTUATE);
+        cloudCommunication.sendActuateRequest(id,location, SWAN_ACTUATION_ACTUATE, result);
 
     }
 

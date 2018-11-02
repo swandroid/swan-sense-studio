@@ -16,6 +16,7 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.locks.ReentrantLock;
@@ -23,10 +24,12 @@ import java.util.concurrent.locks.ReentrantLock;
 import interdroid.FixedSensor;
 import interdroid.swan.actuator.ActuationManager;
 import interdroid.swan.actuator.ActuatorInterceptor;
+import interdroid.swancore.crossdevice.Converter;
 import interdroid.swancore.shared.DataMapKeys;
 import interdroid.swan.expression.ManageExpressions;
 import interdroid.swancore.shared.SensorConstants;
 import interdroid.swancore.swanmain.ActuatorManager;
+import interdroid.swancore.swansong.Result;
 
 
 class SensorContainer {
@@ -147,6 +150,16 @@ public class SensorService extends Service implements SensorEventListener {
             }
             if(action.equalsIgnoreCase(WearConstants.BROADCAST_ACTUATE)){
                 String id = intent.getExtras().getString(DataMapKeys.EXPRESSION_ID);
+                String data = intent.getExtras().getString(DataMapKeys.VALUES);
+
+                try {
+                    //TODO: if needed pass result to actuate method
+                    Result result = (Result) Converter.stringToObject(data);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
                 Log.d(TAG, "actuate+++++" + id);
                 ActuatorInterceptor.actuate(context, id, null);
                 //startSingleMeasurement(0, 0, Measurement.EXPRESSION, expr, id);

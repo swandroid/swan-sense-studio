@@ -74,8 +74,9 @@ public class ManageExpressions {
                             }
                             if(cloudActuation){
                                 Log.d(TAG, "cloud actuation true for expression: "+expression);
+                                Result result = new Result(timestamp, newState);
                                 if(highBandwidthNetworking.NETWORK_AVAILABLE) {
-                                    CloudManager.getInstance(context).Actuate(id, Expression.LOCATION_CLOUD);
+                                    CloudManager.getInstance(context).Actuate(id, Expression.LOCATION_CLOUD, result);
                                 }
                                 else{
                                     Log.d(TAG, "highBandwidthNetworking not available");
@@ -98,12 +99,17 @@ public class ManageExpressions {
                                 }
                             }
                             if(cloudActuation){
-                                Log.d(TAG, "cloud actuation true for expression: "+expression);
-                                if(highBandwidthNetworking.NETWORK_AVAILABLE) {
-                                    CloudManager.getInstance(context).Actuate(id, Expression.LOCATION_CLOUD);
-                                }
-                                else{
-                                    Log.d(TAG, "highBandwidthNetworking not available");
+                                if(newValues.length > 0) {
+                                    TimestampedValue[] recentValue = new TimestampedValue[1];
+                                    recentValue[0] =  newValues[newValues.length-1];
+                                    Log.d(TAG, "cloud actuation true for expression: "+expression);
+                                    if(highBandwidthNetworking.NETWORK_AVAILABLE) {
+                                        CloudManager.getInstance(context).Actuate(id, Expression.LOCATION_CLOUD, new Result(recentValue,
+                                                newValues[newValues.length - 1].getTimestamp()));
+                                    }
+                                    else{
+                                        Log.d(TAG, "highBandwidthNetworking not available");
+                                    }
                                 }
 
 

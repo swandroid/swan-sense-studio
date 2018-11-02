@@ -5,10 +5,13 @@ import android.util.Log;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 import interdroid.swan.remote.Constant;
 import interdroid.swan.remote.ServerConnection;
+import interdroid.swancore.crossdevice.Converter;
+import interdroid.swancore.swansong.Result;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -112,7 +115,7 @@ public class CloudCommunication {
 
     }
 
-    void sendActuateRequest(String id, String location, String command) {
+    void sendActuateRequest(String id, String location, String command, Result value) {
 
 
         if(location.contains("http")){
@@ -128,8 +131,15 @@ public class CloudCommunication {
 
 
         serverData.clear();
-        serverData.put(Constant.ID, id);
-        serverData.put(Constant.TOKEN, FirebaseInstanceId.getInstance().getToken());
+        serverData.put(Constant.EXPRESSION_ID, id);
+        //serverData.put(Constant.TOKEN, FirebaseInstanceId.getInstance().getToken());
+
+        try {
+            serverData.put(Constant.VALUES, Converter.objectToString(value));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         serverConnection.useHttpMethod(serverData, cb);
 
 

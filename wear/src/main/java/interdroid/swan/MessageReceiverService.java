@@ -83,8 +83,7 @@ public class MessageReceiverService extends WearableListenerService {
 
                 if(path.startsWith(ClientPaths.REGISTER_ACTUATION_EXPRESSION)
                         || path.startsWith(ClientPaths.UNREGISTER_ACTUATION_EXPRESSION)
-                        || path.startsWith(ClientPaths.ACTUATE) ){
-                    //TODO: remove starting of sensor service for only actuation
+                        ){
                     Intent intent = new Intent(this, SensorService.class);
                     startService(intent);
 
@@ -96,6 +95,21 @@ public class MessageReceiverService extends WearableListenerService {
                     String id = dataMap.getString(DataMapKeys.EXPRESSION_ID);
                     String expression = dataMap.getString(DataMapKeys.EXPRESSION);
                     handleExpressions(id, expression,path, true,false, false);
+                }
+
+                if(path.startsWith(ClientPaths.ACTUATE) ){
+                    //TODO: remove starting of sensor service for only actuation
+                    Intent intent = new Intent(this, SensorService.class);
+                    startService(intent);
+
+                    do {
+                        SystemClock.sleep(200);
+                    } while (!isMyServiceRunning(SensorService.class));
+                    Log.d(TAG, "onDataChanged called "+ path);
+                    DataMap dataMap = DataMapItem.fromDataItem(dataItem).getDataMap();
+                    String id = dataMap.getString(DataMapKeys.EXPRESSION_ID);
+                    String data = dataMap.getString(DataMapKeys.VALUES);
+                    handleActuation(id, data,path);
                 }
 
                 if(path.startsWith(ClientPaths.START_MEASUREMENT)){
@@ -220,8 +234,8 @@ public class MessageReceiverService extends WearableListenerService {
             i = new Intent(WearConstants.BROADCAST_REGISTER_ACTUATION_EXPR);
         else if (broadcastType.equals(ClientPaths.UNREGISTER_ACTUATION_EXPRESSION))
             i = new Intent(WearConstants.BROADCAST_UNREGISTER_ACTUATION_EXPR);
-        else if (broadcastType.equals(ClientPaths.ACTUATE))
-            i = new Intent(WearConstants.BROADCAST_ACTUATE);
+        //else if (broadcastType.equals(ClientPaths.ACTUATE))
+         //   i = new Intent(WearConstants.BROADCAST_ACTUATE);
         i.putExtra(DataMapKeys.EXPRESSION_ID, id);
         i.putExtra(DataMapKeys.EXPRESSION, expression);
         i.putExtra(DataMapKeys.WEAR_ACTUATION, wearActuation);
@@ -229,4 +243,18 @@ public class MessageReceiverService extends WearableListenerService {
         i.putExtra(DataMapKeys.PHONE_ACTUATION, phoneActuation);
         getApplicationContext().sendBroadcast(i);
     }
+
+    private void handleActuation(String id, String values, String broadcastType){
+        Intent i =null;
+
+       if (broadcastType.equals(ClientPaths.ACTUATE))
+            i = new Intent(WearConstants.BROADCAST_ACTUATE);
+        i.putExtra(DataMapKeys.EXPRESSION_ID, id);
+        i.putExtra(DataMapKeys.VALUES, values);
+
+        getApplicationContext().sendBroadcast(i);
+    }
+
+
+
 }
