@@ -247,13 +247,13 @@ public class RemoteSensorManager {
         });
     }
 
-    public void Actuate(final String id){
+    public void Actuate(final String id, final Result result){
 
         executorService.submit(new Runnable() {
             @Override
             public void run() {
 
-                handleExpressions(ClientPaths.ACTUATE, null, id);
+                handleActuation(ClientPaths.ACTUATE, id, result);
             }
         });
     }
@@ -288,10 +288,15 @@ public class RemoteSensorManager {
             //dataMap.getDataMap().putString(DataMapKeys.EXPRESSION, expression);
 
             //dataMap.getDataMap().putLong("Time",System.currentTimeMillis());
-            try {
-                dataMap.getDataMap().putString(DataMapKeys.VALUES, Converter.objectToString(result));
-            } catch (IOException e) {
-                Log.e(TAG, "Error, unable to put expression Object as a string");
+            if(result!=null) {
+                try {
+                    dataMap.getDataMap().putString(DataMapKeys.VALUES, Converter.objectToString(result));
+                } catch (IOException e) {
+                    Log.e(TAG, "Error, unable to put expression Object as a string");
+                }
+            }
+            else{
+                dataMap.getDataMap().putString(DataMapKeys.VALUES, null);
             }
 
             PutDataRequest putDataRequest = dataMap.asPutDataRequest();

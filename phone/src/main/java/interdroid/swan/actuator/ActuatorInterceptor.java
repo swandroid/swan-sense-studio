@@ -112,16 +112,30 @@ public class ActuatorInterceptor extends BroadcastReceiver {
         }
 
         if (ActuationManager.REMOTE_ACTUATORS.containsKey(expressionId)) {
-            //TODO: Add TimestampedValue[] if needed
+
             if(ActuationManager.REMOTE_ACTUATORS.get(expressionId).equals(Expression.LOCATION_WEAR)) {
-                RemoteSensorManager.getInstance(context).Actuate(expressionId);
+
+                if(newValues!=null && newValues.length > 0) {
+                    TimestampedValue[] recentValue = new TimestampedValue[1];
+                    recentValue[0] = newValues[newValues.length - 1];
+                    RemoteSensorManager.getInstance(context).Actuate(expressionId, new Result(recentValue,
+                            newValues[newValues.length - 1].getTimestamp()));
+                }
+                else {
+                    RemoteSensorManager.getInstance(context).Actuate(expressionId, null);
+
+                }
             }
             else if(ActuationManager.REMOTE_ACTUATORS.get(expressionId).equals(Expression.LOCATION_CLOUD)){
-                if(newValues.length > 0) {
+                if(newValues!=null && newValues.length > 0) {
                     TimestampedValue[] recentValue = new TimestampedValue[1];
                     recentValue[0] = newValues[newValues.length - 1];
                     CloudManager.getInstance(context).Actuate(expressionId, ActuationManager.REMOTE_ACTUATORS.get(expressionId), new Result(recentValue,
                             newValues[newValues.length - 1].getTimestamp()));
+                }
+                else{
+                    CloudManager.getInstance(context).Actuate(expressionId, ActuationManager.REMOTE_ACTUATORS.get(expressionId), null);
+
                 }
             }
         }
