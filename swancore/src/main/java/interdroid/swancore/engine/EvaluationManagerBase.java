@@ -672,9 +672,10 @@ public class EvaluationManagerBase {
                 return result;
             }
 
+            //long currentTime = System.currentTimeMillis();
             TimestampedValue[] reduced = TimestampedValue.applyMode(values,
                     expression.getHistoryReductionMode());
-
+            //Log.d(TAG, "RoshanSize "+values.size()+" RoshanTime "+(System.currentTimeMillis()-currentTime));
             Result result = new Result(reduced, values.get(values.size() - 1)
                     .getTimestamp());
             if (expression.getHistoryLength() == 0 || reduced == null

@@ -109,6 +109,9 @@ public class MessageReceiverService extends WearableListenerService {
                     DataMap dataMap = DataMapItem.fromDataItem(dataItem).getDataMap();
                     String id = dataMap.getString(DataMapKeys.EXPRESSION_ID);
                     String data = dataMap.getString(DataMapKeys.VALUES);
+                    //TODO: if needed send as float
+                    //float data = dataMap.getFloat(DataMapKeys.VALUES);
+                    //handleActuationAsFloat(id, data,path);
                     handleActuation(id, data,path);
                 }
 
@@ -248,6 +251,17 @@ public class MessageReceiverService extends WearableListenerService {
         Intent i =null;
 
        if (broadcastType.equals(ClientPaths.ACTUATE))
+            i = new Intent(WearConstants.BROADCAST_ACTUATE);
+        i.putExtra(DataMapKeys.EXPRESSION_ID, id);
+        i.putExtra(DataMapKeys.VALUES, values);
+
+        getApplicationContext().sendBroadcast(i);
+    }
+
+    private void handleActuationAsFloat(String id, float values, String broadcastType){
+        Intent i =null;
+
+        if (broadcastType.equals(ClientPaths.ACTUATE))
             i = new Intent(WearConstants.BROADCAST_ACTUATE);
         i.putExtra(DataMapKeys.EXPRESSION_ID, id);
         i.putExtra(DataMapKeys.VALUES, values);

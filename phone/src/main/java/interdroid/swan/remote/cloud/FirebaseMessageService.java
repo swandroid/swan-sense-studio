@@ -79,6 +79,12 @@ public class FirebaseMessageService extends FirebaseMessagingService{
                     cloudManager.sendResult(jsonResult.getString("id"), jsonResult.getString("A"), Converter.objectToString(result));
                 }
             }
+            else if(jsonResult.has("id") && jsonResult.has("A") && jsonResult.has("result")) {
+                if(cloudManager!=null) {
+                    Log.d(TAG, "Received result");
+                    cloudManager.sendResult(jsonResult.getString("id"), jsonResult.getString("A"), jsonResult.getString("result"));
+                }
+            }
             else{
                 noOfTimes= noOfTimes+2;
                 Log.e("Roshan","SWAN Cloud Communication "+noOfTimes);

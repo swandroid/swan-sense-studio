@@ -17,6 +17,7 @@ import java.util.Arrays;
 import interdroid.swancore.crossdevice.Converter;
 import interdroid.swancore.shared.DataMapKeys;
 import interdroid.swancore.swansong.Result;
+import interdroid.swancore.swansong.TimestampedValue;
 
 //import interdroid.swan.sensordashboard.database.DataEntry;
 
@@ -67,6 +68,8 @@ public class SensorReceiverService extends WearableListenerService {
 
                 if(path.startsWith("/expressionData/")){
                     unpackExpressionData(DataMapItem.fromDataItem(dataItem).getDataMap());
+                    //TODO: if needed send as float
+                    //unpackExpressionDataAsFloat(DataMapItem.fromDataItem(dataItem).getDataMap());
                 }
             }
         }
@@ -96,4 +99,23 @@ public class SensorReceiverService extends WearableListenerService {
 
         sensorManager.addExpressionData(id,data);
     }
+
+    private void unpackExpressionDataAsFloat(DataMap dataMap){
+        String id = dataMap.getString(DataMapKeys.EXPRESSION_ID);
+        float data = dataMap.getFloat(DataMapKeys.VALUES);
+
+        long currentTime = System.currentTimeMillis();
+        TimestampedValue[] timestampedValues = new TimestampedValue[1];
+        timestampedValues[0] = new TimestampedValue(data, currentTime);
+
+        Result result = new Result(timestampedValues, currentTime);
+
+        try {
+            sensorManager.addExpressionData(id,Converter.objectToString(result));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }

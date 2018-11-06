@@ -143,7 +143,33 @@ public class CloudCommunication {
 
     }
 
+    void sendActuateRequestAsFloat(String id, String location, String command, float value) {
 
+
+        if(location.contains("http")){
+            httpConfiguration.putString(Constant.SERVER_URL,location+command);
+        }
+        else {
+            httpConfiguration.putString(Constant.SERVER_URL, DEFAULT_URL+command);
+        }
+
+        serverConnection = new ServerConnection(httpConfiguration);
+
+        HashMap<String, Object> serverData = new HashMap<String, Object>();
+
+
+        serverData.clear();
+        serverData.put(Constant.EXPRESSION_ID, id);
+        //serverData.put(Constant.TOKEN, FirebaseInstanceId.getInstance().getToken());
+
+
+        serverData.put(Constant.VALUES, value);
+
+
+        serverConnection.useHttpMethod(serverData, cb);
+
+
+    }
 
 
 

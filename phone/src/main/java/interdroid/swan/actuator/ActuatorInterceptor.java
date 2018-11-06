@@ -120,6 +120,8 @@ public class ActuatorInterceptor extends BroadcastReceiver {
                     recentValue[0] = newValues[newValues.length - 1];
                     RemoteSensorManager.getInstance(context).Actuate(expressionId, new Result(recentValue,
                             newValues[newValues.length - 1].getTimestamp()));
+                    //TODO: if needed send as float
+                    //RemoteSensorManager.getInstance(context).ActuateAsFloat(expressionId, (Float) recentValue[0].getValue());
                 }
                 else {
                     RemoteSensorManager.getInstance(context).Actuate(expressionId, null);
@@ -132,6 +134,8 @@ public class ActuatorInterceptor extends BroadcastReceiver {
                     recentValue[0] = newValues[newValues.length - 1];
                     CloudManager.getInstance(context).Actuate(expressionId, ActuationManager.REMOTE_ACTUATORS.get(expressionId), new Result(recentValue,
                             newValues[newValues.length - 1].getTimestamp()));
+                    //TODO: if needed send as float
+                    //CloudManager.getInstance(context).ActuateAsFloat(expressionId, ActuationManager.REMOTE_ACTUATORS.get(expressionId), (Float) recentValue[0].getValue());
                 }
                 else{
                     CloudManager.getInstance(context).Actuate(expressionId, ActuationManager.REMOTE_ACTUATORS.get(expressionId), null);

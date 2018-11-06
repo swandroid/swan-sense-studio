@@ -254,6 +254,19 @@ public class RemoteSensorManager {
             public void run() {
 
                 handleActuation(ClientPaths.ACTUATE, id, result);
+
+            }
+        });
+    }
+
+    public void ActuateAsFloat(final String id, final float value){
+
+        executorService.submit(new Runnable() {
+            @Override
+            public void run() {
+
+                handleActuationWithFloat(ClientPaths.ACTUATE, id, value);
+
             }
         });
     }
@@ -305,11 +318,35 @@ public class RemoteSensorManager {
                 @Override
                 public void onResult(DataApi.DataItemResult dataItemResult) {
                     Log.d(TAG, "Sending new expession ++++++++" + path +" " + id + ": " + dataItemResult.getStatus().isSuccess());
+                    Log.d(TAG, "Sent expression");
                 }
             });
         }
     }
 
+    private void handleActuationWithFloat(final String path, final String id, final float value) {
+        if(validateConnection()) {
+            PutDataMapRequest dataMap = PutDataMapRequest.create(path);
+
+            dataMap.getDataMap().putString(DataMapKeys.EXPRESSION_ID, id);
+            //dataMap.getDataMap().putString(DataMapKeys.EXPRESSION, expression);
+
+            //dataMap.getDataMap().putLong("Time",System.currentTimeMillis());
+
+            dataMap.getDataMap().putFloat(DataMapKeys.VALUES, value);
+
+
+            PutDataRequest putDataRequest = dataMap.asPutDataRequest();
+            putDataRequest = putDataRequest.setUrgent();
+            Wearable.DataApi.putDataItem(googleApiClient, putDataRequest).setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
+                @Override
+                public void onResult(DataApi.DataItemResult dataItemResult) {
+                    Log.d(TAG, "Sending new expession ++++++++" + path +" " + id + ": " + dataItemResult.getStatus().isSuccess());
+                    Log.d(TAG, "Sent expression");
+                }
+            });
+        }
+    }
 
 
 

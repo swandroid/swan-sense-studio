@@ -95,6 +95,8 @@ public class ManageExpressions {
                                     recentValue[0] =  newValues[newValues.length-1];
                                     DeviceClient.getInstance(context).sendExpressionData(checkAndAddSuffixes(id), new Result(recentValue,
                                             newValues[newValues.length - 1].getTimestamp()));
+                                    //TODO: if needed send as float
+                                    //DeviceClient.getInstance(context).sendExpressionDataAsFloat(checkAndAddSuffixes(id), (Float) newValues[newValues.length-1].getValue());
                                     String value = newValues[0].getValue().toString();
                                 }
                             }
@@ -106,6 +108,9 @@ public class ManageExpressions {
                                     if(highBandwidthNetworking.NETWORK_AVAILABLE) {
                                         CloudManager.getInstance(context).Actuate(id, Expression.LOCATION_CLOUD, new Result(recentValue,
                                                 newValues[newValues.length - 1].getTimestamp()));
+                                        //TODO: if needed send as float
+                                        //CloudManager.getInstance(context).ActuateAsFloat(id, Expression.LOCATION_CLOUD, (Float) recentValue[0].getValue());
+
                                     }
                                     else{
                                         Log.d(TAG, "highBandwidthNetworking not available");

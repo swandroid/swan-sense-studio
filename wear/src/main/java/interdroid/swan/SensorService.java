@@ -151,7 +151,7 @@ public class SensorService extends Service implements SensorEventListener {
             if(action.equalsIgnoreCase(WearConstants.BROADCAST_ACTUATE)){
                 String id = intent.getExtras().getString(DataMapKeys.EXPRESSION_ID);
                 String data = intent.getExtras().getString(DataMapKeys.VALUES);
-
+                //float data = intent.getExtras().getFloat(DataMapKeys.VALUES);
                 try {
                     //TODO: if needed pass result to actuate method
                     Result result = (Result) Converter.stringToObject(data);

@@ -96,7 +96,6 @@ public class DeviceClient {
 
     private void sendExpressionDataInBackground(String exprId, Result value){
         PutDataMapRequest dataMap = PutDataMapRequest.create("/expressionData/");
-
         dataMap.getDataMap().putString(DataMapKeys.EXPRESSION_ID, exprId);
         try {
             dataMap.getDataMap().putString(DataMapKeys.VALUES, Converter.objectToString(value));
@@ -106,6 +105,25 @@ public class DeviceClient {
 
         send(dataMap.asPutDataRequest());
     }
+
+    public void sendExpressionDataAsFloat(final String exprId, final float value){
+        executorService.submit(new Runnable() {
+            @Override
+            public void run() {
+                sendExpressionDataAsFloatInBackground(exprId, value);
+            }
+        });
+    }
+
+    private void sendExpressionDataAsFloatInBackground(String exprId, float value){
+        PutDataMapRequest dataMap = PutDataMapRequest.create("/expressionData/");
+        dataMap.getDataMap().putString(DataMapKeys.EXPRESSION_ID, exprId);
+        dataMap.getDataMap().putFloat(DataMapKeys.VALUES, value);
+
+        send(dataMap.asPutDataRequest());
+    }
+
+
 
     private boolean validateConnection() {
         if (googleApiClient.isConnected()) {

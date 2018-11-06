@@ -79,13 +79,19 @@ public class CloudManager implements IRemoteManager {
     }
 
 
-    public void Actuate(String id,String location, Result result) {
+    public void Actuate(String id, String location, Result result) {
 
         CloudCommunication cloudCommunication = new CloudCommunication();
         cloudCommunication.sendActuateRequest(id,location, SWAN_ACTUATION_ACTUATE, result);
 
     }
 
+    public void ActuateAsFloat(String id, String location, float value) {
+
+        CloudCommunication cloudCommunication = new CloudCommunication();
+        cloudCommunication.sendActuateRequestAsFloat(id,location, SWAN_ACTUATION_ACTUATE, value);
+
+    }
 
 
     @Override
