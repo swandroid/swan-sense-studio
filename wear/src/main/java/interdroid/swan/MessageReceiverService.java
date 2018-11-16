@@ -4,6 +4,7 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.CountDownTimer;
 import android.os.PowerManager;
 import android.os.SystemClock;
 import android.util.Log;
@@ -29,6 +30,7 @@ public class MessageReceiverService extends WearableListenerService {
 
     private DeviceClient deviceClient;
     PowerManager.WakeLock wakeLock;
+    //public static long testCounter =0;
 
     @Override
     public void onCreate() {
@@ -37,6 +39,23 @@ public class MessageReceiverService extends WearableListenerService {
         wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
                 TAG);
         wakeLock.acquire();
+
+        //This timer runs for 30 seconds and the testCounter resets every second. NOTE: delete after test
+        /*new CountDownTimer(30000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                Log.d(TAG, "Throughput Send Wear = "+testCounter);
+                testCounter=0;
+
+            }
+
+            public void onFinish() {
+                testCounter = 0;
+                Log.d(TAG, "Count down finished");
+            }
+        }.start();*/
+
+
         deviceClient = DeviceClient.getInstance(this);
     }
 

@@ -1,6 +1,7 @@
 package interdroid.swan;
 
 import android.content.Context;
+import android.os.CountDownTimer;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -26,12 +27,10 @@ public class DeviceClient {
 
     public static DeviceClient instance;
 
-
     public static DeviceClient getInstance(Context context) {
         if (instance == null) {
             instance = new DeviceClient(context.getApplicationContext());
         }
-
         return instance;
     }
 
@@ -46,6 +45,7 @@ public class DeviceClient {
 
         googleApiClient = new GoogleApiClient.Builder(context).addApi(Wearable.API).build();
         //lastSensorData = new SparseLongArray();
+
     }
 
     public void setSensorFilter(int filterId) {
@@ -89,6 +89,7 @@ public class DeviceClient {
         executorService.submit(new Runnable() {
             @Override
             public void run() {
+                //++MessageReceiverService.testCounter;
                 sendExpressionDataInBackground(exprId, value);
             }
         });

@@ -6,7 +6,9 @@ package interdroid.swan.sensors.impl;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.PowerManager;
+import android.util.Log;
 
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
@@ -29,6 +31,7 @@ public class TestSensor extends AbstractSwanSensor {
     ExecutorService executorService = Executors.newCachedThreadPool();
 
     int numberOfPowerSensors = 0;
+    //public static long testCounter = 0;
 
     PowerManager.WakeLock wakeLock;
 
@@ -85,7 +88,7 @@ public class TestSensor extends AbstractSwanSensor {
                     while(true) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 
-
+                            ;// //Log.d(TAG, "Process:"+android.os.Process.myPid()+",Thread:"+Thread.currentThread().getId()+",Roshan Sensor generation time:"+ System.currentTimeMillis());
                             //putValueTrimSize(ZERO_FIELD, null, System.currentTimeMillis(),0);
                             //putValueTrimSize(ONE_FIELD, null, System.currentTimeMillis(), 1);
                             putValueTrimSize(ALTERNATE_FIELD, null, System.currentTimeMillis(), val);
@@ -117,6 +120,21 @@ public class TestSensor extends AbstractSwanSensor {
         wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
                 TAG);
         wakeLock.acquire();
+
+        //This timer runs for 30 seconds and the testCounter resets every second. NOTE: delete after test
+        /*new CountDownTimer(30000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                Log.d(TAG, "Throughput Phone = "+testCounter);
+                testCounter=0;
+
+            }
+
+            public void onFinish() {
+                testCounter = 0;
+                Log.d(TAG, "Count down finished");
+            }
+        }.start();*/
 
         numberOfPowerSensors++;
         idToValuePath.put(id,valuePath);

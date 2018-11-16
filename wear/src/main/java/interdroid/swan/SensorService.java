@@ -154,6 +154,7 @@ public class SensorService extends Service implements SensorEventListener {
                 //float data = intent.getExtras().getFloat(DataMapKeys.VALUES);
                 try {
                     //TODO: if needed pass result to actuate method
+                    ;// //Log.d(TAG,data);
                     Result result = (Result) Converter.stringToObject(data);
                 } catch (IOException e) {
                     e.printStackTrace();

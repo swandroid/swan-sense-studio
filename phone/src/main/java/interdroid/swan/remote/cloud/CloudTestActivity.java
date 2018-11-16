@@ -56,13 +56,13 @@ public class CloudTestActivity extends Activity {
 //    final String MY_ACTUATOR_EXPRESSION = "wear@test:alternate_test?delay='1000000'{ANY,0}THENwear@phone:send";
 
 //ONLY PHONE TEST
-//final String MY_ACTUATOR_EXPRESSION = "self@testSensor:alternate_test?delay='100000'{MEAN,100000}THENself@test:value";
+final String MY_ACTUATOR_EXPRESSION = "self@testSensor:alternate_test?delay='5000'{ANY,0}THENself@test:value";
 //ONLY WEAR TEST
-final String MY_ACTUATOR_EXPRESSION = "wear@test:alternate_test?delay='100000'{MEAN,100000}THENwear@test:value";
+//final String MY_ACTUATOR_EXPRESSION = "wear@test:alternate_test?delay='100000'{ANY,0}THENwear@test:value";
 // PHONE AND WEAR TEST
 //final String MY_ACTUATOR_EXPRESSION = "self@testSensor:alternate_test?delay='10000'{ANY,0}THENwear@test:value";
 // WEAR AND PHONE TEST
-//final String MY_ACTUATOR_EXPRESSION = "wear@test:alternate_test?delay='10000'{ANY,0}THENself@test:value";
+//final String MY_ACTUATOR_EXPRESSION = "wear@test:alternate_test?delay='20000'{ANY,0}THENself@test:value";
 // CLOUD AND PHONE TEST
 //final String MY_ACTUATOR_EXPRESSION = "cloud@test:alternate_test?delay='10000'{ANY,0}THENself@test:value";
 // PHONE AND CLOUD TEST

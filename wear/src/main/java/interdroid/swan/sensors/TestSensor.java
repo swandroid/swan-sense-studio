@@ -87,7 +87,7 @@ public class TestSensor extends AbstractSwanSensorBase {
                     while(true) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 
-
+                            ;// //Log.d(TAG, "Process:"+android.os.Process.myPid()+",Thread:"+Thread.currentThread().getId()+",Roshan Sensor generation time:"+ System.currentTimeMillis());
                             //putValueTrimSize(ZERO_FIELD, null, System.currentTimeMillis(),0);
                             //putValueTrimSize(ONE_FIELD, null, System.currentTimeMillis(), 1);
                             putValueTrimSize(ALTERNATE_FIELD, null, System.currentTimeMillis(), val);

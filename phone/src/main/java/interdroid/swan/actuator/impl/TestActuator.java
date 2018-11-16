@@ -5,6 +5,7 @@ import android.util.Log;
 
 import interdroid.swan.actuator.Actuator;
 import interdroid.swan.actuator.ui.AbstractActuatorActivity;
+import interdroid.swan.sensors.impl.TestSensor;
 import interdroid.swancore.swansong.SensorValueExpression;
 import interdroid.swancore.swansong.TimestampedValue;
 
@@ -27,6 +28,10 @@ public class TestActuator extends Actuator {
     public void performAction(Context context, TimestampedValue[] newValues) {
        //TODO: do nothing
         Log.d(TAG,"Received actuation");
+        ;// //Log.d(TAG, "Process:"+android.os.Process.myPid()+",Thread:"+Thread.currentThread().getId()+",Roshan Actuator perform time:"+ System.currentTimeMillis());
+        //++TestSensor.testCounter;
+
+
 
     }
 

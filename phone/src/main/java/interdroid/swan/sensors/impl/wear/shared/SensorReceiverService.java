@@ -1,6 +1,7 @@
 package interdroid.swan.sensors.impl.wear.shared;
 
 import android.net.Uri;
+import android.os.CountDownTimer;
 import android.util.Log;
 
 import com.google.android.gms.wearable.DataEvent;
@@ -27,12 +28,29 @@ public class SensorReceiverService extends WearableListenerService {
     private static final String TAG = "SensorReceiverService";
 
     private RemoteSensorManager sensorManager;
+    static long testCounter = 0;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
         sensorManager = RemoteSensorManager.getInstance(this);
+
+        //This timer runs for 30 seconds and the testCounter resets every second. NOTE: delete after test
+        /*new CountDownTimer(30000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                Log.d(TAG, "Throughput Receive Phone = "+testCounter);
+                testCounter=0;
+
+            }
+
+            public void onFinish() {
+                testCounter = 0;
+                Log.d(TAG, "Count down finished");
+            }
+        }.start();*/
+
     }
 
     @Override
@@ -67,6 +85,7 @@ public class SensorReceiverService extends WearableListenerService {
                 }
 
                 if(path.startsWith("/expressionData/")){
+                    //++testCounter;
                     unpackExpressionData(DataMapItem.fromDataItem(dataItem).getDataMap());
                     //TODO: if needed send as float
                     //unpackExpressionDataAsFloat(DataMapItem.fromDataItem(dataItem).getDataMap());

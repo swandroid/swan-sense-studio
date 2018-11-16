@@ -320,6 +320,7 @@ public class EvaluationEngineServiceBase extends Service {
         // we can get several actions here, both from the API and from the
         // Sensors as well as from the Boot event
         Fabric.with(this, new Crashlytics());
+        ;// //Log.d(TAG, "Roshan: Receiver thread Y " + Thread.currentThread().getId() + " Action " + intent.getAction() + " Timestamp " + System.currentTimeMillis());
         if (intent == null) {
             Log.d(TAG, "huh? intent is null! This should never happen!! We will try to restore...");
             restoreAfterBoot();
@@ -378,6 +379,7 @@ public class EvaluationEngineServiceBase extends Service {
             doNotify(new String[]{id});
             return START_STICKY;
         } else if (SensorInterface.ACTION_NOTIFY.equals(action)) {
+            ;// //Log.d(TAG, "Process:"+android.os.Process.myPid()+",Thread:"+Thread.currentThread().getId()+",Roshan Evaluation broadcast receive time:"+ System.currentTimeMillis());
             String[] ids = intent.getStringArrayExtra("expressionIds");
             doNotify(ids);
             return START_STICKY;
@@ -629,6 +631,7 @@ public class EvaluationEngineServiceBase extends Service {
                     result.getTimestamp());
         }
         try {
+            ;// //Log.d(TAG, "Process:"+android.os.Process.myPid()+",Thread:"+Thread.currentThread().getId()+",Roshan Evaluation send update time:"+ System.currentTimeMillis());
             String intentType = update
                     .getStringExtra(ExpressionManager.EXTRA_INTENT_TYPE);
             if (intentType == null

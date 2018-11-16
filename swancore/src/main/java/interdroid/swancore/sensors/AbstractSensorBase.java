@@ -231,6 +231,7 @@ public abstract class AbstractSensorBase extends Service implements
     protected final void notifyDataChangedForId(final String... ids) {
         Intent notifyIntent = new Intent(ACTION_NOTIFY);
         notifyIntent.putExtra("expressionIds", ids);
+        ;// //Log.d(TAG, "Process:"+android.os.Process.myPid()+",Thread:"+Thread.currentThread().getId()+",Roshan Sensor send time:"+ System.currentTimeMillis());
         sendBroadcast(notifyIntent);
     }
 
