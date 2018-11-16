@@ -1924,7 +1924,7 @@
 
             <meta-data
                 android:name="entityId"
-                android:value="testSensor" />
+                android:value="test" />
             <meta-data
                 android:name="valuePaths"
                 android:value="zero,one,alternate_test" />
@@ -1940,6 +1940,33 @@
         </activity>
 
         <service android:name=".sensors.impl.TestSensor" />
+
+        <activity
+            android:name=".sensors.impl.TestActuatorSensor$ConfigurationActivity"
+            android:exported="true"
+            android:icon="@drawable/movement_icon">
+            <intent-filter>
+                <action android:name="interdroid.swan.sensor.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="testActuatorSensor" />
+            <meta-data
+                android:name="valuePaths"
+                android:value="zero,one,alternate_test" />
+            <meta-data
+                android:name="delay"
+                android:value="200000" />
+            <meta-data
+                android:name="accuracy"
+                android:value="3" />
+            <meta-data
+                android:name="units"
+                android:value="" />
+        </activity>
+
+        <service android:name=".sensors.impl.TestActuatorSensor" />
 
         <activity
             android:name=".crossdevice.queueapp.QueuyActivity"

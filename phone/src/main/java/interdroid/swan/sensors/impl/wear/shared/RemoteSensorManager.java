@@ -28,14 +28,22 @@ import java.util.concurrent.TimeUnit;
 import interdroid.swan.actuator.ActuationManager;
 import interdroid.swan.engine.EvaluationEngineService;
 import interdroid.swancore.crossdevice.Converter;
+import interdroid.swancore.engine.QueuedExpression;
 import interdroid.swancore.shared.ClientPaths;
 import interdroid.swancore.shared.DataMapKeys;
 import interdroid.swancore.shared.SensorConstants;
 import interdroid.swan.sensors.impl.wear.shared.data.SensorDataPoint;
 import interdroid.swan.sensors.impl.wear.shared.data.SensorNames;
 import interdroid.swan.sensors.impl.wear.shared.data.WearSensor;
+import interdroid.swancore.swanmain.ActuatorManager;
+import interdroid.swancore.swanmain.ExpressionManager;
 import interdroid.swancore.swansong.Expression;
 import interdroid.swancore.swansong.Result;
+import interdroid.swancore.swansong.ValueExpression;
+
+import static interdroid.swan.sensors.impl.TestActuatorSensor.TEST_ACTUATOR_SENSOR;
+import static interdroid.swancore.swanmain.ActuatorManager.ACTUATOR_INTERCEPTOR;
+import static interdroid.swancore.swanmain.ActuatorManager.SENSOR_ACTUATOR_INTERCEPTOR;
 
 public class RemoteSensorManager {
     private static final String TAG = "RemoteSensorManager";
@@ -49,6 +57,8 @@ public class RemoteSensorManager {
     private ArrayList<WearSensor> sensors;
     private SensorNames sensorNames;
     private GoogleApiClient googleApiClient;
+
+    public static final String ACTUATOR_UPDATE = "values";
 
     public static final String REGISTER_MESSAGE = "RegisterMessage";
     public static final String UPDATE_MESSAGE = "SensorUpdateMessage";
@@ -122,12 +132,32 @@ public class RemoteSensorManager {
 
     public synchronized void addExpressionData(String id, String data){
 
-        Log.d(TAG, "Got data for id: " + id);
+        /*Log.d(TAG, "Got data for id: " + id);
         Intent i = new Intent(EvaluationEngineService.ACTION_NEW_RESULT_REMOTE);
         i.setClass(context, EvaluationEngineService.class);
         i.putExtra("id", id);
         i.putExtra("data", data);
-        context.startService(i);
+        context.startService(i);*/
+        //Implementation to call actuator directly instead of passing through evaluation engine
+        try {
+            Result result = (Result) Converter.stringToObject(data);
+            Intent intent;
+            if(TEST_ACTUATOR_SENSOR) {
+                intent = new Intent(SENSOR_ACTUATOR_INTERCEPTOR);
+            }else{
+                intent = new Intent(ACTUATOR_INTERCEPTOR);
+            }
+            intent.putExtra(ExpressionManager.EXTRA_NEW_VALUES,
+                    result.getValues());
+            intent.putExtra(ActuatorManager.EXTRA_EXPRESSION_ID, id);
+            context.sendBroadcast(intent);
+            Log.d(TAG, "broadcast sent with intent"+intent);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     private boolean validateConnection() {

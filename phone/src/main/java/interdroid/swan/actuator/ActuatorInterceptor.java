@@ -29,6 +29,7 @@ public class ActuatorInterceptor extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        Log.d(TAG, "onReceive");
         ;// //Log.d(TAG, "Process:"+android.os.Process.myPid()+",Thread:"+Thread.currentThread().getId()+",Roshan Actuator receive time:"+ System.currentTimeMillis());
         if (intent.hasExtra(ExpressionManager.EXTRA_NEW_TRISTATE)) {
             switch (TriState.valueOf(intent.getStringExtra(ExpressionManager.EXTRA_NEW_TRISTATE))) {

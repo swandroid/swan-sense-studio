@@ -107,7 +107,7 @@ public class SensorReceiverService extends WearableListenerService {
     private void unpackExpressionData(DataMap dataMap){
         String id = dataMap.getString(DataMapKeys.EXPRESSION_ID);
         String data = dataMap.getString(DataMapKeys.VALUES);
-        try {
+        /*try {
             Result result = (Result) Converter.stringToObject(data);
             Log.d(TAG, "Received data length = " + result.getValues().length + " String length="+data.length());
         } catch (IOException e) {
@@ -115,7 +115,7 @@ public class SensorReceiverService extends WearableListenerService {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-
+        */
         sensorManager.addExpressionData(id,data);
     }
 

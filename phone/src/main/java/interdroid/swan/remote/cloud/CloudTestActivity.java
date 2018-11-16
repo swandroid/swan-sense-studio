@@ -33,6 +33,10 @@ public class CloudTestActivity extends Activity {
 
     private static final String TAG = "CloudTestActivity";
 
+    String ID1 = "expression1";
+    String ID2 = "expression2";
+
+
     boolean ACTUATION = true;
 
   //  final String MY_EXPRESSION = "cloud@profiler:value?case=0{ANY,0} > 1";
@@ -56,13 +60,15 @@ public class CloudTestActivity extends Activity {
 //    final String MY_ACTUATOR_EXPRESSION = "wear@test:alternate_test?delay='1000000'{ANY,0}THENwear@phone:send";
 
 //ONLY PHONE TEST
-final String MY_ACTUATOR_EXPRESSION = "self@testSensor:alternate_test?delay='5000'{ANY,0}THENself@test:value";
+//final String MY_ACTUATOR_EXPRESSION1 = "self@testSensor:alternate_test?delay='5000'{ANY,0}THENself@test:value";
+final String MY_ACTUATOR_EXPRESSION2 = "self@testActuatorSensor:alternate_test?delay='100000'{ANY,0}THENwear@test:value";
+
 //ONLY WEAR TEST
 //final String MY_ACTUATOR_EXPRESSION = "wear@test:alternate_test?delay='100000'{ANY,0}THENwear@test:value";
 // PHONE AND WEAR TEST
 //final String MY_ACTUATOR_EXPRESSION = "self@testSensor:alternate_test?delay='10000'{ANY,0}THENwear@test:value";
 // WEAR AND PHONE TEST
-//final String MY_ACTUATOR_EXPRESSION = "wear@test:alternate_test?delay='20000'{ANY,0}THENself@test:value";
+final String MY_ACTUATOR_EXPRESSION1 = "wear@test:alternate_test?delay='1000000'{ANY,0}THENself@test:value";
 // CLOUD AND PHONE TEST
 //final String MY_ACTUATOR_EXPRESSION = "cloud@test:alternate_test?delay='10000'{ANY,0}THENself@test:value";
 // PHONE AND CLOUD TEST
@@ -166,10 +172,12 @@ final String MY_ACTUATOR_EXPRESSION = "self@testSensor:alternate_test?delay='500
        // registerSWANSensor(MY_EXPRESSION);
 
         if(ACTUATION) {
-            registerSWANActuatorSensor(MY_ACTUATOR_EXPRESSION);
+            registerSWANActuatorSensor(MY_ACTUATOR_EXPRESSION2, ID2);
+            registerSWANActuatorSensor(MY_ACTUATOR_EXPRESSION1, ID1);
+
         }
         else{
-            registerSWANSensor(MY_ACTUATOR_EXPRESSION);
+            registerSWANSensor(MY_ACTUATOR_EXPRESSION1);
         }
 
     }
@@ -196,10 +204,10 @@ final String MY_ACTUATOR_EXPRESSION = "self@testSensor:alternate_test?delay='500
     }
 
 
-    private void registerSWANActuatorSensor(String myExpression){
+    private void registerSWANActuatorSensor(String myExpression, String id){
 
         try {
-            ActuatorManager.registerActuator(this, String.valueOf(REQUEST_CODE), myExpression, new ExpressionListener() {
+            ActuatorManager.registerActuator(this, id, myExpression, new ExpressionListener() {
                 @Override
                 public void onNewState(String id, long timestamp, TriState newState) {
 
@@ -221,7 +229,8 @@ final String MY_ACTUATOR_EXPRESSION = "self@testSensor:alternate_test?delay='500
 
     private void unregisterSWANActuatorSensor() {
 
-        ActuatorManager.unregisterActuator(this, String.valueOf(REQUEST_CODE), false);
+        ActuatorManager.unregisterActuator(this, ID1, false);
+        ActuatorManager.unregisterActuator(this, ID2, false);
 
     }
 
@@ -328,6 +337,7 @@ final String MY_ACTUATOR_EXPRESSION = "self@testSensor:alternate_test?delay='500
     private void unregisterSWANSensor(){
 
         ExpressionManager.unregisterExpression(this, String.valueOf(REQUEST_CODE));
+
         stop = true;
         Log.d(TAG, "avg request time = " + ((double)avgReqTime) / reqCount);
     }
