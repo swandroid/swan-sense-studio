@@ -1,11 +1,19 @@
 package interdroid.swan.remote.cloud;
 
+import android.app.Application;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 
 //import interdroid.swan.engine.EvaluationEngineService;
+import interdroid.swan.WearConstants;
 import interdroid.swan.remote.IRemoteManager;
+import interdroid.swancore.shared.ClientPaths;
+import interdroid.swancore.shared.DataMapKeys;
 import interdroid.swancore.swansong.Result;
+
+import static interdroid.swan.sensors.TestActuatorSensor.TEST_ACTUATOR_SENSOR;
+import static interdroid.swancore.swanmain.ActuatorManager.SENSOR_ACTUATOR_INTERCEPTOR;
 
 /**
  * Created by Roshan Bharath Das on 27/06/16.
@@ -13,7 +21,7 @@ import interdroid.swancore.swansong.Result;
 public class CloudManager implements IRemoteManager {
 
 
-    private Context context;
+    private static Context context;
     private static CloudManager instance;
 
     static String SWAN_REGISTER = "/swan/register/";
@@ -38,10 +46,11 @@ public class CloudManager implements IRemoteManager {
         this.context = context;
     }
 
-
     public static synchronized CloudManager getCreatedInstance(){
         return instance;
     }
+
+
 
 
     @Override

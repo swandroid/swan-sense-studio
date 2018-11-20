@@ -319,7 +319,7 @@ public class EvaluationEngineServiceBase extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         // we can get several actions here, both from the API and from the
         // Sensors as well as from the Boot event
-        Fabric.with(this, new Crashlytics());
+        //Fabric.with(this, new Crashlytics());
         ;// //Log.d(TAG, "Roshan: Receiver thread Y " + Thread.currentThread().getId() + " Action " + intent.getAction() + " Timestamp " + System.currentTimeMillis());
         if (intent == null) {
             Log.d(TAG, "huh? intent is null! This should never happen!! We will try to restore...");

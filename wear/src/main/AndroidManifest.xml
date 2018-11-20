@@ -369,6 +369,43 @@
         <service
             android:name=".sensors.TestSensor" />
 
+        <activity
+            android:name=".sensors.TestActuatorSensor$ConfigurationActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="interdroid.swan.sensor.DISCOVER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="entityId"
+                android:value="testactuator" />
+            <meta-data
+                android:name="valuePaths"
+                android:value="zero,one,alternate_test" />
+            <meta-data
+                android:name="delay"
+                android:value="20000" />
+
+            <meta-data
+                android:name="units"
+                android:value="" />
+        </activity>
+
+        <service
+            android:name=".sensors.TestActuatorSensor" />
+
+
+        <service android:name=".remote.cloud.FirebaseMessageService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <service android:name=".remote.cloud.FirebaseTokenService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+
     </application>
 
 

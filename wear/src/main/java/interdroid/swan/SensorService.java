@@ -37,7 +37,6 @@ class SensorContainer {
     public int accuracy;
     public int count;
 
-
     public SensorContainer(Sensor sensor, int accuracy, int count) {
         this.sensor = sensor;
         this.accuracy = accuracy;
@@ -47,7 +46,7 @@ class SensorContainer {
 
 public class SensorService extends Service implements SensorEventListener {
 
-
+    public static Context context=null;
     enum Measurement {
         EXPRESSION,
         SENSOR
@@ -138,6 +137,7 @@ public class SensorService extends Service implements SensorEventListener {
                 String id = intent.getExtras().getString(DataMapKeys.EXPRESSION_ID);
                 String expr = intent.getExtras().getString(DataMapKeys.EXPRESSION);
                 Log.d(TAG, "starting actuation expression+++++" + id + " Expr:" + expr);
+                SensorService.context = context;
                 ActuationManager.registerActuator(context, id, expr);
                 //startSingleMeasurement(0, 0, Measurement.EXPRESSION, expr, id);
             }

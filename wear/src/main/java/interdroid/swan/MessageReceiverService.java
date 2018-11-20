@@ -25,6 +25,9 @@ import interdroid.swancore.shared.ClientPaths;
 import interdroid.swancore.shared.DataMapKeys;
 import interdroid.swancore.shared.SensorConstants;
 
+import static interdroid.swan.sensors.TestActuatorSensor.TEST_ACTUATOR_SENSOR;
+import static interdroid.swancore.swanmain.ActuatorManager.SENSOR_ACTUATOR_INTERCEPTOR;
+
 public class MessageReceiverService extends WearableListenerService {
     private static final String TAG = "Wear/MessageReceiver";
 
@@ -269,12 +272,17 @@ public class MessageReceiverService extends WearableListenerService {
     private void handleActuation(String id, String values, String broadcastType){
         Intent i =null;
 
-       if (broadcastType.equals(ClientPaths.ACTUATE))
-            i = new Intent(WearConstants.BROADCAST_ACTUATE);
+       if (broadcastType.equals(ClientPaths.ACTUATE)){
+           if(TEST_ACTUATOR_SENSOR){
+               i = new Intent(SENSOR_ACTUATOR_INTERCEPTOR);
+           }else {
+               i = new Intent(WearConstants.BROADCAST_ACTUATE);
+           }
         i.putExtra(DataMapKeys.EXPRESSION_ID, id);
         i.putExtra(DataMapKeys.VALUES, values);
 
         getApplicationContext().sendBroadcast(i);
+       }
     }
 
     private void handleActuationAsFloat(String id, float values, String broadcastType){

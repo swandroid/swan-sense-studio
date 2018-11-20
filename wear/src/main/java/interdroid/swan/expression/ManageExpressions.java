@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.util.Log;
 
+import com.google.firebase.iid.FirebaseInstanceId;
+
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -65,6 +67,7 @@ public class ManageExpressions {
                         @Override
                         public void onNewState(String id, long timestamp, TriState newState) {
                             Log.d(TAG, "new State");
+                            //TODO: do this part in a new thread to avoid UI thread being used
                             if(phoneActuation){
                                 Log.d(TAG, "phone actuation true");
                                 Result result = new Result(timestamp, newState);
@@ -98,6 +101,8 @@ public class ManageExpressions {
                                     //TODO: if needed send as float
                                     //DeviceClient.getInstance(context).sendExpressionDataAsFloat(checkAndAddSuffixes(id), (Float) newValues[newValues.length-1].getValue());
                                     String value = newValues[0].getValue().toString();
+                                    Log.d(TAG,"Firebase token:"+FirebaseInstanceId.getInstance().getToken());
+
                                 }
                             }
                             if(cloudActuation){

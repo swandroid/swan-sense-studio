@@ -1951,7 +1951,7 @@
 
             <meta-data
                 android:name="entityId"
-                android:value="testActuatorSensor" />
+                android:value="testactuator" />
             <meta-data
                 android:name="valuePaths"
                 android:value="zero,one,alternate_test" />

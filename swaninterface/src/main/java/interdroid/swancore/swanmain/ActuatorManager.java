@@ -47,6 +47,7 @@ public class ActuatorManager {
      * The action for intercepting new sensor state and value broadcasts.
      */
     public static final String ACTUATOR_INTERCEPTOR = "interdroid.swan.actuator.ACTUATOR_INTERCEPTOR";
+
     public static final String SENSOR_ACTUATOR_INTERCEPTOR = "interdroid.swan.actuator.SENSOR_ACTUATOR_INTERCEPTOR";
     /**
      * The extra key for the id of the expression.

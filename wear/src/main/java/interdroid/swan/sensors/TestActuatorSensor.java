@@ -1,4 +1,4 @@
-package interdroid.swan.sensors.impl;
+package interdroid.swan.sensors;
 
 /**
  * Created by slavik on 7/7/16.
@@ -14,25 +14,18 @@ import android.os.Parcelable;
 import android.os.PowerManager;
 import android.util.Log;
 
+import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import interdroid.swan.R;
-import interdroid.swan.actuator.ActuatorInterceptor;
-import interdroid.swan.sensors.AbstractSwanSensor;
-import interdroid.swan.sensors.impl.wear.shared.AbstractWearSensor;
-import interdroid.swan.sensors.impl.wear.shared.RemoteSensorManager;
-import interdroid.swan.sensors.impl.wear.shared.data.SensorDataPoint;
-import interdroid.swan.sensors.impl.wear.shared.data.WearSensor;
+import interdroid.swancore.crossdevice.Converter;
 import interdroid.swancore.sensors.AbstractConfigurationActivity;
+import interdroid.swancore.sensors.AbstractSwanSensorBase;
 import interdroid.swancore.shared.DataMapKeys;
-import interdroid.swancore.shared.SensorConstants;
 import interdroid.swancore.swanmain.ExpressionManager;
+import interdroid.swancore.swansong.Result;
 import interdroid.swancore.swansong.TimestampedValue;
-
 
 import static interdroid.swancore.swanmain.ActuatorManager.SENSOR_ACTUATOR_INTERCEPTOR;
 
@@ -42,7 +35,7 @@ import static interdroid.swancore.swanmain.ActuatorManager.SENSOR_ACTUATOR_INTER
  *
  * @author nick &lt;palmer@cs.vu.nl&gt;
  */
-public class TestActuatorSensor extends AbstractSwanSensor {
+public class TestActuatorSensor extends AbstractSwanSensorBase {
 
     public static final String TAG = "TestActuatorSensor";
 
@@ -51,7 +44,6 @@ public class TestActuatorSensor extends AbstractSwanSensor {
     public static boolean TEST_ACTUATOR_SENSOR = false;
 
     int numberOfPowerSensors = 0;
-    //public static long testCounter = 0;
 
     PowerManager.WakeLock wakeLock;
 
@@ -67,7 +59,7 @@ public class TestActuatorSensor extends AbstractSwanSensor {
 
         @Override
         public final int getPreferencesXML() {
-            return R.xml.wear_test_preferences;
+            return 1;
         }
     }
 
@@ -82,36 +74,40 @@ public class TestActuatorSensor extends AbstractSwanSensor {
 
     public static final String ALTERNATE_FIELD = "alternate_test";
 
-
     private SensorUpdate updateReceiver = new SensorUpdate();
+    int val=0;
 
     private class SensorUpdate extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (action.equalsIgnoreCase(SENSOR_ACTUATOR_INTERCEPTOR)) {
-                Bundle extra = intent.getExtras();
-                //String who = extra.getString("sensor");
-                //WearSensor s = (WearSensor) extra.getSerializable(SensorConstants.SENSOR_OBJECT);
-                Parcelable[] parcelables = (Parcelable[]) intent
-                        .getParcelableArrayExtra(ExpressionManager.EXTRA_NEW_VALUES);
-                final TimestampedValue[] timestampedValues = new TimestampedValue[parcelables.length];
-                System.arraycopy(parcelables, 0, timestampedValues, 0, parcelables.length);
+                /*Bundle extra = intent.getExtras();
+                try {
+                    final Result result = (Result) Converter.stringToObject(extra.getString(DataMapKeys.VALUES));
+                    Log.d(TAG, "Good till now !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                    if(result.getValues().length>0){
+                        Log.d(TAG, "received remote sensor value:"+result.getValues()[0]);
+                        executorService.submit(new Runnable() {
+                            @Override
+                            public void run() {
+                                // putValueTrimSize(ALTERNATE_FIELD, null, System.currentTimeMillis(), d.getValues());
 
-                Log.d(TAG, "received remote sensor value:"+timestampedValues[0].getValue());
-                if(timestampedValues.length>0){
+                                putValueTrimSize(ALTERNATE_FIELD, null, System.currentTimeMillis(), result.getValues()[0]);
+                            }
 
-                    executorService.submit(new Runnable() {
-                        @Override
-                        public void run() {
-                           // putValueTrimSize(ALTERNATE_FIELD, null, System.currentTimeMillis(), d.getValues());
+                        });
+                    }
 
-                            putValueTrimSize(ALTERNATE_FIELD, null, System.currentTimeMillis(), timestampedValues[0].getValue());
-                        }
-
-                    });
-
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
                 }
+                */
+                Log.d(TAG, "received remote sensor value:"+val);
+                putValueTrimSize(ALTERNATE_FIELD, null, System.currentTimeMillis(), val);
+                val = 1-val;
             }
 
         }
@@ -120,7 +116,7 @@ public class TestActuatorSensor extends AbstractSwanSensor {
 
     @Override
     public final String[] getValuePaths() {
-        return new String[]{ALTERNATE_FIELD};//ZERO_FIELD, ONE_FIELD, ALTERNATE_FIELD };
+        return new String[]{ALTERNATE_FIELD };//ZERO_FIELD, ONE_FIELD, ALTERNATE_FIELD };
     }
 
     @Override
@@ -129,7 +125,7 @@ public class TestActuatorSensor extends AbstractSwanSensor {
 
     @Override
     public void onConnected() {
-        SENSOR_NAME = "Test Sensor";
+        SENSOR_NAME = "Test Actuator Sensor";
     }
 
 
@@ -143,21 +139,6 @@ public class TestActuatorSensor extends AbstractSwanSensor {
         wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
                 TAG);
         wakeLock.acquire();
-
-        //This timer runs for 30 seconds and the testCounter resets every second. NOTE: delete after test
-        /*new CountDownTimer(30000, 1000) {
-
-            public void onTick(long millisUntilFinished) {
-                Log.d(TAG, "Throughput Phone = "+testCounter);
-                testCounter=0;
-
-            }
-
-            public void onFinish() {
-                testCounter = 0;
-                Log.d(TAG, "Count down finished");
-            }
-        }.start();*/
 
         registerReceiver(updateReceiver, new IntentFilter(SENSOR_ACTUATOR_INTERCEPTOR));
         TEST_ACTUATOR_SENSOR= true;
@@ -177,6 +158,7 @@ public class TestActuatorSensor extends AbstractSwanSensor {
         if(wakeLock!=null) {
             wakeLock.release();
         }
+
 
     }
 

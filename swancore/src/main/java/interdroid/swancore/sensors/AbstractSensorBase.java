@@ -95,7 +95,7 @@ public abstract class AbstractSensorBase extends Service implements
      */
     @Override
     public final void onCreate() {
-        Fabric.with(this, new Crashlytics());
+        //Fabric.with(this, new Crashlytics());
         mStartTime = System.currentTimeMillis();
         init();
         initDefaultConfiguration(mDefaultConfiguration);

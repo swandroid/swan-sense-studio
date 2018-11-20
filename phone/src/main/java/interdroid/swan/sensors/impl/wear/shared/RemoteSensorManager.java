@@ -142,6 +142,7 @@ public class RemoteSensorManager {
         try {
             Result result = (Result) Converter.stringToObject(data);
             Intent intent;
+            //TODO: for now this runs for one test actuator sensor. in the future include support for multiple actuator sensors
             if(TEST_ACTUATOR_SENSOR) {
                 intent = new Intent(SENSOR_ACTUATOR_INTERCEPTOR);
             }else{

@@ -9,6 +9,8 @@ import interdroid.swan.sensors.impl.TestSensor;
 import interdroid.swancore.swansong.SensorValueExpression;
 import interdroid.swancore.swansong.TimestampedValue;
 
+import com.google.firebase.iid.FirebaseInstanceId;
+
 /**
  * Simple {@link Actuator} that prints out a log message.
  */
@@ -28,6 +30,7 @@ public class TestActuator extends Actuator {
     public void performAction(Context context, TimestampedValue[] newValues) {
        //TODO: do nothing
         Log.d(TAG,"Received actuation");
+        Log.d(TAG,"Firebase token:"+FirebaseInstanceId.getInstance().getToken());
         ;// //Log.d(TAG, "Process:"+android.os.Process.myPid()+",Thread:"+Thread.currentThread().getId()+",Roshan Actuator perform time:"+ System.currentTimeMillis());
         //++TestSensor.testCounter;
 

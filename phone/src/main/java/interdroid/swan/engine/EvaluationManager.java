@@ -44,6 +44,7 @@ public class EvaluationManager extends EvaluationManagerBase {
             RemoteSensorManager.getInstance(mContext).registerActuationExpression(toCrossDeviceStringForActuation(expression, resolvedLocation), id);
         }
         else if (resolvedLocation.equals(Expression.LOCATION_CLOUD) || resolvedLocation.contains("http")) {
+
             CloudManager.getInstance(mContext).registerActuationExpression(id, expression.toParseString(), resolvedLocation);
         }
         Log.d(TAG, "Registering remote acuation");
