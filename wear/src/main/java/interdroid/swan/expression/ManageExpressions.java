@@ -45,6 +45,7 @@ public class ManageExpressions {
     private static final String TAG = "ManageExpressions";
     Context context;
     private static final String ACTUATOR_SEPARATOR = "THEN";
+    public static boolean oneTimeTrue = true;
 
     HashMap<String,String> expressionSuffix = new HashMap<>();
     HashSet<String> cloudActuationSet = new HashSet<>();
@@ -110,6 +111,11 @@ public class ManageExpressions {
                                     TimestampedValue[] recentValue = new TimestampedValue[1];
                                     recentValue[0] =  newValues[newValues.length-1];
                                     Log.d(TAG, "cloud actuation true for expression: "+expression);
+                                    if(oneTimeTrue==true) {
+                                        Log.d(TAG, "firebase " + FirebaseInstanceId.getInstance().getToken());
+                                        oneTimeTrue = false;
+                                    }
+
                                     if(highBandwidthNetworking.NETWORK_AVAILABLE) {
                                         CloudManager.getInstance(context).Actuate(id, Expression.LOCATION_CLOUD, new Result(recentValue,
                                                 newValues[newValues.length - 1].getTimestamp()));

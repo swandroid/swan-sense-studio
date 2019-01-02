@@ -30,6 +30,8 @@ public class FirebaseMessageService extends FirebaseMessagingService{
 
     CloudManager cloudManager = CloudManager.getCreatedInstance();
 
+    public static Context context;
+
     static int noOfTimes = 0;
 
     private static final String TAG = "FirebaseMessageService";
@@ -37,9 +39,9 @@ public class FirebaseMessageService extends FirebaseMessagingService{
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
-        Log.d(TAG, "From: " + remoteMessage.getFrom());
+          Log.d(TAG, "From: " + remoteMessage.getFrom());
 
-        Log.d(TAG, "Message body: "+ remoteMessage.getData().get("field"));
+         Log.d(TAG, "Message body: "+ remoteMessage.getData().get("field"));
 
 
         String message = remoteMessage.getData().get("field");
@@ -48,7 +50,7 @@ public class FirebaseMessageService extends FirebaseMessagingService{
             JSONObject jsonResult = new JSONObject(message);
 
             Result result = null;
-            if(jsonResult.has("id") && jsonResult.has("A") && jsonResult.has("data") && jsonResult.has("time")) {
+           /* if(jsonResult.has("id") && jsonResult.has("A") && jsonResult.has("data") && jsonResult.has("time")) {
 
 
                 if(jsonResult.getString("A").contentEquals("V")) {
@@ -84,11 +86,14 @@ public class FirebaseMessageService extends FirebaseMessagingService{
                 if(result!=null && cloudManager!=null) {
                     cloudManager.sendResult(jsonResult.getString("id"), jsonResult.getString("A"), Converter.objectToString(result));
                 }
-            }
-            else if(jsonResult.has("id") && jsonResult.has("A") && jsonResult.has("result")) {
+            }*/
+            if(jsonResult.has("id") && jsonResult.has("A") && jsonResult.has("result")) {
 
-                if(cloudManager==null){
-                    if(context!=null) {
+                Log.d(TAG, "Result ready to actuate");
+                //if(cloudManager==null){
+                  //  Log.d(TAG, "Cloud manager not null");
+                    if(FirebaseMessageService.context!=null) {
+                        Log.d(TAG, "Result do actuate");
                         //do actuation
                         Intent i =null;
                         i = new Intent(WearConstants.BROADCAST_ACTUATE);
@@ -96,14 +101,14 @@ public class FirebaseMessageService extends FirebaseMessagingService{
                         i.putExtra(DataMapKeys.EXPRESSION_ID, jsonResult.getString("id"));
                         i.putExtra(DataMapKeys.VALUES, jsonResult.getString("result"));
 
-                        context.sendBroadcast(i);
+                        FirebaseMessageService.context.sendBroadcast(i);
                     }
-                }
-                else {
+                //}
+                /*else {
                     //perform only actuation
                     Log.d(TAG, "Received result");
                     cloudManager.sendResult(jsonResult.getString("id"), jsonResult.getString("A"), jsonResult.getString("result"));
-                }
+                }*/
 
             }
             else{
@@ -118,8 +123,6 @@ public class FirebaseMessageService extends FirebaseMessagingService{
 
 
         } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
             e.printStackTrace();
         }
 

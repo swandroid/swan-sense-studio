@@ -91,6 +91,7 @@ public class TestSensor extends AbstractSwanSensor {
                             ;// //Log.d(TAG, "Process:"+android.os.Process.myPid()+",Thread:"+Thread.currentThread().getId()+",Roshan Sensor generation time:"+ System.currentTimeMillis());
                             //putValueTrimSize(ZERO_FIELD, null, System.currentTimeMillis(),0);
                             //putValueTrimSize(ONE_FIELD, null, System.currentTimeMillis(), 1);
+                            Log.d(TAG, "TestSensor");
                             putValueTrimSize(ALTERNATE_FIELD, null, System.currentTimeMillis(), val);
 
                             val = 1-val;

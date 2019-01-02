@@ -91,12 +91,13 @@ public class EvaluationEngineServiceBase extends Service {
                         try {
                             mEvaluationThread.wait();
                         } catch (InterruptedException e) {
+                            Log.d(TAG, "wait broken");
                             continue;
                         }
                     }
                 } else {
                     long deferUntil = head.getDeferUntil();
-                    Log.d(TAG, "Defer until: " + deferUntil);
+                    Log.d(TAG, "Defer until: " + deferUntil + "evaluation queue size:"+ mEvaluationQueue.size());
 
                     if (deferUntil <= System.currentTimeMillis()) {
                         // evaluate now
@@ -122,19 +123,19 @@ public class EvaluationEngineServiceBase extends Service {
                                 evaluationDelay = 0;
                             }
 
-                            //long start = System.currentTimeMillis();
-
+                            long start = System.currentTimeMillis();
+                            //Log.d(TAG, "!Evaluate!");
                             Result result = mEvaluationManager.evaluate(
                                     head.getId(), head.getExpression(),
                                     System.currentTimeMillis());
 
-                            //long end = System.currentTimeMillis();
+                            long end = System.currentTimeMillis();
 
                             //long evaluationTime =(end-start);
                             //Log.e("Roshan", "Evalutation time in Phone (milliseconds) "+ evaluationTime);
 
                             // update with statistics: evaluationTime and evaluationDelay
-                            //head.evaluated((end - start), evaluationDelay);
+                            head.evaluated((end - start), evaluationDelay);
 
 
                             if (head.update(result)) {
@@ -146,7 +147,8 @@ public class EvaluationEngineServiceBase extends Service {
                                 // we re add the expression only if it wasn't unregistered in the meantime
                                 if(mEvaluationQueue.contains(head)) {
                                     mEvaluationQueue.remove(head);
-                                    mEvaluationQueue.add(head);
+                                    // No need to add again, it will be added in doNotify whenever there are new values
+                                    //mEvaluationQueue.add(head);
                                 }
                             }
                         } catch (SwanException e) {
@@ -542,7 +544,7 @@ public class EvaluationEngineServiceBase extends Service {
                     // from a remote device, not for the queued, which prevents the evaluation engine
                     // to handle the new result properly in the evaluation thread
 //					mEvaluationManager.clearCacheFor(id);
-
+                    //Log.d(TAG, "Inside do! notify" + mEvaluationQueue.size());
                     // added this as patch; might not work for all cases, as clearCacheFor() does some
                     // extra stuff in addition to setting deferUntil to 0
                     queued.setDeferUntil(0);

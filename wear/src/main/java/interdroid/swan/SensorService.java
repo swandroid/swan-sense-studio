@@ -24,6 +24,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import interdroid.FixedSensor;
 import interdroid.swan.actuator.ActuationManager;
 import interdroid.swan.actuator.ActuatorInterceptor;
+import interdroid.swan.remote.cloud.FirebaseMessageService;
 import interdroid.swancore.crossdevice.Converter;
 import interdroid.swancore.shared.DataMapKeys;
 import interdroid.swan.expression.ManageExpressions;
@@ -137,7 +138,8 @@ public class SensorService extends Service implements SensorEventListener {
                 String id = intent.getExtras().getString(DataMapKeys.EXPRESSION_ID);
                 String expr = intent.getExtras().getString(DataMapKeys.EXPRESSION);
                 Log.d(TAG, "starting actuation expression+++++" + id + " Expr:" + expr);
-                SensorService.context = context;
+                //SensorService.context = context;
+                FirebaseMessageService.context= context;
                 ActuationManager.registerActuator(context, id, expr);
                 //startSingleMeasurement(0, 0, Measurement.EXPRESSION, expr, id);
             }
@@ -155,7 +157,9 @@ public class SensorService extends Service implements SensorEventListener {
                 try {
                     //TODO: if needed pass result to actuate method
                     ;// //Log.d(TAG,data);
-                    Result result = (Result) Converter.stringToObject(data);
+                    if(data!=null) {
+                        Result result = (Result) Converter.stringToObject(data);
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (ClassNotFoundException e) {

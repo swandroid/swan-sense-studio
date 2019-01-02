@@ -2,10 +2,13 @@ package interdroid.swancore.swansong;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * A tuple containing a value, a timestamp. Also includes static methods for
@@ -124,10 +127,18 @@ public class TimestampedValue implements Serializable, Parcelable,
     public static TimestampedValue calculateMean(
             final List<TimestampedValue> values) {
         double sumValues = 0.0;
+        //TODO: remember to remove after the test
+        //for (int i=0; i< (Math.log(values.size())/Math.log(2)); i++) {
+        //for (TimestampedValue value1 : values) {
+        //for (TimestampedValue value1 : values) {
+            //for (TimestampedValue value2 : values) {
+                for (TimestampedValue value : values) {
+                    sumValues += Double.valueOf(value.mValue.toString());
+                }
+            //}
+        //}
+        //}
 
-        for (TimestampedValue value : values) {
-            sumValues += Double.valueOf(value.mValue.toString());
-        }
         return new TimestampedValue(sumValues / values.size(),
                 values.get(0).mTimestamp);
     }

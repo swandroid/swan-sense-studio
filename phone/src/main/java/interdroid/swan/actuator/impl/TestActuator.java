@@ -29,8 +29,8 @@ public class TestActuator extends Actuator {
     @Override
     public void performAction(Context context, TimestampedValue[] newValues) {
        //TODO: do nothing
-        Log.d(TAG,"Received actuation");
-        Log.d(TAG,"Firebase token:"+FirebaseInstanceId.getInstance().getToken());
+        ;//  Log.d(TAG,"Received actuation");
+        //Log.d(TAG,"Firebase token:"+FirebaseInstanceId.getInstance().getToken());
         ;// //Log.d(TAG, "Process:"+android.os.Process.myPid()+",Thread:"+Thread.currentThread().getId()+",Roshan Actuator perform time:"+ System.currentTimeMillis());
         //++TestSensor.testCounter;
 
