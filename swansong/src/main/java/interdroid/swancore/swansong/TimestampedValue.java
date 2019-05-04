@@ -131,11 +131,11 @@ public class TimestampedValue implements Serializable, Parcelable,
         //for (int i=0; i< (Math.log(values.size())/Math.log(2)); i++) {
         //for (TimestampedValue value1 : values) {
         //for (TimestampedValue value1 : values) {
-            //for (TimestampedValue value2 : values) {
+            for (TimestampedValue value2 : values) {
                 for (TimestampedValue value : values) {
                     sumValues += Double.valueOf(value.mValue.toString());
                 }
-            //}
+            }
         //}
         //}
 

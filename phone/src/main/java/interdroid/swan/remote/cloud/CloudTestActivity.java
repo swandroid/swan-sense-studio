@@ -73,35 +73,35 @@ public class CloudTestActivity extends Activity {
 //1 WXP Test
 
 //1.1 WWP
-//final String MY_ACTUATOR_EXPRESSION2 = "wear@test:alternate_test?delay='100000'{MEAN,10000}THENcloud@test:value";
+//final String MY_ACTUATOR_EXPRESSION2 = "wear@test:alternate_test?delay='800000'{MEAN,10000}THENself@test:value";
 
 //1.2 WPP
 //final String MY_ACTUATOR_EXPRESSION1 = "self@testactuator:alternate_test?delay='100000'{MEAN,10000}THENself@test:value";
-//final String MY_ACTUATOR_EXPRESSION2 = "wear@test:alternate_test?delay='100000'{ANY,0}THENself@test:value";
+//final String MY_ACTUATOR_EXPRESSION2 = "wear@test:alternate_test?delay='200000'{ANY,0}THENself@test:value";
 
 //1.3 WCP
 //final String MY_ACTUATOR_EXPRESSION1 = "cloud@testactuator:alternate_test?delay='100000'{MEAN,10000}THENself@test:value";
-//final String MY_ACTUATOR_EXPRESSION2 = "wear@test:alternate_test?delay='100000'{ANY,0}THENcloud@test:value";
+//final String MY_ACTUATOR_EXPRESSION2 = "wear@test:alternate_test?delay='800000'{ANY,0}THENcloud@test:value";
 
 //2 PXW Test
 //2.1 PPW
-//final String MY_ACTUATOR_EXPRESSION2 = "self@test:alternate_test?delay='100000'{MEAN,10000}THENcloud@test:value";
+//final String MY_ACTUATOR_EXPRESSION2 = "self@test:alternate_test?delay='200000'{MEAN,10000}THENwear@test:value";
 
 //2.2 PWW
 //final String MY_ACTUATOR_EXPRESSION1 = "wear@testactuator:alternate_test?delay='100000'{MEAN,10000}THENwear@test:value";
-//final String MY_ACTUATOR_EXPRESSION2 = "self@test:alternate_test?delay='100000'{ANY,0}THENwear@test:value";
+//final String MY_ACTUATOR_EXPRESSION2 = "self@test:alternate_test?delay='800000'{ANY,0}THENwear@test:value";
 
 //2.3 PCW
-final String MY_ACTUATOR_EXPRESSION1 = "cloud@testactuator:alternate_test?delay='100000'{MEAN,10000}THENself@test:value";
-final String MY_ACTUATOR_EXPRESSION2 = "self@test:alternate_test?delay='100000'{ANY,0}THENcloud@test:value";
+//final String MY_ACTUATOR_EXPRESSION1 = "cloud@testactuator:alternate_test?delay='100000'{MEAN,10000}THENself@test:value";
+//final String MY_ACTUATOR_EXPRESSION2 = "self@test:alternate_test?delay='100000'{ANY,0}THENcloud@test:value";
 
 //3 WXW MEAN is N*N*N on 100 seconds timewindow
-// 3.1 WWW
-//final String MY_ACTUATOR_EXPRESSION2 = "self@test:alternate_test?delay='1000000'{ANY,0}THENself@test:value";
+// 3.1 WWW 133333
+final String MY_ACTUATOR_EXPRESSION2 = "self@test:alternate_test?delay='100000'{MEAN,75000}THENself@test:value";
 
 // 3.2 WPW
-//final String MY_ACTUATOR_EXPRESSION1 = "self@testactuator:alternate_test?delay='1000000'{MEAN,10000}THENwear@test:value";
-//final String MY_ACTUATOR_EXPRESSION2 = "wear@test:alternate_test?delay='100000'{ANY,0}THENself@test:value";
+//final String MY_ACTUATOR_EXPRESSION1 = "self@testactuator:alternate_test?delay='100000'{MEAN,70000}THENwear@test:value";
+//final String MY_ACTUATOR_EXPRESSION2 = "wear@test:alternate_test?delay='800000'{ANY,0}THENself@test:value";
 
 //3.3 WCW TODO: ON WEAR
 //final String MY_ACTUATOR_EXPRESSION2 = "cloud@testactuator:alternate_test?delay='100000'{MEAN,10000}THENwear@test:value";
@@ -212,7 +212,7 @@ final String MY_ACTUATOR_EXPRESSION2 = "self@test:alternate_test?delay='100000'{
        // registerSWANSensor(MY_EXPRESSION);
 
         if(ACTUATION) {
-            registerSWANActuatorSensor(MY_ACTUATOR_EXPRESSION1, ID1);
+            //registerSWANActuatorSensor(MY_ACTUATOR_EXPRESSION1, ID1);
             registerSWANActuatorSensor(MY_ACTUATOR_EXPRESSION2, ID2);
 
         }
@@ -269,7 +269,7 @@ final String MY_ACTUATOR_EXPRESSION2 = "self@test:alternate_test?delay='100000'{
 
     private void unregisterSWANActuatorSensor() {
 
-        ActuatorManager.unregisterActuator(this, ID1, false);
+        //ActuatorManager.unregisterActuator(this, ID1, false);
         ActuatorManager.unregisterActuator(this, ID2, false);
 
     }

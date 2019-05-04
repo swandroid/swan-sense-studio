@@ -108,6 +108,8 @@ public class LocationSensor extends AbstractSwanSensor {
             putValueTrimSize(SPEED_FIELD, null, now, location.getSpeed());
             putValueTrimSize(BEARING_FIELD, null, now, location.getBearing());
             putValueTrimSize(ACCURACY_FIELD, null, now, location.getAccuracy());
+            putValueTrimSize(LOCATION_FIELD, null, now, location);
+
         }
 
         public void onProviderDisabled(final String provider) {
@@ -157,6 +159,8 @@ public class LocationSensor extends AbstractSwanSensor {
 
         if (registeredConfigurations.size() == 1) {
             updateListener();
+            Log.d(TAG, "updated listener");
+
         }
     }
 
