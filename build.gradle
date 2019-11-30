@@ -11,20 +11,20 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.1'
+        classpath 'com.android.tools.build:gradle:3.5.2'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:1.4.1'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.2'
         //For connection to Firebase
-        classpath 'com.google.gms:google-services:4.0.1'
+        classpath 'com.google.gms:google-services:4.3.3'
 
         // Fabric & Crashlytics
-        classpath 'io.fabric.tools:gradle:1.25.4'
+        classpath 'io.fabric.tools:gradle:1.+'
     }
 }
 
 ext {
     compileSdkVersion = 23
-    buildToolsVersion = "25.0.0"
+    buildToolsVersion = "28.0.3"
 }
 allprojects {
     repositories {

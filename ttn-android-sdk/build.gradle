@@ -26,7 +26,7 @@ ext {
 
 android {
     compileSdkVersion 23
-    buildToolsVersion '27.0.3'
+    buildToolsVersion '28.0.3'
 
     defaultConfig {
         minSdkVersion 17
@@ -45,20 +45,20 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    testCompile 'junit:junit:4.12'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    testImplementation 'junit:junit:4.12'
 
     // retrofit for API interface
     // http://square.github.io/retrofit/
-    compile 'com.squareup.retrofit:retrofit:1.9.0'
+    implementation 'com.squareup.retrofit:retrofit:1.9.0'
 
     // JodaTime for Android
     // https://github.com/dlew/joda-time-android
-    compile 'net.danlew:android.joda:2.8.2'
+    api 'net.danlew:android.joda:2.8.2'
 
     // mqtt client
     // https://github.com/fusesource/mqtt-client
-    compile 'org.fusesource.mqtt-client:mqtt-client:1.12'
+    implementation 'org.fusesource.mqtt-client:mqtt-client:1.12'
 
 }
 

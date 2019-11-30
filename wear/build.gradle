@@ -1,8 +1,9 @@
 apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
+
 
 repositories {
     google()
-    maven { url 'https://maven.fabric.io/public' }
     jcenter()
 }
 
@@ -11,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId "interdroid.swan"
-        minSdkVersion 23
+        minSdkVersion 22
         targetSdkVersion 22
         versionCode 5
         versionName "1.1"
@@ -25,29 +26,29 @@ android {
         }
     }
 
-    buildToolsVersion '27.0.3'
+     buildToolsVersion '28.0.3'
 }
 
 dependencies {
     //compile 'com.google.android.gms:play-services-wearable:8.3.0'
     //noinspection GradleCompatible
     //compile 'com.google.android.gms:play-services-wearable:16.0.1'
-    compile 'com.google.android.gms:play-services-wearable:10.2.1'
-    compile 'com.android.support:recyclerview-v7:23.1.1'
-    compile project(':swancore')
-    compile 'com.squareup.retrofit:retrofit:1.9.0'
+    implementation 'com.google.android.gms:play-services-wearable:10.2.1'
+    implementation 'com.android.support:recyclerview-v7:23.1.1'
+    implementation project(':swancore')
+    implementation 'com.squareup.retrofit:retrofit:1.9.0'
     //For firebase connection
     //compile 'com.google.firebase:firebase-core:16.0.4'
     //compile 'com.google.firebase:firebase-messaging:17.3.4'
     //compile 'com.android.support:multidex:1.0.1'
 
     //For firebase connection
-    compile 'com.google.firebase:firebase-core:10.2.1'
-    compile 'com.google.firebase:firebase-messaging:10.2.1'
-    compile 'com.android.support:multidex:1.0.1'
+    implementation 'com.google.firebase:firebase-core:10.2.1'
+    implementation 'com.google.firebase:firebase-messaging:10.2.1'
+    implementation 'com.android.support:multidex:1.0.1'
 
     // MQTT
-    compile 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.0'
+    implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.0'
 
 }
 
