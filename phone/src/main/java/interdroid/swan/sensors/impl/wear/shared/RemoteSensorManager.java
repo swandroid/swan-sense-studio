@@ -232,6 +232,7 @@ public class RemoteSensorManager {
         });
     }
 
+
     public void registerExpression(final String expression, final String id){
 
         executorService.submit(new Runnable() {
@@ -389,6 +390,18 @@ public class RemoteSensorManager {
             dataMap.getDataMap().putString(DataMapKeys.EXPRESSION_ID, id);
             dataMap.getDataMap().putString(DataMapKeys.EXPRESSION, expression);
 
+            Log.d(TAG,ActuationManager.ACTUATORS.toString());
+
+            synchronized (ActuationManager.ACTUATORS){
+                while(!ActuationManager.ACTUATORS.containsKey(id) && !ActuationManager.REMOTE_ACTUATORS.containsKey(id)){
+                    try {
+                        ActuationManager.ACTUATORS.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }
             if(ActuationManager.ACTUATORS.containsKey(id) && ActuationManager.ACTUATORS.get(id).size() > 0){
                 phoneActuation = true;
             }else{

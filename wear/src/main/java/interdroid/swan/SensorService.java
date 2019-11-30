@@ -124,7 +124,7 @@ public class SensorService extends Service implements SensorEventListener {
                 boolean wearActuation = intent.getExtras().getBoolean(DataMapKeys.WEAR_ACTUATION);
                 boolean cloudActuation = intent.getExtras().getBoolean(DataMapKeys.CLOUD_ACTUATION);
                 boolean phoneActuation = intent.getExtras().getBoolean(DataMapKeys.PHONE_ACTUATION);
-                Log.d(TAG, "starting expression+++++" + id + " Expr:" + expr);
+                Log.d(TAG, "starting expression+++++" + id + " Expr:" + expr+ "phone "+phoneActuation+" cloud "+cloudActuation);
                 startSingleMeasurement(0, 0, Measurement.EXPRESSION, expr, id, wearActuation, cloudActuation, phoneActuation);
             }
 

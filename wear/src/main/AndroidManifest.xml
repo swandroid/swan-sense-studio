@@ -134,7 +134,7 @@
 
         <!-- Wear Light sensor-->
         <activity
-            android:name="sensors.LightSensor$ConfigurationActivity"
+            android:name=".sensors.LightSensor$ConfigurationActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="interdroid.swan.sensor.DISCOVER" />

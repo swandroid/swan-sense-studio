@@ -145,9 +145,9 @@ public class ActuatorManager {
         intercept.putExtra(EXTRA_FORWARD_NEW_VALUES, onNewValues);
         intercept.putExtra(EXTRA_EXPRESSION_ID, id);
 
-        ExpressionManager.registerExpression(context, id, expression, intercept, intercept, intercept, intercept);
-
         sendRegister(context, id, actions);
+
+        ExpressionManager.registerExpression(context, id, expression, intercept, intercept, intercept, intercept);
     }
 
     /**

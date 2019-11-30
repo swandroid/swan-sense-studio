@@ -44,10 +44,13 @@ public class LogActuator extends Actuator {
 
     @Override
     public void performAction(Context context, TimestampedValue[] newValues) {
-        if (tag != null) {
-            Log.println(priority, tag, message);
-        } else {
-            Log.println(priority, TAG, message);
+
+        if(newValues.length>0) {
+            if (tag != null) {
+                 Log.println(priority, tag, message+" "+newValues[0].toString());
+            } else {
+                 Log.println(priority, TAG, message+" "+newValues[0].toString());
+            }
         }
     }
 

@@ -62,6 +62,7 @@ public class ManageExpressions {
             initializeAndStartHighBandwidthNetworking();
         }
         try {
+            Log.d(TAG, "Register expression"+expression);
             Expression checkExpression =  ExpressionFactory.parse(expression);
             ActuatorManager.registerActuator(context, checkAndRemoveSuffixes(id), checkExpression,
                     null, new ExpressionListener() {

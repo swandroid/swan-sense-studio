@@ -72,9 +72,12 @@ public class ActuationManager {
             Log.w(TAG, "There is already an actuator registered for expression " + expressionId + ". Replacing...");
         }
 
-        ACTUATORS.put(expressionId, actuators);
+        synchronized (ACTUATORS) {
+            ACTUATORS.put(expressionId, actuators);
+            ACTUATORS.notifyAll();
+        }
 
-        Log.d(TAG, "Registered actuator for " + expressionId);
+        Log.d(TAG, "Registered actuator for " + expressionId+ " "+ ACTUATORS.toString());
     }
 
     /**
@@ -101,7 +104,7 @@ public class ActuationManager {
                     Log.w(TAG, "exception while clearing actuator for " + expressionId, e);
                 }
             }
-            Log.d(TAG, "Removed actuator for " + expressionId);
+            Log.d(TAG, "Removed actuator for " + expressionId+ " "+ACTUATORS.toString());
         }
     }
 
