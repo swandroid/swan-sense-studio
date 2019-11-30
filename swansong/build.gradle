@@ -26,7 +26,7 @@ ext {
 
 android {
     compileSdkVersion 23
-    buildToolsVersion '27.0.3'
+    buildToolsVersion '28.0.3'
 
     defaultConfig {
         minSdkVersion 15
@@ -43,7 +43,7 @@ android {
 }
 
 dependencies {
-    compile files('libs/antlr-3.4-complete-no-antlrv2.jar')
+    implementation files('libs/antlr-3.4-complete-no-antlrv2.jar')
 }
 
 // Place it at the end of the file

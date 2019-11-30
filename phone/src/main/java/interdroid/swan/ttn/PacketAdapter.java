@@ -26,7 +26,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import org.joda.time.DateTime;
+//TODO: uncomment and fix later
+//import org.joda.time.DateTime;
 import org.ttn.android.sdk.domain.packet.Packet;
 
 import java.text.DateFormat;
@@ -66,6 +67,7 @@ public class PacketAdapter extends RecyclerView.Adapter<PacketAdapter.ViewHolder
         }
 
         // timestamp
+        /*//TODO: uncomment and fix later
         DateTime date = packet.getTime();
         if (date != null) {
             vh.mTime.setVisibility(View.VISIBLE);
@@ -73,7 +75,7 @@ public class PacketAdapter extends RecyclerView.Adapter<PacketAdapter.ViewHolder
         } else {
             vh.mTime.setVisibility(View.GONE);
             vh.mTime.setText(null);
-        }
+        }*/
 
         // Print the packet data. Try the most human-readable format.
         String data = TextUtils.isEmpty(packet.getDataPlain()) ?

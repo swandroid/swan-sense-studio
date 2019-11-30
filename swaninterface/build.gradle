@@ -26,7 +26,7 @@ ext {
 
 android {
     compileSdkVersion 23
-    buildToolsVersion '27.0.3'
+    buildToolsVersion '28.0.3'
 
     defaultConfig {
         minSdkVersion 15
@@ -46,7 +46,7 @@ dependencies {
     // NOTE: for jcenter export option, we set the swansong as dependecy here
     // If you made local changes to the swansong, use:
     // compile project(':swansong')
-    compile project(':swansong')
+    api project(':swansong')
     //compile 'interdroid.swancore.swansong:swansong:1.0.3'
 }
 

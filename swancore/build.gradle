@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'io.fabric'
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
@@ -7,7 +6,7 @@ repositories {
 
 android {
     compileSdkVersion 23
-    buildToolsVersion '27.0.3'
+    buildToolsVersion '28.0.3'
 
     defaultConfig {
         minSdkVersion 15
@@ -24,13 +23,13 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:23.3.0'
+    implementation 'com.android.support:appcompat-v7:23.3.0'
 
     // NOTE: for jcenter export option, we set the swansong as dependecy here
     // If you made local changes to the swansong, use:
-    compile project(':swaninterface')
+    api project(':swaninterface')
     //compile 'interdroid.swancore.swanmain:swaninterface:1.0.4'
-    compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
+    implementation('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
         transitive = true;
     }
 

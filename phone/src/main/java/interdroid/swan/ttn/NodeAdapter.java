@@ -8,8 +8,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.squareup.otto.Bus;
-
-import org.joda.time.DateTime;
+//TODO: uncomment and fix later
+//import org.joda.time.DateTime;
 import org.ttn.android.sdk.domain.node.Node;
 
 import java.text.DateFormat;
@@ -70,6 +70,8 @@ public class NodeAdapter extends RecyclerView.Adapter<NodeAdapter.ViewHolder> {
         }
 
         // last seen
+        //TODO: uncomment and fix later
+        /*
         DateTime lastSeen = node.getLastSeen();
         if (lastSeen != null) {
             vh.mLastSeen.setVisibility(View.VISIBLE);
@@ -77,7 +79,7 @@ public class NodeAdapter extends RecyclerView.Adapter<NodeAdapter.ViewHolder> {
         } else {
             vh.mLastSeen.setVisibility(View.GONE);
             vh.mLastSeen.setText(null);
-        }
+        }*/
 
         // last gateway
         String lastGateway = node.getLastGatewayEui();
